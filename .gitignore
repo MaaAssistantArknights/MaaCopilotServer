@@ -1,0 +1,8 @@
+*/**/bin/Debug
+*/**/bin/Release
+*/**/obj/Debug
+*/**/obj/Release
+obj/
+Properties
+bin
+.vs/
