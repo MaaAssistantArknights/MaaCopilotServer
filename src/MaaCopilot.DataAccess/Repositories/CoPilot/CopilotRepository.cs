@@ -1,4 +1,6 @@
 ﻿using MaaCopilot.DataTransferObjects;
+using MaaCopilot.Interfaces.Copilot;
+using MaaCopilot.Interfaces.DataAccess;
 using MaaCopilot.Interfaces.ORM;
 using System;
 using System.Collections.Generic;
@@ -8,13 +10,12 @@ using System.Threading.Tasks;
 
 namespace MaaCopilot.DataAccess.Repositories.Copilot
 {
-    public class CopilotRepository : BaseRepository<ORM.Copilot.Copilot>
+    public class CopilotRepository : BaseRepository<ORM.Copilot.Copilot>, ICopilotRepository<ORM.Copilot.Copilot>
     {
-        protected readonly IDBProvider _dbProvider;
 
-        public CopilotRepository(IDBProvider dBProvider, IDBHelper dBHelper) : base(dBProvider, dBHelper)
+        public CopilotRepository(IDBProvider dBProvider, IDBHelper dBHelper, IUnitOfWork unitOfWork) : base(dBProvider, dBHelper)
         {
-            _dbProvider = dBProvider;
+            unitOfWork.Regrister(this);
         }
         public override Task<IEnumerable<ORM.Copilot.Copilot>> Search(SearchDTO request)
         {

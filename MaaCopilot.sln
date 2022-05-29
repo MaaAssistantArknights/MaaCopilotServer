@@ -24,6 +24,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MaaCopilot.DataTransferObjects", "src\MaaCopilot.DataTransferObjects\MaaCopilot.DataTransferObjects.csproj", "{F12BDAB6-E3B3-4D2C-A34B-8C4B84B6A41D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MaaCopilot.Api", "src\Maa.Copliot.Api\MaaCopilot.Api.csproj", "{147D0A73-4733-45F4-8C23-EAA12948AF55}"
+	ProjectSection(ProjectDependencies) = postProject
+		{61C1FE39-D44D-4271-9E65-3B3DB0E3D9FA} = {61C1FE39-D44D-4271-9E65-3B3DB0E3D9FA}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

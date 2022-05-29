@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -15,12 +15,15 @@
 
   <ItemGroup>
     <PackageReference Include="Dapper" Version="2.0.123" />
+    <PackageReference Include="MySql.Data" Version="8.0.29" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\MaaCopilot.DataTransferObjects\MaaCopilot.DataTransferObjects.csproj" />
     <ProjectReference Include="..\MaaCopilot.Service\MaaCopilot.Service.csproj" />
+	  <ProjectReference Include="..\MaaCopilot.Interfaces\MaaCopilot.Interfaces.csproj" />
+	  <ProjectReference Include="..\MaaCopilot.DataAccess\MaaCopilot.DataAccess.csproj" />
   </ItemGroup>
 
 </Project>

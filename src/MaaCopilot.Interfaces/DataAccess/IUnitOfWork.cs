@@ -6,7 +6,7 @@ namespace MaaCopilot.Interfaces.DataAccess
         Dictionary<Type, dynamic> Repo { get; }
         Task OpenConnectionAsync();
         void CloseConnection();
-        dynamic Repositoory<T>() where T : class;
+        dynamic Repository<T>() where T : class;
         void Regrister<T>(IRepository<T> repository) where T : class;
     }
 }

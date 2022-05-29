@@ -43,11 +43,11 @@ namespace MaaCopilot.DataAccess
             dynamic repo;
             if (!Repo.TryGetValue(typeof(T), out repo))
             {
-                Repo.Add(typeof(T), repo);
+                Repo.Add(typeof(T), repository);
             }
         }
 
-        public dynamic Repositoory<T>() where T : class
+        public dynamic Repository<T>() where T : class
         {
             dynamic repository;
             if (Repo.TryGetValue(typeof(T), out repository))

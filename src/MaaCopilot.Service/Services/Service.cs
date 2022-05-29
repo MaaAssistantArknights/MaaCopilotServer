@@ -33,7 +33,7 @@ namespace MaaCopilot.Service.Services
                 if (dto == null)
                     return new ServiceResponse<U>(false, "Invalid Request");
                 var data = mapper.Map<U, T>(dto);
-                var id = await _unitOfWork.Repositoory<T>().AddAsync(data);
+                var id = await _unitOfWork.Repository<T>().AddAsync(data, new List<string>().ToArray());
                 return new ServiceResponse<U>(id > 0, id > 0 ? "Success" : "Failed", dto);
             }
             catch (Exception ex)

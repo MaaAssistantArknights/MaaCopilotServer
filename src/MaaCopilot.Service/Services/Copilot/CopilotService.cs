@@ -14,17 +14,17 @@ namespace MaaCopilot.Service.Services.Copilot
 {
     public class CopilotService : Service<CopilotDTO, ORM.Copilot.Copilot>, ICopilotService
     {
-        protected readonly ILog _logger;
+        //protected readonly ILog _logger;
         protected readonly IUnitOfWork _unitOfWork;
         protected readonly IDBHelper _dBHelper;
         protected readonly ICopilotRepository<ORM.Copilot.Copilot> _copilotRepository;
 
-        public CopilotService(IDBHelper dBHelper, IUnitOfWork unitOfWork, ICopilotRepository<ORM.Copilot.Copilot> copilotRepository, ILog logger) : base(dBHelper, unitOfWork)
+        public CopilotService(IDBHelper dBHelper, IUnitOfWork unitOfWork, ICopilotRepository<ORM.Copilot.Copilot> copilotRepository) : base(dBHelper, unitOfWork)
         {
             _dBHelper = dBHelper;               
             _unitOfWork = unitOfWork;
             _copilotRepository = copilotRepository;
-            _logger = logger;
+            //_logger = logger;
         }
     }
 }
