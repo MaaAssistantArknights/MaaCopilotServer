@@ -18,6 +18,4 @@ public sealed class CopilotOperation : BaseAuditableEntity
     public string MinimumRequired { get; set; } = default!;
     public string? Title { get; set; }
     public string? Details { get; set; }
-
-    public CopilotUser Maker { get; set; } = default!;
 }

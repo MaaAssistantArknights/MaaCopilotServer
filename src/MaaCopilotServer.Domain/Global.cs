@@ -4,6 +4,3 @@
 
 global using MaaCopilotServer.Domain.Common;
 global using MaaCopilotServer.Domain.Entities;
-global using MaaCopilotServer.Domain.Events;
-global using MaaCopilotServer.Domain.Exceptions;
-global using MaaCopilotServer.Domain.ValueObjects;
