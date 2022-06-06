@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <RootNamespace>MaaCopilotServer.Application</RootNamespace>
+        <AssemblyName>MaaCopilotServer.Application</AssemblyName>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\MaaCopilotServer.Domain\MaaCopilotServer.Domain.csproj" />
+    </ItemGroup>
+
+</Project>

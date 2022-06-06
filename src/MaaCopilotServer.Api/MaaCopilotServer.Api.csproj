@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <RootNamespace>MaaCopilotServer.Api</RootNamespace>
+        <AssemblyName>MaaCopilotServer.Api</AssemblyName>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\MaaCopilotServer.Application\MaaCopilotServer.Application.csproj" />
+      <ProjectReference Include="..\MaaCopilotServer.Infrastructure\MaaCopilotServer.Infrastructure.csproj" />
+    </ItemGroup>
+
+</Project>
