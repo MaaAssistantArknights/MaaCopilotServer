@@ -3,6 +3,8 @@
 // Licensed under the AGPL-3.0 license.
 
 using MaaCopilotServer.Application.Common.Interfaces;
+using MaaCopilotServer.Application.CopilotUser.Commands.CreateCopilotUser;
+using MaaCopilotServer.Application.CopilotUser.Commands.LoginCopilotUser;
 using MediatR.Pipeline;
 using Microsoft.Extensions.Logging;
 
@@ -24,7 +26,14 @@ public class LoggingBehaviour<TRequest> : IRequestPreProcessor<TRequest> where T
     {
         var requestName = typeof(TRequest).Name;
         var userId = _currentUserService.GetUserIdentity()?.ToString() ?? "Anonymous";
-        _logger.LogInformation("MaaCopilotServer Request: {Name} {UserId} {@Request}", requestName, userId, request);
+        if (typeof(TRequest) == typeof(LoginCopilotUserCommand) || typeof(TRequest) == typeof(CreateCopilotUserCommand))
+        {
+            _logger.LogInformation("MaaCopilotServer Request: {Name} {UserId} {@Request}", requestName, userId, "********");
+        }
+        else
+        {
+            _logger.LogInformation("MaaCopilotServer Request: {Name} {UserId} {@Request}", requestName, userId, request);
+        }
         return Task.CompletedTask;
     }
 }
