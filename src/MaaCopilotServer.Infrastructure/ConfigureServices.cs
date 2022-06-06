@@ -18,6 +18,7 @@ public static class ConfigureServices
         services.AddScoped<IIdentityService, IdentityService>();
 
         services.AddSingleton<ICopilotIdService, CopilotIdService>();
+        services.AddSingleton<ISecretService, SecretService>();
 
         return services;
     }

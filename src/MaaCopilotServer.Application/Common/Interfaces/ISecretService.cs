@@ -2,11 +2,11 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
-using MaaCopilotServer.Domain.Entities;
-
 namespace MaaCopilotServer.Application.Common.Interfaces;
 
-public interface IIdentityService
+public interface ISecretService
 {
-    Task<Domain.Entities.CopilotUser?> GetUserAsync(Guid guid);
+    (string, DateTimeOffset) GenerateJwtToken(Guid id);
+    string HashPassword(string password);
+    bool VerifyPassword(string hash, string password);
 }

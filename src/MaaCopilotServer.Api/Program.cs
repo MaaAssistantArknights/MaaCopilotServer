@@ -21,10 +21,13 @@ builder.Host.UseSerilog();
 builder.Services.AddControllers();
 builder.Services.AddInfrastructureServices();
 builder.Services.AddApplicationServices();
-builder.Services.AddApiServices();
+builder.Services.AddApiServices(configuration);
 
 var app = builder.Build();
 
+DatabaseHelper.DatabaseInitialize(app.Services);
+
+app.UseAuthentication();
 app.MapControllers();
 
 app.Run();
