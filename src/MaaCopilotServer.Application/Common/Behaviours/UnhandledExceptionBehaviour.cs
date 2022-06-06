@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using MaaCopilotServer.Application.Common.Exceptions;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -23,6 +24,14 @@ public class UnhandledExceptionBehaviour<TRequest, TResponse> : IPipelineBehavio
         try
         {
             return await next();
+        }
+        catch (PipelineException ex)
+        {
+            var requestName = typeof(TRequest).Name;
+            _logger.LogError(ex,
+                "MaaCopilotServer Request Pipeline Exception: {StatusCode} for Request {Name} {@Request}", ex.Result.RealStatusCode ,requestName,
+                request);
+            throw;
         }
         catch (Exception ex)
         {

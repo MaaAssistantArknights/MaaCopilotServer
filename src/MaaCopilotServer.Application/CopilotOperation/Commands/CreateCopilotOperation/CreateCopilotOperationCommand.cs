@@ -5,6 +5,8 @@
 using System.Text.Json;
 using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Application.Common.Models;
+using MaaCopilotServer.Application.Common.Security;
+using MaaCopilotServer.Domain.Enums;
 using MediatR;
 
 namespace MaaCopilotServer.Application.CopilotOperation.Commands.CreateCopilotOperation;
@@ -14,6 +16,7 @@ public record CreateCopilotOperationCommand : IRequest<MaaActionResult<CreateCop
     public string? Content { get; set; }
 }
 
+[Authorized(UserRole.Uploader)]
 public class CreateCopilotOperationCommandHandler : IRequestHandler<CreateCopilotOperationCommand, MaaActionResult<CreateCopilotOperationDto>>
 {
     private readonly IMaaCopilotDbContext _dbContext;

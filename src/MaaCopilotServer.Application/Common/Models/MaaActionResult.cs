@@ -9,7 +9,7 @@ namespace MaaCopilotServer.Application.Common.Models;
 public class MaaActionResult<T>
 {
     private readonly MaaApiResponse _maaApiResponse;
-
+    public int RealStatusCode => _maaApiResponse.StatusCode;
     private MaaActionResult(MaaApiResponse maaApiResponse)
     {
         _maaApiResponse = maaApiResponse;

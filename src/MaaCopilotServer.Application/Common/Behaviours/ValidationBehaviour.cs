@@ -3,6 +3,9 @@
 // Licensed under the AGPL-3.0 license.
 
 using FluentValidation;
+using MaaCopilotServer.Application.Common.Exceptions;
+using MaaCopilotServer.Application.Common.Interfaces;
+using MaaCopilotServer.Application.Common.Models;
 using MediatR;
 
 namespace MaaCopilotServer.Application.Common.Behaviours;
@@ -11,10 +14,12 @@ public class ValidationBehaviour<TRequest, TResponse> : IPipelineBehavior<TReque
     where TRequest : IRequest<TResponse>
 {
     private readonly IEnumerable<IValidator<TRequest>> _validators;
+    private readonly ICurrentUserService _currentUserService;
 
-    public ValidationBehaviour(IEnumerable<IValidator<TRequest>> validators)
+    public ValidationBehaviour(IEnumerable<IValidator<TRequest>> validators, ICurrentUserService currentUserService)
     {
         _validators = validators;
+        _currentUserService = currentUserService;
     }
 
     public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken,
@@ -36,9 +41,10 @@ public class ValidationBehaviour<TRequest, TResponse> : IPipelineBehavior<TReque
             .SelectMany(r => r.Errors)
             .ToList();
 
+        var failureMessage = string.Join("\n", failures.Select(f => f.ToString()));
         if (failures.Any())
         {
-            throw new ValidationException(failures);
+            throw new PipelineException(MaaApiResponse.BadRequest(_currentUserService.GetTrackingId(), failureMessage));
         }
 
         return await next();

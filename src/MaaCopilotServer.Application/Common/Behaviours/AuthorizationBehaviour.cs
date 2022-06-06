@@ -5,6 +5,7 @@
 using System.Reflection;
 using MaaCopilotServer.Application.Common.Exceptions;
 using MaaCopilotServer.Application.Common.Interfaces;
+using MaaCopilotServer.Application.Common.Models;
 using MaaCopilotServer.Application.Common.Security;
 using MediatR;
 
@@ -33,19 +34,19 @@ public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRe
         var userId = _currentUserService.GetUserIdentity();
         if (userId is null)
         {
-            throw new UnauthorizedAccessException();
+            throw new PipelineException(MaaApiResponse.Unauthorized(_currentUserService.GetTrackingId()));
         }
 
         var user = await _identityService.GetUserAsync(userId.Value);
         if (user is null)
         {
-            throw new UserNotFoundException(userId.ToString()!);
+            throw new PipelineException(MaaApiResponse.NotFound($"User {userId}", _currentUserService.GetTrackingId()));
         }
 
         var roleRequired = authorizeAttributes.First().Role;
         if (user.UserRole < roleRequired)
         {
-            throw new UserAccessDeniedException(user.UserRole, roleRequired);
+            throw new PipelineException(MaaApiResponse.Forbidden(roleRequired, _currentUserService.GetTrackingId()));
         }
 
         return await next();

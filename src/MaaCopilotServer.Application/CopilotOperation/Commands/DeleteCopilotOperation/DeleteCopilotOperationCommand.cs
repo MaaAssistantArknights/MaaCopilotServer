@@ -4,6 +4,8 @@
 
 using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Application.Common.Models;
+using MaaCopilotServer.Application.Common.Security;
+using MaaCopilotServer.Domain.Enums;
 using MediatR;
 
 namespace MaaCopilotServer.Application.CopilotOperation.Commands.DeleteCopilotOperation;
@@ -13,6 +15,7 @@ public record DeleteCopilotOperationCommand : IRequest<MaaActionResult<EmptyObje
     public string? Id { get; set; }
 }
 
+[Authorized(UserRole.Admin)]
 public class DeleteCopilotOperationCommandHandler : IRequestHandler<DeleteCopilotOperationCommand,
     MaaActionResult<EmptyObject>>
 {
