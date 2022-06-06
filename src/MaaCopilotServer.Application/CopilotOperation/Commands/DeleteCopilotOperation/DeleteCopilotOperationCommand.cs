@@ -10,12 +10,12 @@ using MediatR;
 
 namespace MaaCopilotServer.Application.CopilotOperation.Commands.DeleteCopilotOperation;
 
+[Authorized(UserRole.Admin)]
 public record DeleteCopilotOperationCommand : IRequest<MaaActionResult<EmptyObject>>
 {
     public string? Id { get; set; }
 }
 
-[Authorized(UserRole.Admin)]
 public class DeleteCopilotOperationCommandHandler : IRequestHandler<DeleteCopilotOperationCommand,
     MaaActionResult<EmptyObject>>
 {

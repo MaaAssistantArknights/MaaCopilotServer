@@ -11,12 +11,12 @@ using MediatR;
 
 namespace MaaCopilotServer.Application.CopilotOperation.Commands.CreateCopilotOperation;
 
+[Authorized(UserRole.Uploader)]
 public record CreateCopilotOperationCommand : IRequest<MaaActionResult<CreateCopilotOperationDto>>
 {
     public string? Content { get; set; }
 }
 
-[Authorized(UserRole.Uploader)]
 public class CreateCopilotOperationCommandHandler : IRequestHandler<CreateCopilotOperationCommand, MaaActionResult<CreateCopilotOperationDto>>
 {
     private readonly IMaaCopilotDbContext _dbContext;
