@@ -4,6 +4,7 @@
 
 using MaaCopilotServer.Application.CopilotUser.Commands.ChangeCopilotUserInfo;
 using MaaCopilotServer.Application.CopilotUser.Commands.CreateCopilotUser;
+using MaaCopilotServer.Application.CopilotUser.Commands.DeleteCopilotUser;
 using MaaCopilotServer.Application.CopilotUser.Commands.LoginCopilotUser;
 using MaaCopilotServer.Application.CopilotUser.Commands.UpdateCopilotUserInfo;
 using MaaCopilotServer.Application.CopilotUser.Commands.UpdateCopilotUserPassword;
@@ -28,6 +29,12 @@ public class CopilotUserController : MaaControllerBase
 
     [HttpPost("create")]
     public async Task<ActionResult> CreateCopilotUser([FromBody] CreateCopilotUserCommand command)
+    {
+        return await GetResponse(command);
+    }
+
+    [HttpPost("delete")]
+    public async Task<ActionResult> DeleteCopilotUser([FromBody] DeleteCopilotUserCommand command)
     {
         return await GetResponse(command);
     }
