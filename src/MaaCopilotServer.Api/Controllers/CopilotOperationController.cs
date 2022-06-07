@@ -3,7 +3,6 @@
 // Licensed under the AGPL-3.0 license.
 
 using MaaCopilotServer.Api.Dtos;
-using MaaCopilotServer.Application.Common.Exceptions;
 using MaaCopilotServer.Application.CopilotOperation.Commands.CreateCopilotOperation;
 using MaaCopilotServer.Application.CopilotOperation.Commands.DeleteCopilotOperation;
 using MaaCopilotServer.Application.CopilotOperation.Queries.GetCopilotOperation;
@@ -16,58 +15,29 @@ namespace MaaCopilotServer.Api.Controllers;
 
 [ApiController]
 [Route("copilot")]
-public class CopilotOperationController : ControllerBase
+public class CopilotOperationController : MaaControllerBase
 {
-    private readonly IMediator _mediator;
-
-    public CopilotOperationController(IMediator mediator)
-    {
-        _mediator = mediator;
-    }
+    public CopilotOperationController(IMediator mediator) : base(mediator) { }
 
     [HttpPost("upload")]
     public async Task<ActionResult> CreateCopilotOperation([FromBody] CreateCopilotOperationDto dto)
     {
         var request = new CreateCopilotOperationCommand { Content = dto.Content };
-        try
-        {
-            var response = await _mediator.Send(request);
-            return response;
-        }
-        catch (PipelineException ex)
-        {
-            return ex.Result;
-        }
+        return await GetResponse(request);
     }
 
     [HttpPost("delete")]
     public async Task<ActionResult> DeleteCopilotOperation([FromBody] DeleteCopilotOperationDto dto)
     {
         var request = new DeleteCopilotOperationCommand { Id = dto.Id };
-        try
-        {
-            var response = await _mediator.Send(request);
-            return response;
-        }
-        catch (PipelineException ex)
-        {
-            return ex.Result;
-        }
+        return await GetResponse(request);
     }
 
     [HttpGet("get/{id}")]
     public async Task<ActionResult> GetCopilotOperation(string id)
     {
         var request = new GetCopilotOperationQuery { Id = id };
-        try
-        {
-            var response = await _mediator.Send(request);
-            return response;
-        }
-        catch (PipelineException ex)
-        {
-            return ex.Result;
-        }
+        return await GetResponse(request);
     }
 
     [HttpGet("get")]
@@ -78,14 +48,6 @@ public class CopilotOperationController : ControllerBase
         [FromQuery] string content = "")
     {
         var request = new QueryCopilotOperationsQuery { Page = page, Limit = limit, StageName = stageName, Content = content };
-        try
-        {
-            var response = await _mediator.Send(request);
-            return response;
-        }
-        catch (PipelineException ex)
-        {
-            return ex.Result;
-        }
+        return await GetResponse(request);
     }
 }
