@@ -17,7 +17,7 @@ var configuration = ConfigurationHelper.BuildConfiguration();
 var loggerConfiguration = new LoggerConfiguration()
     .ReadFrom.Configuration(configuration);
 
-if (configuration.GetValue<bool>("ElasticLogSink:Enabled"))
+if (configuration.GetValue<bool>("Switches:ElasticSearch"))
 {
     var elasticUris = configuration.GetValue<string>("ElasticLogSink:Uris").Split(";").Select(x => new Uri(x)).ToArray();
     var elasticPeriod = configuration.GetValue<int>("ElasticLogSink:Period");
@@ -36,9 +36,6 @@ if (configuration.GetValue<bool>("ElasticLogSink:Enabled"))
 
 Log.Logger = loggerConfiguration.CreateLogger();
 
-// Alpha 测试版本使用
-ConfigurationHelper.LogConfigurations(configuration, Log.Logger);
-
 var builder = WebApplication.CreateBuilder();
 
 builder.Host.UseSerilog();
@@ -54,7 +51,7 @@ var app = builder.Build();
 
 DatabaseHelper.DatabaseInitialize(configuration);
 
-if (configuration.GetValue<bool>("ElasticApm:Enabled"))
+if (configuration.GetValue<bool>("Switches:Apm"))
 {
     app.UseElasticApm(configuration, new EfCoreDiagnosticsSubscriber());
 }
