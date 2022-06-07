@@ -14,9 +14,10 @@ public static class ConfigurationHelper
     /// </summary>
     /// <remarks>不适用于 Azure Functions 等云服务</remarks>
     /// <returns><see cref="IConfiguration"/> 实例 (<see cref="ConfigurationRoot"/> 对象)</returns>
-    public static IConfiguration? BuildConfiguration()
+    public static IConfiguration BuildConfiguration()
     {
         var dataDirectoryEnv = Environment.GetEnvironmentVariable("MAA_DATA_DIRECTORY");
+        var isInDocker = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") ?? "false";
 
         var assemblyDirectory = new FileInfo(Assembly.GetExecutingAssembly().Location).Directory.NotNull();
         var dataDirectory = string.IsNullOrEmpty(dataDirectoryEnv)
@@ -38,9 +39,9 @@ public static class ConfigurationHelper
             text = text.Replace("{{ DATA DIRECTORY }}", dataDirectory.FullName);
             File.WriteAllText(appsettingsFile.FullName, text);
 
-            if (currentEnvironment == "Production")
+            if (currentEnvironment == "Production" && isInDocker == "false")
             {
-                return null;
+                Environment.Exit(0);
             }
         }
         if (originalAppsettingsEnvFile.Exists)

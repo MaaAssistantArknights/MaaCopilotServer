@@ -13,11 +13,9 @@ namespace MaaCopilotServer.Api.Helper;
 
 public static class DatabaseHelper
 {
-    public static void DatabaseInitialize(IServiceProvider provider)
+    public static void DatabaseInitialize(IServiceProvider provider, IConfiguration configuration)
     {
-        var scope = provider.CreateScope();
-        var db = scope.ServiceProvider.GetRequiredService<MaaCopilotDbContext>();
-
+        var db = new MaaCopilotDbContext(configuration);
         if (db.Database.GetPendingMigrations().Any())
         {
             db.Database.Migrate();
@@ -44,7 +42,6 @@ public static class DatabaseHelper
         }
 
         db.Dispose();
-        scope.Dispose();
     }
 
     private static string GeneratePassword()

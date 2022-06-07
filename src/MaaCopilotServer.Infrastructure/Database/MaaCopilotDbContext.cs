@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using MaaCopilotServer.Application.Common.Extensions;
 using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Domain.Common;
 using MaaCopilotServer.Domain.Entities;
@@ -16,7 +17,7 @@ public class MaaCopilotDbContext : DbContext, IMaaCopilotDbContext
     public DbSet<CopilotOperation> CopilotOperations { get; set; } = null!;
     public DbSet<CopilotUser> CopilotUsers { get; set; } = null!;
 
-    private string? _connectionString;
+    private readonly string? _connectionString;
 
     public MaaCopilotDbContext(IConfiguration configuration)
     {
@@ -25,8 +26,8 @@ public class MaaCopilotDbContext : DbContext, IMaaCopilotDbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        _connectionString ??= Environment.GetEnvironmentVariable("Database_ConnectionString");
-        optionsBuilder.UseNpgsql(_connectionString!);
+        var conn = _connectionString.NotNull();
+        optionsBuilder.UseNpgsql(conn);
         base.OnConfiguring(optionsBuilder);
     }
 

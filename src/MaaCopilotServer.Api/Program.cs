@@ -12,11 +12,6 @@ using Serilog;
 using Serilog.Sinks.Elasticsearch;
 
 var configuration = ConfigurationHelper.BuildConfiguration();
-if (configuration is null)
-{
-    Console.WriteLine("Please modifier the configuration file.");
-    return 1;
-}
 
 var loggerConfiguration = new LoggerConfiguration()
     .ReadFrom.Configuration(configuration);
@@ -50,7 +45,7 @@ builder.Services.AddApiServices(configuration);
 
 var app = builder.Build();
 
-DatabaseHelper.DatabaseInitialize(app.Services);
+DatabaseHelper.DatabaseInitialize(app.Services, configuration);
 
 if (configuration.GetValue<bool>("ElasticApm:Enabled"))
 {
@@ -61,5 +56,3 @@ app.UseAuthentication();
 app.MapControllers();
 
 app.Run();
-
-return 0;
