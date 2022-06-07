@@ -12,9 +12,9 @@ namespace MaaCopilotServer.Application.CopilotUser.Queries.QueryCopilotUser;
 
 public record QueryCopilotUserQuery : IRequest<MaaActionResult<PaginationResult<QueryCopilotUserDto>>>
 {
-    [FromQuery(Name = "page")] public int Page { get; set; } = 1;
-    [FromQuery(Name = "limit")] public int Limit { get; set; } = 10;
-    [FromQuery(Name = "user_name")] public string UserName { get; set; } = string.Empty;
+    [FromQuery(Name = "page")] public int? Page { get; set; } = null;
+    [FromQuery(Name = "limit")] public int? Limit { get; set; } = null;
+    [FromQuery(Name = "user_name")] public string? UserName { get; set; } = null;
 }
 
 public class QueryCopilotUserQueryHandler : IRequestHandler<QueryCopilotUserQuery, MaaActionResult<PaginationResult<QueryCopilotUserDto>>>
@@ -32,6 +32,8 @@ public class QueryCopilotUserQueryHandler : IRequestHandler<QueryCopilotUserQuer
 
     public async Task<MaaActionResult<PaginationResult<QueryCopilotUserDto>>> Handle(QueryCopilotUserQuery request, CancellationToken cancellationToken)
     {
+        var limit = request.Limit ?? 10;
+        var page = request.Page ?? 1;
         var queryable = _dbContext.CopilotUsers.AsQueryable();
         if (string.IsNullOrEmpty(request.UserName) is false)
         {
@@ -40,8 +42,8 @@ public class QueryCopilotUserQueryHandler : IRequestHandler<QueryCopilotUserQuer
 
         var totalCount = await queryable.CountAsync(cancellationToken);
 
-        var skip = (request.Page - 1) * request.Limit;
-        queryable = queryable.Skip(skip).Take(request.Limit);
+        var skip = (page - 1) * limit;
+        queryable = queryable.Skip(skip).Take(limit);
 
         var result = queryable.ToList();
         var hasNext = request.Limit * request.Page >= totalCount;
@@ -49,7 +51,7 @@ public class QueryCopilotUserQueryHandler : IRequestHandler<QueryCopilotUserQuer
         var dtos = result
             .Select(x => new QueryCopilotUserDto(x.EntityId, x.UserName, x.UserRole))
             .ToList();
-        var paginationResult = new PaginationResult<QueryCopilotUserDto>(hasNext, request.Page, totalCount, dtos);
+        var paginationResult = new PaginationResult<QueryCopilotUserDto>(hasNext, page, totalCount, dtos);
         return MaaApiResponse.Ok(paginationResult, _currentUserService.GetTrackingId());
     }
 }
