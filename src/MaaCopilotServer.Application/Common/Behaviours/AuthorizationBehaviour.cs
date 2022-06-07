@@ -46,7 +46,7 @@ public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRe
         var roleRequired = authorizeAttributes.First().Role;
         if (user.UserRole < roleRequired)
         {
-            throw new PipelineException(MaaApiResponse.Forbidden(roleRequired, _currentUserService.GetTrackingId()));
+            throw new PipelineException(MaaApiResponse.Forbidden(_currentUserService.GetTrackingId()));
         }
 
         return await next();

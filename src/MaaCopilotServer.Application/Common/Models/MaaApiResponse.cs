@@ -3,7 +3,6 @@
 // Licensed under the AGPL-3.0 license.
 
 using System.Text.Json.Serialization;
-using MaaCopilotServer.Domain.Enums;
 
 namespace MaaCopilotServer.Application.Common.Models;
 
@@ -27,9 +26,9 @@ public class MaaApiResponse
         return new MaaApiResponse(401, message ?? "Unauthorized", id, null);
     }
 
-    public static MaaApiResponse Forbidden(UserRole requiredRole, string id, string? message = null)
+    public static MaaApiResponse Forbidden(string id, string? message = null)
     {
-        return new MaaApiResponse(403, message ?? $"Forbidden. Required role: {requiredRole}", id, null);
+        return new MaaApiResponse(403, message ?? "Forbidden. Permission Denied", id, null);
     }
 
     public static MaaApiResponse BadRequest(string id, string? message = null)
