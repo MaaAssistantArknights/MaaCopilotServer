@@ -43,6 +43,8 @@ var builder = WebApplication.CreateBuilder();
 
 builder.Host.UseSerilog();
 
+builder.Configuration.AddConfiguration(configuration);
+
 builder.Services.AddControllers();
 builder.Services.AddInfrastructureServices();
 builder.Services.AddApplicationServices();
