@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Text.Json.Serialization;
 using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Application.Common.Models;
 using MaaCopilotServer.Application.Common.Security;
@@ -14,10 +15,10 @@ namespace MaaCopilotServer.Application.CopilotUser.Commands.CreateCopilotUser;
 [Authorized(UserRole.Admin)]
 public record CreateCopilotUserCommand : IRequest<MaaActionResult<EmptyObject>>
 {
-    public string? Email { get; set; }
-    public string? Password { get; set; }
-    public string? UserName { get; set; }
-    public UserRole Role { get; set; }
+    [JsonPropertyName("email")] public string? Email { get; set; }
+    [JsonPropertyName("password")] public string? Password { get; set; }
+    [JsonPropertyName("user_name")] public string? UserName { get; set; }
+    [JsonPropertyName("role"), JsonConverter(typeof(JsonStringEnumConverter))] public UserRole? Role { get; set; }
 }
 
 public class CreateCopilotUserCommandHandler : IRequestHandler<CreateCopilotUserCommand, MaaActionResult<EmptyObject>>
@@ -45,7 +46,7 @@ public class CreateCopilotUserCommandHandler : IRequestHandler<CreateCopilotUser
         }
 
         var hashedPassword = _secretService.HashPassword(request.Password!);
-        var user = new Domain.Entities.CopilotUser(request.Email!, hashedPassword, request.UserName!, request.Role);
+        var user = new Domain.Entities.CopilotUser(request.Email!, hashedPassword, request.UserName!, request.Role!.Value);
         _dbContext.CopilotUsers.Add(user);
         await _dbContext.SaveChangesAsync(cancellationToken);
         return MaaApiResponse.Ok(null, _currentUserService.GetTrackingId());

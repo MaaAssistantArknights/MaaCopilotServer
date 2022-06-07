@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Text.Json.Serialization;
 using MaaCopilotServer.Application.Common.Extensions;
 using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Application.Common.Models;
@@ -12,8 +13,8 @@ namespace MaaCopilotServer.Application.CopilotUser.Commands.LoginCopilotUser;
 
 public record LoginCopilotUserCommand : IRequest<MaaActionResult<LoginCopilotUserDto>>
 {
-    public string? Email { get; set; }
-    public string? Password { get; set; }
+    [JsonPropertyName("email")] public string? Email { get; set; }
+    [JsonPropertyName("password")] public string? Password { get; set; }
 }
 
 public class LoginCopilotUserCommandHandler : IRequestHandler<LoginCopilotUserCommand, MaaActionResult<LoginCopilotUserDto>>
@@ -43,7 +44,7 @@ public class LoginCopilotUserCommandHandler : IRequestHandler<LoginCopilotUserCo
         var ok = _secretService.VerifyPassword(user.Password, request.Password!);
         if (ok is false)
         {
-            return MaaApiResponse.BadRequest("Invalid password", _currentUserService.GetTrackingId());
+            return MaaApiResponse.BadRequest(_currentUserService.GetTrackingId(), "Invalid password");
         }
 
         var (token, expire) = _secretService.GenerateJwtToken(user.EntityId);

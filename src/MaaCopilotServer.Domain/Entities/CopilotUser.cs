@@ -34,13 +34,36 @@ public class CopilotUser : EditableEntity
     /// <summary>
     /// 密码
     /// </summary>
-    public string Password { get; set; }
+    public string Password { get; private set; }
     /// <summary>
     /// 用户名
     /// </summary>
-    public string UserName { get; set; }
+    public string UserName { get; private set; }
     /// <summary>
     /// 权限组
     /// </summary>
-    public UserRole UserRole { get; set; }
+    public UserRole UserRole { get; private set; }
+
+    public void UpdatePassword(string newPassword)
+    {
+        Password = newPassword;
+        UpdateAt = DateTimeOffset.UtcNow;
+    }
+
+    public void UpdateUserInfo(string? email = null, string? userName = null, UserRole? userRole = null)
+    {
+        if (string.IsNullOrEmpty(email) &&
+            string.IsNullOrEmpty(userName) &&
+            userRole is null)
+        {
+            return;
+        }
+        if (string.IsNullOrEmpty(email) is false)
+            Email = email;
+        if (string.IsNullOrEmpty(userName) is false)
+            UserName = userName;
+        if (userRole is not null)
+            UserRole = userRole.Value;
+        UpdateAt = DateTimeOffset.UtcNow;
+    }
 }

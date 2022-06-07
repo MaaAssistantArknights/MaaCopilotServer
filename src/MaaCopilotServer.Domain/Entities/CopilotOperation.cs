@@ -36,7 +36,7 @@ public sealed class CopilotOperation : EditableEntity
     /// <summary>
     /// 下载量
     /// </summary>
-    public int Downloads { get; set; } = 0;
+    public int Downloads { get; private set; } = 0;
 
     // Extract from Content
 
@@ -60,4 +60,10 @@ public sealed class CopilotOperation : EditableEntity
     /// 上传者
     /// </summary>
     public CopilotUser Author { get; private set; }
+
+    public void AddDownloadCount()
+    {
+        Downloads++;
+        UpdateAt = DateTimeOffset.UtcNow;
+    }
 }
