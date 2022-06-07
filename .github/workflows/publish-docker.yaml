@@ -32,7 +32,7 @@ jobs:
         run: dotnet publish -c Release -o ./publish ./src/MaaCopilotServer.Api
         
       - name: "Post publish .NET application"
-        run: rm ./publish/*.pdb ./publish/*.Development.json
+        run: rm -f ./publish/*.pdb ./publish/*.Development.json
       
       - name: "Build Docker image"
         run: ./build-docker.sh ${{ github.event.release.tag_name }}
