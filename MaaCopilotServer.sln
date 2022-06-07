@@ -8,11 +8,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaaCopilotServer.Infrastruc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaaCopilotServer.Application", "src\MaaCopilotServer.Application\MaaCopilotServer.Application.csproj", "{DB2CF416-793B-4546-B034-ADD57BDCD43B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MaaCopilotServer.Build", "src\MaaCopilotServer.Build\MaaCopilotServer.Build.csproj", "{E4094536-464A-4CD7-91EF-E089980E9DEB}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "App", "App", "{A1D2EB1C-F793-4CA9-86B6-8EB065CD75A7}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Utility", "Utility", "{91C3A2CE-F2C1-4F8E-A15F-AED0D8D786EF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -20,9 +16,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{E4094536-464A-4CD7-91EF-E089980E9DEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E4094536-464A-4CD7-91EF-E089980E9DEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E4094536-464A-4CD7-91EF-E089980E9DEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2ED22FCD-5970-47F4-B5CB-3569F28788D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2ED22FCD-5970-47F4-B5CB-3569F28788D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2ED22FCD-5970-47F4-B5CB-3569F28788D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -41,7 +34,6 @@ Global
 		{DB2CF416-793B-4546-B034-ADD57BDCD43B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{E4094536-464A-4CD7-91EF-E089980E9DEB} = {91C3A2CE-F2C1-4F8E-A15F-AED0D8D786EF}
 		{5748A5AC-B6F8-4414-B6AA-A089407BC969} = {A1D2EB1C-F793-4CA9-86B6-8EB065CD75A7}
 		{DB2CF416-793B-4546-B034-ADD57BDCD43B} = {A1D2EB1C-F793-4CA9-86B6-8EB065CD75A7}
 		{2ED22FCD-5970-47F4-B5CB-3569F28788D3} = {A1D2EB1C-F793-4CA9-86B6-8EB065CD75A7}
