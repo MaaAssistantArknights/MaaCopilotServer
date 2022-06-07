@@ -49,6 +49,7 @@ public class DeleteCopilotOperationCommandHandler : IRequestHandler<DeleteCopilo
             return MaaApiResponse.NotFound("CopilotOperation", _currentUserService.GetTrackingId());
         }
 
+        entity.Delete(_currentUserService.GetUserIdentity()!.Value);
         _dbContext.CopilotOperations.Remove(entity);
         await _dbContext.SaveChangesAsync(cancellationToken);
         return MaaApiResponse.Ok(new EmptyObject(), _currentUserService.GetTrackingId());

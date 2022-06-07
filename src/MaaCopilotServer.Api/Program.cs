@@ -45,7 +45,7 @@ builder.Services.AddApiServices(configuration);
 
 var app = builder.Build();
 
-DatabaseHelper.DatabaseInitialize(app.Services, configuration);
+DatabaseHelper.DatabaseInitialize(configuration);
 
 if (configuration.GetValue<bool>("ElasticApm:Enabled"))
 {

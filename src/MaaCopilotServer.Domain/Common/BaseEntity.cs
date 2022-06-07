@@ -19,6 +19,11 @@ public abstract class BaseEntity
     public Guid EntityId { get; } = Guid.NewGuid();
 
     /// <summary>
+    /// 创建者
+    /// </summary>
+    public Guid CreateBy { get; protected set; }
+
+    /// <summary>
     /// 创建时间
     /// </summary>
     public DateTimeOffset CreateAt { get; } = DateTimeOffset.UtcNow;
@@ -27,6 +32,16 @@ public abstract class BaseEntity
     /// 是否为已删除
     /// </summary>
     public bool IsDeleted { get; set; }
+
+    /// <summary>
+    /// 删除者
+    /// </summary>
+    public Guid? DeleteBy { get; protected set; } = null;
+
+    public void Delete(Guid @operator)
+    {
+        DeleteBy = @operator;
+    }
 
     public override bool Equals(object? obj)
     {

@@ -52,7 +52,7 @@ public class UpdateCopilotUserInfoCommandHandler : IRequestHandler<UpdateCopilot
             }
         }
 
-        user.UpdateUserInfo(request.Email, request.UserName);
+        user.UpdateUserInfo(user.EntityId, request.Email, request.UserName);
         _dbContext.CopilotUsers.Update(user);
         await _dbContext.SaveChangesAsync(cancellationToken);
         return MaaApiResponse.Ok(null, _currentUserService.GetTrackingId());

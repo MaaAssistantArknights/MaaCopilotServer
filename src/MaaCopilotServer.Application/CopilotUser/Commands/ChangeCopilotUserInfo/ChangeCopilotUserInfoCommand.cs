@@ -52,7 +52,7 @@ public class ChangeCopilotUserInfoCommandHandler : IRequestHandler<ChangeCopilot
         if (request.Password is not null)
         {
             var hash = _secretService.HashPassword(request.Password);
-            user.UpdatePassword(hash);
+            user.UpdatePassword(userId, hash);
         }
 
         if (string.IsNullOrEmpty(request.Email))
@@ -64,7 +64,7 @@ public class ChangeCopilotUserInfoCommandHandler : IRequestHandler<ChangeCopilot
             }
         }
 
-        user.UpdateUserInfo(request.Email, request.UserName, request.Role);
+        user.UpdateUserInfo(userId, request.Email, request.UserName, request.Role);
 
         _dbContext.CopilotUsers.Update(user);
         await _dbContext.SaveChangesAsync(cancellationToken);

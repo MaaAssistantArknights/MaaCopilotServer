@@ -13,7 +13,7 @@ namespace MaaCopilotServer.Api.Helper;
 
 public static class DatabaseHelper
 {
-    public static void DatabaseInitialize(IServiceProvider provider, IConfiguration configuration)
+    public static void DatabaseInitialize(IConfiguration configuration)
     {
         var db = new MaaCopilotDbContext(configuration);
         if (db.Database.GetPendingMigrations().Any())
@@ -36,7 +36,7 @@ public static class DatabaseHelper
             }
 
             var hash = BCrypt.Net.BCrypt.HashPassword(defaultUserPassword);
-            var user = new CopilotUser(defaultUserEmail, hash, defaultUserName, UserRole.Admin);
+            var user = new CopilotUser(defaultUserEmail, hash, defaultUserName, UserRole.Admin, Guid.Parse("00000000-0000-0000-0000-000000000000"));
             db.CopilotUsers.Add(user);
             db.SaveChanges();
         }

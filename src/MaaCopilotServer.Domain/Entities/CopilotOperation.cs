@@ -13,7 +13,7 @@ namespace MaaCopilotServer.Domain.Entities;
 /// </summary>
 public sealed class CopilotOperation : EditableEntity
 {
-    public CopilotOperation(string content, string stageName, string minimumRequired, string title, string details, CopilotUser author)
+    public CopilotOperation(string content, string stageName, string minimumRequired, string title, string details, CopilotUser author, Guid createBy)
     {
         Content = content;
         StageName = stageName;
@@ -21,6 +21,8 @@ public sealed class CopilotOperation : EditableEntity
         Title = title;
         Details = details;
         Author = author;
+        CreateBy = createBy;
+        UpdateBy = createBy;
     }
 
 #pragma warning disable CS8618
@@ -66,6 +68,7 @@ public sealed class CopilotOperation : EditableEntity
     /// </summary>
     public CopilotUser Author { get; private set; }
 
+    // 这个接口是可以被匿名访问的，因此不记录更新者
     public void AddDownloadCount()
     {
         Downloads++;

@@ -56,7 +56,7 @@ public class UpdateCopilotUserPasswordCommandHandler : IRequestHandler<UpdateCop
         }
 
         var hash = _secretService.HashPassword(request.NewPassword!);
-        user.UpdatePassword(hash);
+        user.UpdatePassword(user.EntityId, hash);
         _dbContext.CopilotUsers.Update(user);
         await _dbContext.SaveChangesAsync(cancellationToken);
         return MaaApiResponse.Ok(null, _currentUserService.GetTrackingId());

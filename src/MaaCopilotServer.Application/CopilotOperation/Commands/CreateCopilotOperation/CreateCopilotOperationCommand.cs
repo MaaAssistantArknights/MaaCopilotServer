@@ -63,7 +63,7 @@ public class CreateCopilotOperationCommandHandler : IRequestHandler<CreateCopilo
 
         var user = await _identityService.GetUserAsync(_currentUserService.GetUserIdentity()!.Value);
         var entity = new Domain.Entities.CopilotOperation(
-            request.Content!, stageName!, minimumRequired!, docTitle, docDetails, user!);
+            request.Content!, stageName!, minimumRequired!, docTitle, docDetails, user!, user!.EntityId);
 
         _dbContext.CopilotOperations.Add(entity);
         await _dbContext.SaveChangesAsync(cancellationToken);

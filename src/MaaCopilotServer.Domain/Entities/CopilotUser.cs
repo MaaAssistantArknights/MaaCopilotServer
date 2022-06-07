@@ -14,12 +14,14 @@ namespace MaaCopilotServer.Domain.Entities;
 /// </summary>
 public class CopilotUser : EditableEntity
 {
-    public CopilotUser(string email, string password, string userName, UserRole userRole)
+    public CopilotUser(string email, string password, string userName, UserRole userRole, Guid createBy)
     {
         Email = email;
         Password = password;
         UserName = userName;
         UserRole = userRole;
+        CreateBy = createBy;
+        UpdateBy = createBy;
     }
 
 #pragma warning disable CS8618
@@ -44,13 +46,14 @@ public class CopilotUser : EditableEntity
     /// </summary>
     public UserRole UserRole { get; private set; }
 
-    public void UpdatePassword(string newPassword)
+    public void UpdatePassword(Guid @operator, string newPassword)
     {
         Password = newPassword;
         UpdateAt = DateTimeOffset.UtcNow;
+        UpdateBy = @operator;
     }
 
-    public void UpdateUserInfo(string? email = null, string? userName = null, UserRole? userRole = null)
+    public void UpdateUserInfo(Guid @operator, string? email = null, string? userName = null, UserRole? userRole = null)
     {
         if (string.IsNullOrEmpty(email) &&
             string.IsNullOrEmpty(userName) &&
@@ -65,5 +68,6 @@ public class CopilotUser : EditableEntity
         if (userRole is not null)
             UserRole = userRole.Value;
         UpdateAt = DateTimeOffset.UtcNow;
+        UpdateBy = @operator;
     }
 }
