@@ -8,5 +8,6 @@ public enum UserRole
 {
     User = 0,
     Uploader = 10,
-    Admin = 100
+    Admin = 100,
+    SuperAdmin = int.MaxValue
 }

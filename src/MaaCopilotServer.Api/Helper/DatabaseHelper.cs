@@ -36,7 +36,7 @@ public static class DatabaseHelper
             }
 
             var hash = BCrypt.Net.BCrypt.HashPassword(defaultUserPassword);
-            var user = new CopilotUser(defaultUserEmail, hash, defaultUserName, UserRole.Admin, Guid.Parse("00000000-0000-0000-0000-000000000000"));
+            var user = new CopilotUser(defaultUserEmail, hash, defaultUserName, UserRole.SuperAdmin, Guid.Parse("00000000-0000-0000-0000-000000000000"));
             db.CopilotUsers.Add(user);
             db.SaveChanges();
         }
