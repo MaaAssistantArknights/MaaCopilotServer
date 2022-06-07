@@ -7,16 +7,17 @@ using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Application.Common.Models;
 using MaaCopilotServer.Application.CopilotOperation.Queries.GetCopilotOperation;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace MaaCopilotServer.Application.CopilotOperation.Queries.QueryCopilotOperations;
 
 public record QueryCopilotOperationsQuery : IRequest<MaaActionResult<PaginationResult<QueryCopilotOperationsQueryDto>>>
 {
-    public int Page { get; set; }
-    public int Limit { get; set; }
-    public string StageName { get; set; } = string.Empty;
-    public string Content { get; set; } = string.Empty;
+    [FromQuery(Name = "page")] public int Page { get; set; } = 1;
+    [FromQuery(Name = "limit")] public int Limit { get; set; } = 10;
+    [FromQuery(Name = "stage_name")] public string StageName { get; set; } = string.Empty;
+    [FromQuery(Name = "content")] public string Content { get; set; } = string.Empty;
 }
 
 public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOperationsQuery,

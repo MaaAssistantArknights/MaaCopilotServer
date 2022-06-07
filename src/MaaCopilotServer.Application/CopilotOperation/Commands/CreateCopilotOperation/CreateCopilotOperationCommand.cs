@@ -3,6 +3,7 @@
 // Licensed under the AGPL-3.0 license.
 
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Application.Common.Models;
 using MaaCopilotServer.Application.Common.Security;
@@ -14,7 +15,7 @@ namespace MaaCopilotServer.Application.CopilotOperation.Commands.CreateCopilotOp
 [Authorized(UserRole.Uploader)]
 public record CreateCopilotOperationCommand : IRequest<MaaActionResult<CreateCopilotOperationDto>>
 {
-    public string? Content { get; set; }
+    [JsonPropertyName("content")] public string? Content { get; set; }
 }
 
 public class CreateCopilotOperationCommandHandler : IRequestHandler<CreateCopilotOperationCommand, MaaActionResult<CreateCopilotOperationDto>>

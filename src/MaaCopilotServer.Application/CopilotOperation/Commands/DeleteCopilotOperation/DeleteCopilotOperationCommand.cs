@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Text.Json.Serialization;
 using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Application.Common.Models;
 using MaaCopilotServer.Application.Common.Security;
@@ -13,7 +14,7 @@ namespace MaaCopilotServer.Application.CopilotOperation.Commands.DeleteCopilotOp
 [Authorized(UserRole.Admin)]
 public record DeleteCopilotOperationCommand : IRequest<MaaActionResult<EmptyObject>>
 {
-    public string? Id { get; set; }
+    [JsonPropertyName("id")] public string? Id { get; set; }
 }
 
 public class DeleteCopilotOperationCommandHandler : IRequestHandler<DeleteCopilotOperationCommand,
