@@ -8,6 +8,10 @@
         <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
 
+    <PropertyGroup Condition="$(Configuration) == Release">
+      <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    </PropertyGroup>
+  
     <ItemGroup>
       <ProjectReference Include="..\MaaCopilotServer.Application\MaaCopilotServer.Application.csproj" />
       <ProjectReference Include="..\MaaCopilotServer.Infrastructure\MaaCopilotServer.Infrastructure.csproj" />

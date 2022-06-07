@@ -8,6 +8,10 @@
         <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
 
+    <PropertyGroup Condition="$(Configuration) == Release">
+      <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    </PropertyGroup>
+  
     <ItemGroup>
       <PackageReference Include="MediatR" Version="10.0.1" />
     </ItemGroup>
