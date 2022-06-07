@@ -3,6 +3,7 @@
 // Licensed under the AGPL-3.0 license.
 
 using System.Text.Json.Serialization;
+using MaaCopilotServer.Application.Common.Exceptions;
 using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Application.Common.Models;
 using MaaCopilotServer.Application.Common.Security;
@@ -49,10 +50,22 @@ public class ChangeCopilotUserInfoCommandHandler : IRequestHandler<ChangeCopilot
             return MaaApiResponse.NotFound($"User with id {request.UserId}", _currentUserService.GetTrackingId());
         }
 
+        var @operator = await _dbContext.CopilotUsers.FirstOrDefaultAsync(
+            x => x.EntityId == _currentUserService.GetUserIdentity(), cancellationToken);
+        if (@operator is null)
+        {
+            throw new PipelineException(MaaApiResponse.InternalError(_currentUserService.GetTrackingId()));
+        }
+
+        if (@operator.UserRole is UserRole.Admin && user.UserRole >= UserRole.Admin)
+        {
+            return MaaApiResponse.Forbidden(_currentUserService.GetTrackingId());
+        }
+
         if (request.Password is not null)
         {
             var hash = _secretService.HashPassword(request.Password);
-            user.UpdatePassword(userId, hash);
+            user.UpdatePassword(@operator.EntityId, hash);
         }
 
         if (string.IsNullOrEmpty(request.Email))
@@ -64,7 +77,7 @@ public class ChangeCopilotUserInfoCommandHandler : IRequestHandler<ChangeCopilot
             }
         }
 
-        user.UpdateUserInfo(userId, request.Email, request.UserName, request.Role);
+        user.UpdateUserInfo(@operator.EntityId, request.Email, request.UserName, request.Role);
 
         _dbContext.CopilotUsers.Update(user);
         await _dbContext.SaveChangesAsync(cancellationToken);
