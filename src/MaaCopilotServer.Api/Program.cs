@@ -4,6 +4,7 @@
 
 using Elastic.Apm.AspNetCore;
 using Elastic.Apm.EntityFrameworkCore;
+using Elastic.CommonSchema.Serilog;
 using MaaCopilotServer.Api;
 using MaaCopilotServer.Api.Helper;
 using MaaCopilotServer.Application;
@@ -28,7 +29,8 @@ if (configuration.GetValue<bool>("ElasticLogSink:Enabled"))
         AutoRegisterTemplate = true,
         IndexFormat = "maa-copilot-{0:yyyy.MM.dd}",
         ModifyConnectionSettings = c =>
-            c.ApiKeyAuthentication(elasticApiId, elasticApiKey)
+            c.ApiKeyAuthentication(elasticApiId, elasticApiKey),
+        CustomFormatter = new EcsTextFormatter()
     });
 }
 
