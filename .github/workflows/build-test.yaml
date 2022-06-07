@@ -1,0 +1,26 @@
+name: build-test
+
+on:
+  push:
+  pull_request:
+    branches:
+      - main
+
+defaults:
+  run:
+    shell: "bash"
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: "Check out"
+        uses: actions/checkout@v2
+
+      - name: "Setup .NET SDK"
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: "6.0.x"
+
+      - name: "Publish .NET application"
+        run: dotnet publish -c Release -o ./publish ./src/MaaCopilotServer.Api
