@@ -8,6 +8,7 @@ using MaaCopilotServer.Application.Common.Models;
 using MaaCopilotServer.Application.Common.Security;
 using MaaCopilotServer.Domain.Enums;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace MaaCopilotServer.Application.CopilotOperation.Commands.DeleteCopilotOperation;
 
@@ -36,13 +37,13 @@ public class DeleteCopilotOperationCommandHandler : IRequestHandler<DeleteCopilo
 
     public async Task<MaaActionResult<EmptyObject>> Handle(DeleteCopilotOperationCommand request, CancellationToken cancellationToken)
     {
-        var entityId = _copilotIdService.GetEntityId(request.Id!);
-        if (entityId is null)
+        var id = _copilotIdService.DecodeId(request.Id!);
+        if (id is null)
         {
             return MaaApiResponse.NotFound("CopilotOperation", _currentUserService.GetTrackingId());
         }
 
-        var entity = await _dbContext.CopilotOperations.FindAsync(entityId.Value);
+        var entity = await _dbContext.CopilotOperations.FirstOrDefaultAsync(x => x.Id == id.Value, cancellationToken);
         if (entity is null)
         {
             return MaaApiResponse.NotFound("CopilotOperation", _currentUserService.GetTrackingId());

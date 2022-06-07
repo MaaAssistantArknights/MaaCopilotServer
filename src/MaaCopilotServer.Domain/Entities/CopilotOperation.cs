@@ -29,6 +29,11 @@ public sealed class CopilotOperation : EditableEntity
 #pragma warning restore CS8618
 
     /// <summary>
+    /// 作业 ID (数字ID)
+    /// </summary>
+    public long Id { get; private set; }
+
+    /// <summary>
     /// 作业本体 JSON
     /// </summary>
     public string Content { get; private set; }

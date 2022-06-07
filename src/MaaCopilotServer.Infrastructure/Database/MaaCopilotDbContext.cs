@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Reflection;
 using MaaCopilotServer.Application.Common.Extensions;
 using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Domain.Common;
@@ -34,6 +35,7 @@ public class MaaCopilotDbContext : DbContext, IMaaCopilotDbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyCommonConfigurations();
+        modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
     }
 
     public override int SaveChanges(bool acceptAllChangesOnSuccess)

@@ -3,9 +3,9 @@
 // Licensed under the AGPL-3.0 license.
 
 using FluentValidation;
-using MaaCopilotServer.Application.CopilotOperation.Queries.QueryCopilotOperations;
+using MaaCopilotServer.Application.Common.Extensions;
 
-namespace MaaCopilotServer.Application.CopilotOperation.Queries.GetCopilotOperation;
+namespace MaaCopilotServer.Application.CopilotOperation.Queries.QueryCopilotOperations;
 
 public class QueryCopilotOperationsQueryValidator : AbstractValidator<QueryCopilotOperationsQuery>
 {
@@ -15,5 +15,13 @@ public class QueryCopilotOperationsQueryValidator : AbstractValidator<QueryCopil
         RuleFor(x => x.Limit).GreaterThanOrEqualTo(1);
         RuleFor(x => x.StageName).NotNull();
         RuleFor(x => x.Content).NotNull();
+        RuleFor(x => x.Uploader).NotNull();
+
+        RuleFor(x => x.UploaderId)
+            .NotNull().NotEmpty().Must(FluentValidationExtension.BeValidGuid)
+            .When(x => x.UploaderId != "me" && string.IsNullOrEmpty(x.UploaderId) is false);
+        RuleFor(x => x.UploaderId)
+            .NotNull().NotEmpty().Equal("me")
+            .When(x => x.UploaderId == "me");
     }
 }

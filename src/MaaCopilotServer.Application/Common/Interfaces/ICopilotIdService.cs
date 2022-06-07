@@ -6,6 +6,6 @@ namespace MaaCopilotServer.Application.Common.Interfaces;
 
 public interface ICopilotIdService
 {
-    string GetCopilotId(Guid id);
-    Guid? GetEntityId(string copilotId);
+    string EncodeId(long plainId);
+    long? DecodeId(string encodedId);
 }

@@ -2,34 +2,35 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
-using HashidsNet;
 using MaaCopilotServer.Application.Common.Interfaces;
 
 namespace MaaCopilotServer.Infrastructure.Services;
 
 public class CopilotIdService : ICopilotIdService
 {
-    private IHashids _hashids;
+    // 不准改这个值!
+    // DO NOT CHANGE THIS VALUE!
+    // この値は変更しないでください!
+    private const long MinimumId = 10000;
 
-    public CopilotIdService()
+    public string EncodeId(long plainId)
     {
-        _hashids = new Hashids();
+        return (plainId + MinimumId).ToString();
     }
 
-    public string GetCopilotId(Guid id)
+    public long? DecodeId(string encodedId)
     {
-        var guidChars = id.ToString().ToCharArray();
-        var numbers = guidChars.Select(Convert.ToInt32);
-        var hash = _hashids.Encode(numbers);
-        return hash;
-    }
+        var parsable = long.TryParse(encodedId, out var value);
+        if (parsable is false)
+        {
+            return null;
+        }
 
-    public Guid? GetEntityId(string copilotId)
-    {
-        var numbers = _hashids.Decode(copilotId);
-        var guidChars = numbers.Select(Convert.ToChar);
-        var guidString = string.Join("", guidChars);
-        var isGuid = Guid.TryParse(guidString, out var guid);
-        return isGuid ? guid : null;
+        if (value < MinimumId)
+        {
+            return null;
+        }
+
+        return value - MinimumId;
     }
 }

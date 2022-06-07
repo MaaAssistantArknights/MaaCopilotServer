@@ -68,7 +68,7 @@ public class CreateCopilotOperationCommandHandler : IRequestHandler<CreateCopilo
         _dbContext.CopilotOperations.Add(entity);
         await _dbContext.SaveChangesAsync(cancellationToken);
 
-        var id = _copilotIdService.GetCopilotId(entity.EntityId);
+        var id = _copilotIdService.EncodeId(entity.Id);
         return MaaApiResponse.Ok(new CreateCopilotOperationDto(id), _currentUserService.GetTrackingId());
     }
 }

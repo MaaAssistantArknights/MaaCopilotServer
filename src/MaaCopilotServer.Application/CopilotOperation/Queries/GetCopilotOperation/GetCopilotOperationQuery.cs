@@ -33,23 +33,23 @@ public class GetCopilotOperationQueryHandler : IRequestHandler<GetCopilotOperati
 
     public async Task<MaaActionResult<GetCopilotOperationQueryDto>> Handle(GetCopilotOperationQuery request, CancellationToken cancellationToken)
     {
-        var entityId = _copilotIdService.GetEntityId(request.Id!);
-        if (entityId is null)
+        var id = _copilotIdService.DecodeId(request.Id!);
+        if (id is null)
         {
             return MaaApiResponse.NotFound("CopilotOperation", _currentUserService.GetTrackingId());
         }
 
         var entity = await _dbContext.CopilotOperations
             .Include(x => x.Author)
-            .FirstOrDefaultAsync(x => x.EntityId == entityId.Value, cancellationToken);
+            .FirstOrDefaultAsync(x => x.Id == id.Value, cancellationToken);
         if (entity is null)
         {
             return MaaApiResponse.NotFound("CopilotOperation", _currentUserService.GetTrackingId());
         }
 
         var dto = new GetCopilotOperationQueryDto(
-            _copilotIdService.GetCopilotId(entity.EntityId), entity.StageName, entity.MinimumRequired,
-            entity.CreateAt.ToStringZhHans(), entity.Content, entity.Author.UserName);
+            request.Id!, entity.StageName, entity.MinimumRequired,
+            entity.CreateAt.ToStringZhHans(), entity.Content, entity.Author.UserName, entity.Title, entity.Details);
         return MaaApiResponse.Ok(dto, _currentUserService.GetTrackingId());
     }
 }
