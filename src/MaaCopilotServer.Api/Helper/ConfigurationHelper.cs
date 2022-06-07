@@ -4,6 +4,7 @@
 
 using System.Reflection;
 using MaaCopilotServer.Application.Common.Extensions;
+using ILogger = Serilog.ILogger;
 
 namespace MaaCopilotServer.Api.Helper;
 
@@ -66,6 +67,29 @@ public static class ConfigurationHelper
             new("Application:DataDirectory", dataDirectory.FullName)
         });
 
-        return configurationBuilder.Build();
+        var configuration = configurationBuilder.Build();
+        return configuration;
+    }
+
+    /// <summary>
+    /// 开发测试版本使用，便于测试
+    /// </summary>
+    public static void LogConfigurations(IConfiguration configuration, ILogger logger)
+    {
+        logger.Information("Configuration Jwt:Token: {@Configuration}", configuration.GetValue<string>("Jwt:Token"));
+        logger.Information("Configuration Jwt:Issuer: {@Configuration}", configuration.GetValue<string>("Jwt:Issuer"));
+        logger.Information("Configuration Jwt:Audience: {@Configuration}", configuration.GetValue<string>("Jwt:Audience"));
+        logger.Information("Configuration Jwt:ExpireTime: {@Configuration}", configuration.GetValue<int>("Jwt:ExpireTime"));
+        logger.Information("Configuration Database:ConnectionString: {@Configuration}", configuration.GetValue<string>("Database:ConnectionString"));
+        logger.Information("Configuration ElasticLogSink:Enabled: {@Configuration}", configuration.GetValue<bool>("ElasticLogSink:Enabled"));
+        logger.Information("Configuration ElasticLogSink:Uris: {@Configuration}", configuration.GetValue<string>("ElasticLogSink:Uris"));
+        logger.Information("Configuration ElasticLogSink:Period: {@Configuration}", configuration.GetValue<string>("ElasticLogSink:Period"));
+        logger.Information("Configuration ElasticLogSink:ApiId: {@Configuration}", configuration.GetValue<string>("ElasticLogSink:ApiId"));
+        logger.Information("Configuration ElasticLogSink:ApiKey: {@Configuration}", configuration.GetValue<string>("ElasticLogSink:ApiKey"));
+        logger.Information("Configuration ElasticApm:Enabled: {@Configuration}", configuration.GetValue<bool>("ElasticApm:Enabled"));
+        logger.Information("Configuration ElasticApm:SecretToken: {@Configuration}", configuration.GetValue<string>("ElasticApm:SecretToken"));
+        logger.Information("Configuration ElasticApm:ServerUrl: {@Configuration}", configuration.GetValue<string>("ElasticApm:ServerUrl"));
+        logger.Information("Configuration ElasticApm:ServiceName: {@Configuration}", configuration.GetValue<string>("ElasticApm:ServiceName"));
+        logger.Information("Configuration ElasticApm:Environment: {@Configuration}", configuration.GetValue<string>("ElasticApm:Environment"));
     }
 }

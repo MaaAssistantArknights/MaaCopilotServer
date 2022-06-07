@@ -34,6 +34,9 @@ if (configuration.GetValue<bool>("ElasticLogSink:Enabled"))
 
 Log.Logger = loggerConfiguration.CreateLogger();
 
+// Alpha 测试版本使用
+ConfigurationHelper.LogConfigurations(configuration, Log.Logger);
+
 var builder = WebApplication.CreateBuilder();
 
 builder.Host.UseSerilog();
