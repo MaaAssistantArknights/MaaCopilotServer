@@ -2,9 +2,12 @@ name: build-test
 
 on:
   push:
+    branches:
+      - dev
   pull_request:
     branches:
       - main
+      - dev
 
 defaults:
   run:
