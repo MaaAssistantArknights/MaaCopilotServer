@@ -8,7 +8,7 @@ namespace MaaCopilotServer.Application.CopilotOperation.Queries.GetCopilotOperat
 
 public class GetCopilotOperationQueryDto
 {
-    public GetCopilotOperationQueryDto(string id, string stageName, string minimumRequired, string uploadTime, string content, string uploader, string? title, string? detail)
+    public GetCopilotOperationQueryDto(string id, string stageName, string minimumRequired, string uploadTime, string content, string uploader, string title, string detail)
     {
         Id = id;
         StageName = stageName;
