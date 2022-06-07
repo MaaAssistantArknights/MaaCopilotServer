@@ -82,6 +82,6 @@ volumes:
 | MAA_ElasticLogSink__ApiKey     | ""                        | ElasticSearch ApiKey         |
 | MAA_ElasticApm__Enabled        | false                     | 是否启用 ElasticApm              |
 | MAA_ElasticApm__SecretToken    | ""                        | ElasticApm SecretToken       |
-| MAA_ElasticApm__ServerUrls     | "http://localhost:8200"   | ElasticApm 服务器地址             |
+| MAA_ElasticApm__ServerUrl      | "http://localhost:8200"   | ElasticApm 服务器地址             |
 | MAA_ElasticApm__ServiceName    | "MaaCopilotServer"        | ElasticApm 服务名称              |
 | Maa_ElasticApm__Environment    | "production"              | ElasticApm 环境名称              |

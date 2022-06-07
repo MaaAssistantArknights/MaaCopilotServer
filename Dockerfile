@@ -21,7 +21,7 @@ ENV MAA_ElasticLogSink__ApiId=""
 ENV MAA_ElasticLogSink__ApiKey=""
 ENV MAA_ElasticApm__Enabled=false
 ENV MAA_ElasticApm__SecretToken=""
-ENV MAA_ElasticApm__ServerUrls="http://localhost:8200"
+ENV MAA_ElasticApm__ServerUrl="http://localhost:8200"
 ENV MAA_ElasticApm__ServiceName="MaaCopilotServer"
 ENV MAA_ElasticApm__Environment="production"
 
