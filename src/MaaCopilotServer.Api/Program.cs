@@ -12,6 +12,11 @@ using Serilog;
 using Serilog.Sinks.Elasticsearch;
 
 var configuration = ConfigurationHelper.BuildConfiguration();
+if (configuration is null)
+{
+    Console.WriteLine("Please modifier the configuration file.");
+    return 1;
+}
 
 var loggerConfiguration = new LoggerConfiguration()
     .ReadFrom.Configuration(configuration);
@@ -31,6 +36,8 @@ if (configuration.GetValue<bool>("ElasticLogSink:Enabled"))
             c.ApiKeyAuthentication(elasticApiId, elasticApiKey)
     });
 }
+
+Log.Logger = loggerConfiguration.CreateLogger();
 
 var builder = WebApplication.CreateBuilder();
 
@@ -54,3 +61,5 @@ app.UseAuthentication();
 app.MapControllers();
 
 app.Run();
+
+return 0;

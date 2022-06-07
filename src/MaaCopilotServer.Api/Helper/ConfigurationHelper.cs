@@ -14,7 +14,7 @@ public static class ConfigurationHelper
     /// </summary>
     /// <remarks>不适用于 Azure Functions 等云服务</remarks>
     /// <returns><see cref="IConfiguration"/> 实例 (<see cref="ConfigurationRoot"/> 对象)</returns>
-    public static IConfiguration BuildConfiguration()
+    public static IConfiguration? BuildConfiguration()
     {
         var dataDirectoryEnv = Environment.GetEnvironmentVariable("MAA_DATA_DIRECTORY");
 
@@ -30,7 +30,7 @@ public static class ConfigurationHelper
         var originalAppsettingsFile = new FileInfo(assemblyDirectory.FullName.CombinePath("appsettings.json")).AssertExist();
         var originalAppsettingsEnvFile = new FileInfo(assemblyDirectory.FullName.CombinePath($"appsettings.{currentEnvironment}.json"));
 
-        if (appsettingsFile.Exists is false || appsettingsFile.IsSameMd5With(originalAppsettingsFile) is false)
+        if (appsettingsFile.Exists is false)
         {
             appsettingsFile.EnsureDeleted();
 
@@ -38,7 +38,10 @@ public static class ConfigurationHelper
             text = text.Replace("{{ DATA DIRECTORY }}", dataDirectory.FullName);
             File.WriteAllText(appsettingsFile.FullName, text);
 
-            appsettingsFile.AssertExist();
+            if (currentEnvironment == "Production")
+            {
+                return null;
+            }
         }
         if (originalAppsettingsEnvFile.Exists)
         {
