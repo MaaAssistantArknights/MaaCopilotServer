@@ -19,13 +19,16 @@
 
     <ItemGroup>
       <PackageReference Include="Elastic.Apm.AspNetCore" Version="1.16.0" />
+      <PackageReference Include="Elastic.Apm.Elasticsearch" Version="1.16.0" />
       <PackageReference Include="Elastic.Apm.EntityFrameworkCore" Version="1.16.0" />
+      <PackageReference Include="Elastic.Apm.SerilogEnricher" Version="1.6.0-alpha1" />
       <PackageReference Include="Elastic.CommonSchema.Serilog" Version="1.6.0-alpha1" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.5">
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
       <PackageReference Include="Serilog.AspNetCore" Version="5.0.0" />
+      <PackageReference Include="Serilog.Enrichers.Thread" Version="3.1.0" />
       <PackageReference Include="Serilog.Sinks.Elasticsearch" Version="9.0.0-beta7" />
     </ItemGroup>
 

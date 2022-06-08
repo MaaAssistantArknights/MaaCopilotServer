@@ -4,7 +4,6 @@
 
 using System.Reflection;
 using MaaCopilotServer.Application.Common.Extensions;
-using ILogger = Serilog.ILogger;
 
 namespace MaaCopilotServer.Api.Helper;
 
