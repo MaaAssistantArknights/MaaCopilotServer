@@ -2,16 +2,14 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
-using FluentValidation;
-
 namespace MaaCopilotServer.Application.CopilotOperation.Commands.DeleteCopilotOperation;
 
 public class DeleteCopilotOperationCommandValidator : AbstractValidator<DeleteCopilotOperationCommand>
 {
-    public DeleteCopilotOperationCommandValidator()
+    public DeleteCopilotOperationCommandValidator(ValidationErrorMessage errorMessage)
     {
         RuleFor(x => x.Id)
-            .NotNull()
-            .NotEmpty();
+            .NotEmpty()
+            .WithMessage(errorMessage.CopilotOperationIdIsEmpty);
     }
 }

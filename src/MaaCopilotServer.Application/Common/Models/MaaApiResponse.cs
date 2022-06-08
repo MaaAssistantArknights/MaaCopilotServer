@@ -16,6 +16,11 @@ public class MaaApiResponse
         Data = data;
     }
 
+    [JsonPropertyName("status_code")] public int StatusCode { get; }
+    [JsonPropertyName("message")] public string Message { get; }
+    [JsonPropertyName("trace_id")] public string TraceId { get; }
+    [JsonPropertyName("data")] public object? Data { get; }
+
     public static MaaApiResponse Ok(object? obj, string id)
     {
         return new MaaApiResponse(200, "OK", id, obj);
@@ -36,18 +41,13 @@ public class MaaApiResponse
         return new MaaApiResponse(400, message ?? "Bad Request", id, null);
     }
 
-    public static MaaApiResponse NotFound(string resourceName, string id)
+    public static MaaApiResponse NotFound(string id, string? message = null)
     {
-        return new MaaApiResponse(404, $"{resourceName} Not Found", id, null);
+        return new MaaApiResponse(404, message ?? "Not Found", id, null);
     }
 
-    public static MaaApiResponse InternalError(string id)
+    public static MaaApiResponse InternalError(string id, string? message = null)
     {
-        return new MaaApiResponse(500, "Internal Server Error", id, null);
+        return new MaaApiResponse(500, message ?? "Internal Server Error", id, null);
     }
-
-    [JsonPropertyName("status_code")] public int StatusCode { get; }
-    [JsonPropertyName("message")] public string Message { get; }
-    [JsonPropertyName("trace_id")] public string TraceId { get; }
-    [JsonPropertyName("data")] public object? Data { get; }
 }

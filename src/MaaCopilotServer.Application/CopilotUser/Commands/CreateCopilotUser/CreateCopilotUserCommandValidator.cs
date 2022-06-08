@@ -2,20 +2,25 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
-using FluentValidation;
-using MaaCopilotServer.Application.Common.Extensions;
 using MaaCopilotServer.Domain.Enums;
 
 namespace MaaCopilotServer.Application.CopilotUser.Commands.CreateCopilotUser;
 
 public class CreateCopilotUserCommandValidator : AbstractValidator<CreateCopilotUserCommand>
 {
-    public CreateCopilotUserCommandValidator()
+    public CreateCopilotUserCommandValidator(ValidationErrorMessage errorMessage)
     {
-        RuleFor(x => x.Email).NotNull().EmailAddress();
-        RuleFor(x => x.Password).NotNull().NotEmpty().Length(8, 32);
-        RuleFor(x => x.UserName).NotNull().NotEmpty().Length(4, 24);
+        RuleFor(x => x.Email)
+            .NotEmpty().EmailAddress()
+            .WithMessage(errorMessage.EmailIsInvalid);
+        RuleFor(x => x.Password)
+            .NotEmpty().Length(8, 32)
+            .WithMessage(errorMessage.PasswordIsInvalid);
+        RuleFor(x => x.UserName)
+            .NotEmpty().Length(4, 24)
+            .WithMessage(errorMessage.UsernameIsInvalid);
         RuleFor(x => x.Role)
-            .NotNull().NotEmpty().IsInEnum().NotEqual(UserRole.SuperAdmin);
+            .NotEmpty().IsInEnum().NotEqual(UserRole.SuperAdmin)
+            .WithMessage(errorMessage.UserRoleIsInvalid);
     }
 }

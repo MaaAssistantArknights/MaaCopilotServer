@@ -2,8 +2,6 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
-using MaaCopilotServer.Application.Common.Exceptions;
-using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace MaaCopilotServer.Application.Common.Behaviours;
@@ -12,11 +10,18 @@ public class UnhandledExceptionBehaviour<TRequest, TResponse> : IPipelineBehavio
     where TRequest : IRequest<TResponse>
 {
     private readonly ILogger<TRequest> _logger;
+    private readonly ICurrentUserService _currentUserService;
+    private readonly ApiErrorMessage _apiErrorMessage;
 
     // ReSharper disable once ContextualLoggerProblem
-    public UnhandledExceptionBehaviour(ILogger<TRequest> logger)
+    public UnhandledExceptionBehaviour(
+        ILogger<TRequest> logger,
+        ICurrentUserService currentUserService,
+        ApiErrorMessage apiErrorMessage)
     {
         _logger = logger;
+        _currentUserService = currentUserService;
+        _apiErrorMessage = apiErrorMessage;
     }
 
     public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
@@ -25,19 +30,18 @@ public class UnhandledExceptionBehaviour<TRequest, TResponse> : IPipelineBehavio
         {
             return await next();
         }
-        catch (PipelineException ex)
+        catch (PipelineException)
         {
-            var requestName = typeof(TRequest).Name;
-            _logger.LogError(ex,
-                "MaaCopilotServer Request Pipeline Exception: {StatusCode} for Request {Name} {@Request}", ex.Result.RealStatusCode ,requestName,
-                request);
             throw;
         }
         catch (Exception ex)
         {
             var requestName = typeof(TRequest).Name;
-            _logger.LogError(ex, "MaaCopilotServer Request Exception: Unhandled Exception for Request {Name} {@Request}", requestName, request);
-            throw;
+            _logger.LogError(exception: ex,
+                "MaaCopilotServer: Type -> {LoggingType}; Request Name -> {Name}; Request -> {@Request};",
+                (string)LoggingType.Exception, requestName, request);
+
+            throw new PipelineException(MaaApiResponse.InternalError(_currentUserService.GetTrackingId(), _apiErrorMessage.InternalException));
         }
     }
 }

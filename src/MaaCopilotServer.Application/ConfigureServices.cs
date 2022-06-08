@@ -3,9 +3,6 @@
 // Licensed under the AGPL-3.0 license.
 
 using System.Reflection;
-using FluentValidation;
-using MaaCopilotServer.Application.Common.Behaviours;
-using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace MaaCopilotServer.Application;
@@ -16,6 +13,7 @@ public static class ConfigureServices
     {
         services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
         services.AddMediatR(Assembly.GetExecutingAssembly());
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(PipelineExceptionBehaviour<,>));
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnhandledExceptionBehaviour<,>));
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(AuthorizationBehaviour<,>));
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));

@@ -2,15 +2,17 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
-using FluentValidation;
-
 namespace MaaCopilotServer.Application.CopilotUser.Commands.UpdateCopilotUserPassword;
 
 public class UpdateCopilotUserPasswordCommandValidator : AbstractValidator<UpdateCopilotUserPasswordCommand>
 {
-    public UpdateCopilotUserPasswordCommandValidator()
+    public UpdateCopilotUserPasswordCommandValidator(ValidationErrorMessage errorMessage)
     {
-        RuleFor(x => x.OriginalPassword).NotNull().NotEmpty().Length(8, 32);
-        RuleFor(x => x.NewPassword).NotNull().NotEmpty().Length(8, 32);
+        RuleFor(x => x.OriginalPassword)
+            .NotEmpty().Length(8, 32)
+            .WithMessage(errorMessage.PasswordIsInvalid);
+        RuleFor(x => x.NewPassword)
+            .NotEmpty().Length(8, 32)
+            .WithMessage(errorMessage.PasswordIsInvalid);
     }
 }

@@ -3,27 +3,28 @@
 // Licensed under the AGPL-3.0 license.
 
 using System.Reflection;
-using MaaCopilotServer.Application.Common.Exceptions;
-using MaaCopilotServer.Application.Common.Interfaces;
-using MaaCopilotServer.Application.Common.Models;
-using MaaCopilotServer.Application.Common.Security;
-using MediatR;
 
 namespace MaaCopilotServer.Application.Common.Behaviours;
 
 public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IRequest<TResponse>
 {
-    private readonly IIdentityService _identityService;
     private readonly ICurrentUserService _currentUserService;
+    private readonly ApiErrorMessage _apiErrorMessage;
+    private readonly IIdentityService _identityService;
 
-    public AuthorizationBehaviour(IIdentityService identityService, ICurrentUserService currentUserService)
+    public AuthorizationBehaviour(
+        IIdentityService identityService,
+        ICurrentUserService currentUserService,
+        ApiErrorMessage apiErrorMessage)
     {
         _identityService = identityService;
         _currentUserService = currentUserService;
+        _apiErrorMessage = apiErrorMessage;
     }
 
-    public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
+    public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken,
+        RequestHandlerDelegate<TResponse> next)
     {
         var authorizeAttributes = request.GetType().GetCustomAttributes<AuthorizedAttribute>().ToList();
         if (authorizeAttributes.Count == 0)
@@ -34,19 +35,20 @@ public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRe
         var userId = _currentUserService.GetUserIdentity();
         if (userId is null)
         {
-            throw new PipelineException(MaaApiResponse.Unauthorized(_currentUserService.GetTrackingId()));
+            throw new PipelineException(MaaApiResponse.Unauthorized(_currentUserService.GetTrackingId(), _apiErrorMessage.Unauthorized));
         }
 
         var user = await _identityService.GetUserAsync(userId.Value);
         if (user is null)
         {
-            throw new PipelineException(MaaApiResponse.NotFound($"User {userId}", _currentUserService.GetTrackingId()));
+            throw new PipelineException(MaaApiResponse.NotFound(_currentUserService.GetTrackingId(),
+                string.Format(_apiErrorMessage.UserWithIdNotFound!, userId)));
         }
 
         var roleRequired = authorizeAttributes.First().Role;
         if (user.UserRole < roleRequired)
         {
-            throw new PipelineException(MaaApiResponse.Forbidden(_currentUserService.GetTrackingId()));
+            throw new PipelineException(MaaApiResponse.Forbidden(_currentUserService.GetTrackingId(), _apiErrorMessage.PermissionDenied));
         }
 
         return await next();

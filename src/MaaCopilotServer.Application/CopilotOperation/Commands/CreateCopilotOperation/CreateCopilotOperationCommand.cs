@@ -4,11 +4,7 @@
 
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using MaaCopilotServer.Application.Common.Interfaces;
-using MaaCopilotServer.Application.Common.Models;
-using MaaCopilotServer.Application.Common.Security;
 using MaaCopilotServer.Domain.Enums;
-using MediatR;
 
 namespace MaaCopilotServer.Application.CopilotOperation.Commands.CreateCopilotOperation;
 
@@ -18,12 +14,13 @@ public record CreateCopilotOperationCommand : IRequest<MaaActionResult<CreateCop
     [JsonPropertyName("content")] public string? Content { get; set; }
 }
 
-public class CreateCopilotOperationCommandHandler : IRequestHandler<CreateCopilotOperationCommand, MaaActionResult<CreateCopilotOperationDto>>
+public class CreateCopilotOperationCommandHandler : IRequestHandler<CreateCopilotOperationCommand,
+    MaaActionResult<CreateCopilotOperationDto>>
 {
+    private readonly ICopilotIdService _copilotIdService;
+    private readonly ICurrentUserService _currentUserService;
     private readonly IMaaCopilotDbContext _dbContext;
     private readonly IIdentityService _identityService;
-    private readonly ICurrentUserService _currentUserService;
-    private readonly ICopilotIdService _copilotIdService;
 
     public CreateCopilotOperationCommandHandler(
         IMaaCopilotDbContext dbContext,
@@ -37,7 +34,8 @@ public class CreateCopilotOperationCommandHandler : IRequestHandler<CreateCopilo
         _copilotIdService = copilotIdService;
     }
 
-    public async Task<MaaActionResult<CreateCopilotOperationDto>> Handle(CreateCopilotOperationCommand request, CancellationToken cancellationToken)
+    public async Task<MaaActionResult<CreateCopilotOperationDto>> Handle(CreateCopilotOperationCommand request,
+        CancellationToken cancellationToken)
     {
         var doc = JsonDocument.Parse(request.Content!).RootElement;
 
@@ -55,6 +53,7 @@ public class CreateCopilotOperationCommandHandler : IRequestHandler<CreateCopilo
             {
                 docTitle = titleElement.GetString() ?? string.Empty;
             }
+
             if (docDetailsElementExist)
             {
                 docDetails = detailsElement.GetString() ?? string.Empty;

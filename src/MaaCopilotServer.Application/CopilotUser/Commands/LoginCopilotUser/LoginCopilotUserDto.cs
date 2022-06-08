@@ -15,10 +15,9 @@ public class LoginCopilotUserDto
         UserName = userName;
     }
 
-    [JsonPropertyName("user_name")]
-    public string UserName { get; set; }
-    [JsonPropertyName("token")]
-    public string Token { get; set; }
-    [JsonPropertyName("valid_before")]
-    public string ValidBefore { get; set; }
+    [JsonPropertyName("user_name")] public string UserName { get; set; }
+
+    [JsonPropertyName("token")] public string Token { get; set; }
+
+    [JsonPropertyName("valid_before")] public string ValidBefore { get; set; }
 }

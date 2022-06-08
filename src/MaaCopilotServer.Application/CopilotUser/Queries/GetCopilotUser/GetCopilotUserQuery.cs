@@ -2,9 +2,6 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
-using MaaCopilotServer.Application.Common.Interfaces;
-using MaaCopilotServer.Application.Common.Models;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace MaaCopilotServer.Application.CopilotUser.Queries.GetCopilotUser;
@@ -16,18 +13,22 @@ public record GetCopilotUserQuery : IRequest<MaaActionResult<GetCopilotUserDto>>
 
 public class GetCopilotUserQueryHandler : IRequestHandler<GetCopilotUserQuery, MaaActionResult<GetCopilotUserDto>>
 {
-    private readonly IMaaCopilotDbContext _dbContext;
     private readonly ICurrentUserService _currentUserService;
+    private readonly ApiErrorMessage _apiErrorMessage;
+    private readonly IMaaCopilotDbContext _dbContext;
 
     public GetCopilotUserQueryHandler(
         IMaaCopilotDbContext dbContext,
-        ICurrentUserService currentUserService)
+        ICurrentUserService currentUserService,
+        ApiErrorMessage apiErrorMessage)
     {
         _dbContext = dbContext;
         _currentUserService = currentUserService;
+        _apiErrorMessage = apiErrorMessage;
     }
 
-    public async Task<MaaActionResult<GetCopilotUserDto>> Handle(GetCopilotUserQuery request, CancellationToken cancellationToken)
+    public async Task<MaaActionResult<GetCopilotUserDto>> Handle(GetCopilotUserQuery request,
+        CancellationToken cancellationToken)
     {
         Guid userId;
         if (request.UserId == "me")
@@ -35,19 +36,23 @@ public class GetCopilotUserQueryHandler : IRequestHandler<GetCopilotUserQuery, M
             var id = _currentUserService.GetUserIdentity();
             if (id is null)
             {
-                return MaaApiResponse.BadRequest(_currentUserService.GetTrackingId(), "User is not authenticated.");
+                throw new PipelineException(MaaApiResponse.BadRequest(_currentUserService.GetTrackingId(),
+                    _apiErrorMessage.MeNotFound));
             }
+
             userId = id.Value;
         }
         else
         {
             userId = Guid.Parse(request.UserId!);
         }
+
         var user = await _dbContext.CopilotUsers.FirstOrDefaultAsync(x => x.EntityId == userId, cancellationToken);
 
         if (user is null)
         {
-            return MaaApiResponse.NotFound($"User with id {request.UserId}", _currentUserService.GetTrackingId());
+            throw new PipelineException(MaaApiResponse.NotFound(_currentUserService.GetTrackingId(),
+                string.Format(_apiErrorMessage.UserWithIdNotFound!, request.UserId)));
         }
 
         var uploadCount = await _dbContext.CopilotOperations

@@ -3,12 +3,8 @@
 // Licensed under the AGPL-3.0 license.
 
 using System.Text.Json.Serialization;
-using MaaCopilotServer.Application.Common.Exceptions;
-using MaaCopilotServer.Application.Common.Interfaces;
-using MaaCopilotServer.Application.Common.Models;
-using MaaCopilotServer.Application.Common.Security;
+using Destructurama.Attributed;
 using MaaCopilotServer.Domain.Enums;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace MaaCopilotServer.Application.CopilotUser.Commands.ChangeCopilotUserInfo;
@@ -19,27 +15,38 @@ public record ChangeCopilotUserInfoCommand : IRequest<MaaActionResult<EmptyObjec
     [JsonPropertyName("user_id")] public string? UserId { get; set; }
     [JsonPropertyName("email")] public string? Email { get; set; }
     [JsonPropertyName("user_name")] public string? UserName { get; set; }
-    [JsonPropertyName("password")] public string? Password { get; set; }
-    [JsonPropertyName("role"), JsonConverter(typeof(JsonStringEnumConverter))] public UserRole? Role { get; set; }
+
+    [JsonPropertyName("password")]
+    [LogMasked]
+    public string? Password { get; set; }
+
+    [JsonPropertyName("role")]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public string? Role { get; set; }
 }
 
-public class ChangeCopilotUserInfoCommandHandler : IRequestHandler<ChangeCopilotUserInfoCommand, MaaActionResult<EmptyObject>>
+public class
+    ChangeCopilotUserInfoCommandHandler : IRequestHandler<ChangeCopilotUserInfoCommand, MaaActionResult<EmptyObject>>
 {
-    private readonly IMaaCopilotDbContext _dbContext;
     private readonly ICurrentUserService _currentUserService;
+    private readonly IMaaCopilotDbContext _dbContext;
     private readonly ISecretService _secretService;
+    private readonly ApiErrorMessage _apiErrorMessage;
 
     public ChangeCopilotUserInfoCommandHandler(
         IMaaCopilotDbContext dbContext,
         ICurrentUserService currentUserService,
-        ISecretService secretService)
+        ISecretService secretService,
+        ApiErrorMessage apiErrorMessage)
     {
         _dbContext = dbContext;
         _currentUserService = currentUserService;
         _secretService = secretService;
+        _apiErrorMessage = apiErrorMessage;
     }
 
-    public async Task<MaaActionResult<EmptyObject>> Handle(ChangeCopilotUserInfoCommand request, CancellationToken cancellationToken)
+    public async Task<MaaActionResult<EmptyObject>> Handle(ChangeCopilotUserInfoCommand request,
+        CancellationToken cancellationToken)
     {
         var userId = Guid.Parse(request.UserId!);
         var user = await _dbContext.CopilotUsers
@@ -47,19 +54,22 @@ public class ChangeCopilotUserInfoCommandHandler : IRequestHandler<ChangeCopilot
 
         if (user is null)
         {
-            return MaaApiResponse.NotFound($"User with id {request.UserId}", _currentUserService.GetTrackingId());
+            throw new PipelineException(MaaApiResponse.NotFound(_currentUserService.GetTrackingId(),
+                string.Format(_apiErrorMessage.UserWithIdNotFound!, request.UserId)));
         }
 
         var @operator = await _dbContext.CopilotUsers.FirstOrDefaultAsync(
             x => x.EntityId == _currentUserService.GetUserIdentity(), cancellationToken);
         if (@operator is null)
         {
-            throw new PipelineException(MaaApiResponse.InternalError(_currentUserService.GetTrackingId()));
+            throw new PipelineException(MaaApiResponse.InternalError(_currentUserService.GetTrackingId(),
+                _apiErrorMessage.InternalException));
         }
 
         if (@operator.UserRole is UserRole.Admin && user.UserRole >= UserRole.Admin)
         {
-            return MaaApiResponse.Forbidden(_currentUserService.GetTrackingId());
+            throw new PipelineException(MaaApiResponse.Forbidden(_currentUserService.GetTrackingId(),
+                _apiErrorMessage.PermissionDenied));
         }
 
         if (request.Password is not null)
@@ -73,11 +83,12 @@ public class ChangeCopilotUserInfoCommandHandler : IRequestHandler<ChangeCopilot
             var exist = _dbContext.CopilotUsers.Any(x => x.Email == request.Email);
             if (exist)
             {
-                return MaaApiResponse.BadRequest(_currentUserService.GetTrackingId(), $"User with email \"{request.Email}\" already exists");
+                throw new PipelineException(MaaApiResponse.BadRequest(_currentUserService.GetTrackingId(),
+                    _apiErrorMessage.EmailAlreadyInUse));
             }
         }
 
-        user.UpdateUserInfo(@operator.EntityId, request.Email, request.UserName, request.Role);
+        user.UpdateUserInfo(@operator.EntityId, request.Email, request.UserName, Enum.Parse<UserRole>(request.Role!));
 
         _dbContext.CopilotUsers.Update(user);
         await _dbContext.SaveChangesAsync(cancellationToken);

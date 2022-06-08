@@ -3,12 +3,7 @@
 // Licensed under the AGPL-3.0 license.
 
 using System.Text.Json.Serialization;
-using MaaCopilotServer.Application.Common.Exceptions;
-using MaaCopilotServer.Application.Common.Interfaces;
-using MaaCopilotServer.Application.Common.Models;
-using MaaCopilotServer.Application.Common.Security;
 using MaaCopilotServer.Domain.Enums;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace MaaCopilotServer.Application.CopilotUser.Commands.UpdateCopilotUserInfo;
@@ -20,27 +15,33 @@ public record UpdateCopilotUserInfoCommand : IRequest<MaaActionResult<EmptyObjec
     [JsonPropertyName("user_name")] public string? UserName { get; set; }
 }
 
-public class UpdateCopilotUserInfoCommandHandler : IRequestHandler<UpdateCopilotUserInfoCommand, MaaActionResult<EmptyObject>>
+public class
+    UpdateCopilotUserInfoCommandHandler : IRequestHandler<UpdateCopilotUserInfoCommand, MaaActionResult<EmptyObject>>
 {
-    private readonly IMaaCopilotDbContext _dbContext;
     private readonly ICurrentUserService _currentUserService;
+    private readonly ApiErrorMessage _apiErrorMessage;
+    private readonly IMaaCopilotDbContext _dbContext;
 
     public UpdateCopilotUserInfoCommandHandler(
         IMaaCopilotDbContext dbContext,
-        ICurrentUserService currentUserService)
+        ICurrentUserService currentUserService,
+        ApiErrorMessage apiErrorMessage)
     {
         _dbContext = dbContext;
         _currentUserService = currentUserService;
+        _apiErrorMessage = apiErrorMessage;
     }
 
-    public async Task<MaaActionResult<EmptyObject>> Handle(UpdateCopilotUserInfoCommand request, CancellationToken cancellationToken)
+    public async Task<MaaActionResult<EmptyObject>> Handle(UpdateCopilotUserInfoCommand request,
+        CancellationToken cancellationToken)
     {
         var user = await _dbContext.CopilotUsers
             .FirstOrDefaultAsync(x => x.EntityId == _currentUserService.GetUserIdentity(), cancellationToken);
 
         if (user is null)
         {
-            throw new PipelineException(MaaApiResponse.InternalError(_currentUserService.GetTrackingId()));
+            throw new PipelineException(MaaApiResponse.InternalError(_currentUserService.GetTrackingId(),
+                _apiErrorMessage.InternalException));
         }
 
         if (string.IsNullOrEmpty(request.Email))
@@ -48,7 +49,8 @@ public class UpdateCopilotUserInfoCommandHandler : IRequestHandler<UpdateCopilot
             var exist = _dbContext.CopilotUsers.Any(x => x.Email == request.Email);
             if (exist)
             {
-                return MaaApiResponse.BadRequest(_currentUserService.GetTrackingId(), $"User with email \"{request.Email}\" already exists");
+                throw new PipelineException(MaaApiResponse.BadRequest(_currentUserService.GetTrackingId(),
+                    _apiErrorMessage.EmailAlreadyInUse));
             }
         }
 

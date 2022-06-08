@@ -10,7 +10,8 @@ public static class DateTimeOffsetExtension
 {
     public static string? ToStringZhHans(this DateTimeOffset? dateTimeOffset)
     {
-        if (dateTimeOffset is null) { return null;}
+        if (dateTimeOffset is null) { return null; }
+
         var culture = new CultureInfo("zh-Hans");
         return dateTimeOffset.Value.ToString("o", culture);
     }

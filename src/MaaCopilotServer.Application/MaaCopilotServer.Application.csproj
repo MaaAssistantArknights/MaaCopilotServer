@@ -1,29 +1,31 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
-        <RootNamespace>MaaCopilotServer.Application</RootNamespace>
-        <AssemblyName>MaaCopilotServer.Application</AssemblyName>
-        <Nullable>enable</Nullable>
-        <ImplicitUsings>enable</ImplicitUsings>
-    </PropertyGroup>
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <RootNamespace>MaaCopilotServer.Application</RootNamespace>
+    <AssemblyName>MaaCopilotServer.Application</AssemblyName>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
 
-    <PropertyGroup Condition="$(Configuration) == Release">
-      <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    </PropertyGroup>
-  
-    <ItemGroup>
-      <ProjectReference Include="..\MaaCopilotServer.Domain\MaaCopilotServer.Domain.csproj" />
-    </ItemGroup>
+  <PropertyGroup Condition="$(Configuration) == Release">
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
 
-    <ItemGroup>
-      <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    </ItemGroup>
-  
-    <ItemGroup>
-      <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.0.2" />
-      <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
-      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.5" />
-    </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MaaCopilotServer.Domain\MaaCopilotServer.Domain.csproj" />
+    <ProjectReference Include="..\MaaCopilotServer.Resources\MaaCopilotServer.Resources.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Destructurama.Attributed" Version="3.0.0" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.0.2" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.5" />
+  </ItemGroup>
 
 </Project>

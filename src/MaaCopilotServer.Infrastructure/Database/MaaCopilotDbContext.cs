@@ -27,7 +27,7 @@ public class MaaCopilotDbContext : DbContext, IMaaCopilotDbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        var conn = _connectionString.NotNull();
+        var conn = _connectionString.IsNotNull();
         optionsBuilder.UseNpgsql(conn);
         base.OnConfiguring(optionsBuilder);
     }

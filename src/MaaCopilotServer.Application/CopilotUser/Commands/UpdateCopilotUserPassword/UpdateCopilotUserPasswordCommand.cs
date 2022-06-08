@@ -3,12 +3,8 @@
 // Licensed under the AGPL-3.0 license.
 
 using System.Text.Json.Serialization;
-using MaaCopilotServer.Application.Common.Exceptions;
-using MaaCopilotServer.Application.Common.Interfaces;
-using MaaCopilotServer.Application.Common.Models;
-using MaaCopilotServer.Application.Common.Security;
+using Destructurama.Attributed;
 using MaaCopilotServer.Domain.Enums;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace MaaCopilotServer.Application.CopilotUser.Commands.UpdateCopilotUserPassword;
@@ -16,43 +12,53 @@ namespace MaaCopilotServer.Application.CopilotUser.Commands.UpdateCopilotUserPas
 [Authorized(UserRole.User)]
 public record UpdateCopilotUserPasswordCommand : IRequest<MaaActionResult<EmptyObject>>
 {
-    [JsonPropertyName("original_password")] public string? OriginalPassword { get; set; }
+    [JsonPropertyName("original_password")]
+    [NotLogged]
+    public string? OriginalPassword { get; set; }
 
-    [JsonPropertyName("new_password")] public string? NewPassword { get; set; }
+    [JsonPropertyName("new_password")]
+    [NotLogged]
+    public string? NewPassword { get; set; }
 }
 
 public class UpdateCopilotUserPasswordCommandHandler : IRequestHandler<UpdateCopilotUserPasswordCommand,
     MaaActionResult<EmptyObject>>
 {
+    private readonly ICurrentUserService _currentUserService;
+    private readonly ApiErrorMessage _apiErrorMessage;
     private readonly IMaaCopilotDbContext _dbContext;
     private readonly ISecretService _secretService;
-    private readonly ICurrentUserService _currentUserService;
 
     public UpdateCopilotUserPasswordCommandHandler(
         IMaaCopilotDbContext dbContext,
         ISecretService secretService,
-        ICurrentUserService currentUserService)
+        ICurrentUserService currentUserService,
+        ApiErrorMessage apiErrorMessage)
     {
         _dbContext = dbContext;
         _secretService = secretService;
         _currentUserService = currentUserService;
+        _apiErrorMessage = apiErrorMessage;
     }
 
-    public async Task<MaaActionResult<EmptyObject>> Handle(UpdateCopilotUserPasswordCommand request, CancellationToken cancellationToken)
+    public async Task<MaaActionResult<EmptyObject>> Handle(UpdateCopilotUserPasswordCommand request,
+        CancellationToken cancellationToken)
     {
         var user = await _dbContext.CopilotUsers
             .FirstOrDefaultAsync(x => x.EntityId == _currentUserService.GetUserIdentity()!.Value, cancellationToken);
 
         if (user is null)
         {
-            throw new PipelineException(MaaApiResponse.InternalError(_currentUserService.GetTrackingId()));
+            throw new PipelineException(MaaApiResponse.InternalError(_currentUserService.GetTrackingId(),
+                _apiErrorMessage.InternalException));
         }
 
         var ok = _secretService.VerifyPassword(user!.Password, request.OriginalPassword!);
 
         if (ok is false)
         {
-            return MaaApiResponse.BadRequest(_currentUserService.GetTrackingId(), "Invalid password");
+            throw new PipelineException(MaaApiResponse.BadRequest(_currentUserService.GetTrackingId(),
+                _apiErrorMessage.PasswordInvalid));
         }
 
         var hash = _secretService.HashPassword(request.NewPassword!);

@@ -470,7 +470,6 @@ FodyWeavers.xsd
 *.usertasks
 
 #Mono Project Files
-*.resources
 test-results/
 
 ### Windows template

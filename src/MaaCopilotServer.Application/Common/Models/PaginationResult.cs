@@ -16,12 +16,11 @@ public class PaginationResult<T>
         Data = data;
     }
 
-    [JsonPropertyName("has_next")]
-    public bool HasNext { get; set; }
-    [JsonPropertyName("page")]
-    public int Page { get; set; }
-    [JsonPropertyName("total")]
-    public int Total { get; set; }
-    [JsonPropertyName("data")]
-    public List<T> Data { get; set; }
+    [JsonPropertyName("has_next")] public bool HasNext { get; set; }
+
+    [JsonPropertyName("page")] public int Page { get; set; }
+
+    [JsonPropertyName("total")] public int Total { get; set; }
+
+    [JsonPropertyName("data")] public List<T> Data { get; set; }
 }

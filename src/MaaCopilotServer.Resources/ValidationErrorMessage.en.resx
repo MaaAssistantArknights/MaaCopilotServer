@@ -1,0 +1,50 @@
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>1.3</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="CopilotOperationIdIsEmpty" xml:space="preserve">
+    <value>Operation id can not be empty</value>
+  </data>
+  <data name="CopilotOperationIdIsNull" xml:space="preserve">
+    <value>Operation id can not be null</value>
+  </data>
+  <data name="CopilotOperationJsonIsInvalid" xml:space="preserve">
+    <value>Operation JSON is invalid</value>
+  </data>
+  <data name="EmailIsInvalid" xml:space="preserve">
+    <value>Invalid email address</value>
+  </data>
+  <data name="LimitIsLessThenOne" xml:space="preserve">
+    <value>Limit can not be less then 1</value>
+  </data>
+  <data name="LoginValidationFail" xml:space="preserve">
+    <value>Email or Password can not be empty</value>
+  </data>
+  <data name="PageIsLessThenOne" xml:space="preserve">
+    <value>Page can not be less then 1</value>
+  </data>
+  <data name="PasswordIsInvalid" xml:space="preserve">
+    <value>Invalid password, should have 8-32 characters</value>
+  </data>
+  <data name="UploaderIdIsInvalid" xml:space="preserve">
+    <value>UploaderId must be a valid GUID or me</value>
+  </data>
+  <data name="UserIdIsInvalid" xml:space="preserve">
+    <value>Invalid user id</value>
+  </data>
+  <data name="UsernameIsInvalid" xml:space="preserve">
+    <value>Invalid user name, should have 4-24 characters</value>
+  </data>
+  <data name="UserRoleIsInvalid" xml:space="preserve">
+    <value>Invalid user role name</value>
+  </data>
+</root>

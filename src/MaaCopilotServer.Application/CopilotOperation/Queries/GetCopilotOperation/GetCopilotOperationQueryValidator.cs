@@ -2,16 +2,14 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
-using FluentValidation;
-
 namespace MaaCopilotServer.Application.CopilotOperation.Queries.GetCopilotOperation;
 
 public class GetCopilotOperationQueryValidator : AbstractValidator<GetCopilotOperationQuery>
 {
-    public GetCopilotOperationQueryValidator()
+    public GetCopilotOperationQueryValidator(ValidationErrorMessage errorMessage)
     {
         RuleFor(x => x.Id)
-            .NotNull()
-            .NotEmpty();
+            .NotEmpty()
+            .WithMessage(errorMessage.CopilotOperationIdIsEmpty);
     }
 }

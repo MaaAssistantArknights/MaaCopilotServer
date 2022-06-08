@@ -4,7 +4,6 @@
 
 using System.Reflection;
 using MaaCopilotServer.Application.Common.Extensions;
-using ILogger = Serilog.ILogger;
 
 namespace MaaCopilotServer.Api.Helper;
 
@@ -20,7 +19,7 @@ public static class ConfigurationHelper
         var dataDirectoryEnv = Environment.GetEnvironmentVariable("MAA_DATA_DIRECTORY");
         var isInDocker = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") ?? "false";
 
-        var assemblyDirectory = new FileInfo(Assembly.GetExecutingAssembly().Location).Directory.NotNull();
+        var assemblyDirectory = new FileInfo(Assembly.GetExecutingAssembly().Location).Directory.IsNotNull();
         var dataDirectory = string.IsNullOrEmpty(dataDirectoryEnv)
             ? new DirectoryInfo(assemblyDirectory.FullName.CombinePath("data")).EnsureCreated()
             : new DirectoryInfo(dataDirectoryEnv).EnsureCreated();
@@ -61,10 +60,14 @@ public static class ConfigurationHelper
 
         configurationBuilder.AddEnvironmentVariables("MAA_");
 
+        var appVersion = Environment.GetEnvironmentVariable("MAACOPILOT_APP_VERSION") ?? "0.0.0";
+
         configurationBuilder.AddInMemoryCollection(new List<KeyValuePair<string, string>>
         {
             new("Application:AssemblyPath", assemblyDirectory.FullName),
-            new("Application:DataDirectory", dataDirectory.FullName)
+            new("Application:DataDirectory", dataDirectory.FullName),
+            new("Application:Version", appVersion),
+            new("ElasticApm:ServiceVersion", appVersion)
         });
 
         var configuration = configurationBuilder.Build();

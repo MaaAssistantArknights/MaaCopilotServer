@@ -3,18 +3,17 @@
 // Licensed under the AGPL-3.0 license.
 
 using System.Text.Json;
-using FluentValidation;
 
 namespace MaaCopilotServer.Application.CopilotOperation.Commands.CreateCopilotOperation;
 
 public class CreateCopilotOperationCommandValidator : AbstractValidator<CreateCopilotOperationCommand>
 {
-    public CreateCopilotOperationCommandValidator()
+    public CreateCopilotOperationCommandValidator(ValidationErrorMessage errorMessage)
     {
         RuleFor(x => x.Content)
-            .NotNull()
             .NotEmpty()
-            .Must(BeValidatedContent);
+            .Must(BeValidatedContent)
+            .WithMessage(errorMessage.CopilotOperationJsonIsInvalid);
     }
 
     private static bool BeValidatedContent(string? content)

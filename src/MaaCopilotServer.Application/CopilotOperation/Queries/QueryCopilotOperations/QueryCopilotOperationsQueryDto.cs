@@ -8,7 +8,8 @@ namespace MaaCopilotServer.Application.CopilotOperation.Queries.QueryCopilotOper
 
 public class QueryCopilotOperationsQueryDto
 {
-    public QueryCopilotOperationsQueryDto(string id, string stageName, string minimumRequired, string uploadTime, string uploader, string title, string detail)
+    public QueryCopilotOperationsQueryDto(string id, string stageName, string minimumRequired, string uploadTime,
+        string uploader, string title, string detail)
     {
         Id = id;
         StageName = stageName;
@@ -19,18 +20,17 @@ public class QueryCopilotOperationsQueryDto
         Detail = detail;
     }
 
-    [JsonPropertyName("id")]
-    public string Id { get; }
-    [JsonPropertyName("stage_name")]
-    public string StageName { get; }
-    [JsonPropertyName("minimum_required")]
-    public string MinimumRequired { get; }
-    [JsonPropertyName("upload_time")]
-    public string UploadTime { get; }
-    [JsonPropertyName("title")]
-    public string Title { get; }
-    [JsonPropertyName("detail")]
-    public string Detail { get; }
-    [JsonPropertyName("uploader")]
-    public string Uploader { get; }
+    [JsonPropertyName("id")] public string Id { get; }
+
+    [JsonPropertyName("stage_name")] public string StageName { get; }
+
+    [JsonPropertyName("minimum_required")] public string MinimumRequired { get; }
+
+    [JsonPropertyName("upload_time")] public string UploadTime { get; }
+
+    [JsonPropertyName("title")] public string Title { get; }
+
+    [JsonPropertyName("detail")] public string Detail { get; }
+
+    [JsonPropertyName("uploader")] public string Uploader { get; }
 }

@@ -6,8 +6,8 @@ namespace MaaCopilotServer.Application.Common.Exceptions;
 
 public class FileFoundException : IOException
 {
-    private readonly string _message;
     private readonly string _fileName;
+    private readonly string _message;
 
     public FileFoundException(string message, string fileName)
     {

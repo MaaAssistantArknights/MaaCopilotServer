@@ -2,10 +2,6 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
-using MaaCopilotServer.Application.Common.Extensions;
-using MaaCopilotServer.Application.Common.Interfaces;
-using MaaCopilotServer.Application.Common.Models;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace MaaCopilotServer.Application.CopilotOperation.Queries.GetCopilotOperation;
@@ -15,28 +11,35 @@ public record GetCopilotOperationQuery : IRequest<MaaActionResult<GetCopilotOper
     public string? Id { get; set; }
 }
 
-public class GetCopilotOperationQueryHandler : IRequestHandler<GetCopilotOperationQuery, MaaActionResult<GetCopilotOperationQueryDto>>
+public class
+    GetCopilotOperationQueryHandler : IRequestHandler<GetCopilotOperationQuery,
+        MaaActionResult<GetCopilotOperationQueryDto>>
 {
-    private readonly IMaaCopilotDbContext _dbContext;
     private readonly ICopilotIdService _copilotIdService;
     private readonly ICurrentUserService _currentUserService;
+    private readonly ApiErrorMessage _apiErrorMessage;
+    private readonly IMaaCopilotDbContext _dbContext;
 
     public GetCopilotOperationQueryHandler(
         IMaaCopilotDbContext dbContext,
         ICopilotIdService copilotIdService,
-        ICurrentUserService currentUserService)
+        ICurrentUserService currentUserService,
+        ApiErrorMessage apiErrorMessage)
     {
         _dbContext = dbContext;
         _copilotIdService = copilotIdService;
         _currentUserService = currentUserService;
+        _apiErrorMessage = apiErrorMessage;
     }
 
-    public async Task<MaaActionResult<GetCopilotOperationQueryDto>> Handle(GetCopilotOperationQuery request, CancellationToken cancellationToken)
+    public async Task<MaaActionResult<GetCopilotOperationQueryDto>> Handle(GetCopilotOperationQuery request,
+        CancellationToken cancellationToken)
     {
         var id = _copilotIdService.DecodeId(request.Id!);
         if (id is null)
         {
-            return MaaApiResponse.NotFound("CopilotOperation", _currentUserService.GetTrackingId());
+            throw new PipelineException(MaaApiResponse.NotFound(_currentUserService.GetTrackingId(),
+                string.Format(_apiErrorMessage.CopilotOperationWithIdNotFound!, request.Id)));
         }
 
         var entity = await _dbContext.CopilotOperations
@@ -44,7 +47,8 @@ public class GetCopilotOperationQueryHandler : IRequestHandler<GetCopilotOperati
             .FirstOrDefaultAsync(x => x.Id == id.Value, cancellationToken);
         if (entity is null)
         {
-            return MaaApiResponse.NotFound("CopilotOperation", _currentUserService.GetTrackingId());
+            throw new PipelineException(MaaApiResponse.NotFound(_currentUserService.GetTrackingId(),
+                string.Format(_apiErrorMessage.CopilotOperationWithIdNotFound!, request.Id)));
         }
 
         var dto = new GetCopilotOperationQueryDto(

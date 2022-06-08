@@ -3,18 +3,17 @@
 // Licensed under the AGPL-3.0 license.
 
 using System.Diagnostics;
-using MaaCopilotServer.Application.Common.Interfaces;
-using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace MaaCopilotServer.Application.Common.Behaviours;
 
-public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : IRequest<TResponse>
+public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+    where TRequest : IRequest<TResponse>
 {
-    private readonly Stopwatch _timer;
-    private readonly ILogger<TRequest> _logger;
     private readonly ICurrentUserService _currentUserService;
     private readonly IIdentityService _identityService;
+    private readonly ILogger<TRequest> _logger;
+    private readonly Stopwatch _timer;
 
     public PerformanceBehaviour(
         // ReSharper disable once ContextualLoggerProblem
@@ -29,7 +28,8 @@ public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequ
         _identityService = identityService;
     }
 
-    public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
+    public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken,
+        RequestHandlerDelegate<TResponse> next)
     {
         _timer.Start();
 
@@ -48,8 +48,8 @@ public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequ
         var userId = _currentUserService.GetUserIdentity().ToString() ?? string.Empty;
 
         _logger.LogWarning(
-            "MaaCopilotServer Long Running Request: {Name} ({ElapsedMilliseconds} milliseconds) {@UserId} {@Request}",
-            requestName, elapsedMilliseconds, userId, request);
+            "MaaCopilotServer: Type -> {LoggingType}; Request Name -> {Name}; User -> {UserId}; Request -> {@Request}",
+            (string)LoggingType.LongRunRequest, requestName, userId, request);
 
         return response;
     }
