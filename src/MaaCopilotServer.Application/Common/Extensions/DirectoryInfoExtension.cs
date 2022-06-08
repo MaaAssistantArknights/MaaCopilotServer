@@ -24,7 +24,7 @@ public static class DirectoryInfoExtension
         string paramName = "UnknownParamName",
         [CallerMemberName] string memberName = "UnknownMemberName")
     {
-        var di = directoryInfo.NotNull(paramName, memberName);
+        var di = directoryInfo.IsNotNull(paramName, memberName);
         if (di.Exists is false)
         {
             di.Create();

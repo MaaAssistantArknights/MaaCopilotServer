@@ -19,7 +19,7 @@ public static class ConfigurationHelper
         var dataDirectoryEnv = Environment.GetEnvironmentVariable("MAA_DATA_DIRECTORY");
         var isInDocker = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") ?? "false";
 
-        var assemblyDirectory = new FileInfo(Assembly.GetExecutingAssembly().Location).Directory.NotNull();
+        var assemblyDirectory = new FileInfo(Assembly.GetExecutingAssembly().Location).Directory.IsNotNull();
         var dataDirectory = string.IsNullOrEmpty(dataDirectoryEnv)
             ? new DirectoryInfo(assemblyDirectory.FullName.CombinePath("data")).EnsureCreated()
             : new DirectoryInfo(dataDirectoryEnv).EnsureCreated();

@@ -21,7 +21,7 @@ public static class NullableExtension
     /// <typeparam name="T">对象类型</typeparam>
     /// <returns>确保不为 Null 的对象</returns>
     /// <exception cref="ArgumentNullException">对象为 Null</exception>
-    public static T NotNull<T>(this T? obj,
+    public static T IsNotNull<T>(this T? obj,
         [CallerArgumentExpression("obj")] string paramName = "UnknownParamName",
         [CallerMemberName] string memberName = "UnknownMemberName")
     {

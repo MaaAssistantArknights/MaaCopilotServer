@@ -25,7 +25,7 @@ public static class FileInfoExtension
         [CallerArgumentExpression("fileInfo")] string paramName = "UnknownParamName",
         [CallerMemberName] string memberName = "UnknownMemberName")
     {
-        var fi = fileInfo.NotNull(paramName, memberName);
+        var fi = fileInfo.IsNotNull(paramName, memberName);
         if (fi.Exists is false)
         {
             throw new FileNotFoundException($"从 {memberName} 请求确认的 FileInfo {paramName}，文件不存在", fi.FullName);
@@ -50,7 +50,7 @@ public static class FileInfoExtension
         [CallerArgumentExpression("fileInfo")] string paramName = "UnknownParamName",
         [CallerMemberName] string memberName = "UnknownMemberName")
     {
-        var fi = fileInfo.NotNull(paramName, memberName);
+        var fi = fileInfo.IsNotNull(paramName, memberName);
         if (fi.Exists is false)
         {
             throw new FileFoundException($"从 {memberName} 请求确认的 FileInfo {paramName}，文件存在", fi.FullName);
