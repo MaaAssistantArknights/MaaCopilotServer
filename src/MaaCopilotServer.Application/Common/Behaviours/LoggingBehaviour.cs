@@ -24,7 +24,7 @@ public class LoggingBehaviour<TRequest> : IRequestPreProcessor<TRequest> where T
         var userId = _currentUserService.GetUserIdentity()?.ToString() ?? "Anonymous";
         _logger.LogInformation(
             "MaaCopilotServer: Type -> {LoggingType}; Request Name -> {Name}; User -> {UserId}; Request -> {@Request}",
-            LoggingType.Request, requestName, userId, request);
+            (string)LoggingType.Request, requestName, userId, request);
         return Task.CompletedTask;
     }
 }

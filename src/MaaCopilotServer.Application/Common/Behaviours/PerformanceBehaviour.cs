@@ -49,7 +49,7 @@ public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequ
 
         _logger.LogWarning(
             "MaaCopilotServer: Type -> {LoggingType}; Request Name -> {Name}; User -> {UserId}; Request -> {@Request}",
-            LoggingType.LongRunRequest, requestName, userId, request);
+            (string)LoggingType.LongRunRequest, requestName, userId, request);
 
         return response;
     }
