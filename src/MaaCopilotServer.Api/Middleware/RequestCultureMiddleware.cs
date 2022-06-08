@@ -16,12 +16,13 @@ public class RequestCultureMiddleware
         _next = next;
     }
 
-    public async Task InvokeAsync(HttpContext context, ValidationErrorMessage validationErrorMessage)
+    public async Task InvokeAsync(HttpContext context, ValidationErrorMessage validationErrorMessage, ApiErrorMessage apiErrorMessage)
     {
         var hasCulture = context.Request.Query.TryGetValue("culture", out var culture);
         var info = hasCulture ? new CultureInfo(culture) : new CultureInfo("zh-cn");
 
         validationErrorMessage.CultureInfo = info;
+        apiErrorMessage.CultureInfo = info;
 
         await _next(context);
     }

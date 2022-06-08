@@ -14,14 +14,17 @@ public record GetCopilotUserQuery : IRequest<MaaActionResult<GetCopilotUserDto>>
 public class GetCopilotUserQueryHandler : IRequestHandler<GetCopilotUserQuery, MaaActionResult<GetCopilotUserDto>>
 {
     private readonly ICurrentUserService _currentUserService;
+    private readonly ApiErrorMessage _apiErrorMessage;
     private readonly IMaaCopilotDbContext _dbContext;
 
     public GetCopilotUserQueryHandler(
         IMaaCopilotDbContext dbContext,
-        ICurrentUserService currentUserService)
+        ICurrentUserService currentUserService,
+        ApiErrorMessage apiErrorMessage)
     {
         _dbContext = dbContext;
         _currentUserService = currentUserService;
+        _apiErrorMessage = apiErrorMessage;
     }
 
     public async Task<MaaActionResult<GetCopilotUserDto>> Handle(GetCopilotUserQuery request,
@@ -33,7 +36,8 @@ public class GetCopilotUserQueryHandler : IRequestHandler<GetCopilotUserQuery, M
             var id = _currentUserService.GetUserIdentity();
             if (id is null)
             {
-                return MaaApiResponse.BadRequest(_currentUserService.GetTrackingId(), "User is not authenticated.");
+                throw new PipelineException(MaaApiResponse.BadRequest(_currentUserService.GetTrackingId(),
+                    _apiErrorMessage.MeNotFound));
             }
 
             userId = id.Value;
@@ -47,7 +51,8 @@ public class GetCopilotUserQueryHandler : IRequestHandler<GetCopilotUserQuery, M
 
         if (user is null)
         {
-            return MaaApiResponse.NotFound($"User with id {request.UserId}", _currentUserService.GetTrackingId());
+            throw new PipelineException(MaaApiResponse.NotFound(_currentUserService.GetTrackingId(),
+                string.Format(_apiErrorMessage.UserWithIdNotFound!, request.UserId)));
         }
 
         var uploadCount = await _dbContext.CopilotOperations

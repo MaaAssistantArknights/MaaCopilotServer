@@ -10,12 +10,17 @@ public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRe
     where TRequest : IRequest<TResponse>
 {
     private readonly ICurrentUserService _currentUserService;
+    private readonly ApiErrorMessage _apiErrorMessage;
     private readonly IIdentityService _identityService;
 
-    public AuthorizationBehaviour(IIdentityService identityService, ICurrentUserService currentUserService)
+    public AuthorizationBehaviour(
+        IIdentityService identityService,
+        ICurrentUserService currentUserService,
+        ApiErrorMessage apiErrorMessage)
     {
         _identityService = identityService;
         _currentUserService = currentUserService;
+        _apiErrorMessage = apiErrorMessage;
     }
 
     public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken,
@@ -30,19 +35,20 @@ public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRe
         var userId = _currentUserService.GetUserIdentity();
         if (userId is null)
         {
-            throw new PipelineException(MaaApiResponse.Unauthorized(_currentUserService.GetTrackingId()));
+            throw new PipelineException(MaaApiResponse.Unauthorized(_currentUserService.GetTrackingId(), _apiErrorMessage.Unauthorized));
         }
 
         var user = await _identityService.GetUserAsync(userId.Value);
         if (user is null)
         {
-            throw new PipelineException(MaaApiResponse.NotFound($"User {userId}", _currentUserService.GetTrackingId()));
+            throw new PipelineException(MaaApiResponse.NotFound(_currentUserService.GetTrackingId(),
+                string.Format(_apiErrorMessage.UserWithIdNotFound!, userId)));
         }
 
         var roleRequired = authorizeAttributes.First().Role;
         if (user.UserRole < roleRequired)
         {
-            throw new PipelineException(MaaApiResponse.Forbidden(_currentUserService.GetTrackingId()));
+            throw new PipelineException(MaaApiResponse.Forbidden(_currentUserService.GetTrackingId(), _apiErrorMessage.PermissionDenied));
         }
 
         return await next();

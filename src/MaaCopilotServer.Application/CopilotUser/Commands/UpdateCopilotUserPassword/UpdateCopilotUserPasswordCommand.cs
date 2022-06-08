@@ -25,17 +25,20 @@ public class UpdateCopilotUserPasswordCommandHandler : IRequestHandler<UpdateCop
     MaaActionResult<EmptyObject>>
 {
     private readonly ICurrentUserService _currentUserService;
+    private readonly ApiErrorMessage _apiErrorMessage;
     private readonly IMaaCopilotDbContext _dbContext;
     private readonly ISecretService _secretService;
 
     public UpdateCopilotUserPasswordCommandHandler(
         IMaaCopilotDbContext dbContext,
         ISecretService secretService,
-        ICurrentUserService currentUserService)
+        ICurrentUserService currentUserService,
+        ApiErrorMessage apiErrorMessage)
     {
         _dbContext = dbContext;
         _secretService = secretService;
         _currentUserService = currentUserService;
+        _apiErrorMessage = apiErrorMessage;
     }
 
     public async Task<MaaActionResult<EmptyObject>> Handle(UpdateCopilotUserPasswordCommand request,
@@ -46,14 +49,16 @@ public class UpdateCopilotUserPasswordCommandHandler : IRequestHandler<UpdateCop
 
         if (user is null)
         {
-            throw new PipelineException(MaaApiResponse.InternalError(_currentUserService.GetTrackingId()));
+            throw new PipelineException(MaaApiResponse.InternalError(_currentUserService.GetTrackingId(),
+                _apiErrorMessage.InternalException));
         }
 
         var ok = _secretService.VerifyPassword(user!.Password, request.OriginalPassword!);
 
         if (ok is false)
         {
-            return MaaApiResponse.BadRequest(_currentUserService.GetTrackingId(), "Invalid password");
+            throw new PipelineException(MaaApiResponse.BadRequest(_currentUserService.GetTrackingId(),
+                _apiErrorMessage.PasswordInvalid));
         }
 
         var hash = _secretService.HashPassword(request.NewPassword!);

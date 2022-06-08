@@ -17,6 +17,8 @@
     <ItemGroup>
       <EmbeddedResource Update="ValidationErrorMessage.resx">
       </EmbeddedResource>
+      <EmbeddedResource Update="ApiErrorMessage.resx">
+      </EmbeddedResource>
     </ItemGroup>
 
     <PropertyGroup>

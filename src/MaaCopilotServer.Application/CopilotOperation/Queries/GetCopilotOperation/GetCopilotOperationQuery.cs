@@ -17,16 +17,19 @@ public class
 {
     private readonly ICopilotIdService _copilotIdService;
     private readonly ICurrentUserService _currentUserService;
+    private readonly ApiErrorMessage _apiErrorMessage;
     private readonly IMaaCopilotDbContext _dbContext;
 
     public GetCopilotOperationQueryHandler(
         IMaaCopilotDbContext dbContext,
         ICopilotIdService copilotIdService,
-        ICurrentUserService currentUserService)
+        ICurrentUserService currentUserService,
+        ApiErrorMessage apiErrorMessage)
     {
         _dbContext = dbContext;
         _copilotIdService = copilotIdService;
         _currentUserService = currentUserService;
+        _apiErrorMessage = apiErrorMessage;
     }
 
     public async Task<MaaActionResult<GetCopilotOperationQueryDto>> Handle(GetCopilotOperationQuery request,
@@ -35,7 +38,8 @@ public class
         var id = _copilotIdService.DecodeId(request.Id!);
         if (id is null)
         {
-            return MaaApiResponse.NotFound("CopilotOperation", _currentUserService.GetTrackingId());
+            throw new PipelineException(MaaApiResponse.NotFound(_currentUserService.GetTrackingId(),
+                string.Format(_apiErrorMessage.CopilotOperationWithIdNotFound!, request.Id)));
         }
 
         var entity = await _dbContext.CopilotOperations
@@ -43,7 +47,8 @@ public class
             .FirstOrDefaultAsync(x => x.Id == id.Value, cancellationToken);
         if (entity is null)
         {
-            return MaaApiResponse.NotFound("CopilotOperation", _currentUserService.GetTrackingId());
+            throw new PipelineException(MaaApiResponse.NotFound(_currentUserService.GetTrackingId(),
+                string.Format(_apiErrorMessage.CopilotOperationWithIdNotFound!, request.Id)));
         }
 
         var dto = new GetCopilotOperationQueryDto(

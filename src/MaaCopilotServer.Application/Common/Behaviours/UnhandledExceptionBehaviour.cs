@@ -11,12 +11,17 @@ public class UnhandledExceptionBehaviour<TRequest, TResponse> : IPipelineBehavio
 {
     private readonly ILogger<TRequest> _logger;
     private readonly ICurrentUserService _currentUserService;
+    private readonly ApiErrorMessage _apiErrorMessage;
 
     // ReSharper disable once ContextualLoggerProblem
-    public UnhandledExceptionBehaviour(ILogger<TRequest> logger, ICurrentUserService currentUserService)
+    public UnhandledExceptionBehaviour(
+        ILogger<TRequest> logger,
+        ICurrentUserService currentUserService,
+        ApiErrorMessage apiErrorMessage)
     {
         _logger = logger;
         _currentUserService = currentUserService;
+        _apiErrorMessage = apiErrorMessage;
     }
 
     public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
@@ -36,7 +41,7 @@ public class UnhandledExceptionBehaviour<TRequest, TResponse> : IPipelineBehavio
                 "MaaCopilotServer: Type -> {LoggingType}; Request Name -> {Name}; Request -> {@Request};",
                 (string)LoggingType.Exception, requestName, request);
 
-            throw new PipelineException(MaaApiResponse.InternalError(_currentUserService.GetTrackingId()));
+            throw new PipelineException(MaaApiResponse.InternalError(_currentUserService.GetTrackingId(), _apiErrorMessage.InternalException));
         }
     }
 }

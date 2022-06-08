@@ -19,16 +19,19 @@ public class DeleteCopilotOperationCommandHandler : IRequestHandler<DeleteCopilo
 {
     private readonly ICopilotIdService _copilotIdService;
     private readonly ICurrentUserService _currentUserService;
+    private readonly ApiErrorMessage _apiErrorMessage;
     private readonly IMaaCopilotDbContext _dbContext;
 
     public DeleteCopilotOperationCommandHandler(
         IMaaCopilotDbContext dbContext,
         ICopilotIdService copilotIdService,
-        ICurrentUserService currentUserService)
+        ICurrentUserService currentUserService,
+        ApiErrorMessage apiErrorMessage)
     {
         _dbContext = dbContext;
         _copilotIdService = copilotIdService;
         _currentUserService = currentUserService;
+        _apiErrorMessage = apiErrorMessage;
     }
 
     public async Task<MaaActionResult<EmptyObject>> Handle(DeleteCopilotOperationCommand request,
@@ -37,18 +40,20 @@ public class DeleteCopilotOperationCommandHandler : IRequestHandler<DeleteCopilo
         var id = _copilotIdService.DecodeId(request.Id!);
         if (id is null)
         {
-            return MaaApiResponse.NotFound("CopilotOperation", _currentUserService.GetTrackingId());
+            throw new PipelineException(MaaApiResponse.NotFound(_currentUserService.GetTrackingId(),
+                string.Format(_apiErrorMessage.CopilotOperationWithIdNotFound!, request.Id)));
         }
 
         var entity = await _dbContext.CopilotOperations.FirstOrDefaultAsync(x => x.Id == id.Value, cancellationToken);
         if (entity is null)
         {
-            return MaaApiResponse.NotFound("CopilotOperation", _currentUserService.GetTrackingId());
+            throw new PipelineException(MaaApiResponse.NotFound(_currentUserService.GetTrackingId(),
+                string.Format(_apiErrorMessage.CopilotOperationWithIdNotFound!, request.Id)));
         }
 
         entity.Delete(_currentUserService.GetUserIdentity()!.Value);
         _dbContext.CopilotOperations.Remove(entity);
         await _dbContext.SaveChangesAsync(cancellationToken);
-        return MaaApiResponse.Ok(new EmptyObject(), _currentUserService.GetTrackingId());
+        return MaaApiResponse.Ok(null, _currentUserService.GetTrackingId());
     }
 }

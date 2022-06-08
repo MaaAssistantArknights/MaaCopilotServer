@@ -28,17 +28,20 @@ public record CreateCopilotUserCommand : IRequest<MaaActionResult<EmptyObject>>
 public class CreateCopilotUserCommandHandler : IRequestHandler<CreateCopilotUserCommand, MaaActionResult<EmptyObject>>
 {
     private readonly ICurrentUserService _currentUserService;
+    private readonly ApiErrorMessage _apiErrorMessage;
     private readonly IMaaCopilotDbContext _dbContext;
     private readonly ISecretService _secretService;
 
     public CreateCopilotUserCommandHandler(
         IMaaCopilotDbContext dbContext,
         ISecretService secretService,
-        ICurrentUserService currentUserService)
+        ICurrentUserService currentUserService,
+        ApiErrorMessage apiErrorMessage)
     {
         _dbContext = dbContext;
         _secretService = secretService;
         _currentUserService = currentUserService;
+        _apiErrorMessage = apiErrorMessage;
     }
 
     public async Task<MaaActionResult<EmptyObject>> Handle(CreateCopilotUserCommand request,
@@ -47,7 +50,8 @@ public class CreateCopilotUserCommandHandler : IRequestHandler<CreateCopilotUser
         var emailColliding = await _dbContext.CopilotUsers.AnyAsync(x => x.Email == request.Email, cancellationToken);
         if (emailColliding)
         {
-            return MaaApiResponse.BadRequest(_currentUserService.GetTrackingId(), "Email already in use");
+            throw new PipelineException(MaaApiResponse.BadRequest(_currentUserService.GetTrackingId(),
+                _apiErrorMessage.EmailAlreadyInUse));
         }
 
         var hashedPassword = _secretService.HashPassword(request.Password!);

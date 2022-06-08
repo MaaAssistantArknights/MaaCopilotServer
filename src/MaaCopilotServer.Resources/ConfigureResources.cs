@@ -11,6 +11,7 @@ public static class ConfigureResources
     public static IServiceCollection AddResources(this IServiceCollection services)
     {
         services.AddScoped<ValidationErrorMessage>();
+        services.AddScoped<ApiErrorMessage>();
 
         return services;
     }

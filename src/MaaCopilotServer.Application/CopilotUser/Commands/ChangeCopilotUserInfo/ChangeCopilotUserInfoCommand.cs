@@ -31,15 +31,18 @@ public class
     private readonly ICurrentUserService _currentUserService;
     private readonly IMaaCopilotDbContext _dbContext;
     private readonly ISecretService _secretService;
+    private readonly ApiErrorMessage _apiErrorMessage;
 
     public ChangeCopilotUserInfoCommandHandler(
         IMaaCopilotDbContext dbContext,
         ICurrentUserService currentUserService,
-        ISecretService secretService)
+        ISecretService secretService,
+        ApiErrorMessage apiErrorMessage)
     {
         _dbContext = dbContext;
         _currentUserService = currentUserService;
         _secretService = secretService;
+        _apiErrorMessage = apiErrorMessage;
     }
 
     public async Task<MaaActionResult<EmptyObject>> Handle(ChangeCopilotUserInfoCommand request,
@@ -51,19 +54,22 @@ public class
 
         if (user is null)
         {
-            return MaaApiResponse.NotFound($"User with id {request.UserId}", _currentUserService.GetTrackingId());
+            throw new PipelineException(MaaApiResponse.NotFound(_currentUserService.GetTrackingId(),
+                string.Format(_apiErrorMessage.UserWithIdNotFound!, request.UserId)));
         }
 
         var @operator = await _dbContext.CopilotUsers.FirstOrDefaultAsync(
             x => x.EntityId == _currentUserService.GetUserIdentity(), cancellationToken);
         if (@operator is null)
         {
-            throw new PipelineException(MaaApiResponse.InternalError(_currentUserService.GetTrackingId()));
+            throw new PipelineException(MaaApiResponse.InternalError(_currentUserService.GetTrackingId(),
+                _apiErrorMessage.InternalException));
         }
 
         if (@operator.UserRole is UserRole.Admin && user.UserRole >= UserRole.Admin)
         {
-            return MaaApiResponse.Forbidden(_currentUserService.GetTrackingId());
+            throw new PipelineException(MaaApiResponse.Forbidden(_currentUserService.GetTrackingId(),
+                _apiErrorMessage.PermissionDenied));
         }
 
         if (request.Password is not null)
@@ -77,8 +83,8 @@ public class
             var exist = _dbContext.CopilotUsers.Any(x => x.Email == request.Email);
             if (exist)
             {
-                return MaaApiResponse.BadRequest(_currentUserService.GetTrackingId(),
-                    $"User with email \"{request.Email}\" already exists");
+                throw new PipelineException(MaaApiResponse.BadRequest(_currentUserService.GetTrackingId(),
+                    _apiErrorMessage.EmailAlreadyInUse));
             }
         }
 

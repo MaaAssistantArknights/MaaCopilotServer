@@ -17,14 +17,17 @@ public record DeleteCopilotUserCommand : IRequest<MaaActionResult<EmptyObject>>
 public class DeleteCopilotUserCommandHandler : IRequestHandler<DeleteCopilotUserCommand, MaaActionResult<EmptyObject>>
 {
     private readonly ICurrentUserService _currentUserService;
+    private readonly ApiErrorMessage _apiErrorMessage;
     private readonly IMaaCopilotDbContext _dbContext;
 
     public DeleteCopilotUserCommandHandler(
         IMaaCopilotDbContext dbContext,
-        ICurrentUserService currentUserService)
+        ICurrentUserService currentUserService,
+        ApiErrorMessage apiErrorMessage)
     {
         _dbContext = dbContext;
         _currentUserService = currentUserService;
+        _apiErrorMessage = apiErrorMessage;
     }
 
     public async Task<MaaActionResult<EmptyObject>> Handle(DeleteCopilotUserCommand request,
@@ -34,20 +37,22 @@ public class DeleteCopilotUserCommandHandler : IRequestHandler<DeleteCopilotUser
         var user = await _dbContext.CopilotUsers.FirstOrDefaultAsync(x => x.EntityId == userId, cancellationToken);
         if (user == null)
         {
-            return MaaApiResponse.NotFound($"User \"{userId}\"", _currentUserService.GetTrackingId());
+            throw new PipelineException(MaaApiResponse.NotFound(_currentUserService.GetTrackingId(),
+                string.Format(_apiErrorMessage.UserWithIdNotFound!, userId)));
         }
 
         var @operator = await _dbContext.CopilotUsers.FirstOrDefaultAsync(
             x => x.EntityId == _currentUserService.GetUserIdentity(), cancellationToken);
         if (@operator is null)
         {
-            throw new PipelineException(MaaApiResponse.InternalError(_currentUserService.GetTrackingId()));
+            throw new PipelineException(MaaApiResponse.InternalError(_currentUserService.GetTrackingId(),
+                _apiErrorMessage.InternalException));
         }
 
         if (@operator.UserRole <= user.UserRole)
         {
-            return MaaApiResponse.Forbidden(_currentUserService.GetTrackingId(),
-                "You cannot delete a user with a higher or equal role than you.");
+            throw new PipelineException(MaaApiResponse.Forbidden(_currentUserService.GetTrackingId(),
+                _apiErrorMessage.PermissionDenied));
         }
 
         user.Delete(_currentUserService.GetUserIdentity()!.Value);

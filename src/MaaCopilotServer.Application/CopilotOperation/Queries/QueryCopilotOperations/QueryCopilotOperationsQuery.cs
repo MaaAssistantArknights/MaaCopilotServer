@@ -22,16 +22,19 @@ public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOp
 {
     private readonly ICopilotIdService _copilotIdService;
     private readonly ICurrentUserService _currentUserService;
+    private readonly ApiErrorMessage _apiErrorMessage;
     private readonly IMaaCopilotDbContext _dbContext;
 
     public QueryCopilotOperationsQueryHandler(
         IMaaCopilotDbContext dbContext,
         ICopilotIdService copilotIdService,
-        ICurrentUserService currentUserService)
+        ICurrentUserService currentUserService,
+        ApiErrorMessage apiErrorMessage)
     {
         _dbContext = dbContext;
         _copilotIdService = copilotIdService;
         _currentUserService = currentUserService;
+        _apiErrorMessage = apiErrorMessage;
     }
 
     public async Task<MaaActionResult<PaginationResult<QueryCopilotOperationsQueryDto>>> Handle(
@@ -45,7 +48,8 @@ public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOp
             var id = _currentUserService.GetUserIdentity();
             if (id is null)
             {
-                return MaaApiResponse.BadRequest(_currentUserService.GetTrackingId(), "User is not authenticated.");
+                throw new PipelineException(MaaApiResponse.BadRequest(_currentUserService.GetTrackingId(),
+                    _apiErrorMessage.MeNotFound));
             }
 
             uploaderId = id.Value;
