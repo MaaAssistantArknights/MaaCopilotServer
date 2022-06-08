@@ -54,7 +54,7 @@ public class
         }
 
         var (token, expire) = _secretService.GenerateJwtToken(user.EntityId);
-        var dto = new LoginCopilotUserDto(token, expire.ToStringZhHans(), user.UserName);
+        var dto = new LoginCopilotUserDto(token, expire.ToString("o", _apiErrorMessage.CultureInfo), user.UserName);
         return MaaApiResponse.Ok(dto, _currentUserService.GetTrackingId());
     }
 }

@@ -20,7 +20,7 @@ public class CreateCopilotUserCommandValidator : AbstractValidator<CreateCopilot
             .NotEmpty().Length(4, 24)
             .WithMessage(errorMessage.UsernameIsInvalid);
         RuleFor(x => x.Role)
-            .NotEmpty().IsInEnum().NotEqual(UserRole.SuperAdmin)
+            .NotEmpty().IsEnumName(typeof(UserRole)).NotEqual(UserRole.SuperAdmin.ToString())
             .WithMessage(errorMessage.UserRoleIsInvalid);
     }
 }

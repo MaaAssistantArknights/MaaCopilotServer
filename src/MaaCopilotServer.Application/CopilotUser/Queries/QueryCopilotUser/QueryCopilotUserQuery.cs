@@ -42,7 +42,9 @@ public class QueryCopilotUserQueryHandler : IRequestHandler<QueryCopilotUserQuer
         var totalCount = await queryable.CountAsync(cancellationToken);
 
         var skip = (page - 1) * limit;
-        queryable = queryable.Skip(skip).Take(limit);
+        queryable = queryable
+            .OrderByDescending(x => x.CreateAt)
+            .Skip(skip).Take(limit);
 
         var result = queryable.ToList();
         var hasNext = request.Limit * request.Page >= totalCount;

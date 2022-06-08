@@ -34,7 +34,7 @@ public class CurrentUserService : ICurrentUserService
 
     public string GetTrackingId()
     {
-        if (_configuration.GetValue<bool>("ElasticApm:Enabled") is false)
+        if (_configuration.GetValue<bool>("Switches:Apm") is false)
         {
             return _httpContextAccessor.HttpContext?.TraceIdentifier ?? string.Empty;
         }
