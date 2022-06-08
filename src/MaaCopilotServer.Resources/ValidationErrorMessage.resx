@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>1.3</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="PageIsLessThenOne" xml:space="preserve">
+    <value>页码不可小于 1</value>
+  </data>
+  <data name="LimitIsLessThenOne" xml:space="preserve">
+    <value>每页数量不可小于 1</value>
+  </data>
+  <data name="UploaderIdIsInvalid" xml:space="preserve">
+    <value>UploaderId 必须是有效的 Guid 或者 me</value>
+  </data>
+  <data name="CopilotOperationIdIsNull" xml:space="preserve">
+    <value>作业 ID 不可为 Null</value>
+  </data>
+  <data name="CopilotOperationJsonIsInvalid" xml:space="preserve">
+    <value>作业 JSON 不合法</value>
+  </data>
+  <data name="CopilotOperationIdIsEmpty" xml:space="preserve">
+    <value>作业 ID 不可为空</value>
+  </data>
+  <data name="EmailIsInvalid" xml:space="preserve">
+    <value>邮箱格式不合法</value>
+  </data>
+  <data name="PasswordIsInvalid" xml:space="preserve">
+    <value>密码格式不合法，至少需要 8 位，最多 32 位</value>
+  </data>
+  <data name="UsernameIsInvalid" xml:space="preserve">
+    <value>用户名不合法，至少需要 4 位，最多 24 位</value>
+  </data>
+  <data name="UserRoleIsInvalid" xml:space="preserve">
+    <value>权限组名称不合法</value>
+  </data>
+  <data name="UserIdIsInvalid" xml:space="preserve">
+    <value>用户 ID 不合法</value>
+  </data>
+  <data name="LoginValidationFail" xml:space="preserve">
+    <value>邮箱或密码不可为空</value>
+  </data>
+</root>

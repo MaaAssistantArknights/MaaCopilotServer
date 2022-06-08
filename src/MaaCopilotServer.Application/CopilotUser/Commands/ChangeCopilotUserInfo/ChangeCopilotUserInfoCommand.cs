@@ -22,7 +22,7 @@ public record ChangeCopilotUserInfoCommand : IRequest<MaaActionResult<EmptyObjec
 
     [JsonPropertyName("role")]
     [JsonConverter(typeof(JsonStringEnumConverter))]
-    public UserRole? Role { get; set; }
+    public string? Role { get; set; }
 }
 
 public class
@@ -82,7 +82,7 @@ public class
             }
         }
 
-        user.UpdateUserInfo(@operator.EntityId, request.Email, request.UserName, request.Role);
+        user.UpdateUserInfo(@operator.EntityId, request.Email, request.UserName, Enum.Parse<UserRole>(request.Role!));
 
         _dbContext.CopilotUsers.Update(user);
         await _dbContext.SaveChangesAsync(cancellationToken);

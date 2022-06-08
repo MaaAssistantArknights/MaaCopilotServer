@@ -6,19 +6,22 @@ namespace MaaCopilotServer.Application.CopilotOperation.Queries.QueryCopilotOper
 
 public class QueryCopilotOperationsQueryValidator : AbstractValidator<QueryCopilotOperationsQuery>
 {
-    public QueryCopilotOperationsQueryValidator()
+    public QueryCopilotOperationsQueryValidator(ValidationErrorMessage errorMessage)
     {
-        RuleFor(x => x.Page).GreaterThanOrEqualTo(1);
-        RuleFor(x => x.Limit).GreaterThanOrEqualTo(1);
-        RuleFor(x => x.StageName).NotNull();
-        RuleFor(x => x.Content).NotNull();
-        RuleFor(x => x.Uploader).NotNull();
+        RuleFor(x => x.Page)
+            .GreaterThanOrEqualTo(1)
+            .WithMessage(errorMessage.PageIsLessThenOne);
+        RuleFor(x => x.Limit)
+            .GreaterThanOrEqualTo(1)
+            .WithMessage(errorMessage.LimitIsLessThenOne);
 
         RuleFor(x => x.UploaderId)
-            .NotNull().NotEmpty().Must(FluentValidationExtension.BeValidGuid)
-            .When(x => x.UploaderId != "me" && string.IsNullOrEmpty(x.UploaderId) is false);
+            .NotEmpty().Must(FluentValidationExtension.BeValidGuid)
+            .When(x => x.UploaderId != "me" && string.IsNullOrEmpty(x.UploaderId) is false)
+            .WithMessage(errorMessage.UploaderIdIsInvalid);
         RuleFor(x => x.UploaderId)
-            .NotNull().NotEmpty().Equal("me")
-            .When(x => x.UploaderId == "me");
+            .NotEmpty().Equal("me")
+            .When(x => x.UploaderId == "me")
+            .WithMessage(errorMessage.UploaderIdIsInvalid);
     }
 }

@@ -6,10 +6,10 @@ namespace MaaCopilotServer.Application.CopilotOperation.Queries.GetCopilotOperat
 
 public class GetCopilotOperationQueryValidator : AbstractValidator<GetCopilotOperationQuery>
 {
-    public GetCopilotOperationQueryValidator()
+    public GetCopilotOperationQueryValidator(ValidationErrorMessage errorMessage)
     {
         RuleFor(x => x.Id)
-            .NotNull()
-            .NotEmpty();
+            .NotEmpty()
+            .WithMessage(errorMessage.CopilotOperationIdIsEmpty);
     }
 }

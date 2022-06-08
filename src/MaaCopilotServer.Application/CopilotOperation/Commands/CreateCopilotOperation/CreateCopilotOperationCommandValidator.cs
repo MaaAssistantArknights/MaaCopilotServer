@@ -8,12 +8,12 @@ namespace MaaCopilotServer.Application.CopilotOperation.Commands.CreateCopilotOp
 
 public class CreateCopilotOperationCommandValidator : AbstractValidator<CreateCopilotOperationCommand>
 {
-    public CreateCopilotOperationCommandValidator()
+    public CreateCopilotOperationCommandValidator(ValidationErrorMessage errorMessage)
     {
         RuleFor(x => x.Content)
-            .NotNull()
             .NotEmpty()
-            .Must(BeValidatedContent);
+            .Must(BeValidatedContent)
+            .WithMessage(errorMessage.CopilotOperationJsonIsInvalid);
     }
 
     private static bool BeValidatedContent(string? content)

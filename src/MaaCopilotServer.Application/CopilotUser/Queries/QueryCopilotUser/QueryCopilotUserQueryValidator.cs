@@ -6,10 +6,13 @@ namespace MaaCopilotServer.Application.CopilotUser.Queries.QueryCopilotUser;
 
 public class QueryCopilotUserQueryValidator : AbstractValidator<QueryCopilotUserQuery>
 {
-    public QueryCopilotUserQueryValidator()
+    public QueryCopilotUserQueryValidator(ValidationErrorMessage errorMessage)
     {
-        RuleFor(x => x.Page).GreaterThanOrEqualTo(1);
-        RuleFor(x => x.Limit).GreaterThanOrEqualTo(1);
-        RuleFor(x => x.UserName).NotNull();
+        RuleFor(x => x.Page)
+            .GreaterThanOrEqualTo(1)
+            .WithMessage(errorMessage.PageIsLessThenOne);
+        RuleFor(x => x.Limit)
+            .GreaterThanOrEqualTo(1)
+            .WithMessage(errorMessage.LimitIsLessThenOne);
     }
 }

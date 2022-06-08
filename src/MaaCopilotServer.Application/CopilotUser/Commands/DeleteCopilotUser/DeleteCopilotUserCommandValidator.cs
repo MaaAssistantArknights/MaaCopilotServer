@@ -6,8 +6,10 @@ namespace MaaCopilotServer.Application.CopilotUser.Commands.DeleteCopilotUser;
 
 public class DeleteCopilotUserCommandValidator : AbstractValidator<DeleteCopilotUserCommand>
 {
-    public DeleteCopilotUserCommandValidator()
+    public DeleteCopilotUserCommandValidator(ValidationErrorMessage errorMessage)
     {
-        RuleFor(x => x.UserId).NotNull().NotEmpty().Must(FluentValidationExtension.BeValidGuid);
+        RuleFor(x => x.UserId)
+            .NotEmpty().Must(FluentValidationExtension.BeValidGuid)
+            .WithMessage(errorMessage.UserIdIsInvalid);
     }
 }

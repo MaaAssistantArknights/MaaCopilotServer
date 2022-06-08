@@ -9,6 +9,7 @@ global using MaaCopilotServer.Application.Common.Security;
 global using MaaCopilotServer.Application.Common.Extensions;
 global using MaaCopilotServer.Application.Common.Enum;
 global using MaaCopilotServer.Application.Common.Models;
+global using MaaCopilotServer.Resources;
 global using MediatR;
 global using MediatR.Pipeline;
 global using FluentValidation;

@@ -9,8 +9,10 @@ using Elastic.Apm.Elasticsearch;
 using Elastic.Apm.EntityFrameworkCore;
 using MaaCopilotServer.Api;
 using MaaCopilotServer.Api.Helper;
+using MaaCopilotServer.Api.Middleware;
 using MaaCopilotServer.Application;
 using MaaCopilotServer.Infrastructure;
+using MaaCopilotServer.Resources;
 using Serilog;
 using Serilog.Debugging;
 
@@ -26,6 +28,7 @@ builder.Host.UseSerilog();
 builder.Configuration.AddConfiguration(configuration);
 
 builder.Services.AddControllers();
+builder.Services.AddResources();
 builder.Services.AddInfrastructureServices();
 builder.Services.AddApplicationServices();
 builder.Services.AddApiServices(configuration);
@@ -44,6 +47,7 @@ if (configuration.GetValue<bool>("Switches:Apm"))
         new AspNetCoreErrorDiagnosticsSubscriber());
 }
 
+app.UseRequestCulture();
 app.UseAuthentication();
 app.MapControllers();
 

@@ -6,14 +6,16 @@ namespace MaaCopilotServer.Application.CopilotUser.Commands.UpdateCopilotUserInf
 
 public class UpdateCopilotUserInfoCommandValidator : AbstractValidator<UpdateCopilotUserInfoCommand>
 {
-    public UpdateCopilotUserInfoCommandValidator()
+    public UpdateCopilotUserInfoCommandValidator(ValidationErrorMessage errorMessage)
     {
         RuleFor(x => x.Email)
-            .NotNull().EmailAddress()
-            .When(x => x.Email is not null);
+            .EmailAddress()
+            .When(x => x.Email is not null)
+            .WithMessage(errorMessage.EmailIsInvalid);
 
         RuleFor(x => x.UserName)
-            .NotNull().NotEmpty().Length(4, 24)
-            .When(x => x.UserName is not null);
+            .NotEmpty().Length(4, 24)
+            .When(x => x.UserName is not null)
+            .WithMessage(errorMessage.UsernameIsInvalid);
     }
 }

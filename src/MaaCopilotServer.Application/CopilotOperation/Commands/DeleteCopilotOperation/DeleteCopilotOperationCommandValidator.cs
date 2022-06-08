@@ -6,10 +6,10 @@ namespace MaaCopilotServer.Application.CopilotOperation.Commands.DeleteCopilotOp
 
 public class DeleteCopilotOperationCommandValidator : AbstractValidator<DeleteCopilotOperationCommand>
 {
-    public DeleteCopilotOperationCommandValidator()
+    public DeleteCopilotOperationCommandValidator(ValidationErrorMessage errorMessage)
     {
         RuleFor(x => x.Id)
-            .NotNull()
-            .NotEmpty();
+            .NotEmpty()
+            .WithMessage(errorMessage.CopilotOperationIdIsEmpty);
     }
 }
