@@ -53,7 +53,7 @@ public class
 
         var dto = new GetCopilotOperationQueryDto(
             request.Id!, entity.StageName, entity.MinimumRequired,
-            entity.CreateAt.ToStringZhHans(), entity.Content, entity.Author.UserName, entity.Title, entity.Details);
+            entity.CreateAt.ToStringZhHans(), entity.Content, entity.Author.UserName, entity.Title, entity.Details, entity.Downloads);
         return MaaApiResponse.Ok(dto, _currentUserService.GetTrackingId());
     }
 }

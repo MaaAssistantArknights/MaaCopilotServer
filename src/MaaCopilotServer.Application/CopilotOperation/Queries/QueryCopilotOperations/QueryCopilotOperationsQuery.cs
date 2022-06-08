@@ -15,6 +15,8 @@ public record QueryCopilotOperationsQuery : IRequest<MaaActionResult<PaginationR
     [FromQuery(Name = "content")] public string? Content { get; set; } = null;
     [FromQuery(Name = "uploader")] public string? Uploader { get; set; } = null;
     [FromQuery(Name = "uploader_id")] public string? UploaderId { get; set; } = null;
+    [FromQuery(Name = "desc")] public string? Desc { get; set; } = null;
+    [FromQuery(Name = "order_by")] public string? OrderBy { get; set; } = null;
 }
 
 public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOperationsQuery,
@@ -87,6 +89,17 @@ public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOp
         var totalCount = await queryable.CountAsync(cancellationToken);
 
         var skip = (page - 1) * limit;
+
+        queryable = request.OrderBy?.ToLower() switch
+        {
+            "downloads" => string.IsNullOrEmpty(request.Desc)
+                ? queryable.OrderBy(x => x.Downloads)
+                : queryable.OrderByDescending(x => x.Downloads),
+            _ => string.IsNullOrEmpty(request.Desc)
+                ? queryable.OrderBy(x => x.Id)
+                : queryable.OrderByDescending(x => x.Id)
+        };
+
         queryable = queryable.Skip(skip).Take(limit);
 
         var result = queryable.ToList();
@@ -94,7 +107,7 @@ public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOp
 
         var dtos = result.Select(x => new QueryCopilotOperationsQueryDto(
                 _copilotIdService.EncodeId(x.Id), x.StageName, x.MinimumRequired, x.CreateAt.ToStringZhHans(),
-                x.Author.UserName, x.Title, x.Details))
+                x.Author.UserName, x.Title, x.Details, x.Downloads))
             .ToList();
         var paginationResult = new PaginationResult<QueryCopilotOperationsQueryDto>(hasNext, page, totalCount, dtos);
         return MaaApiResponse.Ok(paginationResult, _currentUserService.GetTrackingId());

@@ -9,7 +9,7 @@ namespace MaaCopilotServer.Application.CopilotOperation.Queries.GetCopilotOperat
 public class GetCopilotOperationQueryDto
 {
     public GetCopilotOperationQueryDto(string id, string stageName, string minimumRequired, string uploadTime,
-        string content, string uploader, string title, string detail)
+        string content, string uploader, string title, string detail, int downloads)
     {
         Id = id;
         StageName = stageName;
@@ -19,6 +19,7 @@ public class GetCopilotOperationQueryDto
         Uploader = uploader;
         Title = title;
         Detail = detail;
+        Downloads = downloads;
     }
 
     [JsonPropertyName("id")] public string Id { get; }
@@ -36,4 +37,5 @@ public class GetCopilotOperationQueryDto
     [JsonPropertyName("detail")] public string Detail { get; }
 
     [JsonPropertyName("uploader")] public string Uploader { get; }
+    [JsonPropertyName("downloads")] public int Downloads { get; }
 }
