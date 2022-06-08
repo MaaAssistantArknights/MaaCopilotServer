@@ -14,7 +14,6 @@ public struct LoggingType
     }
 
     public static LoggingType Request => new("Request");
-    public static LoggingType LongRunRequest => new("Long Run Request");
     public static LoggingType FailedRequest => new("Failed Request");
     public static LoggingType Exception => new("Exception");
 

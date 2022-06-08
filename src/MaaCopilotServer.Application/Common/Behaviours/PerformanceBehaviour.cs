@@ -11,21 +11,18 @@ public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequ
     where TRequest : IRequest<TResponse>
 {
     private readonly ICurrentUserService _currentUserService;
-    private readonly IIdentityService _identityService;
     private readonly ILogger<TRequest> _logger;
     private readonly Stopwatch _timer;
 
     public PerformanceBehaviour(
         // ReSharper disable once ContextualLoggerProblem
         ILogger<TRequest> logger,
-        ICurrentUserService currentUserService,
-        IIdentityService identityService)
+        ICurrentUserService currentUserService)
     {
         _timer = new Stopwatch();
 
         _logger = logger;
         _currentUserService = currentUserService;
-        _identityService = identityService;
     }
 
     public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken,
@@ -33,24 +30,22 @@ public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequ
     {
         _timer.Start();
 
-        var response = await next();
-
-        _timer.Stop();
-
-        var elapsedMilliseconds = _timer.ElapsedMilliseconds;
-
-        if (elapsedMilliseconds <= 500)
+        try
         {
-            return response;
+            return await next();
         }
+        finally
+        {
+            _timer.Stop();
 
-        var requestName = typeof(TRequest).Name;
-        var userId = _currentUserService.GetUserIdentity().ToString() ?? string.Empty;
+            var elapsedMilliseconds = _timer.ElapsedMilliseconds;
 
-        _logger.LogWarning(
-            "MaaCopilotServer: Type -> {LoggingType}; Request Name -> {Name}; User -> {UserId}; Request -> {@Request}",
-            (string)LoggingType.LongRunRequest, requestName, userId, request);
+            var requestName = typeof(TRequest).Name;
+            var userId = _currentUserService.GetUserIdentity().ToString() ?? string.Empty;
 
-        return response;
+            _logger.LogInformation(
+                "MaaCopilotServer: Type -> {LoggingType}; Request Name -> {Name}; Time -> {ElapsedTime}; User -> {UserId}; Request -> {@Request}",
+                (string)LoggingType.Request, requestName, elapsedMilliseconds, userId, request);
+        }
     }
 }
