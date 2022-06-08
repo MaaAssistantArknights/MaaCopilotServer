@@ -3,19 +3,14 @@
 // Licensed under the AGPL-3.0 license.
 
 using System.Reflection;
-using MaaCopilotServer.Application.Common.Exceptions;
-using MaaCopilotServer.Application.Common.Interfaces;
-using MaaCopilotServer.Application.Common.Models;
-using MaaCopilotServer.Application.Common.Security;
-using MediatR;
 
 namespace MaaCopilotServer.Application.Common.Behaviours;
 
 public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IRequest<TResponse>
 {
-    private readonly IIdentityService _identityService;
     private readonly ICurrentUserService _currentUserService;
+    private readonly IIdentityService _identityService;
 
     public AuthorizationBehaviour(IIdentityService identityService, ICurrentUserService currentUserService)
     {
@@ -23,7 +18,8 @@ public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRe
         _currentUserService = currentUserService;
     }
 
-    public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
+    public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken,
+        RequestHandlerDelegate<TResponse> next)
     {
         var authorizeAttributes = request.GetType().GetCustomAttributes<AuthorizedAttribute>().ToList();
         if (authorizeAttributes.Count == 0)

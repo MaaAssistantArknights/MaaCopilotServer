@@ -2,8 +2,6 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
-using MaaCopilotServer.Application.Common.Models;
-
 namespace MaaCopilotServer.Application.Common.Exceptions;
 
 public class PipelineException : Exception

@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using Destructurama;
 using Elastic.Apm.SerilogEnricher;
 using Elastic.CommonSchema.Serilog;
 using Serilog;
@@ -14,7 +15,8 @@ public static class LoggerConfigurationHelper
     public static LoggerConfiguration GetLoggerConfiguration(this IConfiguration configuration)
     {
         var loggerConfiguration = new LoggerConfiguration()
-            .ReadFrom.Configuration(configuration);
+            .ReadFrom.Configuration(configuration)
+            .Destructure.UsingAttributes();
 
         if (configuration.GetValue<bool>("Switches:ElasticSearch") is false)
         {

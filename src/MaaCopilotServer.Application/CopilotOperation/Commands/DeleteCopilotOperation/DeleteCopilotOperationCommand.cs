@@ -3,11 +3,7 @@
 // Licensed under the AGPL-3.0 license.
 
 using System.Text.Json.Serialization;
-using MaaCopilotServer.Application.Common.Interfaces;
-using MaaCopilotServer.Application.Common.Models;
-using MaaCopilotServer.Application.Common.Security;
 using MaaCopilotServer.Domain.Enums;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace MaaCopilotServer.Application.CopilotOperation.Commands.DeleteCopilotOperation;
@@ -21,9 +17,9 @@ public record DeleteCopilotOperationCommand : IRequest<MaaActionResult<EmptyObje
 public class DeleteCopilotOperationCommandHandler : IRequestHandler<DeleteCopilotOperationCommand,
     MaaActionResult<EmptyObject>>
 {
-    private readonly IMaaCopilotDbContext _dbContext;
     private readonly ICopilotIdService _copilotIdService;
     private readonly ICurrentUserService _currentUserService;
+    private readonly IMaaCopilotDbContext _dbContext;
 
     public DeleteCopilotOperationCommandHandler(
         IMaaCopilotDbContext dbContext,
@@ -35,7 +31,8 @@ public class DeleteCopilotOperationCommandHandler : IRequestHandler<DeleteCopilo
         _currentUserService = currentUserService;
     }
 
-    public async Task<MaaActionResult<EmptyObject>> Handle(DeleteCopilotOperationCommand request, CancellationToken cancellationToken)
+    public async Task<MaaActionResult<EmptyObject>> Handle(DeleteCopilotOperationCommand request,
+        CancellationToken cancellationToken)
     {
         var id = _copilotIdService.DecodeId(request.Id!);
         if (id is null)

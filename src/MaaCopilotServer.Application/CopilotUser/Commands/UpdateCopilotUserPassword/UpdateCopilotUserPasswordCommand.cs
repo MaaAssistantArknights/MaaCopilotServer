@@ -3,12 +3,8 @@
 // Licensed under the AGPL-3.0 license.
 
 using System.Text.Json.Serialization;
-using MaaCopilotServer.Application.Common.Exceptions;
-using MaaCopilotServer.Application.Common.Interfaces;
-using MaaCopilotServer.Application.Common.Models;
-using MaaCopilotServer.Application.Common.Security;
+using Destructurama.Attributed;
 using MaaCopilotServer.Domain.Enums;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace MaaCopilotServer.Application.CopilotUser.Commands.UpdateCopilotUserPassword;
@@ -16,17 +12,21 @@ namespace MaaCopilotServer.Application.CopilotUser.Commands.UpdateCopilotUserPas
 [Authorized(UserRole.User)]
 public record UpdateCopilotUserPasswordCommand : IRequest<MaaActionResult<EmptyObject>>
 {
-    [JsonPropertyName("original_password")] public string? OriginalPassword { get; set; }
+    [JsonPropertyName("original_password")]
+    [NotLogged]
+    public string? OriginalPassword { get; set; }
 
-    [JsonPropertyName("new_password")] public string? NewPassword { get; set; }
+    [JsonPropertyName("new_password")]
+    [NotLogged]
+    public string? NewPassword { get; set; }
 }
 
 public class UpdateCopilotUserPasswordCommandHandler : IRequestHandler<UpdateCopilotUserPasswordCommand,
     MaaActionResult<EmptyObject>>
 {
+    private readonly ICurrentUserService _currentUserService;
     private readonly IMaaCopilotDbContext _dbContext;
     private readonly ISecretService _secretService;
-    private readonly ICurrentUserService _currentUserService;
 
     public UpdateCopilotUserPasswordCommandHandler(
         IMaaCopilotDbContext dbContext,
@@ -38,7 +38,8 @@ public class UpdateCopilotUserPasswordCommandHandler : IRequestHandler<UpdateCop
         _currentUserService = currentUserService;
     }
 
-    public async Task<MaaActionResult<EmptyObject>> Handle(UpdateCopilotUserPasswordCommand request, CancellationToken cancellationToken)
+    public async Task<MaaActionResult<EmptyObject>> Handle(UpdateCopilotUserPasswordCommand request,
+        CancellationToken cancellationToken)
     {
         var user = await _dbContext.CopilotUsers
             .FirstOrDefaultAsync(x => x.EntityId == _currentUserService.GetUserIdentity()!.Value, cancellationToken);

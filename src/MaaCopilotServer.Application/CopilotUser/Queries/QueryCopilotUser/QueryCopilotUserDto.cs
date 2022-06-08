@@ -16,10 +16,9 @@ public class QueryCopilotUserDto
         UserRole = userRole;
     }
 
-    [JsonPropertyName("id")]
-    public Guid Id { get; set; }
-    [JsonPropertyName("user_name")]
-    public string UserName { get; set; }
-    [JsonPropertyName("role")]
-    public UserRole UserRole { get; set; }
+    [JsonPropertyName("id")] public Guid Id { get; set; }
+
+    [JsonPropertyName("user_name")] public string UserName { get; set; }
+
+    [JsonPropertyName("role")] public UserRole UserRole { get; set; }
 }

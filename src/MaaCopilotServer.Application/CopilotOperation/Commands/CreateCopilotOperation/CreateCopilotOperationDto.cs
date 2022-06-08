@@ -13,6 +13,5 @@ public class CreateCopilotOperationDto
         Id = id;
     }
 
-    [JsonPropertyName("id")]
-    public string Id { get; set; }
+    [JsonPropertyName("id")] public string Id { get; set; }
 }

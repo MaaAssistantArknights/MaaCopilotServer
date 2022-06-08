@@ -4,19 +4,22 @@
 
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
-using MaaCopilotServer.Application.Common.Exceptions;
 
 namespace MaaCopilotServer.Application.Common.Extensions;
 
 public static class FileInfoExtension
 {
     /// <summary>
-    /// 确认文件存在，若文件不存在，则抛出 <see cref="FileNotFoundException"/> 异常
+    ///     确认文件存在，若文件不存在，则抛出 <see cref="FileNotFoundException" /> 异常
     /// </summary>
-    /// <param name="fileInfo"><see cref="FileInfo"/> 实例</param>
-    /// <param name="paramName"><see cref="CallerArgumentExpressionAttribute"/></param>
-    /// <param name="memberName"><see cref="CallerMemberNameAttribute"/></param>
-    /// <returns>确保文件存在的 <see cref="FileInfo"/> 实例</returns>
+    /// <param name="fileInfo"><see cref="FileInfo" /> 实例</param>
+    /// <param name="paramName">
+    ///     <see cref="CallerArgumentExpressionAttribute" />
+    /// </param>
+    /// <param name="memberName">
+    ///     <see cref="CallerMemberNameAttribute" />
+    /// </param>
+    /// <returns>确保文件存在的 <see cref="FileInfo" /> 实例</returns>
     /// <exception cref="FileNotFoundException">文件不存在异常</exception>
     public static FileInfo AssertExist(this FileInfo? fileInfo,
         [CallerArgumentExpression("fileInfo")] string paramName = "UnknownParamName",
@@ -32,12 +35,16 @@ public static class FileInfoExtension
     }
 
     /// <summary>
-    /// 确认文件不存在，若文件存在，则抛出 <see cref="FileFoundException"/> 异常
+    ///     确认文件不存在，若文件存在，则抛出 <see cref="FileFoundException" /> 异常
     /// </summary>
-    /// <param name="fileInfo"><see cref="FileInfo"/> 实例</param>
-    /// <param name="paramName"><see cref="CallerArgumentExpressionAttribute"/></param>
-    /// <param name="memberName"><see cref="CallerMemberNameAttribute"/></param>
-    /// <returns>确保文件不存在的 <see cref="FileInfo"/> 实例</returns>
+    /// <param name="fileInfo"><see cref="FileInfo" /> 实例</param>
+    /// <param name="paramName">
+    ///     <see cref="CallerArgumentExpressionAttribute" />
+    /// </param>
+    /// <param name="memberName">
+    ///     <see cref="CallerMemberNameAttribute" />
+    /// </param>
+    /// <returns>确保文件不存在的 <see cref="FileInfo" /> 实例</returns>
     /// <exception cref="FileFoundException">文件存在异常</exception>
     public static FileInfo AssertNotExist(this FileInfo? fileInfo,
         [CallerArgumentExpression("fileInfo")] string paramName = "UnknownParamName",
@@ -53,10 +60,10 @@ public static class FileInfoExtension
     }
 
     /// <summary>
-    /// 确保文件不存在
+    ///     确保文件不存在
     /// </summary>
-    /// <param name="fileInfo"><see cref="FileInfo"/> 实例</param>
-    /// <returns>确保文件不存在的 <see cref="FileInfo"/> 实例</returns>
+    /// <param name="fileInfo"><see cref="FileInfo" /> 实例</param>
+    /// <returns>确保文件不存在的 <see cref="FileInfo" /> 实例</returns>
     public static FileInfo EnsureDeleted(this FileInfo fileInfo)
     {
         if (fileInfo.Exists)
@@ -68,9 +75,9 @@ public static class FileInfoExtension
     }
 
     /// <summary>
-    /// 获取文件 MD5 校验码
+    ///     获取文件 MD5 校验码
     /// </summary>
-    /// <param name="fileInfo"><see cref="FileInfo"/> 实例</param>
+    /// <param name="fileInfo"><see cref="FileInfo" /> 实例</param>
     /// <returns>文件 MD5 校验码</returns>
     public static string GetMd5(this FileInfo fileInfo)
     {
@@ -85,9 +92,9 @@ public static class FileInfoExtension
     }
 
     /// <summary>
-    /// 异步获取文件 MD5 校验码
+    ///     异步获取文件 MD5 校验码
     /// </summary>
-    /// <param name="fileInfo"><see cref="FileInfo"/> 实例</param>
+    /// <param name="fileInfo"><see cref="FileInfo" /> 实例</param>
     /// <returns>文件 MD5 校验码</returns>
     public static async Task<string> GetMd5Async(this FileInfo fileInfo)
     {
@@ -102,10 +109,10 @@ public static class FileInfoExtension
     }
 
     /// <summary>
-    /// 检查两个文件的 MD5 校验码是否一致
+    ///     检查两个文件的 MD5 校验码是否一致
     /// </summary>
-    /// <param name="fileInfo"><see cref="FileInfo"/> 实例</param>
-    /// <param name="another"><see cref="FileInfo"/> 实例</param>
+    /// <param name="fileInfo"><see cref="FileInfo" /> 实例</param>
+    /// <param name="another"><see cref="FileInfo" /> 实例</param>
     /// <returns>文件是否一致</returns>
     public static bool IsSameMd5With(this FileInfo fileInfo, FileInfo another)
     {

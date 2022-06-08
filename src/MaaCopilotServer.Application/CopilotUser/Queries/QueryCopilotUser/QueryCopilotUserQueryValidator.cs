@@ -2,8 +2,6 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
-using FluentValidation;
-
 namespace MaaCopilotServer.Application.CopilotUser.Queries.QueryCopilotUser;
 
 public class QueryCopilotUserQueryValidator : AbstractValidator<QueryCopilotUserQuery>

@@ -9,10 +9,10 @@ namespace MaaCopilotServer.Application.Common.Security;
 [AttributeUsage(AttributeTargets.Class)]
 public class AuthorizedAttribute : Attribute
 {
-    public UserRole Role { get; }
-
     public AuthorizedAttribute(UserRole role)
     {
         Role = role;
     }
+
+    public UserRole Role { get; }
 }

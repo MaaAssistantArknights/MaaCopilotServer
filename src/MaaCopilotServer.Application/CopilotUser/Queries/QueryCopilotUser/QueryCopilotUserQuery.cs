@@ -2,9 +2,6 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
-using MaaCopilotServer.Application.Common.Interfaces;
-using MaaCopilotServer.Application.Common.Models;
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,10 +14,11 @@ public record QueryCopilotUserQuery : IRequest<MaaActionResult<PaginationResult<
     [FromQuery(Name = "user_name")] public string? UserName { get; set; } = null;
 }
 
-public class QueryCopilotUserQueryHandler : IRequestHandler<QueryCopilotUserQuery, MaaActionResult<PaginationResult<QueryCopilotUserDto>>>
+public class QueryCopilotUserQueryHandler : IRequestHandler<QueryCopilotUserQuery,
+    MaaActionResult<PaginationResult<QueryCopilotUserDto>>>
 {
-    private readonly IMaaCopilotDbContext _dbContext;
     private readonly ICurrentUserService _currentUserService;
+    private readonly IMaaCopilotDbContext _dbContext;
 
     public QueryCopilotUserQueryHandler(
         IMaaCopilotDbContext dbContext,
@@ -30,7 +28,8 @@ public class QueryCopilotUserQueryHandler : IRequestHandler<QueryCopilotUserQuer
         _currentUserService = currentUserService;
     }
 
-    public async Task<MaaActionResult<PaginationResult<QueryCopilotUserDto>>> Handle(QueryCopilotUserQuery request, CancellationToken cancellationToken)
+    public async Task<MaaActionResult<PaginationResult<QueryCopilotUserDto>>> Handle(QueryCopilotUserQuery request,
+        CancellationToken cancellationToken)
     {
         var limit = request.Limit ?? 10;
         var page = request.Page ?? 1;

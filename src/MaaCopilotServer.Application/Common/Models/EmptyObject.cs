@@ -4,4 +4,6 @@
 
 namespace MaaCopilotServer.Application.Common.Models;
 
-public class EmptyObject { }
+public class EmptyObject
+{
+}

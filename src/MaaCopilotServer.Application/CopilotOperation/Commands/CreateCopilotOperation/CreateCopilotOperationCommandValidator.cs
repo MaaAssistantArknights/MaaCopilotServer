@@ -3,7 +3,6 @@
 // Licensed under the AGPL-3.0 license.
 
 using System.Text.Json;
-using FluentValidation;
 
 namespace MaaCopilotServer.Application.CopilotOperation.Commands.CreateCopilotOperation;
 

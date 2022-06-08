@@ -2,10 +2,6 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
-using MaaCopilotServer.Application.Common.Extensions;
-using MaaCopilotServer.Application.Common.Interfaces;
-using MaaCopilotServer.Application.Common.Models;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace MaaCopilotServer.Application.CopilotOperation.Queries.GetCopilotOperation;
@@ -15,11 +11,13 @@ public record GetCopilotOperationQuery : IRequest<MaaActionResult<GetCopilotOper
     public string? Id { get; set; }
 }
 
-public class GetCopilotOperationQueryHandler : IRequestHandler<GetCopilotOperationQuery, MaaActionResult<GetCopilotOperationQueryDto>>
+public class
+    GetCopilotOperationQueryHandler : IRequestHandler<GetCopilotOperationQuery,
+        MaaActionResult<GetCopilotOperationQueryDto>>
 {
-    private readonly IMaaCopilotDbContext _dbContext;
     private readonly ICopilotIdService _copilotIdService;
     private readonly ICurrentUserService _currentUserService;
+    private readonly IMaaCopilotDbContext _dbContext;
 
     public GetCopilotOperationQueryHandler(
         IMaaCopilotDbContext dbContext,
@@ -31,7 +29,8 @@ public class GetCopilotOperationQueryHandler : IRequestHandler<GetCopilotOperati
         _currentUserService = currentUserService;
     }
 
-    public async Task<MaaActionResult<GetCopilotOperationQueryDto>> Handle(GetCopilotOperationQuery request, CancellationToken cancellationToken)
+    public async Task<MaaActionResult<GetCopilotOperationQueryDto>> Handle(GetCopilotOperationQuery request,
+        CancellationToken cancellationToken)
     {
         var id = _copilotIdService.DecodeId(request.Id!);
         if (id is null)

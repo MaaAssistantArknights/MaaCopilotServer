@@ -17,13 +17,13 @@ public class GetCopilotUserDto
         UploadCount = uploadCount;
     }
 
-    [JsonPropertyName("id")]
-    public Guid Id { get; set; }
-    [JsonPropertyName("user_name")]
-    public string UserName { get; set; }
+    [JsonPropertyName("id")] public Guid Id { get; set; }
+
+    [JsonPropertyName("user_name")] public string UserName { get; set; }
+
     [JsonPropertyName("role")]
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public UserRole UserRole { get; set; }
-    [JsonPropertyName("upload_count")]
-    public int UploadCount { get; set; }
+
+    [JsonPropertyName("upload_count")] public int UploadCount { get; set; }
 }

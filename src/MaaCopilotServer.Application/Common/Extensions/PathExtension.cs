@@ -7,7 +7,7 @@ namespace MaaCopilotServer.Application.Common.Extensions;
 public static class PathExtension
 {
     /// <summary>
-    /// 拼接路径
+    ///     拼接路径
     /// </summary>
     /// <param name="path1">路径 1</param>
     /// <param name="path2">路径 2</param>

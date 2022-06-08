@@ -3,12 +3,8 @@
 // Licensed under the AGPL-3.0 license.
 
 using System.Text.Json.Serialization;
-using MaaCopilotServer.Application.Common.Exceptions;
-using MaaCopilotServer.Application.Common.Interfaces;
-using MaaCopilotServer.Application.Common.Models;
-using MaaCopilotServer.Application.Common.Security;
+using Destructurama.Attributed;
 using MaaCopilotServer.Domain.Enums;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace MaaCopilotServer.Application.CopilotUser.Commands.ChangeCopilotUserInfo;
@@ -19,14 +15,21 @@ public record ChangeCopilotUserInfoCommand : IRequest<MaaActionResult<EmptyObjec
     [JsonPropertyName("user_id")] public string? UserId { get; set; }
     [JsonPropertyName("email")] public string? Email { get; set; }
     [JsonPropertyName("user_name")] public string? UserName { get; set; }
-    [JsonPropertyName("password")] public string? Password { get; set; }
-    [JsonPropertyName("role"), JsonConverter(typeof(JsonStringEnumConverter))] public UserRole? Role { get; set; }
+
+    [JsonPropertyName("password")]
+    [LogMasked]
+    public string? Password { get; set; }
+
+    [JsonPropertyName("role")]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public UserRole? Role { get; set; }
 }
 
-public class ChangeCopilotUserInfoCommandHandler : IRequestHandler<ChangeCopilotUserInfoCommand, MaaActionResult<EmptyObject>>
+public class
+    ChangeCopilotUserInfoCommandHandler : IRequestHandler<ChangeCopilotUserInfoCommand, MaaActionResult<EmptyObject>>
 {
-    private readonly IMaaCopilotDbContext _dbContext;
     private readonly ICurrentUserService _currentUserService;
+    private readonly IMaaCopilotDbContext _dbContext;
     private readonly ISecretService _secretService;
 
     public ChangeCopilotUserInfoCommandHandler(
@@ -39,7 +42,8 @@ public class ChangeCopilotUserInfoCommandHandler : IRequestHandler<ChangeCopilot
         _secretService = secretService;
     }
 
-    public async Task<MaaActionResult<EmptyObject>> Handle(ChangeCopilotUserInfoCommand request, CancellationToken cancellationToken)
+    public async Task<MaaActionResult<EmptyObject>> Handle(ChangeCopilotUserInfoCommand request,
+        CancellationToken cancellationToken)
     {
         var userId = Guid.Parse(request.UserId!);
         var user = await _dbContext.CopilotUsers
@@ -73,7 +77,8 @@ public class ChangeCopilotUserInfoCommandHandler : IRequestHandler<ChangeCopilot
             var exist = _dbContext.CopilotUsers.Any(x => x.Email == request.Email);
             if (exist)
             {
-                return MaaApiResponse.BadRequest(_currentUserService.GetTrackingId(), $"User with email \"{request.Email}\" already exists");
+                return MaaApiResponse.BadRequest(_currentUserService.GetTrackingId(),
+                    $"User with email \"{request.Email}\" already exists");
             }
         }
 

@@ -3,10 +3,7 @@
 // Licensed under the AGPL-3.0 license.
 
 using System.Text.Json.Serialization;
-using MaaCopilotServer.Application.Common.Extensions;
-using MaaCopilotServer.Application.Common.Interfaces;
-using MaaCopilotServer.Application.Common.Models;
-using MediatR;
+using Destructurama.Attributed;
 using Microsoft.EntityFrameworkCore;
 
 namespace MaaCopilotServer.Application.CopilotUser.Commands.LoginCopilotUser;
@@ -14,14 +11,18 @@ namespace MaaCopilotServer.Application.CopilotUser.Commands.LoginCopilotUser;
 public record LoginCopilotUserCommand : IRequest<MaaActionResult<LoginCopilotUserDto>>
 {
     [JsonPropertyName("email")] public string? Email { get; set; }
-    [JsonPropertyName("password")] public string? Password { get; set; }
+
+    [JsonPropertyName("password")]
+    [LogMasked]
+    public string? Password { get; set; }
 }
 
-public class LoginCopilotUserCommandHandler : IRequestHandler<LoginCopilotUserCommand, MaaActionResult<LoginCopilotUserDto>>
+public class
+    LoginCopilotUserCommandHandler : IRequestHandler<LoginCopilotUserCommand, MaaActionResult<LoginCopilotUserDto>>
 {
+    private readonly ICurrentUserService _currentUserService;
     private readonly IMaaCopilotDbContext _dbContext;
     private readonly ISecretService _secretService;
-    private readonly ICurrentUserService _currentUserService;
 
     public LoginCopilotUserCommandHandler(
         IMaaCopilotDbContext dbContext,
@@ -33,7 +34,8 @@ public class LoginCopilotUserCommandHandler : IRequestHandler<LoginCopilotUserCo
         _currentUserService = currentUserService;
     }
 
-    public async Task<MaaActionResult<LoginCopilotUserDto>> Handle(LoginCopilotUserCommand request, CancellationToken cancellationToken)
+    public async Task<MaaActionResult<LoginCopilotUserDto>> Handle(LoginCopilotUserCommand request,
+        CancellationToken cancellationToken)
     {
         var user = await _dbContext.CopilotUsers.FirstOrDefaultAsync(x => x.Email == request.Email, cancellationToken);
         if (user is null)

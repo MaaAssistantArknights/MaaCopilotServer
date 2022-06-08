@@ -2,9 +2,6 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
-using MaaCopilotServer.Application.Common.Interfaces;
-using MaaCopilotServer.Application.Common.Models;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace MaaCopilotServer.Application.CopilotUser.Queries.GetCopilotUser;
@@ -16,8 +13,8 @@ public record GetCopilotUserQuery : IRequest<MaaActionResult<GetCopilotUserDto>>
 
 public class GetCopilotUserQueryHandler : IRequestHandler<GetCopilotUserQuery, MaaActionResult<GetCopilotUserDto>>
 {
-    private readonly IMaaCopilotDbContext _dbContext;
     private readonly ICurrentUserService _currentUserService;
+    private readonly IMaaCopilotDbContext _dbContext;
 
     public GetCopilotUserQueryHandler(
         IMaaCopilotDbContext dbContext,
@@ -27,7 +24,8 @@ public class GetCopilotUserQueryHandler : IRequestHandler<GetCopilotUserQuery, M
         _currentUserService = currentUserService;
     }
 
-    public async Task<MaaActionResult<GetCopilotUserDto>> Handle(GetCopilotUserQuery request, CancellationToken cancellationToken)
+    public async Task<MaaActionResult<GetCopilotUserDto>> Handle(GetCopilotUserQuery request,
+        CancellationToken cancellationToken)
     {
         Guid userId;
         if (request.UserId == "me")
@@ -37,12 +35,14 @@ public class GetCopilotUserQueryHandler : IRequestHandler<GetCopilotUserQuery, M
             {
                 return MaaApiResponse.BadRequest(_currentUserService.GetTrackingId(), "User is not authenticated.");
             }
+
             userId = id.Value;
         }
         else
         {
             userId = Guid.Parse(request.UserId!);
         }
+
         var user = await _dbContext.CopilotUsers.FirstOrDefaultAsync(x => x.EntityId == userId, cancellationToken);
 
         if (user is null)

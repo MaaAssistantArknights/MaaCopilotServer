@@ -2,19 +2,13 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
-using FluentValidation;
-using MaaCopilotServer.Application.Common.Exceptions;
-using MaaCopilotServer.Application.Common.Interfaces;
-using MaaCopilotServer.Application.Common.Models;
-using MediatR;
-
 namespace MaaCopilotServer.Application.Common.Behaviours;
 
 public class ValidationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IRequest<TResponse>
 {
-    private readonly IEnumerable<IValidator<TRequest>> _validators;
     private readonly ICurrentUserService _currentUserService;
+    private readonly IEnumerable<IValidator<TRequest>> _validators;
 
     public ValidationBehaviour(IEnumerable<IValidator<TRequest>> validators, ICurrentUserService currentUserService)
     {

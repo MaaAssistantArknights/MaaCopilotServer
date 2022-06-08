@@ -16,6 +16,11 @@ public class MaaApiResponse
         Data = data;
     }
 
+    [JsonPropertyName("status_code")] public int StatusCode { get; }
+    [JsonPropertyName("message")] public string Message { get; }
+    [JsonPropertyName("trace_id")] public string TraceId { get; }
+    [JsonPropertyName("data")] public object? Data { get; }
+
     public static MaaApiResponse Ok(object? obj, string id)
     {
         return new MaaApiResponse(200, "OK", id, obj);
@@ -45,9 +50,4 @@ public class MaaApiResponse
     {
         return new MaaApiResponse(500, "Internal Server Error", id, null);
     }
-
-    [JsonPropertyName("status_code")] public int StatusCode { get; }
-    [JsonPropertyName("message")] public string Message { get; }
-    [JsonPropertyName("trace_id")] public string TraceId { get; }
-    [JsonPropertyName("data")] public object? Data { get; }
 }

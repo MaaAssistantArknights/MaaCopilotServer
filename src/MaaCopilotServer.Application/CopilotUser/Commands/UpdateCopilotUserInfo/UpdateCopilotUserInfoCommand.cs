@@ -3,12 +3,7 @@
 // Licensed under the AGPL-3.0 license.
 
 using System.Text.Json.Serialization;
-using MaaCopilotServer.Application.Common.Exceptions;
-using MaaCopilotServer.Application.Common.Interfaces;
-using MaaCopilotServer.Application.Common.Models;
-using MaaCopilotServer.Application.Common.Security;
 using MaaCopilotServer.Domain.Enums;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace MaaCopilotServer.Application.CopilotUser.Commands.UpdateCopilotUserInfo;
@@ -20,10 +15,11 @@ public record UpdateCopilotUserInfoCommand : IRequest<MaaActionResult<EmptyObjec
     [JsonPropertyName("user_name")] public string? UserName { get; set; }
 }
 
-public class UpdateCopilotUserInfoCommandHandler : IRequestHandler<UpdateCopilotUserInfoCommand, MaaActionResult<EmptyObject>>
+public class
+    UpdateCopilotUserInfoCommandHandler : IRequestHandler<UpdateCopilotUserInfoCommand, MaaActionResult<EmptyObject>>
 {
-    private readonly IMaaCopilotDbContext _dbContext;
     private readonly ICurrentUserService _currentUserService;
+    private readonly IMaaCopilotDbContext _dbContext;
 
     public UpdateCopilotUserInfoCommandHandler(
         IMaaCopilotDbContext dbContext,
@@ -33,7 +29,8 @@ public class UpdateCopilotUserInfoCommandHandler : IRequestHandler<UpdateCopilot
         _currentUserService = currentUserService;
     }
 
-    public async Task<MaaActionResult<EmptyObject>> Handle(UpdateCopilotUserInfoCommand request, CancellationToken cancellationToken)
+    public async Task<MaaActionResult<EmptyObject>> Handle(UpdateCopilotUserInfoCommand request,
+        CancellationToken cancellationToken)
     {
         var user = await _dbContext.CopilotUsers
             .FirstOrDefaultAsync(x => x.EntityId == _currentUserService.GetUserIdentity(), cancellationToken);
@@ -48,7 +45,8 @@ public class UpdateCopilotUserInfoCommandHandler : IRequestHandler<UpdateCopilot
             var exist = _dbContext.CopilotUsers.Any(x => x.Email == request.Email);
             if (exist)
             {
-                return MaaApiResponse.BadRequest(_currentUserService.GetTrackingId(), $"User with email \"{request.Email}\" already exists");
+                return MaaApiResponse.BadRequest(_currentUserService.GetTrackingId(),
+                    $"User with email \"{request.Email}\" already exists");
             }
         }
 
