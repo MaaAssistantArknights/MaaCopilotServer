@@ -106,7 +106,7 @@ public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOp
         var hasNext = limit * page >= totalCount;
 
         var dtos = result.Select(x => new QueryCopilotOperationsQueryDto(
-                _copilotIdService.EncodeId(x.Id), x.StageName, x.MinimumRequired, x.CreateAt.ToStringZhHans(),
+                _copilotIdService.EncodeId(x.Id), x.StageName, x.MinimumRequired, x.CreateAt.ToString("o", _apiErrorMessage.CultureInfo),
                 x.Author.UserName, x.Title, x.Details, x.Downloads))
             .ToList();
         var paginationResult = new PaginationResult<QueryCopilotOperationsQueryDto>(hasNext, page, totalCount, dtos);
