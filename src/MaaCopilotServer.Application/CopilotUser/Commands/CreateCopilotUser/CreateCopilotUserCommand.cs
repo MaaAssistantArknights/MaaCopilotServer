@@ -21,8 +21,7 @@ public record CreateCopilotUserCommand : IRequest<MaaActionResult<EmptyObject>>
     [JsonPropertyName("user_name")] public string? UserName { get; set; }
 
     [JsonPropertyName("role")]
-    [JsonConverter(typeof(JsonStringEnumConverter))]
-    public UserRole? Role { get; set; }
+    public string? Role { get; set; }
 }
 
 public class CreateCopilotUserCommandHandler : IRequestHandler<CreateCopilotUserCommand, MaaActionResult<EmptyObject>>
@@ -56,7 +55,7 @@ public class CreateCopilotUserCommandHandler : IRequestHandler<CreateCopilotUser
 
         var hashedPassword = _secretService.HashPassword(request.Password!);
         var user = new Domain.Entities.CopilotUser(request.Email!, hashedPassword, request.UserName!,
-            request.Role!.Value, _currentUserService.GetUserIdentity()!.Value);
+            Enum.Parse<UserRole>(request.Role!), _currentUserService.GetUserIdentity()!.Value);
         _dbContext.CopilotUsers.Add(user);
         await _dbContext.SaveChangesAsync(cancellationToken);
         return MaaApiResponse.Ok(null, _currentUserService.GetTrackingId());
