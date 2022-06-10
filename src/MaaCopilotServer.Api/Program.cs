@@ -27,6 +27,7 @@ builder.Host.UseSerilog();
 
 builder.Configuration.AddConfiguration(configuration);
 
+builder.Services.AddCors();
 builder.Services.AddControllers();
 builder.Services.AddResources();
 builder.Services.AddInfrastructureServices();
@@ -46,6 +47,14 @@ if (configuration.GetValue<bool>("Switches:Apm"))
         new AspNetCoreDiagnosticSubscriber(),
         new AspNetCoreErrorDiagnosticsSubscriber());
 }
+
+app.UseCors(options =>
+{
+    options.SetIsOriginAllowed(_ => true)
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        .AllowCredentials();
+});
 
 app.UseRequestCulture();
 app.UseAuthentication();
