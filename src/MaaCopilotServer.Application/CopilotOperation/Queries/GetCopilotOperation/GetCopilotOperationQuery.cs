@@ -55,6 +55,11 @@ public class
             request.Id!, entity.StageName, entity.MinimumRequired,
             entity.CreateAt.ToString("o", _apiErrorMessage.CultureInfo)
             , entity.Content, entity.Author.UserName, entity.Title, entity.Details, entity.Downloads);
+
+        entity.AddDownloadCount();
+        _dbContext.CopilotOperations.Update(entity);
+        await _dbContext.SaveChangesAsync(cancellationToken);
+
         return MaaApiResponse.Ok(dto, _currentUserService.GetTrackingId());
     }
 }
