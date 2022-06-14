@@ -7,9 +7,10 @@ using MaaCopilotServer.Application.Common.Extensions;
 using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Domain.Common;
 using MaaCopilotServer.Domain.Entities;
+using MaaCopilotServer.Domain.Options;
 using MaaCopilotServer.Infrastructure.Database.Maps;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace MaaCopilotServer.Infrastructure.Database;
 
@@ -20,9 +21,9 @@ public class MaaCopilotDbContext : DbContext, IMaaCopilotDbContext
 
     private readonly string? _connectionString;
 
-    public MaaCopilotDbContext(IConfiguration configuration)
+    public MaaCopilotDbContext(IOptions<DatabaseOption> dbOptions)
     {
-        _connectionString = configuration.GetValue<string>("Database:ConnectionString");
+        _connectionString = dbOptions.Value.ConnectionString;
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

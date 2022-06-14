@@ -5,8 +5,10 @@
 using System.Text;
 using MaaCopilotServer.Domain.Entities;
 using MaaCopilotServer.Domain.Enums;
+using MaaCopilotServer.Domain.Options;
 using MaaCopilotServer.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Serilog;
 
 namespace MaaCopilotServer.Api.Helper;
@@ -15,7 +17,8 @@ public static class DatabaseHelper
 {
     public static void DatabaseInitialize(IConfiguration configuration)
     {
-        var db = new MaaCopilotDbContext(configuration);
+        var dbOptions = configuration.GetOption<DatabaseOption>();
+        var db = new MaaCopilotDbContext(new OptionsWrapper<DatabaseOption>(dbOptions));
         if (db.Database.GetPendingMigrations().Any())
         {
             db.Database.Migrate();

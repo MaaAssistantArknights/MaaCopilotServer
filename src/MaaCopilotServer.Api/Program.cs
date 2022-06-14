@@ -11,6 +11,7 @@ using MaaCopilotServer.Api;
 using MaaCopilotServer.Api.Helper;
 using MaaCopilotServer.Api.Middleware;
 using MaaCopilotServer.Application;
+using MaaCopilotServer.Domain.Options;
 using MaaCopilotServer.Infrastructure;
 using MaaCopilotServer.Resources;
 using Serilog;
@@ -38,7 +39,8 @@ var app = builder.Build();
 
 DatabaseHelper.DatabaseInitialize(configuration);
 
-if (configuration.GetValue<bool>("Switches:Apm"))
+var switchesOption = configuration.GetOption<SwitchesOption>();
+if (switchesOption.Apm)
 {
     app.UseElasticApm(configuration,
         new EfCoreDiagnosticsSubscriber(),

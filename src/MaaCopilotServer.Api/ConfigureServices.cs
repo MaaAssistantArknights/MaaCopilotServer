@@ -4,8 +4,12 @@
 
 using System.Net;
 using System.Text;
+using MaaCopilotServer.Api.Helper;
 using MaaCopilotServer.Api.Services;
 using MaaCopilotServer.Application.Common.Interfaces;
+using MaaCopilotServer.Domain.Attributes;
+using MaaCopilotServer.Domain.Extensions;
+using MaaCopilotServer.Domain.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
@@ -15,6 +19,14 @@ public static class ConfigureServices
 {
     public static IServiceCollection AddApiServices(this IServiceCollection services, IConfiguration configuration)
     {
+        var jwtOption = configuration.GetOption<JwtOption>();
+
+        services
+            .AddOption<JwtOption>(configuration)
+            .AddOption<DatabaseOption>(configuration)
+            .AddOption<ElasticLogSinkOption>(configuration)
+            .AddOption<SwitchesOption>(configuration);
+
         services.AddHttpContextAccessor();
         services.AddScoped<ICurrentUserService, CurrentUserService>();
 
@@ -33,9 +45,9 @@ public static class ConfigureServices
                     ValidateIssuer = true,
                     ValidateAudience = true,
                     ValidateIssuerSigningKey = true,
-                    ValidIssuer = configuration["Jwt:Issuer"],
-                    ValidAudience = configuration["Jwt:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Secret"]))
+                    ValidIssuer = jwtOption.Issuer,
+                    ValidAudience = jwtOption.Audience,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOption.Secret))
                 };
 
                 options.Events = new JwtBearerEvents
@@ -75,6 +87,12 @@ public static class ConfigureServices
                 };
             });
 
+        return services;
+    }
+
+    private static IServiceCollection AddOption<T>(this IServiceCollection services, IConfiguration configuration) where T : class, new()
+    {
+        services.AddOptions<T>().BindConfiguration(typeof(T).ReadAttribute<OptionNameAttribute>()!.OptionName);
         return services;
     }
 }
