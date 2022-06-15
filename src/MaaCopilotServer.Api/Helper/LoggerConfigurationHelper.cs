@@ -11,8 +11,16 @@ using Serilog.Sinks.Elasticsearch;
 
 namespace MaaCopilotServer.Api.Helper;
 
+/// <summary>
+/// The helper class of logger.
+/// </summary>
 public static class LoggerConfigurationHelper
 {
+    /// <summary>
+    /// Constructs a <see cref="LoggerConfiguration"/> instance based on the configuration.
+    /// </summary>
+    /// <param name="configuration">The configuration.</param>
+    /// <returns>The <see cref="LoggerConfiguration"/> instance.</returns>
     public static LoggerConfiguration GetLoggerConfiguration(this IConfiguration configuration)
     {
         var switchesOption = configuration.GetOption<SwitchesOption>();
@@ -20,11 +28,12 @@ public static class LoggerConfigurationHelper
             .ReadFrom.Configuration(configuration)
             .Destructure.UsingAttributes();
 
-        if (switchesOption.ElasticSearch is false)
+        if (!switchesOption.ElasticSearch)
         {
             return loggerConfiguration;
         }
 
+        // Elastic search options.
         var elasticOptions = configuration.GetOption<ElasticLogSinkOption>();
         var elasticUris = elasticOptions.Uris.Split(";").Select(x => new Uri(x)).ToArray();
         loggerConfiguration.WriteTo.Elasticsearch(new ElasticsearchSinkOptions(elasticUris)

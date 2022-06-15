@@ -17,10 +17,12 @@ using MaaCopilotServer.Resources;
 using Serilog;
 using Serilog.Debugging;
 
+// Get global configuration.
 var configuration = ConfigurationHelper.BuildConfiguration();
 
+// Create logger.
 Log.Logger = configuration.GetLoggerConfiguration().CreateLogger();
-SelfLog.Enable(Console.Error);
+SelfLog.Enable(Console.Error); // Set logger level to ERROR.
 
 var builder = WebApplication.CreateBuilder();
 
@@ -37,6 +39,7 @@ builder.Services.AddApiServices(configuration);
 
 var app = builder.Build();
 
+// Initialize DB.
 DatabaseHelper.DatabaseInitialize(configuration);
 
 var switchesOption = configuration.GetOption<SwitchesOption>();
@@ -50,6 +53,7 @@ if (switchesOption.Apm)
         new AspNetCoreErrorDiagnosticsSubscriber());
 }
 
+// CORS settings.
 app.UseCors(options =>
 {
     options.SetIsOriginAllowed(_ => true)
@@ -62,4 +66,5 @@ app.UseRequestCulture();
 app.UseAuthentication();
 app.MapControllers();
 
+// Start application.
 app.Run();
