@@ -20,5 +20,5 @@ public class QueryCopilotUserDto
 
     [JsonPropertyName("user_name")] public string UserName { get; set; }
 
-    [JsonPropertyName("role")] [JsonConverter(typeof(JsonStringEnumConverter))] public UserRole UserRole { get; set; }
+    [JsonPropertyName("role")][JsonConverter(typeof(JsonStringEnumConverter))] public UserRole UserRole { get; set; }
 }

@@ -8,7 +8,7 @@ using MaaCopilotServer.Application.Common.Interfaces;
 namespace MaaCopilotServer.Api.Services;
 
 /// <summary>
-/// The service for information of the current user.
+/// The service for parsing information of the current user.
 /// </summary>
 public class CurrentUserService : ICurrentUserService
 {

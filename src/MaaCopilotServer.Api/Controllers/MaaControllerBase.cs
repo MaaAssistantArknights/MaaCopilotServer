@@ -32,7 +32,7 @@ public abstract class MaaControllerBase : ControllerBase
     /// It will send the request via mediator and waits for the response.
     /// </summary>
     /// <param name="request">The request object.</param>
-    /// <returns>The API response.</returns>
+    /// <returns>A task with the API response.</returns>
     protected async Task<ActionResult> GetResponse(object request)
     {
         try

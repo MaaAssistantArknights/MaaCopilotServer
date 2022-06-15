@@ -8,20 +8,48 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MaaCopilotServer.Application.CopilotOperation.Commands.DeleteCopilotOperation;
 
+/// <summary>
+/// The record of deleting operation.
+/// </summary>
 [Authorized(UserRole.Admin)]
 public record DeleteCopilotOperationCommand : IRequest<MaaActionResult<EmptyObject>>
 {
     [JsonPropertyName("id")] public string? Id { get; set; }
 }
 
+/// <summary>
+/// The handler of deleting operation.
+/// </summary>
 public class DeleteCopilotOperationCommandHandler : IRequestHandler<DeleteCopilotOperationCommand,
     MaaActionResult<EmptyObject>>
 {
+    /// <summary>
+    /// The service for processing copilot ID.
+    /// </summary>
     private readonly ICopilotIdService _copilotIdService;
+
+    /// <summary>
+    /// The service for current user.
+    /// </summary>
     private readonly ICurrentUserService _currentUserService;
+
+    /// <summary>
+    /// The API error message.
+    /// </summary>
     private readonly ApiErrorMessage _apiErrorMessage;
+
+    /// <summary>
+    /// The DB context.
+    /// </summary>
     private readonly IMaaCopilotDbContext _dbContext;
 
+    /// <summary>
+    /// The constructor of <see cref="DeleteCopilotOperationCommandHandler"/>.
+    /// </summary>
+    /// <param name="dbContext">The DB context.</param>
+    /// <param name="copilotIdService">The service for processing copilot ID.</param>
+    /// <param name="currentUserService">The service for current user.</param>
+    /// <param name="apiErrorMessage">The API error message.</param>
     public DeleteCopilotOperationCommandHandler(
         IMaaCopilotDbContext dbContext,
         ICopilotIdService copilotIdService,
@@ -34,6 +62,15 @@ public class DeleteCopilotOperationCommandHandler : IRequestHandler<DeleteCopilo
         _apiErrorMessage = apiErrorMessage;
     }
 
+    /// <summary>
+    /// Handles a request of deleting operation.
+    /// </summary>
+    /// <param name="request">The request.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>A task with the response.</returns>
+    /// <exception cref="PipelineException">
+    /// Thrown when the operation ID is invalid, or the operation does not exist.
+    /// </exception>
     public async Task<MaaActionResult<EmptyObject>> Handle(DeleteCopilotOperationCommand request,
         CancellationToken cancellationToken)
     {

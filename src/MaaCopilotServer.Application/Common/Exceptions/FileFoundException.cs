@@ -4,17 +4,35 @@
 
 namespace MaaCopilotServer.Application.Common.Exceptions;
 
+/// <summary>
+/// The exception that is thrown when a file is not found.
+/// </summary>
 public class FileFoundException : IOException
 {
+    /// <summary>
+    /// The filename.
+    /// </summary>
     private readonly string _fileName;
+
+    /// <summary>
+    /// The message.
+    /// </summary>
     private readonly string _message;
 
+    /// <summary>
+    /// The constructor of <see cref="FileNotFoundException"/>.
+    /// </summary>
+    /// <param name="message">The message.</param>
+    /// <param name="fileName">The filename.</param>
     public FileFoundException(string message, string fileName)
     {
         _message = message;
         _fileName = fileName;
     }
 
+    /// <summary>
+    /// The message of the exception.
+    /// </summary>
     public override string Message
     {
         get

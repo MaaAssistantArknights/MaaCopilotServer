@@ -6,6 +6,9 @@ using System.Runtime.CompilerServices;
 
 namespace MaaCopilotServer.Application.Common.Extensions;
 
+/// <summary>
+/// The extension to get information of a file.
+/// </summary>
 public static class FileInfoExtension
 {
     /// <summary>

@@ -6,12 +6,22 @@ using System.Text.Json.Serialization;
 
 namespace MaaCopilotServer.Application.CopilotOperation.Commands.CreateCopilotOperation;
 
+/// <summary>
+/// The DTO of creating operation.
+/// </summary>
 public class CreateCopilotOperationDto
 {
+    /// <summary>
+    /// The constructor of <see cref="CreateCopilotOperationDto"/>.
+    /// </summary>
+    /// <param name="id">The operation ID.</param>
     public CreateCopilotOperationDto(string id)
     {
         Id = id;
     }
 
+    /// <summary>
+    /// The operation ID.
+    /// </summary>
     [JsonPropertyName("id")] public string Id { get; set; }
 }
