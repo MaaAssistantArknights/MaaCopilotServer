@@ -50,7 +50,7 @@ namespace MaaCopilotServer.Api.Test.Middleware
                         .Returns(c =>
                         {
                             c[1] = new StringValues(culture);
-                            return culture == null;
+                            return culture != null;
                         });
                     return query;
                 });
