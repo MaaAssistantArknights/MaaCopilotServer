@@ -13,6 +13,16 @@ namespace MaaCopilotServer.Domain.Entities;
 /// </summary>
 public sealed class CopilotOperation : EditableEntity
 {
+    /// <summary>
+    /// The constructor of <see cref="CopilotOperation"/>.
+    /// </summary>
+    /// <param name="content">The content.</param>
+    /// <param name="stageName">The stage name.</param>
+    /// <param name="minimumRequired">The minimum required version of MAA.</param>
+    /// <param name="title">The title of the operation.</param>
+    /// <param name="details">The detail of the operation.</param>
+    /// <param name="author">The author of the operation.</param>
+    /// <param name="createBy">The creator of the operation.</param>
     public CopilotOperation(string content, string stageName, string minimumRequired, string title, string details, CopilotUser author, Guid createBy)
     {
         Content = content;
@@ -68,6 +78,9 @@ public sealed class CopilotOperation : EditableEntity
     /// </summary>
     public CopilotUser Author { get; private set; }
 
+    /// <summary>
+    /// Increases download count by 1, and updates last updated time.
+    /// </summary>
     // 这个接口是可以被匿名访问的，因此不记录更新者
     public void AddDownloadCount()
     {

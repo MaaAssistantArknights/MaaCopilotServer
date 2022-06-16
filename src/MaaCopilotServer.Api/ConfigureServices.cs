@@ -16,7 +16,7 @@ using Microsoft.IdentityModel.Tokens;
 namespace MaaCopilotServer.Api;
 
 /// <summary>
-/// The service of configuration.
+/// The extension to add API service to the services.
 /// </summary>
 public static class ConfigureServices
 {

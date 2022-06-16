@@ -38,6 +38,10 @@ public abstract class BaseEntity
     /// </summary>
     public Guid? DeleteBy { get; protected set; } = null;
 
+    /// <summary>
+    /// Deletes an entity by a user.
+    /// </summary>
+    /// <param name="operator">The user</param>
     public void Delete(Guid @operator)
     {
         DeleteBy = @operator;
