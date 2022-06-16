@@ -9,8 +9,16 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace MaaCopilotServer.Infrastructure;
 
+/// <summary>
+/// The extension to add infrastructure services.
+/// </summary>
 public static class ConfigureServices
 {
+    /// <summary>
+    /// Adds infrastructure services.
+    /// </summary>
+    /// <param name="services">The service collection.</param>
+    /// <returns>The service collection with the services added.</returns>
     public static IServiceCollection AddInfrastructureServices(this IServiceCollection services)
     {
         services.AddDbContext<IMaaCopilotDbContext, MaaCopilotDbContext>();
