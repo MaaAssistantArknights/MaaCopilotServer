@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Globalization;
 using System.Security.Claims;
 using MaaCopilotServer.Application.Common.Interfaces;
 
@@ -45,5 +46,20 @@ public class CurrentUserService : ICurrentUserService
             return t.TraceId;
         }
         return _httpContextAccessor.HttpContext?.TraceIdentifier ?? string.Empty;
+    }
+
+    public CultureInfo GetCulture()
+    {
+        var context = _httpContextAccessor.HttpContext;
+        if (context is null)
+        {
+            return new CultureInfo("zh-cn");
+        }
+        var hasValue = context.Items.TryGetValue("culture", out var cultureInfo);
+        if (hasValue is false || cultureInfo is null || cultureInfo.GetType().Name != "CultureInfo")
+        {
+            return new CultureInfo("zh-cn");
+        }
+        return (CultureInfo)cultureInfo;
     }
 }

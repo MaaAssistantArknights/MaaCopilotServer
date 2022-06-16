@@ -24,6 +24,8 @@ public class RequestCultureMiddleware
         validationErrorMessage.CultureInfo = info;
         apiErrorMessage.CultureInfo = info;
 
+        context.Items.Add("culture", info);
+
         await _next(context);
     }
 }
