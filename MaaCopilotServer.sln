@@ -1,18 +1,25 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaaCopilotServer.Domain", "src\MaaCopilotServer.Domain\MaaCopilotServer.Domain.csproj", "{2ED22FCD-5970-47F4-B5CB-3569F28788D3}"
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32526.322
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MaaCopilotServer.Domain", "src\MaaCopilotServer.Domain\MaaCopilotServer.Domain.csproj", "{2ED22FCD-5970-47F4-B5CB-3569F28788D3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaaCopilotServer.Api", "src\MaaCopilotServer.Api\MaaCopilotServer.Api.csproj", "{5748A5AC-B6F8-4414-B6AA-A089407BC969}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MaaCopilotServer.Api", "src\MaaCopilotServer.Api\MaaCopilotServer.Api.csproj", "{5748A5AC-B6F8-4414-B6AA-A089407BC969}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaaCopilotServer.Infrastructure", "src\MaaCopilotServer.Infrastructure\MaaCopilotServer.Infrastructure.csproj", "{EC4E807F-B785-4425-B695-B284A01DAA5E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MaaCopilotServer.Infrastructure", "src\MaaCopilotServer.Infrastructure\MaaCopilotServer.Infrastructure.csproj", "{EC4E807F-B785-4425-B695-B284A01DAA5E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaaCopilotServer.Application", "src\MaaCopilotServer.Application\MaaCopilotServer.Application.csproj", "{DB2CF416-793B-4546-B034-ADD57BDCD43B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MaaCopilotServer.Application", "src\MaaCopilotServer.Application\MaaCopilotServer.Application.csproj", "{DB2CF416-793B-4546-B034-ADD57BDCD43B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "App", "App", "{A1D2EB1C-F793-4CA9-86B6-8EB065CD75A7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Resource", "Resource", "{649ECEA5-336F-4CF5-8D97-C9EA415A408B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaaCopilotServer.Resources", "src\MaaCopilotServer.Resources\MaaCopilotServer.Resources.csproj", "{0FC05A37-6FC9-49B6-9704-3488043D3A0D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MaaCopilotServer.Resources", "src\MaaCopilotServer.Resources\MaaCopilotServer.Resources.csproj", "{0FC05A37-6FC9-49B6-9704-3488043D3A0D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{D24D095C-F78C-4F1B-BA43-9CF49612EF58}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MaaCopilotServer.Api.Test", "test\MaaCopilotServer.Api.Test\MaaCopilotServer.Api.Test.csproj", "{27C4F564-3CA0-40F4-B39C-D20FC5760404}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -40,12 +47,23 @@ Global
 		{0FC05A37-6FC9-49B6-9704-3488043D3A0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0FC05A37-6FC9-49B6-9704-3488043D3A0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0FC05A37-6FC9-49B6-9704-3488043D3A0D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{27C4F564-3CA0-40F4-B39C-D20FC5760404}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{27C4F564-3CA0-40F4-B39C-D20FC5760404}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{27C4F564-3CA0-40F4-B39C-D20FC5760404}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{27C4F564-3CA0-40F4-B39C-D20FC5760404}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{5748A5AC-B6F8-4414-B6AA-A089407BC969} = {A1D2EB1C-F793-4CA9-86B6-8EB065CD75A7}
-		{DB2CF416-793B-4546-B034-ADD57BDCD43B} = {A1D2EB1C-F793-4CA9-86B6-8EB065CD75A7}
 		{2ED22FCD-5970-47F4-B5CB-3569F28788D3} = {A1D2EB1C-F793-4CA9-86B6-8EB065CD75A7}
+		{5748A5AC-B6F8-4414-B6AA-A089407BC969} = {A1D2EB1C-F793-4CA9-86B6-8EB065CD75A7}
 		{EC4E807F-B785-4425-B695-B284A01DAA5E} = {A1D2EB1C-F793-4CA9-86B6-8EB065CD75A7}
+		{DB2CF416-793B-4546-B034-ADD57BDCD43B} = {A1D2EB1C-F793-4CA9-86B6-8EB065CD75A7}
 		{0FC05A37-6FC9-49B6-9704-3488043D3A0D} = {649ECEA5-336F-4CF5-8D97-C9EA415A408B}
+		{27C4F564-3CA0-40F4-B39C-D20FC5760404} = {D24D095C-F78C-4F1B-BA43-9CF49612EF58}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3FCAB059-6F8B-4C24-B065-992F5AD936D6}
 	EndGlobalSection
 EndGlobal

@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Text;
 using MaaCopilotServer.Api.Helper;
@@ -18,6 +19,7 @@ namespace MaaCopilotServer.Api;
 /// <summary>
 /// The extension to add API service to the services.
 /// </summary>
+[ExcludeFromCodeCoverage]
 public static class ConfigureServices
 {
     /// <summary>
