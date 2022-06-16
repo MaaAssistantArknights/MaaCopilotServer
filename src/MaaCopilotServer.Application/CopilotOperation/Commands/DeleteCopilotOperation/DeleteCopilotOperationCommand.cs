@@ -14,6 +14,9 @@ namespace MaaCopilotServer.Application.CopilotOperation.Commands.DeleteCopilotOp
 [Authorized(UserRole.Admin)]
 public record DeleteCopilotOperationCommand : IRequest<MaaActionResult<EmptyObject>>
 {
+    /// <summary>
+    /// The operation ID.
+    /// </summary>
     [JsonPropertyName("id")] public string? Id { get; set; }
 }
 

@@ -4,8 +4,15 @@
 
 namespace MaaCopilotServer.Application.CopilotOperation.Queries.GetCopilotOperation;
 
+/// <summary>
+/// The validator of querying operation.
+/// </summary>
 public class GetCopilotOperationQueryValidator : AbstractValidator<GetCopilotOperationQuery>
 {
+    /// <summary>
+    /// The constructor of <see cref="GetCopilotOperationQueryValidator"/>.
+    /// </summary>
+    /// <param name="errorMessage">The error message.</param>
     public GetCopilotOperationQueryValidator(ValidationErrorMessage errorMessage)
     {
         RuleFor(x => x.Id)

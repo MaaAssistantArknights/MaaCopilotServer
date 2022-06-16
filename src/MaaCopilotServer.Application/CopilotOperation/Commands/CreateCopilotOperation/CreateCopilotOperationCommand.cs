@@ -15,7 +15,7 @@ namespace MaaCopilotServer.Application.CopilotOperation.Commands.CreateCopilotOp
 public record CreateCopilotOperationCommand : IRequest<MaaActionResult<CreateCopilotOperationDto>>
 {
     /// <summary>
-    /// The <c>content</c> field.
+    /// The operation content.
     /// </summary>
     [JsonPropertyName("content")] public string? Content { get; set; }
 }
