@@ -9,18 +9,21 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace MaaCopilotServer.Infrastructure.Database.Maps;
 
-public class CopilotOperationMap : IEntityTypeConfiguration<CopilotOperation>
+public class CopilotUserFavoriteMap : IEntityTypeConfiguration<CopilotUserFavorite>
 {
-    public void Configure(EntityTypeBuilder<CopilotOperation> builder)
+    public void Configure(EntityTypeBuilder<CopilotUserFavorite> builder)
     {
-        builder.Property(x => x.Id).ValueGeneratedOnAdd();
-        builder.Property(x => x.Operators)
+        builder.Property(x => x.OperationGroupIds)
             .HasConversion(
-                list => string.Join(";", list),
-                s => s.Split(";", StringSplitOptions.RemoveEmptyEntries).ToList(),
-                new ValueComparer<List<string>>(
+                list => string.Join(";", list.Select(x => x.ToString())),
+                s => s.Split(";", StringSplitOptions.RemoveEmptyEntries)
+                    .Select(x => Guid.Parse(s)).ToList(),
+                new ValueComparer<List<Guid>>(
                     (c1, c2) => c1!.SequenceEqual(c2!),
                     c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
                     c => c.ToList()));
+
+        builder.HasMany(x => x.Operations);
+        builder.HasQueryFilter(x => x.User.IsDeleted == false);
     }
 }

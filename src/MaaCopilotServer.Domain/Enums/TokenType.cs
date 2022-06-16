@@ -4,12 +4,8 @@
 
 namespace MaaCopilotServer.Domain.Enums;
 
-public enum UserRole
+public enum TokenType
 {
-    Banned = int.MinValue,
-    InActivated = -100,
-    User = 0,
-    Uploader = 10,
-    Admin = 100,
-    SuperAdmin = int.MaxValue
+    UserActivation = 0,
+    UserPasswordReset = 1
 }

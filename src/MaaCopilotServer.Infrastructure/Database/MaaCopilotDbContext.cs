@@ -17,7 +17,10 @@ namespace MaaCopilotServer.Infrastructure.Database;
 public class MaaCopilotDbContext : DbContext, IMaaCopilotDbContext
 {
     public DbSet<CopilotOperation> CopilotOperations { get; set; } = null!;
+    public DbSet<CopilotOperationComment> CopilotOperationComments { get; set; } = null!;
+    public DbSet<CopilotUserFavorite> CopilotUserFavorites { get; set; } = null!;
     public DbSet<CopilotUser> CopilotUsers { get; set; } = null!;
+    public DbSet<CopilotToken> CopilotTokens { get; set; } = null!;
 
     private readonly string? _connectionString;
 
