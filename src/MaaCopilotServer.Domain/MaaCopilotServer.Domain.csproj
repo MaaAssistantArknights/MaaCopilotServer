@@ -15,5 +15,32 @@
     <ItemGroup>
       <PackageReference Include="MediatR" Version="10.0.1" />
     </ItemGroup>
-
+  
+    <ItemGroup>
+      <None Update="Email\Templates\EmailChangeAddress.liquid">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        <TargetPath>templates\EmailChangeAddress.liquid</TargetPath>
+      </None>
+      <None Update="Email\Templates\EmailPasswordReset.liquid">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        <TargetPath>templates\EmailPasswordReset.liquid</TargetPath>
+      </None>
+      <None Update="Email\Templates\EmailUserActivation.liquid">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        <TargetPath>templates\EmailUserActivation.liquid</TargetPath>
+      </None>
+      <None Update="Email\Templates\EmailChangeAddress-en.liquid">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        <TargetPath>templates\EmailChangeAddress-en.liquid</TargetPath>
+      </None>
+      <None Update="Email\Templates\EmailPasswordReset-en.liquid">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        <TargetPath>templates\EmailPasswordReset-en.liquid</TargetPath>
+      </None>
+      <None Update="Email\Templates\EmailUserActivation-en.liquid">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        <TargetPath>templates\EmailUserActivation-en.liquid</TargetPath>
+      </None>
+    </ItemGroup>
+  
 </Project>

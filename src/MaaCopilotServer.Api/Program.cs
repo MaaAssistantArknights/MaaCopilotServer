@@ -11,6 +11,7 @@ using MaaCopilotServer.Api;
 using MaaCopilotServer.Api.Helper;
 using MaaCopilotServer.Api.Middleware;
 using MaaCopilotServer.Application;
+using MaaCopilotServer.Application.Common.Extensions;
 using MaaCopilotServer.Domain.Options;
 using MaaCopilotServer.Infrastructure;
 using MaaCopilotServer.Resources;
@@ -22,6 +23,8 @@ var configuration = ConfigurationHelper.BuildConfiguration();
 Log.Logger = configuration.GetLoggerConfiguration().CreateLogger();
 SelfLog.Enable(Console.Error);
 
+InitializeHelper.InitializeEmailTemplates(configuration);
+
 var builder = WebApplication.CreateBuilder();
 
 builder.Host.UseSerilog();
@@ -31,13 +34,13 @@ builder.Configuration.AddConfiguration(configuration);
 builder.Services.AddCors();
 builder.Services.AddControllers();
 builder.Services.AddResources();
-builder.Services.AddInfrastructureServices();
+builder.Services.AddInfrastructureServices(configuration);
 builder.Services.AddApplicationServices();
 builder.Services.AddApiServices(configuration);
 
 var app = builder.Build();
 
-DatabaseHelper.DatabaseInitialize(configuration);
+InitializeHelper.InitializeDatabase(configuration);
 
 var switchesOption = configuration.GetOption<SwitchesOption>();
 if (switchesOption.Apm)

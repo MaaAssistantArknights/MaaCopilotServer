@@ -3,6 +3,7 @@
 // Licensed under the AGPL-3.0 license.
 
 using System.Text;
+using MaaCopilotServer.Application.Common.Extensions;
 using MaaCopilotServer.Domain.Entities;
 using MaaCopilotServer.Domain.Enums;
 using MaaCopilotServer.Domain.Options;
@@ -13,15 +14,40 @@ using Serilog;
 
 namespace MaaCopilotServer.Api.Helper;
 
-public static class DatabaseHelper
+public static class InitializeHelper
 {
-    public static void DatabaseInitialize(IConfiguration configuration)
+    public static void InitializeEmailTemplates(IConfiguration configuration)
+    {
+        var applicationOption = configuration.GetOption<ApplicationOption>();
+        var originalTemplatesDirectory = new DirectoryInfo(applicationOption.AssemblyPath.CombinePath("templates"));
+        var targetTemplatesDirectory = new DirectoryInfo(applicationOption.DataDirectory.CombinePath("templates"));
+
+        if (targetTemplatesDirectory.Exists is false)
+        {
+            targetTemplatesDirectory.Create();
+        }
+
+        var originalTemplates = originalTemplatesDirectory.GetFiles();
+        var targetTemplates = targetTemplatesDirectory.GetFiles();
+
+        foreach (var originalTemplate in originalTemplates)
+        {
+            if (targetTemplates.Any(x => x.Name == originalTemplate.Name) == false)
+            {
+                originalTemplate.CopyTo(targetTemplatesDirectory.FullName.CombinePath(originalTemplate.Name));
+            }
+        }
+    }
+
+    public static void InitializeDatabase(IConfiguration configuration)
     {
         var dbOptions = configuration.GetOption<DatabaseOption>();
         var db = new MaaCopilotDbContext(new OptionsWrapper<DatabaseOption>(dbOptions));
-        if (db.Database.GetPendingMigrations().Any())
+        var pendingMigrations = db.Database.GetPendingMigrations().Count();
+        if (pendingMigrations > 0)
         {
             db.Database.Migrate();
+            Log.Logger.Information("Database migration completed, applied {PendingMigrations} migrations", pendingMigrations);
         }
 
         var haveUser = db.CopilotUsers.Any();
@@ -39,7 +65,8 @@ public static class DatabaseHelper
             }
 
             var hash = BCrypt.Net.BCrypt.HashPassword(defaultUserPassword);
-            var user = new CopilotUser(defaultUserEmail, hash, defaultUserName, UserRole.SuperAdmin, Guid.Parse("00000000-0000-0000-0000-000000000000"));
+            var user = new CopilotUser(defaultUserEmail, hash, defaultUserName, UserRole.SuperAdmin,
+                Guid.Parse("00000000-0000-0000-0000-000000000000"));
             db.CopilotUsers.Add(user);
             db.SaveChanges();
         }

@@ -4,8 +4,8 @@
 
 using System.Net;
 using System.Text;
-using MaaCopilotServer.Api.Helper;
 using MaaCopilotServer.Api.Services;
+using MaaCopilotServer.Application.Common.Extensions;
 using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Domain.Attributes;
 using MaaCopilotServer.Domain.Extensions;
@@ -25,7 +25,9 @@ public static class ConfigureServices
             .AddOption<JwtOption>(configuration)
             .AddOption<DatabaseOption>(configuration)
             .AddOption<ElasticLogSinkOption>(configuration)
-            .AddOption<SwitchesOption>(configuration);
+            .AddOption<SwitchesOption>(configuration)
+            .AddOption<EmailOption>(configuration)
+            .AddOption<ApplicationOption>(configuration);
 
         services.AddHttpContextAccessor();
         services.AddScoped<ICurrentUserService, CurrentUserService>();
