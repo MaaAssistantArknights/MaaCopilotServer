@@ -8,7 +8,7 @@ using MaaCopilotServer.Resources;
 namespace MaaCopilotServer.Api.Middleware;
 
 /// <summary>
-/// The middleware of request culture.
+/// The middleware of i18n supports.
 /// </summary>
 public class RequestCultureMiddleware
 {

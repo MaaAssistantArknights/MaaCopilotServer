@@ -22,7 +22,7 @@ var configuration = ConfigurationHelper.BuildConfiguration();
 
 // Create logger.
 Log.Logger = configuration.GetLoggerConfiguration().CreateLogger();
-SelfLog.Enable(Console.Error); // Set logger level to ERROR.
+SelfLog.Enable(Console.Error); // Direct log output to standard error stream.
 
 var builder = WebApplication.CreateBuilder();
 

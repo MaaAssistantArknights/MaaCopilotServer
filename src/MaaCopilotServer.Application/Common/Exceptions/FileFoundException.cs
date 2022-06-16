@@ -5,7 +5,7 @@
 namespace MaaCopilotServer.Application.Common.Exceptions;
 
 /// <summary>
-/// The exception that is thrown when a file is not found.
+/// The exception that is thrown when a file is found.
 /// </summary>
 public class FileFoundException : IOException
 {

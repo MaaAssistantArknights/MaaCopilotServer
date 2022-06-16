@@ -40,7 +40,7 @@ public static class ConfigurationHelper
         var originalAppsettingsFile = new FileInfo(assemblyDirectory.FullName.CombinePath("appsettings.json")).AssertExist();
         var originalAppsettingsEnvFile = new FileInfo(assemblyDirectory.FullName.CombinePath($"appsettings.{currentEnvironment}.json"));
 
-        if (!appsettingsFile.Exists)
+        if (appsettingsFile.Exists is false)
         {
             // Settings file does not exist. Create a new one.
             appsettingsFile.EnsureDeleted();

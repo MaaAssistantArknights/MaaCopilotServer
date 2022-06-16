@@ -4,6 +4,8 @@
 
 namespace MaaCopilotServer.Application.Common.Interfaces;
 
+using Microsoft.AspNetCore.Http;
+
 /// <summary>
 /// The service for parsing information of the current user.
 /// </summary>
@@ -16,7 +18,11 @@ public interface ICurrentUserService
     Guid? GetUserIdentity();
 
     /// <summary>
-    /// Gets tracking ID of the current user.
+    /// Gets tracking ID of the current user. The tracking ID follows the rules below:
+    /// 
+    /// <para>When APM is enabled, the ID will be APM Tracking ID.</para>
+    /// 
+    /// <para>When APM is disabled, the ID will be <see cref="HttpContext.TraceIdentifier"/> provided by ASP.NET Core.</para>
     /// </summary>
     /// <returns>The tracking ID if it exists, otherwise empty string.</returns>
     string GetTrackingId();

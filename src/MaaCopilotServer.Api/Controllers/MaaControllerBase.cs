@@ -14,7 +14,7 @@ namespace MaaCopilotServer.Api.Controllers;
 public abstract class MaaControllerBase : ControllerBase
 {
     /// <summary>
-    /// The mediator of the controller.
+    /// The mediator.
     /// </summary>
     protected readonly IMediator _mediator;
 

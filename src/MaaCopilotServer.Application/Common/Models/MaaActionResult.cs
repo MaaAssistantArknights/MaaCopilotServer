@@ -27,7 +27,7 @@ public class MaaActionResult<T>
     }
 
     /// <summary>
-    /// The status code of the response.
+    /// The status code of the response, not to be confused with the HTTP status code.
     /// </summary>
     public int RealStatusCode => _maaApiResponse.StatusCode;
 

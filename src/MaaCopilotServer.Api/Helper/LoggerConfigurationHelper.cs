@@ -28,7 +28,7 @@ public static class LoggerConfigurationHelper
             .ReadFrom.Configuration(configuration)
             .Destructure.UsingAttributes();
 
-        if (!switchesOption.ElasticSearch)
+        if (switchesOption.ElasticSearch is false)
         {
             return loggerConfiguration;
         }

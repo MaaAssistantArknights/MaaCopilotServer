@@ -35,7 +35,7 @@ public class CreateCopilotOperationCommandValidator : AbstractValidator<CreateCo
             var doc = JsonDocument.Parse(content!).RootElement;
             var stageName = doc.GetProperty("stage_name").GetString();
             var minimumRequired = doc.GetProperty("minimum_required").GetString();
-            return !string.IsNullOrEmpty(stageName) && !string.IsNullOrEmpty(minimumRequired);
+            return (string.IsNullOrEmpty(stageName) is false) && (string.IsNullOrEmpty(minimumRequired) is false);
         }
         catch
         {

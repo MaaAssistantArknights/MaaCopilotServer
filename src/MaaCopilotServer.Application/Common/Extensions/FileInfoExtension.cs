@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 namespace MaaCopilotServer.Application.Common.Extensions;
 
 /// <summary>
-/// The extension to get information of a file.
+/// The extension of <see cref="FileInfo"/>.
 /// </summary>
 public static class FileInfoExtension
 {

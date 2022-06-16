@@ -19,7 +19,7 @@ namespace MaaCopilotServer.Api.Helper;
 public static class DatabaseHelper
 {
     /// <summary>
-    /// Initializes database connection based on the configuration.
+    /// Initializes database based on the configuration.
     /// </summary>
     /// <param name="configuration">The configuration.</param>
     public static void DatabaseInitialize(IConfiguration configuration)
@@ -34,7 +34,7 @@ public static class DatabaseHelper
 
         // Check if there are users in the database.
         var haveUser = db.CopilotUsers.Any();
-        if (!haveUser)
+        if (haveUser is false)
         {
             // New DB without any existing users. Initialize default user.
             var defaultUserEmail = Environment.GetEnvironmentVariable("DEFAULT_USER_EMAIL") ?? "super@prts.plus";

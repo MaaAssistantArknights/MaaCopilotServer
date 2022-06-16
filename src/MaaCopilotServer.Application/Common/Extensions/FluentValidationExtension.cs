@@ -5,7 +5,7 @@
 namespace MaaCopilotServer.Application.Common.Extensions;
 
 /// <summary>
-/// The extension to validate values.
+/// Common functions to validate values.
 /// </summary>
 public static class FluentValidationExtension
 {

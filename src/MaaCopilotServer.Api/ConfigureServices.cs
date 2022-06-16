@@ -64,7 +64,7 @@ public static class ConfigureServices
                     // Set token in the context.
                     OnMessageReceived = (context) =>
                     {
-                        if (!context.Request.Query.TryGetValue("access_token", out var values))
+                        if (context.Request.Query.TryGetValue("access_token", out var values) is false)
                         {
                             return Task.CompletedTask;
                         }
