@@ -6,8 +6,15 @@ using MaaCopilotServer.Domain.Enums;
 
 namespace MaaCopilotServer.Application.CopilotUser.Commands.CreateCopilotUser;
 
+/// <summary>
+/// The validator of creating user.
+/// </summary>
 public class CreateCopilotUserCommandValidator : AbstractValidator<CreateCopilotUserCommand>
 {
+    /// <summary>
+    /// The constructor of <see cref="CreateCopilotUserCommandValidator"/>.
+    /// </summary>
+    /// <param name="errorMessage">The error message.</param>
     public CreateCopilotUserCommandValidator(ValidationErrorMessage errorMessage)
     {
         RuleFor(x => x.Email)

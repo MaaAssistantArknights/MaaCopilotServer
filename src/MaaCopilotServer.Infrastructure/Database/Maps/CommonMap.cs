@@ -8,8 +8,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MaaCopilotServer.Infrastructure.Database.Maps;
 
+/// <summary>
+/// The extension for common configurations.
+/// </summary>
 public static class CommonMap
 {
+    /// <summary>
+    /// Applies common configurations.
+    /// </summary>
+    /// <param name="modelBuilder">The model builder.</param>
     public static void ApplyCommonConfigurations(this ModelBuilder modelBuilder)
     {
         var method = typeof(CommonMap).GetTypeInfo().DeclaredMethods
@@ -24,6 +31,11 @@ public static class CommonMap
         }
     }
 
+    /// <summary>
+    /// Configures entity type model.
+    /// </summary>
+    /// <typeparam name="TEntity">The entity type.</typeparam>
+    /// <param name="modelBuilder">The module builder.</param>
     private static void Configure<TEntity>(ModelBuilder modelBuilder) where TEntity : BaseEntity
     {
         modelBuilder.Entity<TEntity>(builder =>

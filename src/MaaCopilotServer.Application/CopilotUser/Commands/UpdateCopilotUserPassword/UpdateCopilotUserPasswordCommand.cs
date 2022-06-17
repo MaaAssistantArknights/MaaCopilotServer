@@ -9,26 +9,60 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MaaCopilotServer.Application.CopilotUser.Commands.UpdateCopilotUserPassword;
 
+/// <summary>
+/// The record of updating user password.
+/// </summary>
 [Authorized(UserRole.User)]
 public record UpdateCopilotUserPasswordCommand : IRequest<MaaActionResult<EmptyObject>>
 {
+    /// <summary>
+    /// The original password.
+    /// </summary>
     [JsonPropertyName("original_password")]
     [NotLogged]
     public string? OriginalPassword { get; set; }
 
+    /// <summary>
+    /// The new password.
+    /// </summary>
     [JsonPropertyName("new_password")]
     [NotLogged]
     public string? NewPassword { get; set; }
 }
 
+/// <summary>
+/// The handler of updating user password.
+/// </summary>
 public class UpdateCopilotUserPasswordCommandHandler : IRequestHandler<UpdateCopilotUserPasswordCommand,
     MaaActionResult<EmptyObject>>
 {
+    /// <summary>
+    /// The service for current user.
+    /// </summary>
     private readonly ICurrentUserService _currentUserService;
+
+    /// <summary>
+    /// The API error message.
+    /// </summary>
     private readonly ApiErrorMessage _apiErrorMessage;
+
+    /// <summary>
+    /// The DB context.
+    /// </summary>
     private readonly IMaaCopilotDbContext _dbContext;
+
+    /// <summary>
+    /// The service for processing passwords and tokens.
+    /// </summary>
     private readonly ISecretService _secretService;
 
+    /// <summary>
+    /// The constructor of <see cref="UpdateCopilotUserPasswordCommandHandler"/>.
+    /// </summary>
+    /// <param name="dbContext">The DB context.</param>
+    /// <param name="secretService">The service for processing passwords and tokens.</param>
+    /// <param name="currentUserService">The service for current user.</param>
+    /// <param name="apiErrorMessage">The API error message.</param>
     public UpdateCopilotUserPasswordCommandHandler(
         IMaaCopilotDbContext dbContext,
         ISecretService secretService,
@@ -41,6 +75,13 @@ public class UpdateCopilotUserPasswordCommandHandler : IRequestHandler<UpdateCop
         _apiErrorMessage = apiErrorMessage;
     }
 
+    /// <summary>
+    /// Handles the request of changing user password.
+    /// </summary>
+    /// <param name="request">The request.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>A task with no contents if the request completes successfully.</returns>
+    /// <exception cref="PipelineException">Thrown when an internal error occurs, or the original password is incorrect.</exception>
     public async Task<MaaActionResult<EmptyObject>> Handle(UpdateCopilotUserPasswordCommand request,
         CancellationToken cancellationToken)
     {

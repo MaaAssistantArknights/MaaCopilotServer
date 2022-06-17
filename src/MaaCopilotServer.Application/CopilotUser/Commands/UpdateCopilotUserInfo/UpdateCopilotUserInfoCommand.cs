@@ -8,20 +8,50 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MaaCopilotServer.Application.CopilotUser.Commands.UpdateCopilotUserInfo;
 
+/// <summary>
+/// The record of updating user info.
+/// </summary>
 [Authorized(UserRole.User)]
 public record UpdateCopilotUserInfoCommand : IRequest<MaaActionResult<EmptyObject>>
 {
+    /// <summary>
+    /// The user email.
+    /// </summary>
     [JsonPropertyName("email")] public string? Email { get; set; }
+
+    /// <summary>
+    /// The username.
+    /// </summary>
     [JsonPropertyName("user_name")] public string? UserName { get; set; }
 }
 
+/// <summary>
+/// The handler of updating user info.
+/// </summary>
 public class
     UpdateCopilotUserInfoCommandHandler : IRequestHandler<UpdateCopilotUserInfoCommand, MaaActionResult<EmptyObject>>
 {
+    /// <summary>
+    /// The service for current user.
+    /// </summary>
     private readonly ICurrentUserService _currentUserService;
+
+    /// <summary>
+    /// The API error message.
+    /// </summary>
     private readonly ApiErrorMessage _apiErrorMessage;
+
+    /// <summary>
+    /// The DB context.
+    /// </summary>
     private readonly IMaaCopilotDbContext _dbContext;
 
+    /// <summary>
+    /// The constructor of <see cref="UpdateCopilotUserInfoCommandHandler"/>.
+    /// </summary>
+    /// <param name="dbContext">The DB context.</param>
+    /// <param name="currentUserService">The service for current user.</param>
+    /// <param name="apiErrorMessage">The API error message.</param>
     public UpdateCopilotUserInfoCommandHandler(
         IMaaCopilotDbContext dbContext,
         ICurrentUserService currentUserService,
@@ -32,6 +62,13 @@ public class
         _apiErrorMessage = apiErrorMessage;
     }
 
+    /// <summary>
+    /// Handles a request of updating user info.
+    /// </summary>
+    /// <param name="request">The request.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>A task with no contents if the request completes successfully.</returns>
+    /// <exception cref="PipelineException">Thrown when an internal error occurs, or the email is already in use.</exception>
     public async Task<MaaActionResult<EmptyObject>> Handle(UpdateCopilotUserInfoCommand request,
         CancellationToken cancellationToken)
     {

@@ -8,11 +8,26 @@ using MaaCopilotServer.Application.Common.Interfaces;
 
 namespace MaaCopilotServer.Api.Services;
 
+/// <summary>
+/// The service for parsing information of the current user.
+/// </summary>
 public class CurrentUserService : ICurrentUserService
 {
+    /// <summary>
+    /// The HTTP context accessor.
+    /// </summary>
     private readonly IHttpContextAccessor _httpContextAccessor;
+
+    /// <summary>
+    /// The configuration.
+    /// </summary>
     private readonly IConfiguration _configuration;
 
+    /// <summary>
+    /// The constructor of <see cref="CurrentUserService"/>.
+    /// </summary>
+    /// <param name="httpContextAccessor">The HTTP context accessor.</param>
+    /// <param name="configuration">The configuration.</param>
     public CurrentUserService(
         IHttpContextAccessor httpContextAccessor,
         IConfiguration configuration)
@@ -21,6 +36,10 @@ public class CurrentUserService : ICurrentUserService
         _configuration = configuration;
     }
 
+    /// <summary>
+    /// Gets user identity (GUID) of the current user.
+    /// </summary>
+    /// <returns>User GUID if it exists, otherwise <c>null</c>.</returns>
     public Guid? GetUserIdentity()
     {
         var id = _httpContextAccessor.HttpContext?.User.FindFirstValue("id");
@@ -33,6 +52,14 @@ public class CurrentUserService : ICurrentUserService
         return null;
     }
 
+    /// <summary>
+    /// Gets tracking ID of the current user. The tracking ID follows the rules below:
+    /// 
+    /// <para>When APM is enabled, the ID will be APM Tracking ID.</para>
+    /// 
+    /// <para>When APM is disabled, the ID will be <see cref="HttpContext.TraceIdentifier"/> provided by ASP.NET Core.</para>
+    /// </summary>
+    /// <returns>The tracking ID if it exists, otherwise empty string.</returns>
     public string GetTrackingId()
     {
         if (_configuration.GetValue<bool>("Switches:Apm") is false)

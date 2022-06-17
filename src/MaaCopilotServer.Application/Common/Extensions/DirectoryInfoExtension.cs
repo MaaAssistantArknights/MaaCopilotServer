@@ -6,6 +6,9 @@ using System.Runtime.CompilerServices;
 
 namespace MaaCopilotServer.Application.Common.Extensions;
 
+/// <summary>
+/// The extension of <see cref="DirectoryInfo"/>.
+/// </summary>
 public static class DirectoryInfoExtension
 {
     /// <summary>

@@ -14,6 +14,14 @@ namespace MaaCopilotServer.Domain.Entities;
 /// </summary>
 public class CopilotUser : EditableEntity
 {
+    /// <summary>
+    /// The constructor of <see cref="CopilotUser"/>.
+    /// </summary>
+    /// <param name="email">The user email.</param>
+    /// <param name="password">The password.</param>
+    /// <param name="userName">The username.</param>
+    /// <param name="userRole">The role of the user.</param>
+    /// <param name="createBy">The creator of the user.</param>
     public CopilotUser(string email, string password, string userName, UserRole userRole, Guid createBy)
     {
         Email = email;
@@ -33,14 +41,17 @@ public class CopilotUser : EditableEntity
     /// 邮箱
     /// </summary>
     public string Email { get; private set; }
+
     /// <summary>
     /// 密码
     /// </summary>
     public string Password { get; private set; }
+
     /// <summary>
     /// 用户名
     /// </summary>
     public string UserName { get; private set; }
+
     /// <summary>
     /// 权限组
     /// </summary>
@@ -61,6 +72,11 @@ public class CopilotUser : EditableEntity
         UserActivated = true;
     }
 
+    /// <summary>
+    /// Updates the password.
+    /// </summary>
+    /// <param name="operator">The user who does the operation.</param>
+    /// <param name="newPassword">The new password.</param>
     public void UpdatePassword(Guid @operator, string newPassword)
     {
         Password = newPassword;
@@ -68,6 +84,13 @@ public class CopilotUser : EditableEntity
         UpdateBy = @operator;
     }
 
+    /// <summary>
+    /// Updates user info.
+    /// </summary>
+    /// <param name="operator">The user who does the operation.</param>
+    /// <param name="email">The email of the user.</param>
+    /// <param name="userName">The username.</param>
+    /// <param name="userRole">The role of the user.</param>
     public void UpdateUserInfo(Guid @operator, string? email = null, string? userName = null, UserRole? userRole = null)
     {
         if (string.IsNullOrEmpty(email) &&

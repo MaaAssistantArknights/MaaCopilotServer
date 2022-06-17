@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
 using Destructurama;
 using Elastic.Apm.SerilogEnricher;
 using Elastic.CommonSchema.Serilog;
@@ -12,8 +13,17 @@ using Serilog.Sinks.Elasticsearch;
 
 namespace MaaCopilotServer.Api.Helper;
 
+/// <summary>
+/// The helper class of logger.
+/// </summary>
+[ExcludeFromCodeCoverage] // TODO: need refactor
 public static class LoggerConfigurationHelper
 {
+    /// <summary>
+    /// Constructs a <see cref="LoggerConfiguration"/> instance based on the configuration.
+    /// </summary>
+    /// <param name="configuration">The configuration.</param>
+    /// <returns>The <see cref="LoggerConfiguration"/> instance.</returns>
     public static LoggerConfiguration GetLoggerConfiguration(this IConfiguration configuration)
     {
         var switchesOption = configuration.GetOption<SwitchesOption>();
@@ -26,6 +36,7 @@ public static class LoggerConfigurationHelper
             return loggerConfiguration;
         }
 
+        // Elastic search options.
         var elasticOptions = configuration.GetOption<ElasticLogSinkOption>();
         var elasticUris = elasticOptions.Uris.Split(";").Select(x => new Uri(x)).ToArray();
         loggerConfiguration.WriteTo.Elasticsearch(new ElasticsearchSinkOptions(elasticUris)

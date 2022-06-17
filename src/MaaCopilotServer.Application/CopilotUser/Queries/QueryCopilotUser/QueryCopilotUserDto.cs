@@ -7,8 +7,17 @@ using MaaCopilotServer.Domain.Enums;
 
 namespace MaaCopilotServer.Application.CopilotUser.Queries.QueryCopilotUser;
 
+/// <summary>
+/// The DTO of querying multiple users.
+/// </summary>
 public class QueryCopilotUserDto
 {
+    /// <summary>
+    /// The constructor of <see cref="QueryCopilotUserDto"/>.
+    /// </summary>
+    /// <param name="id">The user ID.</param>
+    /// <param name="userName">The username.</param>
+    /// <param name="userRole">The role of the user.</param>
     public QueryCopilotUserDto(Guid id, string userName, UserRole userRole)
     {
         Id = id;
@@ -16,9 +25,18 @@ public class QueryCopilotUserDto
         UserRole = userRole;
     }
 
+    /// <summary>
+    /// The user ID.
+    /// </summary>
     [JsonPropertyName("id")] public Guid Id { get; set; }
 
+    /// <summary>
+    /// The username.
+    /// </summary>
     [JsonPropertyName("user_name")] public string UserName { get; set; }
 
-    [JsonPropertyName("role")] [JsonConverter(typeof(JsonStringEnumConverter))] public UserRole UserRole { get; set; }
+    /// <summary>
+    /// The role of the user.
+    /// </summary>
+    [JsonPropertyName("role")][JsonConverter(typeof(JsonStringEnumConverter))] public UserRole UserRole { get; set; }
 }

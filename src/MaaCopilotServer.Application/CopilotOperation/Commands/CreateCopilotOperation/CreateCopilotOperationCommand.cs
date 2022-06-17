@@ -8,21 +8,52 @@ using MaaCopilotServer.Domain.Enums;
 
 namespace MaaCopilotServer.Application.CopilotOperation.Commands.CreateCopilotOperation;
 
+/// <summary>
+/// The record of creating operation.
+/// </summary>
 [Authorized(UserRole.Uploader)]
 public record CreateCopilotOperationCommand : IRequest<MaaActionResult<CreateCopilotOperationDto>>
 {
+    /// <summary>
+    /// The operation content.
+    /// </summary>
     [JsonPropertyName("content")] public string? Content { get; set; }
 }
 
+/// <summary>
+/// The handler of creating operation.
+/// </summary>
 public class CreateCopilotOperationCommandHandler : IRequestHandler<CreateCopilotOperationCommand,
     MaaActionResult<CreateCopilotOperationDto>>
 {
+    /// <summary>
+    /// The service for processing copilot ID.
+    /// </summary>
     private readonly ICopilotIdService _copilotIdService;
     private readonly ValidationErrorMessage _validationErrorMessage;
+
+    /// <summary>
+    /// The service for current user.
+    /// </summary>
     private readonly ICurrentUserService _currentUserService;
+
+    /// <summary>
+    /// The DB context.
+    /// </summary>
     private readonly IMaaCopilotDbContext _dbContext;
+
+    /// <summary>
+    /// The service for user Identity.
+    /// </summary>
     private readonly IIdentityService _identityService;
 
+    /// <summary>
+    /// The constructor of <see cref="CreateCopilotOperationCommandHandler"/>.
+    /// </summary>
+    /// <param name="dbContext">The DB context.</param>
+    /// <param name="identityService"> The service for user Identity.</param>
+    /// <param name="currentUserService">The service for current user.</param>
+    /// <param name="copilotIdService">The service for processing copilot ID.</param>
     public CreateCopilotOperationCommandHandler(
         IMaaCopilotDbContext dbContext,
         IIdentityService identityService,
@@ -37,14 +68,22 @@ public class CreateCopilotOperationCommandHandler : IRequestHandler<CreateCopilo
         _validationErrorMessage = validationErrorMessage;
     }
 
+    /// <summary>
+    /// Handles a request of creating operation.
+    /// </summary>
+    /// <param name="request">The request.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>A task with the response.</returns>
     public async Task<MaaActionResult<CreateCopilotOperationDto>> Handle(CreateCopilotOperationCommand request,
         CancellationToken cancellationToken)
     {
         var doc = JsonDocument.Parse(request.Content!).RootElement;
 
+        // Parse stage_name and version.
         var stageName = doc.GetProperty("stage_name").GetString();
         var minimumRequired = doc.GetProperty("minimum_required").GetString();
 
+        // Parse doc.
         var docTitle = string.Empty;
         var docDetails = string.Empty;
         var hasDoc = doc.TryGetProperty("doc", out var docElement);

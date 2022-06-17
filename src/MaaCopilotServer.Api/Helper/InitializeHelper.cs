@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using MaaCopilotServer.Application.Common.Extensions;
 using MaaCopilotServer.Domain.Entities;
@@ -14,6 +15,10 @@ using Serilog;
 
 namespace MaaCopilotServer.Api.Helper;
 
+/// <summary>
+/// The helper class of database connection.
+/// </summary>
+[ExcludeFromCodeCoverage] // TODO: need refactor
 public static class InitializeHelper
 {
     public static void InitializeEmailTemplates(IConfiguration configuration)
@@ -41,6 +46,7 @@ public static class InitializeHelper
 
     public static void InitializeDatabase(IConfiguration configuration)
     {
+        // Establish database connection.
         var dbOptions = configuration.GetOption<DatabaseOption>();
         var db = new MaaCopilotDbContext(new OptionsWrapper<DatabaseOption>(dbOptions));
         var pendingMigrations = db.Database.GetPendingMigrations().Count();
@@ -50,9 +56,11 @@ public static class InitializeHelper
             Log.Logger.Information("Database migration completed, applied {PendingMigrations} migrations", pendingMigrations);
         }
 
+        // Check if there are users in the database.
         var haveUser = db.CopilotUsers.Any();
         if (haveUser is false)
         {
+            // New DB without any existing users. Initialize default user.
             var defaultUserEmail = Environment.GetEnvironmentVariable("DEFAULT_USER_EMAIL") ?? "super@prts.plus";
             var defaultUserPassword = Environment.GetEnvironmentVariable("DEFAULT_USER_PASSWORD") ?? GeneratePassword();
             var defaultUserName = Environment.GetEnvironmentVariable("DEFAULT_USER_NAME") ?? "Maa";
@@ -74,6 +82,10 @@ public static class InitializeHelper
         db.Dispose();
     }
 
+    /// <summary>
+    /// Generates a new password. The generated password matches regexp like <c>^[A-Z]{16}$</c>.
+    /// </summary>
+    /// <returns>The new password.</returns>
     private static string GeneratePassword()
     {
         var builder = new StringBuilder();

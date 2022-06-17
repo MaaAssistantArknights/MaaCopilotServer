@@ -9,8 +9,15 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace MaaCopilotServer.Infrastructure.Database.Maps;
 
+/// <summary>
+/// Configuration of operations.
+/// </summary>
 public class CopilotOperationMap : IEntityTypeConfiguration<CopilotOperation>
 {
+    /// <summary>
+    /// Configures operation model.
+    /// </summary>
+    /// <param name="builder">The entity type builder.</param>
     public void Configure(EntityTypeBuilder<CopilotOperation> builder)
     {
         builder.Property(x => x.Id).ValueGeneratedOnAdd();

@@ -4,9 +4,30 @@
 
 namespace MaaCopilotServer.Application.Common.Interfaces;
 
+/// <summary>
+/// The service for processing passwords and tokens.
+/// </summary>
 public interface ISecretService
 {
+    /// <summary>
+    /// Generates a JWT token.
+    /// </summary>
+    /// <param name="id">The user ID.</param>
+    /// <returns>A JWT token string, and the expiration time.</returns>
     (string, DateTimeOffset) GenerateJwtToken(Guid id);
+
+    /// <summary>
+    /// Hashes a password with the salt.
+    /// </summary>
+    /// <param name="password">The password to hash.</param>
+    /// <returns>The hashed password.</returns>
     string HashPassword(string password);
+
+    /// <summary>
+    /// Verifies a password to check if it matches the hash.
+    /// </summary>
+    /// <param name="hash">The hash of the password.</param>
+    /// <param name="password">The password.</param>
+    /// <returns><c>true</c> if the password matches the hash, <c>false</c> otherwise.</returns>
     bool VerifyPassword(string hash, string password);
 }

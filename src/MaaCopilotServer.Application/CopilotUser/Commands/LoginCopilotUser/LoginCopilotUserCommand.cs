@@ -8,23 +8,57 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MaaCopilotServer.Application.CopilotUser.Commands.LoginCopilotUser;
 
+/// <summary>
+/// The record of user login.
+/// </summary>
 public record LoginCopilotUserCommand : IRequest<MaaActionResult<LoginCopilotUserDto>>
 {
+    /// <summary>
+    /// The user email.
+    /// </summary>
     [JsonPropertyName("email")] public string? Email { get; set; }
 
+    /// <summary>
+    /// The password.
+    /// </summary>
     [JsonPropertyName("password")]
     [LogMasked]
     public string? Password { get; set; }
 }
 
+/// <summary>
+/// The handler of user login.
+/// </summary>
 public class
     LoginCopilotUserCommandHandler : IRequestHandler<LoginCopilotUserCommand, MaaActionResult<LoginCopilotUserDto>>
 {
+    /// <summary>
+    /// The service for current user.
+    /// </summary>
     private readonly ICurrentUserService _currentUserService;
+
+    /// <summary>
+    /// The API error message.
+    /// </summary>
     private readonly ApiErrorMessage _apiErrorMessage;
+
+    /// <summary>
+    /// The DB context.
+    /// </summary>
     private readonly IMaaCopilotDbContext _dbContext;
+
+    /// <summary>
+    /// The service for processing passwords and tokens.
+    /// </summary>
     private readonly ISecretService _secretService;
 
+    /// <summary>
+    /// The constructor of <see cref="LoginCopilotUserCommandHandler"/>.
+    /// </summary>
+    /// <param name="dbContext">The DB context.</param>
+    /// <param name="secretService">The service for processing passwords and tokens.</param>
+    /// <param name="currentUserService">The service for current user.</param>
+    /// <param name="apiErrorMessage">The API error message.</param>
     public LoginCopilotUserCommandHandler(
         IMaaCopilotDbContext dbContext,
         ISecretService secretService,
@@ -37,6 +71,13 @@ public class
         _apiErrorMessage = apiErrorMessage;
     }
 
+    /// <summary>
+    /// Handles the request of user login.
+    /// </summary>
+    /// <param name="request">The request.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>A task with username, user token and token expiration time.</returns>
+    /// <exception cref="PipelineException">Thrown when the email does not exist, or the password is incorrect.</exception>
     public async Task<MaaActionResult<LoginCopilotUserDto>> Handle(LoginCopilotUserCommand request,
         CancellationToken cancellationToken)
     {

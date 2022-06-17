@@ -14,16 +14,33 @@ using Microsoft.Extensions.Options;
 
 namespace MaaCopilotServer.Infrastructure.Database;
 
+/// <summary>
+/// The DB context.
+/// </summary>
 public class MaaCopilotDbContext : DbContext, IMaaCopilotDbContext
 {
+    /// <summary>
+    /// The DB set of operations.
+    /// </summary>
     public DbSet<CopilotOperation> CopilotOperations { get; set; } = null!;
     public DbSet<CopilotOperationComment> CopilotOperationComments { get; set; } = null!;
     public DbSet<CopilotUserFavorite> CopilotUserFavorites { get; set; } = null!;
+
+    /// <summary>
+    /// The DB set of users.
+    /// </summary>
     public DbSet<CopilotUser> CopilotUsers { get; set; } = null!;
     public DbSet<CopilotToken> CopilotTokens { get; set; } = null!;
 
+    /// <summary>
+    /// The connection string.
+    /// </summary>
     private readonly string? _connectionString;
 
+    /// <summary>
+    /// The constructor of <see cref="MaaCopilotDbContext"/>.
+    /// </summary>
+    /// <param name="dbOptions">The DB options.</param>
     public MaaCopilotDbContext(IOptions<DatabaseOption> dbOptions)
     {
         _connectionString = dbOptions.Value.ConnectionString;
@@ -55,6 +72,9 @@ public class MaaCopilotDbContext : DbContext, IMaaCopilotDbContext
         return await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
     }
 
+    /// <summary>
+    /// Preparations before saving changes to DB.
+    /// </summary>
     private void OnBeforeSaving()
     {
         var entities = ChangeTracker.Entries()
