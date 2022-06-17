@@ -5,18 +5,17 @@
 namespace MaaCopilotServer.Application.Test.Common.Behaviours
 {
     using Domain.Entities;
-    using MediatR;
     using MaaCopilotServer.Application.Common.Behaviours;
+    using MaaCopilotServer.Application.Common.Exceptions;
     using MaaCopilotServer.Application.Common.Interfaces;
-    using MaaCopilotServer.Resources;
     using MaaCopilotServer.Application.Common.Security;
     using MaaCopilotServer.Domain.Enums;
-    using MaaCopilotServer.Application.Common.Models;
-    using MaaCopilotServer.Application.Common.Exceptions;
+    using MaaCopilotServer.Resources;
+    using MediatR;
     using Microsoft.AspNetCore.Http;
 
     /// <summary>
-    /// Tests for <see cref="AuthorizationBehaviour{TRequest, TResponse}"/>
+    /// Tests for <see cref="AuthorizationBehaviour{TRequest, TResponse}"/>.
     /// </summary>
     [TestClass]
     public class AuthorizationBehaviourTest

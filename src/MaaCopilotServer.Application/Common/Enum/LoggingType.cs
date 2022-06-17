@@ -2,11 +2,14 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace MaaCopilotServer.Application.Common.Enum;
 
 /// <summary>
 /// The type of log.
 /// </summary>
+[ExcludeFromCodeCoverage]
 public struct LoggingType
 {
     /// <summary>
