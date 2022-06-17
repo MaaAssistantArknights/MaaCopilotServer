@@ -20,6 +20,9 @@ public interface IMaaCopilotDbContext
     /// The DB set of users.
     /// </summary>
     DbSet<Domain.Entities.CopilotUser> CopilotUsers { get; }
+    DbSet<Domain.Entities.CopilotToken> CopilotTokens { get; }
+    DbSet<Domain.Entities.CopilotOperationComment> CopilotOperationComments { get; }
+    DbSet<Domain.Entities.CopilotUserFavorite> CopilotUserFavorites { get; }
 
     /// <summary>
     /// Saves changes to DB asynchronously.

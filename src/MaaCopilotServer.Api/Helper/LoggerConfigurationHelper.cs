@@ -6,6 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 using Destructurama;
 using Elastic.Apm.SerilogEnricher;
 using Elastic.CommonSchema.Serilog;
+using MaaCopilotServer.Application.Common.Extensions;
 using MaaCopilotServer.Domain.Options;
 using Serilog;
 using Serilog.Sinks.Elasticsearch;

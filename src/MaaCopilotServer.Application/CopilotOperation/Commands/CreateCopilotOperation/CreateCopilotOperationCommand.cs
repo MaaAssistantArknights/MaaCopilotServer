@@ -30,6 +30,7 @@ public class CreateCopilotOperationCommandHandler : IRequestHandler<CreateCopilo
     /// The service for processing copilot ID.
     /// </summary>
     private readonly ICopilotIdService _copilotIdService;
+    private readonly ValidationErrorMessage _validationErrorMessage;
 
     /// <summary>
     /// The service for current user.
@@ -57,12 +58,14 @@ public class CreateCopilotOperationCommandHandler : IRequestHandler<CreateCopilo
         IMaaCopilotDbContext dbContext,
         IIdentityService identityService,
         ICurrentUserService currentUserService,
-        ICopilotIdService copilotIdService)
+        ICopilotIdService copilotIdService,
+        ValidationErrorMessage validationErrorMessage)
     {
         _dbContext = dbContext;
         _identityService = identityService;
         _currentUserService = currentUserService;
         _copilotIdService = copilotIdService;
+        _validationErrorMessage = validationErrorMessage;
     }
 
     /// <summary>
@@ -84,6 +87,7 @@ public class CreateCopilotOperationCommandHandler : IRequestHandler<CreateCopilo
         var docTitle = string.Empty;
         var docDetails = string.Empty;
         var hasDoc = doc.TryGetProperty("doc", out var docElement);
+        var hasOperator = doc.TryGetProperty("opers", out var operatorElement);
         if (hasDoc)
         {
             var docTitleElementExist = docElement.TryGetProperty("title", out var titleElement);
@@ -99,9 +103,29 @@ public class CreateCopilotOperationCommandHandler : IRequestHandler<CreateCopilo
             }
         }
 
+        var operators = new List<string>();
+        if (hasOperator)
+        {
+            var operatorElementList = operatorElement.EnumerateArray();
+            foreach (var operatorElementItem in operatorElementList)
+            {
+                var hasName = operatorElementItem.TryGetProperty("name", out var operatorNameElement);
+                var hasSkill = operatorElementItem.TryGetProperty("skill", out var operatorSkillElement);
+                if (hasName is false)
+                {
+                    throw new PipelineException(MaaApiResponse.BadRequest(_currentUserService.GetTrackingId(),
+                        _validationErrorMessage.CopilotOperationJsonIsInvalid));
+                }
+                var operatorItem =
+                    $"{operatorNameElement.GetString()}::{(hasSkill ? operatorSkillElement.GetInt32().ToString() : "1")}";
+                operators.Add(operatorItem);
+            }
+        }
+        operators = operators.Distinct().ToList();
+
         var user = await _identityService.GetUserAsync(_currentUserService.GetUserIdentity()!.Value);
         var entity = new Domain.Entities.CopilotOperation(
-            request.Content!, stageName!, minimumRequired!, docTitle, docDetails, user!, user!.EntityId);
+            request.Content!, stageName!, minimumRequired!, docTitle, docDetails, user!, user!.EntityId, operators);
 
         _dbContext.CopilotOperations.Add(entity);
         await _dbContext.SaveChangesAsync(cancellationToken);

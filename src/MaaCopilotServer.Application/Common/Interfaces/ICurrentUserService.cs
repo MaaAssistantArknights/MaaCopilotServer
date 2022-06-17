@@ -2,6 +2,8 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Globalization;
+
 namespace MaaCopilotServer.Application.Common.Interfaces;
 
 using Microsoft.AspNetCore.Http;
@@ -26,4 +28,5 @@ public interface ICurrentUserService
     /// </summary>
     /// <returns>The tracking ID if it exists, otherwise empty string.</returns>
     string GetTrackingId();
+    CultureInfo GetCulture();
 }

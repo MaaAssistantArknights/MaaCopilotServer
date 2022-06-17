@@ -23,11 +23,14 @@ public class MaaCopilotDbContext : DbContext, IMaaCopilotDbContext
     /// The DB set of operations.
     /// </summary>
     public DbSet<CopilotOperation> CopilotOperations { get; set; } = null!;
+    public DbSet<CopilotOperationComment> CopilotOperationComments { get; set; } = null!;
+    public DbSet<CopilotUserFavorite> CopilotUserFavorites { get; set; } = null!;
 
     /// <summary>
     /// The DB set of users.
     /// </summary>
     public DbSet<CopilotUser> CopilotUsers { get; set; } = null!;
+    public DbSet<CopilotToken> CopilotTokens { get; set; } = null!;
 
     /// <summary>
     /// The connection string.

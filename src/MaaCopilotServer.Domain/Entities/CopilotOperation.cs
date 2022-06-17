@@ -23,14 +23,30 @@ public sealed class CopilotOperation : EditableEntity
     /// <param name="details">The detail of the operation.</param>
     /// <param name="author">The author of the operation.</param>
     /// <param name="createBy">The creator of the operation.</param>
-    public CopilotOperation(string content, string stageName, string minimumRequired, string title, string details, CopilotUser author, Guid createBy)
+    public CopilotOperation(string content, string stageName, string minimumRequired, string title, string details, CopilotUser author, Guid createBy, List<string> operators)
     {
+        GroupId = Guid.NewGuid();
         Content = content;
         StageName = stageName;
         MinimumRequired = minimumRequired;
         Title = title;
         Details = details;
         Author = author;
+        Operators = operators;
+        CreateBy = createBy;
+        UpdateBy = createBy;
+    }
+
+    public CopilotOperation(Guid groupId, string content, string stageName, string minimumRequired, string title, string details, CopilotUser author, Guid createBy, List<string> operators)
+    {
+        GroupId = groupId;
+        Content = content;
+        StageName = stageName;
+        MinimumRequired = minimumRequired;
+        Title = title;
+        Details = details;
+        Author = author;
+        Operators = operators;
         CreateBy = createBy;
         UpdateBy = createBy;
     }
@@ -46,6 +62,11 @@ public sealed class CopilotOperation : EditableEntity
     public long Id { get; private set; }
 
     /// <summary>
+    /// 作业组 ID
+    /// </summary>
+    public Guid GroupId { get; private set; }
+
+    /// <summary>
     /// 作业本体 JSON
     /// </summary>
     public string Content { get; private set; }
@@ -53,7 +74,12 @@ public sealed class CopilotOperation : EditableEntity
     /// <summary>
     /// 下载量
     /// </summary>
-    public int Downloads { get; private set; } = 0;
+    public int Downloads { get; private set; }
+
+    /// <summary>
+    /// 收藏量
+    /// </summary>
+    public int Favorites { get; private set; }
 
     // Extract from Content
 
@@ -70,6 +96,10 @@ public sealed class CopilotOperation : EditableEntity
     /// </summary>
     public string Title { get; private set; }
     /// <summary>
+    /// 干员列表
+    /// </summary>
+    public List<string> Operators { get; private set; }
+    /// <summary>
     /// 简介
     /// </summary>
     public string Details { get; private set; }
@@ -85,6 +115,20 @@ public sealed class CopilotOperation : EditableEntity
     public void AddDownloadCount()
     {
         Downloads++;
+        UpdateAt = DateTimeOffset.UtcNow;
+    }
+
+    // 这个接口是可以被匿名访问的，因此不记录更新者
+    public void AddFavorites()
+    {
+        Favorites++;
+        UpdateAt = DateTimeOffset.UtcNow;
+    }
+
+    // 这个接口是可以被匿名访问的，因此不记录更新者
+    public void RemoveFavorites()
+    {
+        Favorites--;
         UpdateAt = DateTimeOffset.UtcNow;
     }
 }

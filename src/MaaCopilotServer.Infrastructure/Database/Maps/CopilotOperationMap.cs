@@ -4,6 +4,7 @@
 
 using MaaCopilotServer.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace MaaCopilotServer.Infrastructure.Database.Maps;
@@ -20,5 +21,13 @@ public class CopilotOperationMap : IEntityTypeConfiguration<CopilotOperation>
     public void Configure(EntityTypeBuilder<CopilotOperation> builder)
     {
         builder.Property(x => x.Id).ValueGeneratedOnAdd();
+        builder.Property(x => x.Operators)
+            .HasConversion(
+                list => string.Join(";", list),
+                s => s.Split(";", StringSplitOptions.RemoveEmptyEntries).ToList(),
+                new ValueComparer<List<string>>(
+                    (c1, c2) => c1!.SequenceEqual(c2!),
+                    c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
+                    c => c.ToList()));
     }
 }

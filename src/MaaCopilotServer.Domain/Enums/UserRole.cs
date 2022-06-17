@@ -9,6 +9,8 @@ namespace MaaCopilotServer.Domain.Enums;
 /// </summary>
 public enum UserRole
 {
+    Banned = int.MinValue,
+    InActivated = -100,
     /// <summary>
     /// The normal user.
     /// </summary>

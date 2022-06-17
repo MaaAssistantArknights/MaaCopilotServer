@@ -56,6 +56,21 @@ public class CopilotUser : EditableEntity
     /// 权限组
     /// </summary>
     public UserRole UserRole { get; private set; }
+    /// <summary>
+    /// 用户激活
+    /// </summary>
+    public bool UserActivated { get; private set; } = false;
+    /// <summary>
+    /// 收藏夹
+    /// </summary>
+    public List<CopilotUserFavorite> UserFavorites { get; set; } = new();
+
+    public void ActivateUser(Guid @operator)
+    {
+        UpdateAt = DateTimeOffset.UtcNow;
+        UpdateBy = @operator;
+        UserActivated = true;
+    }
 
     /// <summary>
     /// Updates the password.
