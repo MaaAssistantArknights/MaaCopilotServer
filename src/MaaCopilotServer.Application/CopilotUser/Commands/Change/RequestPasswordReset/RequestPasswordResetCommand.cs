@@ -63,7 +63,8 @@ public class RequestPasswordResetCommandHandler :
         var (token, time) = _secretService.GenerateToken(user.EntityId,
             TimeSpan.FromMinutes(_tokenOption.Value.PasswordResetToken.ExpireTime));
         var success = await _mailService.SendEmailAsync(
-            new EmailPasswordReset(user.UserName, token, time.ToUtc8String()), user.Email);
+            new EmailPasswordReset(user.UserName, token, time.ToUtc8String(),
+                _tokenOption.Value.PasswordResetToken.HasCallback), user.Email);
 
         if (success is false)
         {
