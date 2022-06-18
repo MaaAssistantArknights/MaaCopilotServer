@@ -8,25 +8,25 @@ using MaaCopilotServer.Domain.Attributes;
 namespace MaaCopilotServer.Domain.Options;
 
 /// <summary>
-/// The <c>Token</c> Option
+///     The <c>Token</c> Option
 /// </summary>
 [OptionName("Token")]
 public class TokenOption
 {
     /// <summary>
-    /// Account Activation Token configuration
+    ///     Account Activation Token configuration
     /// </summary>
     [JsonPropertyName("AccountActivationToken")]
     public TokenConfiguration AccountActivationToken { get; set; } = null!;
 
     /// <summary>
-    /// Password Reset Token configuration
+    ///     Password Reset Token configuration
     /// </summary>
     [JsonPropertyName("PasswordResetToken")]
     public TokenConfiguration PasswordResetToken { get; set; } = null!;
 
     /// <summary>
-    /// Change Email Token configuration
+    ///     Change Email Token configuration
     /// </summary>
     [JsonPropertyName("ChangeEmailToken")]
     public TokenConfiguration ChangeEmailToken { get; set; } = null!;
@@ -35,12 +35,14 @@ public class TokenOption
 public class TokenConfiguration
 {
     /// <summary>
-    /// Token expiration time in minutes
+    ///     Token expiration time in minutes
     /// </summary>
-    [JsonPropertyName("ExpireTime")] public int ExpireTime { get; set; }
+    [JsonPropertyName("ExpireTime")]
+    public int ExpireTime { get; set; }
 
     /// <summary>
-    /// Whether pass HasCallback parameter with true value of the email render
+    ///     Whether pass HasCallback parameter with true value of the email render
     /// </summary>
-    [JsonPropertyName("HasCallback")] public bool HasCallback { get; set; }
+    [JsonPropertyName("HasCallback")]
+    public bool HasCallback { get; set; }
 }

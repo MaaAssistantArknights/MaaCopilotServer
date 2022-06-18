@@ -7,7 +7,7 @@ using MaaCopilotServer.Domain.Extensions;
 namespace MaaCopilotServer.Application.Common.Behaviours;
 
 /// <summary>
-/// The behaviour to check user identity and roles.
+///     The behaviour to check user identity and roles.
 /// </summary>
 /// <typeparam name="TRequest">The type of the request.</typeparam>
 /// <typeparam name="TResponse">The type of the response.</typeparam>
@@ -15,22 +15,22 @@ public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRe
     where TRequest : IRequest<TResponse>
 {
     /// <summary>
-    /// The service of current user.
-    /// </summary>
-    private readonly ICurrentUserService _currentUserService;
-
-    /// <summary>
-    /// The API error message.
+    ///     The API error message.
     /// </summary>
     private readonly ApiErrorMessage _apiErrorMessage;
 
     /// <summary>
-    /// The service of identity.
+    ///     The service of current user.
+    /// </summary>
+    private readonly ICurrentUserService _currentUserService;
+
+    /// <summary>
+    ///     The service of identity.
     /// </summary>
     private readonly IIdentityService _identityService;
 
     /// <summary>
-    /// The constructor of <see cref="AuthorizationBehaviour{TRequest, TResponse}"/>.
+    ///     The constructor of <see cref="AuthorizationBehaviour{TRequest, TResponse}" />.
     /// </summary>
     /// <param name="identityService">The service of identity.</param>
     /// <param name="currentUserService">The service of current user.</param>
@@ -46,14 +46,14 @@ public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRe
     }
 
     /// <summary>
-    /// The handler of the request.
+    ///     The handler of the request.
     /// </summary>
     /// <param name="request">The request.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <param name="next">The next request handler.</param>
     /// <returns>The response.</returns>
     /// <exception cref="PipelineException">
-    /// Thrown when the user ID/user is invalid, or the user role is insufficient.
+    ///     Thrown when the user ID/user is invalid, or the user role is insufficient.
     /// </exception>
     public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken,
         RequestHandlerDelegate<TResponse> next)
@@ -67,7 +67,8 @@ public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRe
         var userId = _currentUserService.GetUserIdentity();
         if (userId is null)
         {
-            throw new PipelineException(MaaApiResponse.Unauthorized(_currentUserService.GetTrackingId(), _apiErrorMessage.Unauthorized));
+            throw new PipelineException(MaaApiResponse.Unauthorized(_currentUserService.GetTrackingId(),
+                _apiErrorMessage.Unauthorized));
         }
 
         var user = await _identityService.GetUserAsync(userId.Value);
@@ -79,12 +80,14 @@ public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRe
 
         if (user.UserRole < authorizeAttribute.Role)
         {
-            throw new PipelineException(MaaApiResponse.Forbidden(_currentUserService.GetTrackingId(), _apiErrorMessage.PermissionDenied));
+            throw new PipelineException(MaaApiResponse.Forbidden(_currentUserService.GetTrackingId(),
+                _apiErrorMessage.PermissionDenied));
         }
 
         if (authorizeAttribute.AllowInActivated is false && user.UserActivated is false)
         {
-            throw new PipelineException(MaaApiResponse.Forbidden(_currentUserService.GetTrackingId(), _apiErrorMessage.UserInactivated));
+            throw new PipelineException(MaaApiResponse.Forbidden(_currentUserService.GetTrackingId(),
+                _apiErrorMessage.UserInactivated));
         }
 
         return await next();

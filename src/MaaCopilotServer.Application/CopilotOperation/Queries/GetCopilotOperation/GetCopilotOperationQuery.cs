@@ -7,45 +7,45 @@ using Microsoft.EntityFrameworkCore;
 namespace MaaCopilotServer.Application.CopilotOperation.Queries.GetCopilotOperation;
 
 /// <summary>
-/// The record of querying operation.
+///     The record of querying operation.
 /// </summary>
 public record GetCopilotOperationQuery : IRequest<MaaActionResult<GetCopilotOperationQueryDto>>
 {
     /// <summary>
-    /// The operation ID.
+    ///     The operation ID.
     /// </summary>
     public string? Id { get; set; }
 }
 
 /// <summary>
-/// The handler of querying operation.
+///     The handler of querying operation.
 /// </summary>
 public class
     GetCopilotOperationQueryHandler : IRequestHandler<GetCopilotOperationQuery,
         MaaActionResult<GetCopilotOperationQueryDto>>
 {
     /// <summary>
-    /// The service for processing copilot ID.
-    /// </summary>
-    private readonly ICopilotIdService _copilotIdService;
-
-    /// <summary>
-    /// The service for current user.
-    /// </summary>
-    private readonly ICurrentUserService _currentUserService;
-
-    /// <summary>
-    /// The API error message.
+    ///     The API error message.
     /// </summary>
     private readonly ApiErrorMessage _apiErrorMessage;
 
     /// <summary>
-    /// The DB context.
+    ///     The service for processing copilot ID.
+    /// </summary>
+    private readonly ICopilotIdService _copilotIdService;
+
+    /// <summary>
+    ///     The service for current user.
+    /// </summary>
+    private readonly ICurrentUserService _currentUserService;
+
+    /// <summary>
+    ///     The DB context.
     /// </summary>
     private readonly IMaaCopilotDbContext _dbContext;
 
     /// <summary>
-    /// The constructor of <see cref="GetCopilotOperationQueryHandler"/>.
+    ///     The constructor of <see cref="GetCopilotOperationQueryHandler" />.
     /// </summary>
     /// <param name="dbContext">The DB context.</param>
     /// <param name="copilotIdService">The service for processing copilot ID.</param>
@@ -64,7 +64,7 @@ public class
     }
 
     /// <summary>
-    /// Handles a request of querying operation.
+    ///     Handles a request of querying operation.
     /// </summary>
     /// <param name="request">The request.</param>
     /// <param name="cancellationToken">The cancellation token.</param>

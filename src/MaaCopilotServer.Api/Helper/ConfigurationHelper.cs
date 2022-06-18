@@ -9,16 +9,16 @@ using MaaCopilotServer.Application.Common.Extensions;
 namespace MaaCopilotServer.Api.Helper;
 
 /// <summary>
-/// The helper class of the configurations of the application.
+///     The helper class of the configurations of the application.
 /// </summary>
 [ExcludeFromCodeCoverage] // TODO: need refactor
 public static class ConfigurationHelper
 {
     /// <summary>
-    /// 构建 <see cref="IConfiguration"/>
+    ///     构建 <see cref="IConfiguration" />
     /// </summary>
     /// <remarks>不适用于 Azure Functions 等云服务</remarks>
-    /// <returns><see cref="IConfiguration"/> 实例 (<see cref="ConfigurationRoot"/> 对象)</returns>
+    /// <returns><see cref="IConfiguration" /> 实例 (<see cref="ConfigurationRoot" /> 对象)</returns>
     public static IConfiguration BuildConfiguration()
     {
         // Get data directory from environment variables.
@@ -36,9 +36,12 @@ public static class ConfigurationHelper
 
         // Get settings file locations.
         var appsettingsFile = new FileInfo(dataDirectory.FullName.CombinePath("appsettings.json"));
-        var appsettingsEnvFile = new FileInfo(dataDirectory.FullName.CombinePath($"appsettings.{currentEnvironment}.json"));
-        var originalAppsettingsFile = new FileInfo(assemblyDirectory.FullName.CombinePath("appsettings.json")).AssertExist();
-        var originalAppsettingsEnvFile = new FileInfo(assemblyDirectory.FullName.CombinePath($"appsettings.{currentEnvironment}.json"));
+        var appsettingsEnvFile =
+            new FileInfo(dataDirectory.FullName.CombinePath($"appsettings.{currentEnvironment}.json"));
+        var originalAppsettingsFile =
+            new FileInfo(assemblyDirectory.FullName.CombinePath("appsettings.json")).AssertExist();
+        var originalAppsettingsEnvFile =
+            new FileInfo(assemblyDirectory.FullName.CombinePath($"appsettings.{currentEnvironment}.json"));
 
         if (appsettingsFile.Exists is false)
         {
@@ -68,8 +71,8 @@ public static class ConfigurationHelper
         // Build configurations.
         var configurationBuilder = new ConfigurationBuilder();
 
-        configurationBuilder.AddJsonFile(appsettingsFile.FullName, optional: false, reloadOnChange: true);
-        configurationBuilder.AddJsonFile(appsettingsEnvFile.FullName, optional: true, reloadOnChange: true);
+        configurationBuilder.AddJsonFile(appsettingsFile.FullName, false, true);
+        configurationBuilder.AddJsonFile(appsettingsEnvFile.FullName, true, true);
 
         configurationBuilder.AddEnvironmentVariables("MAA_");
 

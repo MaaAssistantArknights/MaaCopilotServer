@@ -7,23 +7,23 @@ using System.Diagnostics.CodeAnalysis;
 namespace MaaCopilotServer.Application.Common.Exceptions;
 
 /// <summary>
-/// The exception that is thrown when a file is found.
+///     The exception that is thrown when a file is found.
 /// </summary>
 [ExcludeFromCodeCoverage]
 public class FileFoundException : IOException
 {
     /// <summary>
-    /// The filename.
+    ///     The filename.
     /// </summary>
     private readonly string _fileName;
 
     /// <summary>
-    /// The message.
+    ///     The message.
     /// </summary>
     private readonly string _message;
 
     /// <summary>
-    /// The constructor of <see cref="FileNotFoundException"/>.
+    ///     The constructor of <see cref="FileNotFoundException" />.
     /// </summary>
     /// <param name="message">The message.</param>
     /// <param name="fileName">The filename.</param>
@@ -34,7 +34,7 @@ public class FileFoundException : IOException
     }
 
     /// <summary>
-    /// The message of the exception.
+    ///     The message of the exception.
     /// </summary>
     public override string Message
     {

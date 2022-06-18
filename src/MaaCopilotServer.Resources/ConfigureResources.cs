@@ -7,12 +7,12 @@ using Microsoft.Extensions.DependencyInjection;
 namespace MaaCopilotServer.Resources;
 
 /// <summary>
-/// The extension to add resources.
+///     The extension to add resources.
 /// </summary>
 public static class ConfigureResources
 {
     /// <summary>
-    /// Adds resources.
+    ///     Adds resources.
     /// </summary>
     /// <param name="services">The service collection.</param>
     /// <returns>The service collection with the services added.</returns>

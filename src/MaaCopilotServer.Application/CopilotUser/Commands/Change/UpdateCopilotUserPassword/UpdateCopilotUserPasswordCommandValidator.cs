@@ -5,12 +5,12 @@
 namespace MaaCopilotServer.Application.CopilotUser.Commands.UpdateCopilotUserPassword;
 
 /// <summary>
-/// The validator of updating user password.
+///     The validator of updating user password.
 /// </summary>
 public class UpdateCopilotUserPasswordCommandValidator : AbstractValidator<UpdateCopilotUserPasswordCommand>
 {
     /// <summary>
-    /// The constructor of <see cref="UpdateCopilotUserPasswordCommandValidator"/>.
+    ///     The constructor of <see cref="UpdateCopilotUserPasswordCommandValidator" />.
     /// </summary>
     /// <param name="errorMessage">The error message.</param>
     public UpdateCopilotUserPasswordCommandValidator(ValidationErrorMessage errorMessage)

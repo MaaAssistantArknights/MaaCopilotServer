@@ -5,22 +5,22 @@
 namespace MaaCopilotServer.Domain.Attributes;
 
 /// <summary>
-/// The base attribute of options.
+///     The base attribute of options.
 /// </summary>
 [AttributeUsage(AttributeTargets.Class)]
 public class OptionNameAttribute : Attribute
 {
     /// <summary>
-    /// The option name.
-    /// </summary>
-    public string OptionName { get; }
-
-    /// <summary>
-    /// The constructor of <see cref="OptionNameAttribute"/>.
+    ///     The constructor of <see cref="OptionNameAttribute" />.
     /// </summary>
     /// <param name="optionName">The option name.</param>
     public OptionNameAttribute(string optionName)
     {
         OptionName = optionName;
     }
+
+    /// <summary>
+    ///     The option name.
+    /// </summary>
+    public string OptionName { get; }
 }

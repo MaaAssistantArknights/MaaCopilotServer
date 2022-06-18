@@ -15,16 +15,17 @@ using Microsoft.Extensions.DependencyInjection;
 namespace MaaCopilotServer.Infrastructure;
 
 /// <summary>
-/// The extension to add infrastructure services.
+///     The extension to add infrastructure services.
 /// </summary>
 public static class ConfigureServices
 {
     /// <summary>
-    /// Adds infrastructure services.
+    ///     Adds infrastructure services.
     /// </summary>
     /// <param name="services">The service collection.</param>
     /// <returns>The service collection with the services added.</returns>
-    public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddInfrastructureServices(this IServiceCollection services,
+        IConfiguration configuration)
     {
         var emailOption = configuration.GetOption<EmailOption>();
 
@@ -40,8 +41,10 @@ public static class ConfigureServices
             Host = emailOption.Smtp.Host,
             Port = emailOption.Smtp.Port,
             EnableSsl = emailOption.Smtp.UseSsl,
-            Credentials = emailOption.Smtp.UseAuthentication ?
-                new NetworkCredential(emailOption.Smtp.Account, emailOption.Smtp.Password) : null,
+            Credentials =
+                emailOption.Smtp.UseAuthentication
+                    ? new NetworkCredential(emailOption.Smtp.Account, emailOption.Smtp.Password)
+                    : null,
             DeliveryMethod = SmtpDeliveryMethod.Network,
             UseDefaultCredentials = false,
             Timeout = emailOption.Smtp.TimeoutMs

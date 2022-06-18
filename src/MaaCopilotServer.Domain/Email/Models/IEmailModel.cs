@@ -4,4 +4,6 @@
 
 namespace MaaCopilotServer.Domain.Email.Models;
 
-public interface IEmailModel { }
+public interface IEmailModel
+{
+}

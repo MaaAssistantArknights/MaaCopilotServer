@@ -9,7 +9,8 @@ namespace MaaCopilotServer.Application.CopilotUser.Queries.GetCopilotUserFavorit
 
 public class GetCopilotUserFavoritesDto
 {
-    public GetCopilotUserFavoritesDto(string favoriteListId, string favoriteListName, List<QueryCopilotOperationsQueryDto> favoriteItems)
+    public GetCopilotUserFavoritesDto(string favoriteListId, string favoriteListName,
+        List<QueryCopilotOperationsQueryDto> favoriteItems)
     {
         FavoriteListId = favoriteListId;
         FavoriteListName = favoriteListName;
@@ -20,12 +21,10 @@ public class GetCopilotUserFavoritesDto
     public GetCopilotUserFavoritesDto() { }
 #pragma warning restore CS8618
 
-    [JsonPropertyName("favorite_list_id")]
-    public string FavoriteListId { get; set; }
+    [JsonPropertyName("favorite_list_id")] public string FavoriteListId { get; set; }
 
     [JsonPropertyName("favorite_list_name")]
     public string FavoriteListName { get; set; }
 
-    [JsonPropertyName("favorite_items")]
-    public List<QueryCopilotOperationsQueryDto> FavoriteItems { get; set; }
+    [JsonPropertyName("favorite_items")] public List<QueryCopilotOperationsQueryDto> FavoriteItems { get; set; }
 }

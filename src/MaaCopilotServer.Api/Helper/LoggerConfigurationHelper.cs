@@ -14,16 +14,16 @@ using Serilog.Sinks.Elasticsearch;
 namespace MaaCopilotServer.Api.Helper;
 
 /// <summary>
-/// The helper class of logger.
+///     The helper class of logger.
 /// </summary>
 [ExcludeFromCodeCoverage] // TODO: need refactor
 public static class LoggerConfigurationHelper
 {
     /// <summary>
-    /// Constructs a <see cref="LoggerConfiguration"/> instance based on the configuration.
+    ///     Constructs a <see cref="LoggerConfiguration" /> instance based on the configuration.
     /// </summary>
     /// <param name="configuration">The configuration.</param>
-    /// <returns>The <see cref="LoggerConfiguration"/> instance.</returns>
+    /// <returns>The <see cref="LoggerConfiguration" /> instance.</returns>
     public static LoggerConfiguration GetLoggerConfiguration(this IConfiguration configuration)
     {
         var switchesOption = configuration.GetOption<SwitchesOption>();
@@ -59,6 +59,7 @@ public static class LoggerConfigurationHelper
                             elasticOptions.Authentication.Secret.Key);
                         break;
                 }
+
                 return c;
             }
         });

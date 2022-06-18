@@ -10,17 +10,18 @@ using Microsoft.EntityFrameworkCore;
 namespace MaaCopilotServer.Application.CopilotUser.Commands.LoginCopilotUser;
 
 /// <summary>
-/// The record of user login.
+///     The record of user login.
 /// </summary>
 public record LoginCopilotUserCommand : IRequest<MaaActionResult<LoginCopilotUserDto>>
 {
     /// <summary>
-    /// The user email.
+    ///     The user email.
     /// </summary>
-    [JsonPropertyName("email")] public string? Email { get; set; }
+    [JsonPropertyName("email")]
+    public string? Email { get; set; }
 
     /// <summary>
-    /// The password.
+    ///     The password.
     /// </summary>
     [JsonPropertyName("password")]
     [LogMasked]
@@ -28,33 +29,33 @@ public record LoginCopilotUserCommand : IRequest<MaaActionResult<LoginCopilotUse
 }
 
 /// <summary>
-/// The handler of user login.
+///     The handler of user login.
 /// </summary>
 public class
     LoginCopilotUserCommandHandler : IRequestHandler<LoginCopilotUserCommand, MaaActionResult<LoginCopilotUserDto>>
 {
     /// <summary>
-    /// The service for current user.
-    /// </summary>
-    private readonly ICurrentUserService _currentUserService;
-
-    /// <summary>
-    /// The API error message.
+    ///     The API error message.
     /// </summary>
     private readonly ApiErrorMessage _apiErrorMessage;
 
     /// <summary>
-    /// The DB context.
+    ///     The service for current user.
+    /// </summary>
+    private readonly ICurrentUserService _currentUserService;
+
+    /// <summary>
+    ///     The DB context.
     /// </summary>
     private readonly IMaaCopilotDbContext _dbContext;
 
     /// <summary>
-    /// The service for processing passwords and tokens.
+    ///     The service for processing passwords and tokens.
     /// </summary>
     private readonly ISecretService _secretService;
 
     /// <summary>
-    /// The constructor of <see cref="LoginCopilotUserCommandHandler"/>.
+    ///     The constructor of <see cref="LoginCopilotUserCommandHandler" />.
     /// </summary>
     /// <param name="dbContext">The DB context.</param>
     /// <param name="secretService">The service for processing passwords and tokens.</param>
@@ -73,7 +74,7 @@ public class
     }
 
     /// <summary>
-    /// Handles the request of user login.
+    ///     Handles the request of user login.
     /// </summary>
     /// <param name="request">The request.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
@@ -87,7 +88,8 @@ public class
             .FirstOrDefaultAsync(x => x.Email == request.Email, cancellationToken);
         if (user is null)
         {
-            throw new PipelineException(MaaApiResponse.BadRequest(_currentUserService.GetTrackingId(), _apiErrorMessage.LoginFailed));
+            throw new PipelineException(MaaApiResponse.BadRequest(_currentUserService.GetTrackingId(),
+                _apiErrorMessage.LoginFailed));
         }
 
         var ok = _secretService.VerifyPassword(user.Password, request.Password!);
@@ -106,7 +108,8 @@ public class
         var favList = user.UserFavorites
             .ToDictionary(fav => fav.EntityId.ToString(), fav => fav.FavoriteName);
         var dto = new LoginCopilotUserDto(token, expire.ToIsoString(),
-            new GetCopilotUserDto(user.EntityId, user.UserName, user.UserRole, uploadCount, user.UserActivated, favList));
+            new GetCopilotUserDto(user.EntityId, user.UserName, user.UserRole, uploadCount, user.UserActivated,
+                favList));
         return MaaApiResponse.Ok(dto, _currentUserService.GetTrackingId());
     }
 }

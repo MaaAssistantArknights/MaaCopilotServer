@@ -16,7 +16,7 @@ using Serilog;
 namespace MaaCopilotServer.Api.Helper;
 
 /// <summary>
-/// The helper class of database connection.
+///     The helper class of database connection.
 /// </summary>
 [ExcludeFromCodeCoverage] // TODO: need refactor
 public static class InitializeHelper
@@ -53,7 +53,8 @@ public static class InitializeHelper
         if (pendingMigrations > 0)
         {
             db.Database.Migrate();
-            Log.Logger.Information("Database migration completed, applied {PendingMigrations} migrations", pendingMigrations);
+            Log.Logger.Information("Database migration completed, applied {PendingMigrations} migrations",
+                pendingMigrations);
         }
 
         // Check if there are users in the database.
@@ -83,7 +84,7 @@ public static class InitializeHelper
     }
 
     /// <summary>
-    /// Generates a new password. The generated password matches regexp like <c>^[A-Z]{16}$</c>.
+    ///     Generates a new password. The generated password matches regexp like <c>^[A-Z]{16}$</c>.
     /// </summary>
     /// <returns>The new password.</returns>
     private static string GeneratePassword()

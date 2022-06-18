@@ -5,7 +5,7 @@
 namespace MaaCopilotServer.Application.Common.Extensions;
 
 /// <summary>
-/// The extension for path processing.
+///     The extension for path processing.
 /// </summary>
 public static class PathExtension
 {

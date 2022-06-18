@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 namespace MaaCopilotServer.Application.Common.Behaviours;
 
 /// <summary>
-/// The behaviour to handle pipeline exceptions.
+///     The behaviour to handle pipeline exceptions.
 /// </summary>
 /// <typeparam name="TRequest">The type of the request.</typeparam>
 /// <typeparam name="TResponse">The type of the response.</typeparam>
@@ -15,12 +15,12 @@ public class PipelineExceptionBehaviour<TRequest, TResponse> : IPipelineBehavior
     where TRequest : IRequest<TResponse>
 {
     /// <summary>
-    /// The logger.
+    ///     The logger.
     /// </summary>
     private readonly ILogger<TRequest> _logger;
 
     /// <summary>
-    /// The constructor of <see cref="PipelineExceptionBehaviour{TRequest, TResponse}"/>.
+    ///     The constructor of <see cref="PipelineExceptionBehaviour{TRequest, TResponse}" />.
     /// </summary>
     /// <param name="logger">The logger.</param>
     // ReSharper disable once ContextualLoggerProblem
@@ -30,7 +30,7 @@ public class PipelineExceptionBehaviour<TRequest, TResponse> : IPipelineBehavior
     }
 
     /// <summary>
-    /// The handler of the request.
+    ///     The handler of the request.
     /// </summary>
     /// <param name="request">The request.</param>
     /// <param name="cancellationToken">The cancellation token.</param>

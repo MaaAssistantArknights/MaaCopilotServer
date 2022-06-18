@@ -7,10 +7,10 @@ namespace MaaCopilotServer.Domain.Attributes;
 [AttributeUsage(AttributeTargets.Class)]
 public class EmailTemplateAttribute : Attribute
 {
-    public string TemplateName { get; }
-
     public EmailTemplateAttribute(string templateName)
     {
         TemplateName = templateName;
     }
+
+    public string TemplateName { get; }
 }

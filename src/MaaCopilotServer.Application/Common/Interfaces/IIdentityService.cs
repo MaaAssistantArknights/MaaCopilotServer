@@ -5,12 +5,12 @@
 namespace MaaCopilotServer.Application.Common.Interfaces;
 
 /// <summary>
-/// The service for getting user info.
+///     The service for getting user info.
 /// </summary>
 public interface IIdentityService
 {
     /// <summary>
-    /// Gets user info asynchronously.
+    ///     Gets user info asynchronously.
     /// </summary>
     /// <param name="guid">The GUID of the user.</param>
     /// <returns>A task with the user info if it exists, otherwise <c>null</c>.</returns>

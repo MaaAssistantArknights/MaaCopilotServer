@@ -10,20 +10,20 @@ using Microsoft.EntityFrameworkCore;
 namespace MaaCopilotServer.Application.CopilotUser.Commands.UpdateCopilotUserPassword;
 
 /// <summary>
-/// The record of updating user password.
+///     The record of updating user password.
 /// </summary>
 [Authorized(UserRole.User, true)]
 public record UpdateCopilotUserPasswordCommand : IRequest<MaaActionResult<EmptyObject>>
 {
     /// <summary>
-    /// The original password.
+    ///     The original password.
     /// </summary>
     [JsonPropertyName("original_password")]
     [NotLogged]
     public string? OriginalPassword { get; set; }
 
     /// <summary>
-    /// The new password.
+    ///     The new password.
     /// </summary>
     [JsonPropertyName("new_password")]
     [NotLogged]
@@ -31,33 +31,33 @@ public record UpdateCopilotUserPasswordCommand : IRequest<MaaActionResult<EmptyO
 }
 
 /// <summary>
-/// The handler of updating user password.
+///     The handler of updating user password.
 /// </summary>
 public class UpdateCopilotUserPasswordCommandHandler : IRequestHandler<UpdateCopilotUserPasswordCommand,
     MaaActionResult<EmptyObject>>
 {
     /// <summary>
-    /// The service for current user.
-    /// </summary>
-    private readonly ICurrentUserService _currentUserService;
-
-    /// <summary>
-    /// The API error message.
+    ///     The API error message.
     /// </summary>
     private readonly ApiErrorMessage _apiErrorMessage;
 
     /// <summary>
-    /// The DB context.
+    ///     The service for current user.
+    /// </summary>
+    private readonly ICurrentUserService _currentUserService;
+
+    /// <summary>
+    ///     The DB context.
     /// </summary>
     private readonly IMaaCopilotDbContext _dbContext;
 
     /// <summary>
-    /// The service for processing passwords and tokens.
+    ///     The service for processing passwords and tokens.
     /// </summary>
     private readonly ISecretService _secretService;
 
     /// <summary>
-    /// The constructor of <see cref="UpdateCopilotUserPasswordCommandHandler"/>.
+    ///     The constructor of <see cref="UpdateCopilotUserPasswordCommandHandler" />.
     /// </summary>
     /// <param name="dbContext">The DB context.</param>
     /// <param name="secretService">The service for processing passwords and tokens.</param>
@@ -76,7 +76,7 @@ public class UpdateCopilotUserPasswordCommandHandler : IRequestHandler<UpdateCop
     }
 
     /// <summary>
-    /// Handles the request of changing user password.
+    ///     Handles the request of changing user password.
     /// </summary>
     /// <param name="request">The request.</param>
     /// <param name="cancellationToken">The cancellation token.</param>

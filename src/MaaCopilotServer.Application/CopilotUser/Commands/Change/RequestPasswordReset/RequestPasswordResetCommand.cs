@@ -20,12 +20,12 @@ public record RequestPasswordResetCommand : IRequest<MaaActionResult<EmptyObject
 public class RequestPasswordResetCommandHandler :
     IRequestHandler<RequestPasswordResetCommand, MaaActionResult<EmptyObject>>
 {
-    private readonly IOptions<TokenOption> _tokenOption;
+    private readonly ApiErrorMessage _apiErrorMessage;
     private readonly ICurrentUserService _currentUserService;
     private readonly IMaaCopilotDbContext _dbContext;
-    private readonly ISecretService _secretService;
     private readonly IMailService _mailService;
-    private readonly ApiErrorMessage _apiErrorMessage;
+    private readonly ISecretService _secretService;
+    private readonly IOptions<TokenOption> _tokenOption;
 
     public RequestPasswordResetCommandHandler(
         IOptions<TokenOption> tokenOption,
@@ -43,7 +43,8 @@ public class RequestPasswordResetCommandHandler :
         _apiErrorMessage = apiErrorMessage;
     }
 
-    public async Task<MaaActionResult<EmptyObject>> Handle(RequestPasswordResetCommand request, CancellationToken cancellationToken)
+    public async Task<MaaActionResult<EmptyObject>> Handle(RequestPasswordResetCommand request,
+        CancellationToken cancellationToken)
     {
         var user = await _dbContext.CopilotUsers.FirstOrDefaultAsync(x => x.Email == request.Email, cancellationToken);
         if (user is null)

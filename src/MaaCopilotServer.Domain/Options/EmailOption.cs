@@ -28,5 +28,7 @@ public class EmailSmtpOption
     [JsonPropertyName("Password")] public string Password { get; set; } = null!;
     [JsonPropertyName("TimeoutMs")] public int TimeoutMs { get; set; }
     [JsonPropertyName("UseSsl")] public bool UseSsl { get; set; }
-    [JsonPropertyName("UseAuthentication")] public bool UseAuthentication { get; set; }
+
+    [JsonPropertyName("UseAuthentication")]
+    public bool UseAuthentication { get; set; }
 }

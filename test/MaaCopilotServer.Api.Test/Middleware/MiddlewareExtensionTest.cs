@@ -2,26 +2,25 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
-namespace MaaCopilotServer.Api.Test.Middleware
-{
-    using MaaCopilotServer.Api.Middleware;
-    using Microsoft.AspNetCore.Builder;
+using MaaCopilotServer.Api.Middleware;
+using Microsoft.AspNetCore.Builder;
 
+namespace MaaCopilotServer.Api.Test.Middleware;
+
+/// <summary>
+///     Tests for <see cref="MiddlewareExtension" />.
+/// </summary>
+[TestClass]
+public class MiddlewareExtensionTest
+{
     /// <summary>
-    /// Tests for <see cref="MiddlewareExtension"/>.
+    ///     Tests <see cref="MiddlewareExtension.UseRequestCulture(IApplicationBuilder)" />.
     /// </summary>
-    [TestClass]
-    public class MiddlewareExtensionTest
+    [TestMethod]
+    public void TestUseRequestCulture()
     {
-        /// <summary>
-        /// Tests <see cref="MiddlewareExtension.UseRequestCulture(IApplicationBuilder)"/>.
-        /// </summary>
-        [TestMethod]
-        public void TestUseRequestCulture()
-        {
-            var app = Substitute.For<IApplicationBuilder>();
-            app.UseRequestCulture();
-            app.Received().UseRequestCulture();
-        }
+        var app = Substitute.For<IApplicationBuilder>();
+        app.UseRequestCulture();
+        app.Received().UseRequestCulture();
     }
 }

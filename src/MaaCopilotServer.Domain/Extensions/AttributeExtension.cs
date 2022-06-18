@@ -5,14 +5,14 @@
 namespace MaaCopilotServer.Domain.Extensions;
 
 /// <summary>
-/// The extension of attributes.
+///     The extension of attributes.
 /// </summary>
 public static class AttributeExtension
 {
     /// <summary>
-    /// Reads multiple attributes.
+    ///     Reads multiple attributes.
     /// </summary>
-    /// <typeparam name="T">The <see cref="Attribute"/> type.</typeparam>
+    /// <typeparam name="T">The <see cref="Attribute" /> type.</typeparam>
     /// <param name="t">The type.</param>
     /// <returns>The attributes.</returns>
     public static T[] ReadAttributes<T>(this Type t) where T : Attribute
@@ -22,9 +22,9 @@ public static class AttributeExtension
     }
 
     /// <summary>
-    /// Reads an attribute.
+    ///     Reads an attribute.
     /// </summary>
-    /// <typeparam name="T">The <see cref="Attribute"/> type.</typeparam>
+    /// <typeparam name="T">The <see cref="Attribute" /> type.</typeparam>
     /// <param name="t">The type.</param>
     /// <returns>The attribute.</returns>
     public static T? ReadAttribute<T>(this Type t) where T : Attribute

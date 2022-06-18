@@ -12,20 +12,20 @@ using Microsoft.AspNetCore.Mvc;
 namespace MaaCopilotServer.Api.Controllers;
 
 /// <summary>
-/// The controller of copilot operations under <c>copilot</c> endpoint.
+///     The controller of copilot operations under <c>copilot</c> endpoint.
 /// </summary>
 [ApiController]
 [Route("copilot")]
 public class CopilotOperationController : MaaControllerBase
 {
     /// <summary>
-    /// The constructor of <see cref="CopilotOperationController"/>.
+    ///     The constructor of <see cref="CopilotOperationController" />.
     /// </summary>
     /// <param name="mediator">The mediator.</param>
     public CopilotOperationController(IMediator mediator) : base(mediator) { }
 
     /// <summary>
-    /// The handler of <c>upload</c> endpoint to create a copilot operation.
+    ///     The handler of <c>upload</c> endpoint to create a copilot operation.
     /// </summary>
     /// <param name="command">The request body.</param>
     /// <returns>The response.</returns>
@@ -36,7 +36,7 @@ public class CopilotOperationController : MaaControllerBase
     }
 
     /// <summary>
-    /// The handler of <c>delete</c> endpoint to delete a copilot operation.
+    ///     The handler of <c>delete</c> endpoint to delete a copilot operation.
     /// </summary>
     /// <param name="command">The request boy.</param>
     /// <returns>The response.</returns>
@@ -47,7 +47,7 @@ public class CopilotOperationController : MaaControllerBase
     }
 
     /// <summary>
-    /// The handler of <c>get/:id</c> endpoint to get a copilot operation.
+    ///     The handler of <c>get/:id</c> endpoint to get a copilot operation.
     /// </summary>
     /// <param name="id">The path parameter <c>id</c>, which is the operation ID.</param>
     /// <returns>The response.</returns>
@@ -59,7 +59,7 @@ public class CopilotOperationController : MaaControllerBase
     }
 
     /// <summary>
-    /// The handler of <c>query</c> endpoint to query a copilot operation.
+    ///     The handler of <c>query</c> endpoint to query a copilot operation.
     /// </summary>
     /// <param name="query">The query data.</param>
     /// <returns>The response.</returns>

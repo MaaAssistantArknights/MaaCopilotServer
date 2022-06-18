@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 namespace MaaCopilotServer.Application.Common.Extensions;
 
 /// <summary>
-/// The extension for null checks.
+///     The extension for null checks.
 /// </summary>
 public static class NullableExtension
 {

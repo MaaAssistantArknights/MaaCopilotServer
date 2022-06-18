@@ -7,9 +7,8 @@ using MaaCopilotServer.Domain.Common;
 namespace MaaCopilotServer.Domain.Entities;
 
 // ReSharper disable AutoPropertyCanBeMadeGetOnly.Local
-
 /// <summary>
-/// 用户收藏夹
+///     用户收藏夹
 /// </summary>
 public class CopilotUserFavorite : EditableEntity
 {
@@ -25,24 +24,27 @@ public class CopilotUserFavorite : EditableEntity
 #pragma warning restore CS8618
 
     /// <summary>
-    /// 用户
+    ///     用户
     /// </summary>
     public CopilotUser User { get; private set; }
+
     /// <summary>
-    /// 收藏列表名
+    ///     收藏列表名
     /// </summary>
     public string FavoriteName { get; private set; }
+
     /// <summary>
-    /// 收藏作业 GroupId
+    ///     收藏作业 GroupId
     /// </summary>
     public List<Guid> OperationGroupIds { get; private set; } = new();
+
     /// <summary>
-    /// 收藏的作业实体 (M2M)
+    ///     收藏的作业实体 (M2M)
     /// </summary>
     public List<CopilotOperation> Operations { get; private set; } = new();
 
     /// <summary>
-    /// 添加收藏
+    ///     添加收藏
     /// </summary>
     /// <param name="operation"></param>
     public void AddFavoriteOperation(CopilotOperation operation)
@@ -58,7 +60,7 @@ public class CopilotUserFavorite : EditableEntity
     }
 
     /// <summary>
-    /// 移除收藏
+    ///     移除收藏
     /// </summary>
     /// <param name="operation"></param>
     public void RemoveFavoriteOperation(CopilotOperation operation)

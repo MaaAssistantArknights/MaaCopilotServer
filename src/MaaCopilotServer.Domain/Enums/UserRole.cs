@@ -5,32 +5,32 @@
 namespace MaaCopilotServer.Domain.Enums;
 
 /// <summary>
-/// The role of the user.
+///     The role of the user.
 /// </summary>
 public enum UserRole
 {
     /// <summary>
-    /// The banned user.
+    ///     The banned user.
     /// </summary>
     Banned = int.MinValue,
 
     /// <summary>
-    /// The normal user.
+    ///     The normal user.
     /// </summary>
     User = 0,
 
     /// <summary>
-    /// The uploader.
+    ///     The uploader.
     /// </summary>
     Uploader = 10,
 
     /// <summary>
-    /// The administrator.
+    ///     The administrator.
     /// </summary>
     Admin = 100,
 
     /// <summary>
-    /// The super administrator.
+    ///     The super administrator.
     /// </summary>
     SuperAdmin = int.MaxValue
 }

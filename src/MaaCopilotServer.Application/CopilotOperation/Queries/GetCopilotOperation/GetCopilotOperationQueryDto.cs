@@ -7,12 +7,12 @@ using System.Text.Json.Serialization;
 namespace MaaCopilotServer.Application.CopilotOperation.Queries.GetCopilotOperation;
 
 /// <summary>
-/// The DTO of querying operation.
+///     The DTO of querying operation.
 /// </summary>
 public class GetCopilotOperationQueryDto
 {
     /// <summary>
-    /// The constructor of <see cref="GetCopilotOperationQueryDto"/>.
+    ///     The constructor of <see cref="GetCopilotOperationQueryDto" />.
     /// </summary>
     /// <param name="id">The operation ID.</param>
     /// <param name="stageName">The stage name.</param>
@@ -43,52 +43,62 @@ public class GetCopilotOperationQueryDto
 #pragma warning restore CS8618
 
     /// <summary>
-    /// The operation ID.
+    ///     The operation ID.
     /// </summary>
-    [JsonPropertyName("id")] public string Id { get; }
+    [JsonPropertyName("id")]
+    public string Id { get; }
 
     /// <summary>
-    /// The stage name.
+    ///     The stage name.
     /// </summary>
-    [JsonPropertyName("stage_name")] public string StageName { get; }
+    [JsonPropertyName("stage_name")]
+    public string StageName { get; }
 
     /// <summary>
-    /// The minimum required version of MAA.
+    ///     The minimum required version of MAA.
     /// </summary>
-    [JsonPropertyName("minimum_required")] public string MinimumRequired { get; }
+    [JsonPropertyName("minimum_required")]
+    public string MinimumRequired { get; }
 
     /// <summary>
-    /// The time when the operation was uploaded.
+    ///     The time when the operation was uploaded.
     /// </summary>
-    [JsonPropertyName("upload_time")] public string UploadTime { get; }
+    [JsonPropertyName("upload_time")]
+    public string UploadTime { get; }
 
     /// <summary>
-    /// The content.
+    ///     The content.
     /// </summary>
-    [JsonPropertyName("content")] public string Content { get; }
+    [JsonPropertyName("content")]
+    public string Content { get; }
 
     /// <summary>
-    /// The name of the uploader.
+    ///     The name of the uploader.
     /// </summary>
-    [JsonPropertyName("title")] public string Title { get; }
+    [JsonPropertyName("title")]
+    public string Title { get; }
 
     /// <summary>
-    /// The title of the operation.
+    ///     The title of the operation.
     /// </summary>
-    [JsonPropertyName("detail")] public string Detail { get; }
+    [JsonPropertyName("detail")]
+    public string Detail { get; }
 
     /// <summary>
-    /// The detail of the operation.
+    ///     The detail of the operation.
     /// </summary>
-    [JsonPropertyName("uploader")] public string Uploader { get; }
+    [JsonPropertyName("uploader")]
+    public string Uploader { get; }
 
     /// <summary>
-    /// Operators used.
+    ///     Operators used.
     /// </summary>
-    [JsonPropertyName("operators")] public List<string> Operators { get; }
+    [JsonPropertyName("operators")]
+    public List<string> Operators { get; }
 
     /// <summary>
-    /// The number of times of downloads.
+    ///     The number of times of downloads.
     /// </summary>
-    [JsonPropertyName("downloads")] public int Downloads { get; }
+    [JsonPropertyName("downloads")]
+    public int Downloads { get; }
 }

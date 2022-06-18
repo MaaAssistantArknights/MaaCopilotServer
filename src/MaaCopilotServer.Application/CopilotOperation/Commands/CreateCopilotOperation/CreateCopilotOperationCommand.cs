@@ -9,46 +9,48 @@ using MaaCopilotServer.Domain.Enums;
 namespace MaaCopilotServer.Application.CopilotOperation.Commands.CreateCopilotOperation;
 
 /// <summary>
-/// The record of creating operation.
+///     The record of creating operation.
 /// </summary>
 [Authorized(UserRole.Uploader)]
 public record CreateCopilotOperationCommand : IRequest<MaaActionResult<CreateCopilotOperationDto>>
 {
     /// <summary>
-    /// The operation content.
+    ///     The operation content.
     /// </summary>
-    [JsonPropertyName("content")] public string? Content { get; set; }
+    [JsonPropertyName("content")]
+    public string? Content { get; set; }
 }
 
 /// <summary>
-/// The handler of creating operation.
+///     The handler of creating operation.
 /// </summary>
 public class CreateCopilotOperationCommandHandler : IRequestHandler<CreateCopilotOperationCommand,
     MaaActionResult<CreateCopilotOperationDto>>
 {
     /// <summary>
-    /// The service for processing copilot ID.
+    ///     The service for processing copilot ID.
     /// </summary>
     private readonly ICopilotIdService _copilotIdService;
-    private readonly ValidationErrorMessage _validationErrorMessage;
 
     /// <summary>
-    /// The service for current user.
+    ///     The service for current user.
     /// </summary>
     private readonly ICurrentUserService _currentUserService;
 
     /// <summary>
-    /// The DB context.
+    ///     The DB context.
     /// </summary>
     private readonly IMaaCopilotDbContext _dbContext;
 
     /// <summary>
-    /// The service for user Identity.
+    ///     The service for user Identity.
     /// </summary>
     private readonly IIdentityService _identityService;
 
+    private readonly ValidationErrorMessage _validationErrorMessage;
+
     /// <summary>
-    /// The constructor of <see cref="CreateCopilotOperationCommandHandler"/>.
+    ///     The constructor of <see cref="CreateCopilotOperationCommandHandler" />.
     /// </summary>
     /// <param name="dbContext">The DB context.</param>
     /// <param name="identityService"> The service for user Identity.</param>
@@ -69,7 +71,7 @@ public class CreateCopilotOperationCommandHandler : IRequestHandler<CreateCopilo
     }
 
     /// <summary>
-    /// Handles a request of creating operation.
+    ///     Handles a request of creating operation.
     /// </summary>
     /// <param name="request">The request.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
@@ -116,11 +118,13 @@ public class CreateCopilotOperationCommandHandler : IRequestHandler<CreateCopilo
                     throw new PipelineException(MaaApiResponse.BadRequest(_currentUserService.GetTrackingId(),
                         _validationErrorMessage.CopilotOperationJsonIsInvalid));
                 }
+
                 var operatorItem =
                     $"{operatorNameElement.GetString()}::{(hasSkill ? operatorSkillElement.GetInt32().ToString() : "1")}";
                 operators.Add(operatorItem);
             }
         }
+
         operators = operators.Distinct().ToList();
 
         var user = await _identityService.GetUserAsync(_currentUserService.GetUserIdentity()!.Value);

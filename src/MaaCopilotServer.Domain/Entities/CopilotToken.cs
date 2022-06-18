@@ -8,9 +8,8 @@ using MaaCopilotServer.Domain.Enums;
 namespace MaaCopilotServer.Domain.Entities;
 
 // ReSharper disable AutoPropertyCanBeMadeGetOnly.Local
-
 /// <summary>
-/// Tokens
+///     Tokens
 /// </summary>
 public class CopilotToken : BaseEntity
 {

@@ -11,12 +11,12 @@ namespace MaaCopilotServer.Application.Common.Extensions;
 public static class ConfigurationExtension
 {
     /// <summary>
-    /// 获取配置项实例
+    ///     获取配置项实例
     /// </summary>
     /// <param name="configuration">IConfiguration 实现</param>
     /// <typeparam name="T">Options 类</typeparam>
-    /// <returns><typeparamref name="T"/> 的实例</returns>
-    /// <exception cref="ArgumentNullException"><typeparamref name="T"/> 无 <see cref="OptionNameAttribute"/> 修饰</exception>
+    /// <returns><typeparamref name="T" /> 的实例</returns>
+    /// <exception cref="ArgumentNullException"><typeparamref name="T" /> 无 <see cref="OptionNameAttribute" /> 修饰</exception>
     public static T GetOption<T>(this IConfiguration configuration) where T : class, new()
     {
         var option = new T();

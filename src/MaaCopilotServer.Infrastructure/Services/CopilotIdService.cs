@@ -7,12 +7,12 @@ using MaaCopilotServer.Application.Common.Interfaces;
 namespace MaaCopilotServer.Infrastructure.Services;
 
 /// <summary>
-/// The service for processing copilot ID.
+///     The service for processing copilot ID.
 /// </summary>
 public class CopilotIdService : ICopilotIdService
 {
     /// <summary>
-    /// The minimum ID value. Other IDs should be calculated based on this value.
+    ///     The minimum ID value. Other IDs should be calculated based on this value.
     /// </summary>
     // 不准改这个值!
     // DO NOT CHANGE THIS VALUE!
@@ -20,20 +20,20 @@ public class CopilotIdService : ICopilotIdService
     private const long MinimumId = 10000;
 
     /// <summary>
-    /// Encodes an ID.
+    ///     Encodes an ID.
     /// </summary>
-    /// <param name="plainId">The ID of <see cref="long"/> type.</param>
-    /// <returns>The ID of <see cref="string"/> type</returns>
+    /// <param name="plainId">The ID of <see cref="long" /> type.</param>
+    /// <returns>The ID of <see cref="string" /> type</returns>
     public string EncodeId(long plainId)
     {
         return (plainId + MinimumId).ToString();
     }
 
     /// <summary>
-    /// Decodes an ID.
+    ///     Decodes an ID.
     /// </summary>
-    /// <param name="encodedId">The ID of <see cref="string"/> type.</param>
-    /// <returns>The ID of <see cref="long"/> type if it is valid, otherwise <c>null</c>.</returns>
+    /// <param name="encodedId">The ID of <see cref="string" /> type.</param>
+    /// <returns>The ID of <see cref="long" /> type if it is valid, otherwise <c>null</c>.</returns>
     public long? DecodeId(string encodedId)
     {
         var parsable = long.TryParse(encodedId, out var value);

@@ -5,12 +5,12 @@
 namespace MaaCopilotServer.Application.CopilotUser.Commands.DeleteCopilotUser;
 
 /// <summary>
-/// The validator of deleting user.
+///     The validator of deleting user.
 /// </summary>
 public class DeleteCopilotUserCommandValidator : AbstractValidator<DeleteCopilotUserCommand>
 {
     /// <summary>
-    /// The constructor of <see cref="DeleteCopilotUserCommandValidator"/>.
+    ///     The constructor of <see cref="DeleteCopilotUserCommandValidator" />.
     /// </summary>
     /// <param name="errorMessage">The error message.</param>
     public DeleteCopilotUserCommandValidator(ValidationErrorMessage errorMessage)

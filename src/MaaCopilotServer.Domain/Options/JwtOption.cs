@@ -8,28 +8,32 @@ using MaaCopilotServer.Domain.Attributes;
 namespace MaaCopilotServer.Domain.Options;
 
 /// <summary>
-/// The <c>Jwt</c> option.
+///     The <c>Jwt</c> option.
 /// </summary>
 [OptionName("Jwt")]
 public class JwtOption
 {
     /// <summary>
-    /// The secret.
+    ///     The secret.
     /// </summary>
-    [JsonPropertyName("Secret")] public string Secret { get; set; } = null!;
+    [JsonPropertyName("Secret")]
+    public string Secret { get; set; } = null!;
 
     /// <summary>
-    /// The issuer.
+    ///     The issuer.
     /// </summary>
-    [JsonPropertyName("Issuer")] public string Issuer { get; set; } = null!;
+    [JsonPropertyName("Issuer")]
+    public string Issuer { get; set; } = null!;
 
     /// <summary>
-    /// The audience.
+    ///     The audience.
     /// </summary>
-    [JsonPropertyName("Audience")] public string Audience { get; set; } = null!;
+    [JsonPropertyName("Audience")]
+    public string Audience { get; set; } = null!;
 
     /// <summary>
-    /// The time of expiration.
+    ///     The time of expiration.
     /// </summary>
-    [JsonPropertyName("ExpireTime")] public int ExpireTime { get; set; }
+    [JsonPropertyName("ExpireTime")]
+    public int ExpireTime { get; set; }
 }

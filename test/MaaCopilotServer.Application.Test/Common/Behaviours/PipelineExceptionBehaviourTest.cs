@@ -2,47 +2,49 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
-namespace MaaCopilotServer.Application.Test.Common.Behaviours
+using MaaCopilotServer.Application.Common.Behaviours;
+using MaaCopilotServer.Application.Common.Exceptions;
+using MaaCopilotServer.Application.Common.Models;
+using MediatR;
+using Microsoft.Extensions.Logging;
+
+namespace MaaCopilotServer.Application.Test.Common.Behaviours;
+
+/// <summary>
+///     Tests of <see cref="PipelineExceptionBehaviour{TRequest,TResponse}" />.
+/// </summary>
+[TestClass]
+public class PipelineExceptionBehaviourTest
 {
-    using System.Threading.Tasks;
-    using MaaCopilotServer.Application.Common.Behaviours;
-    using MaaCopilotServer.Application.Common.Exceptions;
-    using MaaCopilotServer.Application.Common.Models;
-    using Microsoft.Extensions.Logging;
+    /// <summary>
+    ///     The logger.
+    /// </summary>
+    private ILogger<IRequest<string>> _logger;
 
     /// <summary>
-    /// Tests of <see cref="PipelineExceptionBehaviour{TRequest, TResponse}"/>.
+    ///     Initializes tests.
     /// </summary>
-    [TestClass]
-    public class PipelineExceptionBehaviourTest
+    [TestInitialize]
+    public void Initialize()
     {
-        /// <summary>
-        /// The logger.
-        /// </summary>
-        private ILogger<MediatR.IRequest<string>> _logger;
+        _logger = Substitute.For<ILogger<IRequest<string>>>();
+    }
 
-        /// <summary>
-        /// Initializes tests.
-        /// </summary>
-        [TestInitialize]
-        public void Initialize()
+    /// <summary>
+    ///     Tests
+    ///     <see
+    ///         cref="PipelineExceptionBehaviour{TRequest, TResponse}.Handle(TRequest, CancellationToken, MediatR.RequestHandlerDelegate{TResponse})" />
+    ///     .
+    /// </summary>
+    /// <returns>N/A</returns>
+    [TestMethod]
+    public async Task TestHandle()
+    {
+        var behaviour = new PipelineExceptionBehaviour<IRequest<string>, string>(_logger);
+        var action = async () => await behaviour.Handle(null, new CancellationToken(), () =>
         {
-            this._logger = Substitute.For<ILogger<MediatR.IRequest<string>>>();
-        }
-
-        /// <summary>
-        /// Tests <see cref="PipelineExceptionBehaviour{TRequest, TResponse}.Handle(TRequest, CancellationToken, MediatR.RequestHandlerDelegate{TResponse})"/>.
-        /// </summary>
-        /// <returns>N/A</returns>
-        [TestMethod]
-        public async Task TestHandle()
-        {
-            var behaviour = new PipelineExceptionBehaviour<MediatR.IRequest<string>, string>(this._logger);
-            var action = async () => await behaviour.Handle(null, new CancellationToken(), () =>
-            {
-                throw new PipelineException((MaaActionResult<EmptyObject>)MaaApiResponse.Ok(new EmptyObject(), string.Empty));
-            });
-            await action.Should().ThrowAsync<PipelineException>();
-        }
+            throw new PipelineException(MaaApiResponse.Ok(new EmptyObject(), string.Empty));
+        });
+        await action.Should().ThrowAsync<PipelineException>();
     }
 }

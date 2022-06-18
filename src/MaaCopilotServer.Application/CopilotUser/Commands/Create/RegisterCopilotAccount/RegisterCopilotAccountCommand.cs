@@ -14,24 +14,24 @@ using Microsoft.Extensions.Options;
 namespace MaaCopilotServer.Application.CopilotUser.Commands.RegisterCopilotAccount;
 
 /// <summary>
-/// Request dto for registering a new copilot account.
+///     Request dto for registering a new copilot account.
 /// </summary>
 public record RegisterCopilotAccountCommand : IRequest<MaaActionResult<EmptyObject>>
 {
     /// <summary>
-    /// The user email.
+    ///     The user email.
     /// </summary>
     [JsonPropertyName("email")]
     public string? Email { get; set; }
 
     /// <summary>
-    /// The username.
+    ///     The username.
     /// </summary>
     [JsonPropertyName("user_name")]
     public string? UserName { get; set; }
 
     /// <summary>
-    /// The password.
+    ///     The password.
     /// </summary>
     [JsonPropertyName("password")]
     [LogMasked]
@@ -41,12 +41,12 @@ public record RegisterCopilotAccountCommand : IRequest<MaaActionResult<EmptyObje
 public class RegisterCopilotAccountCommandHandler :
     IRequestHandler<RegisterCopilotAccountCommand, MaaActionResult<EmptyObject>>
 {
-    private readonly IOptions<TokenOption> _tokenOption;
+    private readonly ApiErrorMessage _apiErrorMessage;
     private readonly ICurrentUserService _currentUserService;
     private readonly IMaaCopilotDbContext _dbContext;
-    private readonly ISecretService _secretService;
     private readonly IMailService _mailService;
-    private readonly ApiErrorMessage _apiErrorMessage;
+    private readonly ISecretService _secretService;
+    private readonly IOptions<TokenOption> _tokenOption;
 
     public RegisterCopilotAccountCommandHandler(
         IOptions<TokenOption> tokenOption,
@@ -64,26 +64,31 @@ public class RegisterCopilotAccountCommandHandler :
         _apiErrorMessage = apiErrorMessage;
     }
 
-    public async Task<MaaActionResult<EmptyObject>> Handle(RegisterCopilotAccountCommand request, CancellationToken cancellationToken)
+    public async Task<MaaActionResult<EmptyObject>> Handle(RegisterCopilotAccountCommand request,
+        CancellationToken cancellationToken)
     {
-        var emailExist = await _dbContext.CopilotUsers.AnyAsync(x => x.Email == request.Email, cancellationToken: cancellationToken);
+        var emailExist = await _dbContext.CopilotUsers.AnyAsync(x => x.Email == request.Email, cancellationToken);
         if (emailExist)
         {
-            throw new PipelineException(MaaApiResponse.BadRequest(_currentUserService.GetTrackingId(), _apiErrorMessage.EmailAlreadyInUse));
+            throw new PipelineException(MaaApiResponse.BadRequest(_currentUserService.GetTrackingId(),
+                _apiErrorMessage.EmailAlreadyInUse));
         }
 
         var user = new Domain.Entities.CopilotUser(request.Email!, _secretService.HashPassword(request.Password!),
             request.UserName!, UserRole.User, null);
         _dbContext.CopilotUsers.Add(user);
 
-        var (token, time) = _secretService.GenerateToken(user.EntityId, TimeSpan.FromMinutes(_tokenOption.Value.AccountActivationToken.ExpireTime));
+        var (token, time) = _secretService.GenerateToken(user.EntityId,
+            TimeSpan.FromMinutes(_tokenOption.Value.AccountActivationToken.ExpireTime));
         var result = await _mailService.SendEmailAsync(
-            new EmailUserActivation(user.UserName, token, time.ToUtc8String(), _tokenOption.Value.AccountActivationToken.HasCallback),
+            new EmailUserActivation(user.UserName, token, time.ToUtc8String(),
+                _tokenOption.Value.AccountActivationToken.HasCallback),
             user.Email);
 
         if (result is false)
         {
-            throw new PipelineException(MaaApiResponse.InternalError(_currentUserService.GetTrackingId(), _apiErrorMessage.EmailSendFailed));
+            throw new PipelineException(MaaApiResponse.InternalError(_currentUserService.GetTrackingId(),
+                _apiErrorMessage.EmailSendFailed));
         }
 
         var tokenEntity = new CopilotToken(user.EntityId, TokenType.UserActivation, token, time);

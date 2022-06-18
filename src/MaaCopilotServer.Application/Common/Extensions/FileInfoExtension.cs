@@ -8,7 +8,7 @@ using System.Runtime.CompilerServices;
 namespace MaaCopilotServer.Application.Common.Extensions;
 
 /// <summary>
-/// The extension of <see cref="FileInfo"/>.
+///     The extension of <see cref="FileInfo" />.
 /// </summary>
 [ExcludeFromCodeCoverage]
 public static class FileInfoExtension

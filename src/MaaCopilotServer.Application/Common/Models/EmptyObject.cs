@@ -5,7 +5,7 @@
 namespace MaaCopilotServer.Application.Common.Models;
 
 /// <summary>
-/// The model of an empty object.
+///     The model of an empty object.
 /// </summary>
 public class EmptyObject
 {

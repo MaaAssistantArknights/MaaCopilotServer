@@ -7,12 +7,12 @@ using System.Text.Json.Serialization;
 namespace MaaCopilotServer.Application.Common.Models;
 
 /// <summary>
-/// The model of API response.
+///     The model of API response.
 /// </summary>
 public class MaaApiResponse
 {
     /// <summary>
-    /// The constructor of <see cref="MaaApiResponse"/>.
+    ///     The constructor of <see cref="MaaApiResponse" />.
     /// </summary>
     /// <param name="statusCode">The status code.</param>
     /// <param name="message">The message.</param>
@@ -27,27 +27,31 @@ public class MaaApiResponse
     }
 
     /// <summary>
-    /// The status code.
+    ///     The status code.
     /// </summary>
-    [JsonPropertyName("status_code")] public int StatusCode { get; }
+    [JsonPropertyName("status_code")]
+    public int StatusCode { get; }
 
     /// <summary>
-    /// The message.
+    ///     The message.
     /// </summary>
-    [JsonPropertyName("message")] public string Message { get; }
+    [JsonPropertyName("message")]
+    public string Message { get; }
 
     /// <summary>
-    /// The tracking ID.
+    ///     The tracking ID.
     /// </summary>
-    [JsonPropertyName("trace_id")] public string TraceId { get; }
+    [JsonPropertyName("trace_id")]
+    public string TraceId { get; }
 
     /// <summary>
-    /// The request body.
+    ///     The request body.
     /// </summary>
-    [JsonPropertyName("data")] public object? Data { get; }
+    [JsonPropertyName("data")]
+    public object? Data { get; }
 
     /// <summary>
-    /// Responds HTTP 200 OK.
+    ///     Responds HTTP 200 OK.
     /// </summary>
     /// <param name="obj">The request body.</param>
     /// <param name="id">The tracking ID.</param>
@@ -58,7 +62,7 @@ public class MaaApiResponse
     }
 
     /// <summary>
-    /// Responds HTTP 401 Unauthorized.
+    ///     Responds HTTP 401 Unauthorized.
     /// </summary>
     /// <param name="id">The tracking ID.</param>
     /// <param name="message">The message, <c>"Unauthorized"</c> by default.</param>
@@ -69,7 +73,7 @@ public class MaaApiResponse
     }
 
     /// <summary>
-    /// Responds HTTP 403 Forbidden.
+    ///     Responds HTTP 403 Forbidden.
     /// </summary>
     /// <param name="id">The tracking ID.</param>
     /// <param name="message">The message, <c>"Forbidden. Permission Denied"</c> by default</param>
@@ -80,7 +84,7 @@ public class MaaApiResponse
     }
 
     /// <summary>
-    /// Responds HTTP 400 Bad Request.
+    ///     Responds HTTP 400 Bad Request.
     /// </summary>
     /// <param name="id">The tracking ID.</param>
     /// <param name="message">The message, <c>"Bad Request"</c> by default.</param>
@@ -91,7 +95,7 @@ public class MaaApiResponse
     }
 
     /// <summary>
-    /// Responds HTTP 404 Not Found.
+    ///     Responds HTTP 404 Not Found.
     /// </summary>
     /// <param name="id">The tracking ID.</param>
     /// <param name="message">The message, <c>"Not Found"</c> by default.</param>
@@ -102,7 +106,7 @@ public class MaaApiResponse
     }
 
     /// <summary>
-    /// Responds HTTP 500 Internal Error.
+    ///     Responds HTTP 500 Internal Error.
     /// </summary>
     /// <param name="id">The tracking ID.</param>
     /// <param name="message">The message, <c>"Internal Server Error"</c> by default.</param>

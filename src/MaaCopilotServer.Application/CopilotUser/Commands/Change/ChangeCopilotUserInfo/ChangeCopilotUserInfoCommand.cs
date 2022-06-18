@@ -10,35 +10,38 @@ using Microsoft.EntityFrameworkCore;
 namespace MaaCopilotServer.Application.CopilotUser.Commands.ChangeCopilotUserInfo;
 
 /// <summary>
-/// The record of changing user info.
+///     The record of changing user info.
 /// </summary>
 [Authorized(UserRole.Admin)]
 public record ChangeCopilotUserInfoCommand : IRequest<MaaActionResult<EmptyObject>>
 {
     /// <summary>
-    /// The user ID.
+    ///     The user ID.
     /// </summary>
-    [JsonPropertyName("user_id")] public string? UserId { get; set; }
+    [JsonPropertyName("user_id")]
+    public string? UserId { get; set; }
 
     /// <summary>
-    /// The user email.
+    ///     The user email.
     /// </summary>
-    [JsonPropertyName("email")] public string? Email { get; set; }
+    [JsonPropertyName("email")]
+    public string? Email { get; set; }
 
     /// <summary>
-    /// The username.
+    ///     The username.
     /// </summary>
-    [JsonPropertyName("user_name")] public string? UserName { get; set; }
+    [JsonPropertyName("user_name")]
+    public string? UserName { get; set; }
 
     /// <summary>
-    /// The password.
+    ///     The password.
     /// </summary>
     [JsonPropertyName("password")]
     [LogMasked]
     public string? Password { get; set; }
 
     /// <summary>
-    /// The role of the user.
+    ///     The role of the user.
     /// </summary>
     [JsonPropertyName("role")]
     [JsonConverter(typeof(JsonStringEnumConverter))]
@@ -46,33 +49,33 @@ public record ChangeCopilotUserInfoCommand : IRequest<MaaActionResult<EmptyObjec
 }
 
 /// <summary>
-/// The handler of changing user info.
+///     The handler of changing user info.
 /// </summary>
 public class
     ChangeCopilotUserInfoCommandHandler : IRequestHandler<ChangeCopilotUserInfoCommand, MaaActionResult<EmptyObject>>
 {
     /// <summary>
-    /// The service for current user.
-    /// </summary>
-    private readonly ICurrentUserService _currentUserService;
-
-    /// <summary>
-    /// The DB context.
-    /// </summary>
-    private readonly IMaaCopilotDbContext _dbContext;
-
-    /// <summary>
-    /// The service for processing passwords and tokens.
-    /// </summary>
-    private readonly ISecretService _secretService;
-
-    /// <summary>
-    /// The API error message.
+    ///     The API error message.
     /// </summary>
     private readonly ApiErrorMessage _apiErrorMessage;
 
     /// <summary>
-    /// The constructor of <see cref="ChangeCopilotUserInfoCommandHandler"/>.
+    ///     The service for current user.
+    /// </summary>
+    private readonly ICurrentUserService _currentUserService;
+
+    /// <summary>
+    ///     The DB context.
+    /// </summary>
+    private readonly IMaaCopilotDbContext _dbContext;
+
+    /// <summary>
+    ///     The service for processing passwords and tokens.
+    /// </summary>
+    private readonly ISecretService _secretService;
+
+    /// <summary>
+    ///     The constructor of <see cref="ChangeCopilotUserInfoCommandHandler" />.
     /// </summary>
     /// <param name="dbContext">The DB context.</param>
     /// <param name="currentUserService">The service for current user.</param>
@@ -91,13 +94,13 @@ public class
     }
 
     /// <summary>
-    /// Handles a request of changing user info.
+    ///     Handles a request of changing user info.
     /// </summary>
     /// <param name="request">The request.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>A task with no contents if the request completes successfully.</returns>
     /// <exception cref="PipelineException">
-    /// Thrown when the user ID does not exist, or an internal error occurs, or the user permission is insufficient.
+    ///     Thrown when the user ID does not exist, or an internal error occurs, or the user permission is insufficient.
     /// </exception>
     public async Task<MaaActionResult<EmptyObject>> Handle(ChangeCopilotUserInfoCommand request,
         CancellationToken cancellationToken)

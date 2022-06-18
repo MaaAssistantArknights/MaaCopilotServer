@@ -2,76 +2,83 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
-namespace MaaCopilotServer.Application.Test.Common.Behaviours
+using MaaCopilotServer.Application.Common.Behaviours;
+using MaaCopilotServer.Application.Common.Exceptions;
+using MaaCopilotServer.Application.Common.Interfaces;
+using MaaCopilotServer.Application.Common.Models;
+using MaaCopilotServer.Resources;
+using MediatR;
+using Microsoft.Extensions.Logging;
+
+namespace MaaCopilotServer.Application.Test.Common.Behaviours;
+
+/// <summary>
+///     Tests of <see cref="UnhandledExceptionBehaviour{TRequest,TResponse}" />.
+/// </summary>
+[TestClass]
+public class UnhandledExceptionBehaviourTest
 {
-    using System.Threading.Tasks;
-    using MaaCopilotServer.Application.Common.Behaviours;
-    using MaaCopilotServer.Application.Common.Exceptions;
-    using MaaCopilotServer.Application.Common.Interfaces;
-    using MaaCopilotServer.Application.Common.Models;
-    using MaaCopilotServer.Resources;
-    using Microsoft.Extensions.Logging;
+    /// <summary>
+    ///     The API error message.
+    /// </summary>
+    private ApiErrorMessage _apiErrorMessage;
 
     /// <summary>
-    /// Tests of <see cref="UnhandledExceptionBehaviour{TRequest, TResponse}"/>.
+    ///     The service of current user.
     /// </summary>
-    [TestClass]
-    public class UnhandledExceptionBehaviourTest
+    private ICurrentUserService _currentUserService;
+
+    /// <summary>
+    ///     The logger.
+    /// </summary>
+    private ILogger<IRequest<string>> _logger;
+
+    /// <summary>
+    ///     Initializes tests.
+    /// </summary>
+    [TestInitialize]
+    public void Initialize()
     {
-        /// <summary>
-        /// The logger.
-        /// </summary>
-        private ILogger<MediatR.IRequest<string>> _logger;
+        _logger = Substitute.For<ILogger<IRequest<string>>>();
+        _currentUserService = Substitute.For<ICurrentUserService>();
+        _apiErrorMessage = Substitute.For<ApiErrorMessage>();
+    }
 
-        /// <summary>
-        /// The service of current user.
-        /// </summary>
-        private ICurrentUserService _currentUserService;
-
-        /// <summary>
-        /// The API error message.
-        /// </summary>
-        private ApiErrorMessage _apiErrorMessage;
-
-        /// <summary>
-        /// Initializes tests.
-        /// </summary>
-        [TestInitialize]
-        public void Initialize()
+    /// <summary>
+    ///     Tests
+    ///     <see
+    ///         cref="UnhandledExceptionBehaviour{TRequest, TResponse}.Handle(TRequest, CancellationToken, MediatR.RequestHandlerDelegate{TResponse})" />
+    ///     with <see cref="PipelineException" />.
+    /// </summary>
+    /// <returns>N/A</returns>
+    [TestMethod]
+    public async Task TestHandle_PipelineException()
+    {
+        var behaviour =
+            new UnhandledExceptionBehaviour<IRequest<string>, string>(_logger, _currentUserService, _apiErrorMessage);
+        var action = async () => await behaviour.Handle(null, new CancellationToken(), () =>
         {
-            this._logger = Substitute.For<ILogger<MediatR.IRequest<string>>>();
-            this._currentUserService = Substitute.For<ICurrentUserService>();
-            this._apiErrorMessage = Substitute.For<ApiErrorMessage>();
-        }
+            throw new PipelineException(MaaApiResponse.Ok(new EmptyObject(), string.Empty));
+        });
+        await action.Should().ThrowAsync<PipelineException>();
+    }
 
-        /// <summary>
-        /// Tests <see cref="UnhandledExceptionBehaviour{TRequest, TResponse}.Handle(TRequest, CancellationToken, MediatR.RequestHandlerDelegate{TResponse})"/> with <see cref="PipelineException"/>.
-        /// </summary>
-        /// <returns>N/A</returns>
-        [TestMethod]
-        public async Task TestHandle_PipelineException()
+    /// <summary>
+    ///     Tests
+    ///     <see
+    ///         cref="UnhandledExceptionBehaviour{TRequest, TResponse}.Handle(TRequest, CancellationToken, MediatR.RequestHandlerDelegate{TResponse})" />
+    ///     with <see cref="Exception" />.
+    /// </summary>
+    /// <returns>N/A</returns>
+    [TestMethod]
+    public async Task TestHandle_OtherException()
+    {
+        var behaviour =
+            new UnhandledExceptionBehaviour<IRequest<string>, string>(_logger, _currentUserService, _apiErrorMessage);
+        var action = async () => await behaviour.Handle(null, new CancellationToken(), () =>
         {
-            var behaviour = new UnhandledExceptionBehaviour<MediatR.IRequest<string>, string>(this._logger, this._currentUserService, this._apiErrorMessage);
-            var action = async () => await behaviour.Handle(null, new CancellationToken(), () =>
-            {
-                throw new PipelineException((MaaActionResult<EmptyObject>)MaaApiResponse.Ok(new EmptyObject(), string.Empty));
-            });
-            await action.Should().ThrowAsync<PipelineException>();
-        }
-
-        /// <summary>
-        /// Tests <see cref="UnhandledExceptionBehaviour{TRequest, TResponse}.Handle(TRequest, CancellationToken, MediatR.RequestHandlerDelegate{TResponse})"/> with <see cref="Exception"/>.
-        /// </summary>
-        /// <returns>N/A</returns>
-        [TestMethod]
-        public async Task TestHandle_OtherException()
-        {
-            var behaviour = new UnhandledExceptionBehaviour<MediatR.IRequest<string>, string>(this._logger, this._currentUserService, this._apiErrorMessage);
-            var action = async () => await behaviour.Handle(null, new CancellationToken(), () =>
-            {
-                throw new Exception();
-            });
-            await action.Should().ThrowAsync<PipelineException>();
-        }
+            throw new Exception();
+        });
+        await action.Should().ThrowAsync<PipelineException>();
     }
 }

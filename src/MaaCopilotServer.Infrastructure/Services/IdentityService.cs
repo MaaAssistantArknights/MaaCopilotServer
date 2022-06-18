@@ -8,17 +8,17 @@ using MaaCopilotServer.Domain.Entities;
 namespace MaaCopilotServer.Infrastructure.Services;
 
 /// <summary>
-/// The service for getting user info.
+///     The service for getting user info.
 /// </summary>
 public class IdentityService : IIdentityService
 {
     /// <summary>
-    /// The DB context.
+    ///     The DB context.
     /// </summary>
     private readonly IMaaCopilotDbContext _copilotDbContext;
 
     /// <summary>
-    /// The constructor of <see cref="IdentityService"/>.
+    ///     The constructor of <see cref="IdentityService" />.
     /// </summary>
     /// <param name="copilotDbContext">The DB context.</param>
     public IdentityService(IMaaCopilotDbContext copilotDbContext)
@@ -27,7 +27,7 @@ public class IdentityService : IIdentityService
     }
 
     /// <summary>
-    /// Gets user info asynchronously.
+    ///     Gets user info asynchronously.
     /// </summary>
     /// <param name="guid">The user ID.</param>
     /// <returns>A task with the user info.</returns>

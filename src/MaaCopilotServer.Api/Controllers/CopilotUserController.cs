@@ -21,20 +21,20 @@ using Microsoft.AspNetCore.Mvc;
 namespace MaaCopilotServer.Api.Controllers;
 
 /// <summary>
-/// The controller of user operations under <c>user</c> endpoint.
+///     The controller of user operations under <c>user</c> endpoint.
 /// </summary>
 [ApiController]
 [Route("user")]
 public class CopilotUserController : MaaControllerBase
 {
     /// <summary>
-    /// The constructor of <see cref="CopilotOperationController"/>.
+    ///     The constructor of <see cref="CopilotOperationController" />.
     /// </summary>
     /// <param name="mediator">The mediator.</param>
     public CopilotUserController(IMediator mediator) : base(mediator) { }
 
     /// <summary>
-    /// The handler of <c>change</c> endpoint to change user info.
+    ///     The handler of <c>change</c> endpoint to change user info.
     /// </summary>
     /// <param name="command">The request body.</param>
     /// <returns>The response.</returns>
@@ -45,7 +45,7 @@ public class CopilotUserController : MaaControllerBase
     }
 
     /// <summary>
-    /// The handler of <c>create</c> endpoint to create a new copilot user.
+    ///     The handler of <c>create</c> endpoint to create a new copilot user.
     /// </summary>
     /// <param name="command">The request body.</param>
     /// <returns>The response.</returns>
@@ -56,7 +56,7 @@ public class CopilotUserController : MaaControllerBase
     }
 
     /// <summary>
-    /// The handler of <c>delete</c> endpoint to delete a copilot user.
+    ///     The handler of <c>delete</c> endpoint to delete a copilot user.
     /// </summary>
     /// <param name="command">The request body.</param>
     /// <returns>The response.</returns>
@@ -67,7 +67,7 @@ public class CopilotUserController : MaaControllerBase
     }
 
     /// <summary>
-    /// The handler of <c>login</c> endpoint to login.
+    ///     The handler of <c>login</c> endpoint to login.
     /// </summary>
     /// <param name="command">The request body.</param>
     /// <returns>The response.</returns>
@@ -78,7 +78,7 @@ public class CopilotUserController : MaaControllerBase
     }
 
     /// <summary>
-    /// The handler of <c>update/info</c> endpoint to update copilot user info.
+    ///     The handler of <c>update/info</c> endpoint to update copilot user info.
     /// </summary>
     /// <param name="command">The request body.</param>
     /// <returns>The response.</returns>
@@ -89,7 +89,7 @@ public class CopilotUserController : MaaControllerBase
     }
 
     /// <summary>
-    /// The handler of <c>update/password</c> endpoint to set new password.
+    ///     The handler of <c>update/password</c> endpoint to set new password.
     /// </summary>
     /// <param name="command">The request body.</param>
     /// <returns>The response.</returns>
@@ -100,7 +100,7 @@ public class CopilotUserController : MaaControllerBase
     }
 
     /// <summary>
-    /// The handler of <c>info/:id</c> endpoint to get copilot user info.
+    ///     The handler of <c>info/:id</c> endpoint to get copilot user info.
     /// </summary>
     /// <param name="id">The path parameter <c>id</c>, which is the ID of the user.</param>
     /// <returns>The response.</returns>
@@ -112,7 +112,7 @@ public class CopilotUserController : MaaControllerBase
     }
 
     /// <summary>
-    /// The handler of <c>query</c> endpoint to query copilot user info.
+    ///     The handler of <c>query</c> endpoint to query copilot user info.
     /// </summary>
     /// <param name="query">The query data.</param>
     /// <returns>The response.</returns>

@@ -12,42 +12,42 @@ using Microsoft.Extensions.Options;
 namespace MaaCopilotServer.Application.CopilotUser.Commands.UpdateCopilotUserInfo;
 
 /// <summary>
-/// The record of updating user info.
+///     The record of updating user info.
 /// </summary>
 [Authorized(UserRole.User, true)]
 public record UpdateCopilotUserInfoCommand : IRequest<MaaActionResult<EmptyObject>>
 {
     /// <summary>
-    /// The user email.
+    ///     The user email.
     /// </summary>
-    [JsonPropertyName("email")] public string? Email { get; set; }
+    [JsonPropertyName("email")]
+    public string? Email { get; set; }
 
     /// <summary>
-    /// The username.
+    ///     The username.
     /// </summary>
-    [JsonPropertyName("user_name")] public string? UserName { get; set; }
+    [JsonPropertyName("user_name")]
+    public string? UserName { get; set; }
 }
 
 /// <summary>
-/// The handler of updating user info.
+///     The handler of updating user info.
 /// </summary>
 public class
     UpdateCopilotUserInfoCommandHandler : IRequestHandler<UpdateCopilotUserInfoCommand, MaaActionResult<EmptyObject>>
 {
     /// <summary>
-    /// The service for current user.
+    ///     The API error message.
+    /// </summary>
+    private readonly ApiErrorMessage _apiErrorMessage;
+
+    /// <summary>
+    ///     The service for current user.
     /// </summary>
     private readonly ICurrentUserService _currentUserService;
 
     /// <summary>
-    /// The API error message.
-    /// </summary>
-    private readonly ApiErrorMessage _apiErrorMessage;
-
-    private readonly IOptions<TokenOption> _tokenOption;
-
-    /// <summary>
-    /// The DB context.
+    ///     The DB context.
     /// </summary>
     private readonly IMaaCopilotDbContext _dbContext;
 
@@ -55,8 +55,10 @@ public class
 
     private readonly ISecretService _secretService;
 
+    private readonly IOptions<TokenOption> _tokenOption;
+
     /// <summary>
-    /// The constructor of <see cref="UpdateCopilotUserInfoCommandHandler"/>.
+    ///     The constructor of <see cref="UpdateCopilotUserInfoCommandHandler" />.
     /// </summary>
     /// <param name="tokenOption"></param>
     /// <param name="dbContext">The DB context.</param>
@@ -81,7 +83,7 @@ public class
     }
 
     /// <summary>
-    /// Handles a request of updating user info.
+    ///     Handles a request of updating user info.
     /// </summary>
     /// <param name="request">The request.</param>
     /// <param name="cancellationToken">The cancellation token.</param>

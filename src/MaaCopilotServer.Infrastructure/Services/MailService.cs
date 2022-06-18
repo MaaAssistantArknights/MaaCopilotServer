@@ -15,11 +15,12 @@ namespace MaaCopilotServer.Infrastructure.Services;
 
 public class MailService : IMailService
 {
-    private readonly IFluentEmail _fluentEmail;
     private readonly IOptions<ApplicationOption> _applicationOption;
     private readonly ICurrentUserService _currentUserService;
+    private readonly IFluentEmail _fluentEmail;
 
-    public MailService(IFluentEmail fluentEmail, IOptions<ApplicationOption> applicationOption, ICurrentUserService currentUserService)
+    public MailService(IFluentEmail fluentEmail, IOptions<ApplicationOption> applicationOption,
+        ICurrentUserService currentUserService)
     {
         _fluentEmail = fluentEmail;
         _applicationOption = applicationOption;

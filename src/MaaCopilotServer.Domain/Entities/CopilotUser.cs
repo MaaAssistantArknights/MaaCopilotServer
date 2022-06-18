@@ -8,14 +8,13 @@ using MaaCopilotServer.Domain.Enums;
 namespace MaaCopilotServer.Domain.Entities;
 
 // ReSharper disable AutoPropertyCanBeMadeGetOnly.Local
-
 /// <summary>
-/// 用户
+///     用户
 /// </summary>
 public class CopilotUser : EditableEntity
 {
     /// <summary>
-    /// The constructor of <see cref="CopilotUser"/>.
+    ///     The constructor of <see cref="CopilotUser" />.
     /// </summary>
     /// <param name="email">The user email.</param>
     /// <param name="password">The password.</param>
@@ -30,8 +29,8 @@ public class CopilotUser : EditableEntity
         UserRole = userRole;
         if (createBy is null)
         {
-            CreateBy = this.EntityId;
-            UpdateBy = this.EntityId;
+            CreateBy = EntityId;
+            UpdateBy = EntityId;
         }
         else
         {
@@ -46,30 +45,32 @@ public class CopilotUser : EditableEntity
 #pragma warning restore CS8618
 
     /// <summary>
-    /// 邮箱
+    ///     邮箱
     /// </summary>
     public string Email { get; private set; }
 
     /// <summary>
-    /// 密码
+    ///     密码
     /// </summary>
     public string Password { get; private set; }
 
     /// <summary>
-    /// 用户名
+    ///     用户名
     /// </summary>
     public string UserName { get; private set; }
 
     /// <summary>
-    /// 权限组
+    ///     权限组
     /// </summary>
     public UserRole UserRole { get; private set; }
+
     /// <summary>
-    /// 用户激活
+    ///     用户激活
     /// </summary>
-    public bool UserActivated { get; private set; } = false;
+    public bool UserActivated { get; private set; }
+
     /// <summary>
-    /// 收藏夹
+    ///     收藏夹
     /// </summary>
     public List<CopilotUserFavorite> UserFavorites { get; set; } = new();
 
@@ -81,7 +82,7 @@ public class CopilotUser : EditableEntity
     }
 
     /// <summary>
-    /// Updates the password.
+    ///     Updates the password.
     /// </summary>
     /// <param name="operator">The user who does the operation.</param>
     /// <param name="newPassword">The new password.</param>
@@ -93,7 +94,7 @@ public class CopilotUser : EditableEntity
     }
 
     /// <summary>
-    /// Updates user info.
+    ///     Updates user info.
     /// </summary>
     /// <param name="operator">The user who does the operation.</param>
     /// <param name="email">The email of the user.</param>
@@ -113,10 +114,17 @@ public class CopilotUser : EditableEntity
             Email = email;
             UserActivated = false;
         }
+
         if (string.IsNullOrEmpty(userName) is false)
+        {
             UserName = userName;
+        }
+
         if (userRole is not null)
+        {
             UserRole = userRole.Value;
+        }
+
         UpdateAt = DateTimeOffset.UtcNow;
         UpdateBy = @operator;
     }

@@ -8,25 +8,24 @@ using System.Security.Cryptography;
 using System.Text;
 using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Domain.Options;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 namespace MaaCopilotServer.Infrastructure.Services;
 
 /// <summary>
-/// The service for processing passwords and tokens.
+///     The service for processing passwords and tokens.
 /// </summary>
 public class SecretService : ISecretService
 {
     /// <summary>
-    /// Jwt options.
+    ///     Jwt options.
     /// </summary>
     private readonly IOptions<JwtOption> _jwtOption;
 
 
     /// <summary>
-    /// The constructor of <see cref="SecretService"/>.
+    ///     The constructor of <see cref="SecretService" />.
     /// </summary>
     /// <param name="jwtOption"></param>
     public SecretService(IOptions<JwtOption> jwtOption)
@@ -35,7 +34,6 @@ public class SecretService : ISecretService
     }
 
     /// <inheritdoc />
-
     public (string, DateTimeOffset) GenerateJwtToken(Guid id)
     {
         var claims = new List<Claim> { new("id", id.ToString()) };

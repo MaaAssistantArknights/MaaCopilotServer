@@ -7,38 +7,38 @@ using Microsoft.EntityFrameworkCore;
 namespace MaaCopilotServer.Application.CopilotUser.Queries.GetCopilotUser;
 
 /// <summary>
-/// The record of getting user.
+///     The record of getting user.
 /// </summary>
 public record GetCopilotUserQuery : IRequest<MaaActionResult<GetCopilotUserDto>>
 {
     /// <summary>
-    /// The user ID.
+    ///     The user ID.
     /// </summary>
     public string? UserId { get; set; }
 }
 
 /// <summary>
-/// The handler of getting user.
+///     The handler of getting user.
 /// </summary>
 public class GetCopilotUserQueryHandler : IRequestHandler<GetCopilotUserQuery, MaaActionResult<GetCopilotUserDto>>
 {
     /// <summary>
-    /// The service for current user.
-    /// </summary>
-    private readonly ICurrentUserService _currentUserService;
-
-    /// <summary>
-    /// The API error message.
+    ///     The API error message.
     /// </summary>
     private readonly ApiErrorMessage _apiErrorMessage;
 
     /// <summary>
-    /// The DB context.
+    ///     The service for current user.
+    /// </summary>
+    private readonly ICurrentUserService _currentUserService;
+
+    /// <summary>
+    ///     The DB context.
     /// </summary>
     private readonly IMaaCopilotDbContext _dbContext;
 
     /// <summary>
-    /// The constructor of <see cref="GetCopilotUserQueryHandler"/>.
+    ///     The constructor of <see cref="GetCopilotUserQueryHandler" />.
     /// </summary>
     /// <param name="dbContext">The DB context.</param>
     /// <param name="currentUserService">The service for current user.</param>
@@ -54,7 +54,7 @@ public class GetCopilotUserQueryHandler : IRequestHandler<GetCopilotUserQuery, M
     }
 
     /// <summary>
-    /// Handles a request of getting user.
+    ///     Handles a request of getting user.
     /// </summary>
     /// <param name="request">The request.</param>
     /// <param name="cancellationToken">The cancellation token.</param>

@@ -5,12 +5,12 @@
 namespace MaaCopilotServer.Application.CopilotOperation.Queries.QueryCopilotOperations;
 
 /// <summary>
-/// The validator of querying multiple operations.
+///     The validator of querying multiple operations.
 /// </summary>
 public class QueryCopilotOperationsQueryValidator : AbstractValidator<QueryCopilotOperationsQuery>
 {
     /// <summary>
-    /// The constructor of <see cref="QueryCopilotOperationsQueryValidator"/>.
+    ///     The constructor of <see cref="QueryCopilotOperationsQueryValidator" />.
     /// </summary>
     /// <param name="errorMessage">The error message.</param>
     public QueryCopilotOperationsQueryValidator(ValidationErrorMessage errorMessage)

@@ -4,65 +4,67 @@
 
 using System.Globalization;
 using System.Security.Claims;
+using Elastic.Apm;
 using Elastic.Apm.Api;
 using MaaCopilotServer.Application.Common.Interfaces;
 
 namespace MaaCopilotServer.Api.Services;
 
 /// <summary>
-/// The delegate of getting the current active transaction from APM.
+///     The delegate of getting the current active transaction from APM.
 /// </summary>
 /// <returns></returns>
 public delegate ITransaction? CurrentTransactionProvider();
 
 /// <summary>
-/// The service for parsing information of the current user.
+///     The service for parsing information of the current user.
 /// </summary>
 public class CurrentUserService : ICurrentUserService
 {
     /// <summary>
-    /// The HTTP context accessor.
-    /// </summary>
-    private readonly IHttpContextAccessor _httpContextAccessor;
-
-    /// <summary>
-    /// The configuration.
+    ///     The configuration.
     /// </summary>
     private readonly IConfiguration _configuration;
 
     /// <summary>
-    /// The provider of getting the current active transaction from APM.
+    ///     The provider of getting the current active transaction from APM.
     /// </summary>
     private readonly CurrentTransactionProvider _currentTransactionProvider;
 
     /// <summary>
-    /// The constructor of <see cref="CurrentUserService"/>.
+    ///     The HTTP context accessor.
+    /// </summary>
+    private readonly IHttpContextAccessor _httpContextAccessor;
+
+    /// <summary>
+    ///     The constructor of <see cref="CurrentUserService" />.
     /// </summary>
     /// <param name="httpContextAccessor">The HTTP context accessor.</param>
     /// <param name="configuration">The configuration.</param>
     public CurrentUserService(IHttpContextAccessor httpContextAccessor,
-                              IConfiguration configuration) : this(httpContextAccessor,
-                                                                   configuration,
-                                                                   () => Elastic.Apm.Agent.Tracer.CurrentTransaction)
+        IConfiguration configuration) : this(httpContextAccessor,
+        configuration,
+        () => Agent.Tracer.CurrentTransaction)
     {
     }
 
     /// <summary>
-    /// The constructor with all properties.
+    ///     The constructor with all properties.
     /// </summary>
     /// <param name="httpContextAccessor">The HTTP context accessor.</param>
     /// <param name="configuration">The configuration.</param>
     /// <param name="currentTransactionProvider">The provider of getting the current active transaction from APM.</param>
     public CurrentUserService(
-        IHttpContextAccessor httpContextAccessor, IConfiguration configuration, CurrentTransactionProvider currentTransactionProvider)
+        IHttpContextAccessor httpContextAccessor, IConfiguration configuration,
+        CurrentTransactionProvider currentTransactionProvider)
     {
-        this._httpContextAccessor = httpContextAccessor;
-        this._configuration = configuration;
-        this._currentTransactionProvider = currentTransactionProvider;
+        _httpContextAccessor = httpContextAccessor;
+        _configuration = configuration;
+        _currentTransactionProvider = currentTransactionProvider;
     }
 
     /// <summary>
-    /// Gets user identity (GUID) of the current user.
+    ///     Gets user identity (GUID) of the current user.
     /// </summary>
     /// <returns>User GUID if it exists, otherwise <c>null</c>.</returns>
     public Guid? GetUserIdentity()
@@ -78,11 +80,9 @@ public class CurrentUserService : ICurrentUserService
     }
 
     /// <summary>
-    /// Gets tracking ID of the current user. The tracking ID follows the rules below:
-    /// 
-    /// <para>When APM is enabled, the ID will be APM Tracking ID.</para>
-    /// 
-    /// <para>When APM is disabled, the ID will be <see cref="HttpContext.TraceIdentifier"/> provided by ASP.NET Core.</para>
+    ///     Gets tracking ID of the current user. The tracking ID follows the rules below:
+    ///     <para>When APM is enabled, the ID will be APM Tracking ID.</para>
+    ///     <para>When APM is disabled, the ID will be <see cref="HttpContext.TraceIdentifier" /> provided by ASP.NET Core.</para>
     /// </summary>
     /// <returns>The tracking ID if it exists, otherwise empty string.</returns>
     public string GetTrackingId()
@@ -92,11 +92,12 @@ public class CurrentUserService : ICurrentUserService
             return _httpContextAccessor.HttpContext?.TraceIdentifier ?? string.Empty;
         }
 
-        var t = this._currentTransactionProvider();
+        var t = _currentTransactionProvider();
         if (t is not null)
         {
             return t.TraceId;
         }
+
         return _httpContextAccessor.HttpContext?.TraceIdentifier ?? string.Empty;
     }
 
@@ -107,11 +108,13 @@ public class CurrentUserService : ICurrentUserService
         {
             return new CultureInfo("zh-cn");
         }
+
         var hasValue = context.Items.TryGetValue("culture", out var cultureInfo);
         if (hasValue is false || cultureInfo is null || cultureInfo.GetType().Name != "CultureInfo")
         {
             return new CultureInfo("zh-cn");
         }
+
         return (CultureInfo)cultureInfo;
     }
 }

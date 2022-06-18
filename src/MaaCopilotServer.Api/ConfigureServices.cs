@@ -17,13 +17,13 @@ using Microsoft.IdentityModel.Tokens;
 namespace MaaCopilotServer.Api;
 
 /// <summary>
-/// The extension to add API service to the services.
+///     The extension to add API service to the services.
 /// </summary>
 [ExcludeFromCodeCoverage]
 public static class ConfigureServices
 {
     /// <summary>
-    /// Adds API service to the services.
+    ///     Adds API service to the services.
     /// </summary>
     /// <param name="services">The collection of services.</param>
     /// <param name="configuration">The configuration.</param>
@@ -67,7 +67,7 @@ public static class ConfigureServices
                 options.Events = new JwtBearerEvents
                 {
                     // Set token in the context.
-                    OnMessageReceived = (context) =>
+                    OnMessageReceived = context =>
                     {
                         if (context.Request.Query.TryGetValue("access_token", out var values) is false)
                         {
@@ -105,7 +105,8 @@ public static class ConfigureServices
         return services;
     }
 
-    private static IServiceCollection AddOption<T>(this IServiceCollection services, IConfiguration configuration) where T : class, new()
+    private static IServiceCollection AddOption<T>(this IServiceCollection services, IConfiguration configuration)
+        where T : class, new()
     {
         services.AddOptions<T>().BindConfiguration(typeof(T).ReadAttribute<OptionNameAttribute>()!.OptionName);
         return services;

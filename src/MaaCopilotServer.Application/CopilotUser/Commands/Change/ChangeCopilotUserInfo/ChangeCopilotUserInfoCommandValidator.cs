@@ -7,12 +7,12 @@ using MaaCopilotServer.Domain.Enums;
 namespace MaaCopilotServer.Application.CopilotUser.Commands.ChangeCopilotUserInfo;
 
 /// <summary>
-/// The validator of changing user info.
+///     The validator of changing user info.
 /// </summary>
 public class ChangeCopilotUserInfoCommandValidator : AbstractValidator<ChangeCopilotUserInfoCommand>
 {
     /// <summary>
-    /// The constructor of <see cref="ChangeCopilotUserInfoCommandValidator"/>.
+    ///     The constructor of <see cref="ChangeCopilotUserInfoCommandValidator" />.
     /// </summary>
     /// <param name="errorMessage">The error message.</param>
     public ChangeCopilotUserInfoCommandValidator(ValidationErrorMessage errorMessage)

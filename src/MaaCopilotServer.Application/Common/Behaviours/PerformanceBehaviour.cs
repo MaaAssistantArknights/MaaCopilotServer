@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 namespace MaaCopilotServer.Application.Common.Behaviours;
 
 /// <summary>
-/// The behaviour to record the performance data, e.g. time elapsed of a request.
+///     The behaviour to record the performance data, e.g. time elapsed of a request.
 /// </summary>
 /// <typeparam name="TRequest">The type of the request.</typeparam>
 /// <typeparam name="TResponse">The type of the response.</typeparam>
@@ -16,22 +16,22 @@ public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequ
     where TRequest : IRequest<TResponse>
 {
     /// <summary>
-    /// The service of current user.
+    ///     The service of current user.
     /// </summary>
     private readonly ICurrentUserService _currentUserService;
 
     /// <summary>
-    /// The logger.
+    ///     The logger.
     /// </summary>
     private readonly ILogger<TRequest> _logger;
 
     /// <summary>
-    /// A timer to calculate the time elapsed.
+    ///     A timer to calculate the time elapsed.
     /// </summary>
     private readonly Stopwatch _timer;
 
     /// <summary>
-    /// The constructor of <see cref="PerformanceBehaviour{TRequest, TResponse}"/>.
+    ///     The constructor of <see cref="PerformanceBehaviour{TRequest, TResponse}" />.
     /// </summary>
     /// <param name="logger">The logger.</param>
     /// <param name="currentUserService">The service of current user.</param>
@@ -47,7 +47,7 @@ public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequ
     }
 
     /// <summary>
-    /// The handler of the request.
+    ///     The handler of the request.
     /// </summary>
     /// <param name="request">The request.</param>
     /// <param name="cancellationToken">The cancellation token.</param>

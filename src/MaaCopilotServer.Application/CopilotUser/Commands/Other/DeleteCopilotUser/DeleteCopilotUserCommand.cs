@@ -9,39 +9,40 @@ using Microsoft.EntityFrameworkCore;
 namespace MaaCopilotServer.Application.CopilotUser.Commands.DeleteCopilotUser;
 
 /// <summary>
-/// The record of deleting user.
+///     The record of deleting user.
 /// </summary>
 [Authorized(UserRole.Admin)]
 public record DeleteCopilotUserCommand : IRequest<MaaActionResult<EmptyObject>>
 {
     /// <summary>
-    /// The user ID.
+    ///     The user ID.
     /// </summary>
-    [JsonPropertyName("user_id")] public string? UserId { get; set; }
+    [JsonPropertyName("user_id")]
+    public string? UserId { get; set; }
 }
 
 /// <summary>
-/// The handler of deleting user.
+///     The handler of deleting user.
 /// </summary>
 public class DeleteCopilotUserCommandHandler : IRequestHandler<DeleteCopilotUserCommand, MaaActionResult<EmptyObject>>
 {
     /// <summary>
-    /// The service for current user.
-    /// </summary>
-    private readonly ICurrentUserService _currentUserService;
-
-    /// <summary>
-    /// The API error message.
+    ///     The API error message.
     /// </summary>
     private readonly ApiErrorMessage _apiErrorMessage;
 
     /// <summary>
-    /// The DB context.
+    ///     The service for current user.
+    /// </summary>
+    private readonly ICurrentUserService _currentUserService;
+
+    /// <summary>
+    ///     The DB context.
     /// </summary>
     private readonly IMaaCopilotDbContext _dbContext;
 
     /// <summary>
-    /// The constructor of <see cref="DeleteCopilotUserCommandHandler"/>.
+    ///     The constructor of <see cref="DeleteCopilotUserCommandHandler" />.
     /// </summary>
     /// <param name="dbContext">The DB context.</param>
     /// <param name="currentUserService">The service for current user.</param>
@@ -57,13 +58,13 @@ public class DeleteCopilotUserCommandHandler : IRequestHandler<DeleteCopilotUser
     }
 
     /// <summary>
-    /// Handles a request of deleting user.
+    ///     Handles a request of deleting user.
     /// </summary>
     /// <param name="request">The request.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>A task with no contents if the request completes successfully.</returns>
     /// <exception cref="PipelineException">
-    /// Thrown when the user ID does not exist, or an internal error occurs, or the user permission is insufficient.
+    ///     Thrown when the user ID does not exist, or an internal error occurs, or the user permission is insufficient.
     /// </exception>
     public async Task<MaaActionResult<EmptyObject>> Handle(DeleteCopilotUserCommand request,
         CancellationToken cancellationToken)

@@ -2,8 +2,6 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
-namespace MaaCopilotServer.Api;
-
 using System.Diagnostics.CodeAnalysis;
 using Elastic.Apm.AspNetCore;
 using Elastic.Apm.AspNetCore.DiagnosticListener;
@@ -20,14 +18,16 @@ using MaaCopilotServer.Resources;
 using Serilog;
 using Serilog.Debugging;
 
+namespace MaaCopilotServer.Api;
+
 /// <summary>
-/// The program entry point.
+///     The program entry point.
 /// </summary>
 [ExcludeFromCodeCoverage]
-public class Program
+public static class Program
 {
     /// <summary>
-    /// The entry point.
+    ///     The entry point.
     /// </summary>
     public static void Main()
     {

@@ -5,12 +5,12 @@
 namespace MaaCopilotServer.Api.Middleware;
 
 /// <summary>
-/// The middleware extension.
+///     The middleware extension.
 /// </summary>
 public static class MiddlewareExtension
 {
     /// <summary>
-    /// Uses request culture.
+    ///     Uses request culture.
     /// </summary>
     /// <param name="app">The app</param>
     /// <returns>The app with the middleware mounted.</returns>

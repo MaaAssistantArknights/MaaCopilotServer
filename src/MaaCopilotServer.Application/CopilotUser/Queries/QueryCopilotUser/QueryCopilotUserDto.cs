@@ -8,12 +8,12 @@ using MaaCopilotServer.Domain.Enums;
 namespace MaaCopilotServer.Application.CopilotUser.Queries.QueryCopilotUser;
 
 /// <summary>
-/// The DTO of querying multiple users.
+///     The DTO of querying multiple users.
 /// </summary>
 public class QueryCopilotUserDto
 {
     /// <summary>
-    /// The constructor of <see cref="QueryCopilotUserDto"/>.
+    ///     The constructor of <see cref="QueryCopilotUserDto" />.
     /// </summary>
     /// <param name="id">The user ID.</param>
     /// <param name="userName">The username.</param>
@@ -30,17 +30,21 @@ public class QueryCopilotUserDto
 #pragma warning restore CS8618
 
     /// <summary>
-    /// The user ID.
+    ///     The user ID.
     /// </summary>
-    [JsonPropertyName("id")] public Guid Id { get; set; }
+    [JsonPropertyName("id")]
+    public Guid Id { get; set; }
 
     /// <summary>
-    /// The username.
+    ///     The username.
     /// </summary>
-    [JsonPropertyName("user_name")] public string UserName { get; set; }
+    [JsonPropertyName("user_name")]
+    public string UserName { get; set; }
 
     /// <summary>
-    /// The role of the user.
+    ///     The role of the user.
     /// </summary>
-    [JsonPropertyName("role")][JsonConverter(typeof(JsonStringEnumConverter))] public UserRole UserRole { get; set; }
+    [JsonPropertyName("role")]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public UserRole UserRole { get; set; }
 }

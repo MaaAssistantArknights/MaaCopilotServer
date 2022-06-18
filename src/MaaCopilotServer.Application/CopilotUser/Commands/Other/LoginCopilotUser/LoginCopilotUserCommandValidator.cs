@@ -5,12 +5,12 @@
 namespace MaaCopilotServer.Application.CopilotUser.Commands.LoginCopilotUser;
 
 /// <summary>
-/// The validator of user login.
+///     The validator of user login.
 /// </summary>
 public class LoginCopilotUserCommandValidator : AbstractValidator<LoginCopilotUserCommand>
 {
     /// <summary>
-    /// The constructor of <see cref="LoginCopilotUserCommandValidator"/>.
+    ///     The constructor of <see cref="LoginCopilotUserCommandValidator" />.
     /// </summary>
     /// <param name="errorMessage">The error message.</param>
     public LoginCopilotUserCommandValidator(ValidationErrorMessage errorMessage)

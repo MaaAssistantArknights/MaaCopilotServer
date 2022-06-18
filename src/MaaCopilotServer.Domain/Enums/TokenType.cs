@@ -8,5 +8,5 @@ public enum TokenType
 {
     UserActivation = 0,
     UserPasswordReset = 1,
-    UserEmailChange = 2,
+    UserEmailChange = 2
 }

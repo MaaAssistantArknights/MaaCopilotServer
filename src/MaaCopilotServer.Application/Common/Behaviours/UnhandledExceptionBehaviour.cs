@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 namespace MaaCopilotServer.Application.Common.Behaviours;
 
 /// <summary>
-/// The behaviour to convert unhandled exceptions to <see cref="PipelineException"/>.
+///     The behaviour to convert unhandled exceptions to <see cref="PipelineException" />.
 /// </summary>
 /// <typeparam name="TRequest">The type of the request.</typeparam>
 /// <typeparam name="TResponse">The type of the response.</typeparam>
@@ -15,22 +15,22 @@ public class UnhandledExceptionBehaviour<TRequest, TResponse> : IPipelineBehavio
     where TRequest : IRequest<TResponse>
 {
     /// <summary>
-    /// The logger.
-    /// </summary>
-    private readonly ILogger<TRequest> _logger;
-
-    /// <summary>
-    /// The service of current user.
-    /// </summary>
-    private readonly ICurrentUserService _currentUserService;
-
-    /// <summary>
-    /// The API error message.
+    ///     The API error message.
     /// </summary>
     private readonly ApiErrorMessage _apiErrorMessage;
 
     /// <summary>
-    /// The constructor of <see cref="UnhandledExceptionBehaviour{TRequest, TResponse}"/>.
+    ///     The service of current user.
+    /// </summary>
+    private readonly ICurrentUserService _currentUserService;
+
+    /// <summary>
+    ///     The logger.
+    /// </summary>
+    private readonly ILogger<TRequest> _logger;
+
+    /// <summary>
+    ///     The constructor of <see cref="UnhandledExceptionBehaviour{TRequest, TResponse}" />.
     /// </summary>
     /// <param name="logger">The logger.</param>
     /// <param name="currentUserService">The service of current user.</param>
@@ -47,14 +47,15 @@ public class UnhandledExceptionBehaviour<TRequest, TResponse> : IPipelineBehavio
     }
 
     /// <summary>
-    /// The handler of the request.
+    ///     The handler of the request.
     /// </summary>
     /// <param name="request">The request.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <param name="next">The next request handler.</param>
     /// <returns>The response.</returns>
     /// <exception cref="PipelineException">Thrown when there are exceptions thrown.</exception>
-    public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
+    public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken,
+        RequestHandlerDelegate<TResponse> next)
     {
         try
         {
@@ -67,11 +68,12 @@ public class UnhandledExceptionBehaviour<TRequest, TResponse> : IPipelineBehavio
         catch (Exception ex)
         {
             var requestName = typeof(TRequest).Name;
-            _logger.LogError(exception: ex,
+            _logger.LogError(ex,
                 "MaaCopilotServer: Type -> {LoggingType}; Request Name -> {Name}; Request -> {@Request};",
                 (string)LoggingType.Exception, requestName, request);
 
-            throw new PipelineException(MaaApiResponse.InternalError(_currentUserService.GetTrackingId(), _apiErrorMessage.InternalException));
+            throw new PipelineException(MaaApiResponse.InternalError(_currentUserService.GetTrackingId(),
+                _apiErrorMessage.InternalException));
         }
     }
 }

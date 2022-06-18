@@ -8,44 +8,47 @@ using Microsoft.EntityFrameworkCore;
 namespace MaaCopilotServer.Application.CopilotUser.Queries.QueryCopilotUser;
 
 /// <summary>
-/// The record of querying multiple users.
+///     The record of querying multiple users.
 /// </summary>
 public record QueryCopilotUserQuery : IRequest<MaaActionResult<PaginationResult<QueryCopilotUserDto>>>
 {
     /// <summary>
-    /// The page number to query.
+    ///     The page number to query.
     /// </summary>
-    [FromQuery(Name = "page")] public int? Page { get; set; } = null;
+    [FromQuery(Name = "page")]
+    public int? Page { get; set; } = null;
 
     /// <summary>
-    /// The limitation of number of items in a page.
+    ///     The limitation of number of items in a page.
     /// </summary>
-    [FromQuery(Name = "limit")] public int? Limit { get; set; } = null;
+    [FromQuery(Name = "limit")]
+    public int? Limit { get; set; } = null;
 
     /// <summary>
-    /// The username to query.
+    ///     The username to query.
     /// </summary>
-    [FromQuery(Name = "user_name")] public string? UserName { get; set; } = null;
+    [FromQuery(Name = "user_name")]
+    public string? UserName { get; set; } = null;
 }
 
 /// <summary>
-/// The handler of querying multiple users.
+///     The handler of querying multiple users.
 /// </summary>
 public class QueryCopilotUserQueryHandler : IRequestHandler<QueryCopilotUserQuery,
     MaaActionResult<PaginationResult<QueryCopilotUserDto>>>
 {
     /// <summary>
-    /// The service for current user.
+    ///     The service for current user.
     /// </summary>
     private readonly ICurrentUserService _currentUserService;
 
     /// <summary>
-    /// The DB context.
+    ///     The DB context.
     /// </summary>
     private readonly IMaaCopilotDbContext _dbContext;
 
     /// <summary>
-    /// The constructor of <see cref="QueryCopilotUserQueryHandler"/>.
+    ///     The constructor of <see cref="QueryCopilotUserQueryHandler" />.
     /// </summary>
     /// <param name="dbContext">The DB context.</param>
     /// <param name="currentUserService">The service for current user.</param>
@@ -58,7 +61,7 @@ public class QueryCopilotUserQueryHandler : IRequestHandler<QueryCopilotUserQuer
     }
 
     /// <summary>
-    /// Handles a request of querying multiple users.
+    ///     Handles a request of querying multiple users.
     /// </summary>
     /// <param name="request">The request.</param>
     /// <param name="cancellationToken">The cancellation token.</param>

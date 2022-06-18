@@ -10,17 +10,16 @@ namespace MaaCopilotServer.Application.CopilotUser.Queries.GetCopilotUserFavorit
 
 public record GetCopilotUserFavoritesQuery : IRequest<MaaActionResult<GetCopilotUserFavoritesDto>>
 {
-    [FromQuery(Name = "id")]
-    public string? FavoriteListId { get; set; }
+    [FromQuery(Name = "id")] public string? FavoriteListId { get; set; }
 }
 
 public class GetCopilotUserFavoritesQueryHandler :
     IRequestHandler<GetCopilotUserFavoritesQuery,
         MaaActionResult<GetCopilotUserFavoritesDto>>
 {
-    private readonly ICurrentUserService _currentUserService;
-    private readonly ICopilotIdService _copilotIdService;
     private readonly IMaaCopilotDbContext _copilotDbContext;
+    private readonly ICopilotIdService _copilotIdService;
+    private readonly ICurrentUserService _currentUserService;
 
     public GetCopilotUserFavoritesQueryHandler(
         ICurrentUserService currentUserService,
@@ -32,7 +31,8 @@ public class GetCopilotUserFavoritesQueryHandler :
         _copilotDbContext = copilotDbContext;
     }
 
-    public async Task<MaaActionResult<GetCopilotUserFavoritesDto>> Handle(GetCopilotUserFavoritesQuery request, CancellationToken cancellationToken)
+    public async Task<MaaActionResult<GetCopilotUserFavoritesDto>> Handle(GetCopilotUserFavoritesQuery request,
+        CancellationToken cancellationToken)
     {
         var favListId = Guid.Parse(request.FavoriteListId!);
 

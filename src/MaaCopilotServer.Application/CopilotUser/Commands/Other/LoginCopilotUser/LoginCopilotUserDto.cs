@@ -8,12 +8,12 @@ using MaaCopilotServer.Application.CopilotUser.Queries.GetCopilotUser;
 namespace MaaCopilotServer.Application.CopilotUser.Commands.LoginCopilotUser;
 
 /// <summary>
-/// The DTO of user login.
+///     The DTO of user login.
 /// </summary>
 public class LoginCopilotUserDto
 {
     /// <summary>
-    /// The constructor of <see cref="LoginCopilotUserDto"/>.
+    ///     The constructor of <see cref="LoginCopilotUserDto" />.
     /// </summary>
     /// <param name="token">The user token.</param>
     /// <param name="validBefore">The token expiration time.</param>
@@ -30,17 +30,20 @@ public class LoginCopilotUserDto
 #pragma warning restore CS8618
 
     /// <summary>
-    /// The token expiration time.
+    ///     The token expiration time.
     /// </summary>
-    [JsonPropertyName("token")] public string Token { get; set; }
+    [JsonPropertyName("token")]
+    public string Token { get; set; }
 
     /// <summary>
-    /// The username.
+    ///     The username.
     /// </summary>
-    [JsonPropertyName("valid_before")] public string ValidBefore { get; set; }
+    [JsonPropertyName("valid_before")]
+    public string ValidBefore { get; set; }
 
     /// <summary>
-    /// The user information.
+    ///     The user information.
     /// </summary>
-    [JsonPropertyName("user_info")] public GetCopilotUserDto UserInfo { get; set; }
+    [JsonPropertyName("user_info")]
+    public GetCopilotUserDto UserInfo { get; set; }
 }
