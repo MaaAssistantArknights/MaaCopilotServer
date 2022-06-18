@@ -38,7 +38,8 @@ public static class ConfigureServices
             .AddOption<ElasticLogSinkOption>(configuration)
             .AddOption<SwitchesOption>(configuration)
             .AddOption<EmailOption>(configuration)
-            .AddOption<ApplicationOption>(configuration);
+            .AddOption<ApplicationOption>(configuration)
+            .AddOption<TokenOption>(configuration);
 
         services.AddHttpContextAccessor();
         services.AddScoped<ICurrentUserService, CurrentUserService>();

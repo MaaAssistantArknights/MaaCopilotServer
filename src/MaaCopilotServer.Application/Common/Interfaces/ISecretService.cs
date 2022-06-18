@@ -17,6 +17,14 @@ public interface ISecretService
     (string, DateTimeOffset) GenerateJwtToken(Guid id);
 
     /// <summary>
+    /// Generates a token for validation.
+    /// </summary>
+    /// <param name="resourceId">The target resource id that the token will be used for.</param>
+    /// <param name="validTimeSpan">The validation time of the token.</param>
+    /// <returns>A token string, and the expiration time.</returns>
+    (string, DateTimeOffset) GenerateToken(Guid resourceId, TimeSpan validTimeSpan);
+
+    /// <summary>
     /// Hashes a password with the salt.
     /// </summary>
     /// <param name="password">The password to hash.</param>

@@ -45,4 +45,16 @@
   <data name="InternalException" xml:space="preserve">
     <value>出现内部错误</value>
   </data>
+  <data name="EmailSendFailed" xml:space="preserve">
+    <value>邮件发送失败</value>
+  </data>
+  <data name="TokenInvalid" xml:space="preserve">
+    <value>Token 不存在或已过期</value>
+  </data>
+  <data name="UserInactivated" xml:space="preserve">
+    <value>用户账号未激活</value>
+  </data>
+  <data name="EmailNotRegister" xml:space="preserve">
+    <value>邮箱未注册</value>
+  </data>
 </root>

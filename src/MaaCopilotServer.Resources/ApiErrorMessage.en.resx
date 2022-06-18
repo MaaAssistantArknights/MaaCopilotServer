@@ -38,4 +38,16 @@
   <data name="UserWithIdNotFound" xml:space="preserve">
     <value>Can not find user with id {0}</value>
   </data>
+  <data name="EmailSendFailed" xml:space="preserve">
+    <value>Failed to send email</value>
+  </data>
+  <data name="TokenInvalid" xml:space="preserve">
+    <value>Token not found or outdated</value>
+  </data>
+  <data name="UserInactivated" xml:space="preserve">
+    <value>User account inactivated</value>
+  </data>
+  <data name="EmailNotRegister" xml:space="preserve">
+    <value>Email has not been used</value>
+  </data>
 </root>

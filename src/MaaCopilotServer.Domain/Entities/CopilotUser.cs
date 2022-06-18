@@ -22,14 +22,22 @@ public class CopilotUser : EditableEntity
     /// <param name="userName">The username.</param>
     /// <param name="userRole">The role of the user.</param>
     /// <param name="createBy">The creator of the user.</param>
-    public CopilotUser(string email, string password, string userName, UserRole userRole, Guid createBy)
+    public CopilotUser(string email, string password, string userName, UserRole userRole, Guid? createBy)
     {
         Email = email;
         Password = password;
         UserName = userName;
         UserRole = userRole;
-        CreateBy = createBy;
-        UpdateBy = createBy;
+        if (createBy is null)
+        {
+            CreateBy = this.EntityId;
+            UpdateBy = this.EntityId;
+        }
+        else
+        {
+            CreateBy = createBy.Value;
+            UpdateBy = createBy.Value;
+        }
     }
 
 #pragma warning disable CS8618
@@ -99,8 +107,12 @@ public class CopilotUser : EditableEntity
         {
             return;
         }
+
         if (string.IsNullOrEmpty(email) is false)
+        {
             Email = email;
+            UserActivated = false;
+        }
         if (string.IsNullOrEmpty(userName) is false)
             UserName = userName;
         if (userRole is not null)
