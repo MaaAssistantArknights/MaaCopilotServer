@@ -23,7 +23,7 @@ public class QueryCopilotOperationsQueryDto
     /// <param name="detail">The detail of the operation.</param>
     /// <param name="downloads">The number of times of downloads.</param>
     public QueryCopilotOperationsQueryDto(string id, string stageName, string minimumRequired, string uploadTime,
-        string uploader, string title, string detail, int downloads)
+        string uploader, string title, string detail, int downloads, List<string> operators)
     {
         Id = id;
         StageName = stageName;
@@ -33,6 +33,7 @@ public class QueryCopilotOperationsQueryDto
         Title = title;
         Detail = detail;
         Downloads = downloads;
+        Operators = operators;
     }
 
     /// <summary>
@@ -69,6 +70,12 @@ public class QueryCopilotOperationsQueryDto
     /// The detail of the operation.
     /// </summary>
     [JsonPropertyName("uploader")] public string Uploader { get; }
+
+    /// <summary>
+    /// Operators used.
+    /// </summary>
+    [JsonPropertyName("operators")]
+    public List<string> Operators { get; }
 
     /// <summary>
     /// The number of times of downloads.
