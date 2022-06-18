@@ -6,6 +6,8 @@
     <Nullable>annotations</Nullable>
 
     <IsPackable>false</IsPackable>
+
+    <AppDesignerFolder>Controllers</AppDesignerFolder>
   </PropertyGroup>
 
   <ItemGroup>

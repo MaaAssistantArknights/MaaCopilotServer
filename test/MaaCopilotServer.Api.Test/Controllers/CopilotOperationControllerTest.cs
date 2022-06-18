@@ -54,7 +54,7 @@ namespace MaaCopilotServer.Api.Test.Properties
             await ControllerTestUtils.TestControllerEndpoint(
                 this._mediator,
                 new CreateCopilotOperationCommand(),
-                new CreateCopilotOperationDto(string.Empty),
+                new CreateCopilotOperationDto(),
                 controller.CreateCopilotOperation);
         }
 
@@ -112,7 +112,7 @@ namespace MaaCopilotServer.Api.Test.Properties
             await ControllerTestUtils.TestControllerEndpoint(
                 this._mediator,
                 string.Empty,
-                new GetCopilotOperationQueryDto(default, default, default, default, default, default, default, default, default),
+                new GetCopilotOperationQueryDto(),
                 controller.GetCopilotOperation);
         }
 

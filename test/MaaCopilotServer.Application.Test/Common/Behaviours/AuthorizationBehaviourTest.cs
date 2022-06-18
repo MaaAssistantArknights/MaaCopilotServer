@@ -5,18 +5,17 @@
 namespace MaaCopilotServer.Application.Test.Common.Behaviours
 {
     using Domain.Entities;
-    using MediatR;
     using MaaCopilotServer.Application.Common.Behaviours;
+    using MaaCopilotServer.Application.Common.Exceptions;
     using MaaCopilotServer.Application.Common.Interfaces;
-    using MaaCopilotServer.Resources;
     using MaaCopilotServer.Application.Common.Security;
     using MaaCopilotServer.Domain.Enums;
-    using MaaCopilotServer.Application.Common.Models;
-    using MaaCopilotServer.Application.Common.Exceptions;
+    using MaaCopilotServer.Resources;
+    using MediatR;
     using Microsoft.AspNetCore.Http;
 
     /// <summary>
-    /// Tests for <see cref="AuthorizationBehaviour{TRequest, TResponse}"/>
+    /// Tests for <see cref="AuthorizationBehaviour{TRequest, TResponse}"/>.
     /// </summary>
     [TestClass]
     public class AuthorizationBehaviourTest
@@ -117,7 +116,7 @@ namespace MaaCopilotServer.Application.Test.Common.Behaviours
         /// <summary>
         /// A test class with <see cref="UserRole.User"/> role for authorization testing.
         /// </summary>
-        [Authorized(UserRole.User)]
+        [Authorized(UserRole.User, true)]
         class TestUserRole : IRequest<object>
         {
         }
@@ -125,7 +124,7 @@ namespace MaaCopilotServer.Application.Test.Common.Behaviours
         /// <summary>
         /// A test class with <see cref="UserRole.Uploader"/> role for authorization testing.
         /// </summary>
-        [Authorized(UserRole.Uploader)]
+        [Authorized(UserRole.Uploader, true)]
         class TestUploaderRole : IRequest<object>
         {
         }
@@ -133,7 +132,7 @@ namespace MaaCopilotServer.Application.Test.Common.Behaviours
         /// <summary>
         /// A test class with <see cref="UserRole.Admin"/> role for authorization testing.
         /// </summary>
-        [Authorized(UserRole.Admin)]
+        [Authorized(UserRole.Admin, true)]
         class TestAdminRole : IRequest<object>
         {
         }
@@ -141,7 +140,7 @@ namespace MaaCopilotServer.Application.Test.Common.Behaviours
         /// <summary>
         /// A test class with <see cref="UserRole.UploaSuperAdminder"/> role for authorization testing.
         /// </summary>
-        [Authorized(UserRole.SuperAdmin)]
+        [Authorized(UserRole.SuperAdmin, true)]
         class TestSuperAdminRole : IRequest<object>
         {
         }

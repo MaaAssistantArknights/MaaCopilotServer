@@ -4,9 +4,16 @@
 
 using System.Globalization;
 using System.Security.Claims;
+using Elastic.Apm.Api;
 using MaaCopilotServer.Application.Common.Interfaces;
 
 namespace MaaCopilotServer.Api.Services;
+
+/// <summary>
+/// The delegate of getting the current active transaction from APM.
+/// </summary>
+/// <returns></returns>
+public delegate ITransaction? CurrentTransactionProvider();
 
 /// <summary>
 /// The service for parsing information of the current user.
@@ -24,16 +31,34 @@ public class CurrentUserService : ICurrentUserService
     private readonly IConfiguration _configuration;
 
     /// <summary>
+    /// The provider of getting the current active transaction from APM.
+    /// </summary>
+    private readonly CurrentTransactionProvider _currentTransactionProvider;
+
+    /// <summary>
     /// The constructor of <see cref="CurrentUserService"/>.
     /// </summary>
     /// <param name="httpContextAccessor">The HTTP context accessor.</param>
     /// <param name="configuration">The configuration.</param>
-    public CurrentUserService(
-        IHttpContextAccessor httpContextAccessor,
-        IConfiguration configuration)
+    public CurrentUserService(IHttpContextAccessor httpContextAccessor,
+                              IConfiguration configuration) : this(httpContextAccessor,
+                                                                   configuration,
+                                                                   () => Elastic.Apm.Agent.Tracer.CurrentTransaction)
     {
-        _httpContextAccessor = httpContextAccessor;
-        _configuration = configuration;
+    }
+
+    /// <summary>
+    /// The constructor with all properties.
+    /// </summary>
+    /// <param name="httpContextAccessor">The HTTP context accessor.</param>
+    /// <param name="configuration">The configuration.</param>
+    /// <param name="currentTransactionProvider">The provider of getting the current active transaction from APM.</param>
+    public CurrentUserService(
+        IHttpContextAccessor httpContextAccessor, IConfiguration configuration, CurrentTransactionProvider currentTransactionProvider)
+    {
+        this._httpContextAccessor = httpContextAccessor;
+        this._configuration = configuration;
+        this._currentTransactionProvider = currentTransactionProvider;
     }
 
     /// <summary>
@@ -67,7 +92,7 @@ public class CurrentUserService : ICurrentUserService
             return _httpContextAccessor.HttpContext?.TraceIdentifier ?? string.Empty;
         }
 
-        var t = Elastic.Apm.Agent.Tracer.CurrentTransaction;
+        var t = this._currentTransactionProvider();
         if (t is not null)
         {
             return t.TraceId;

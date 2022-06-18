@@ -2,11 +2,14 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace MaaCopilotServer.Application.Common.Exceptions;
 
 /// <summary>
 /// The exception that is thrown by the handler of requests.
 /// </summary>
+[ExcludeFromCodeCoverage]
 public class PipelineException : Exception
 {
     /// <summary>
