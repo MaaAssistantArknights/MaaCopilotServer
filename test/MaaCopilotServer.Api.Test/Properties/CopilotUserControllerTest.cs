@@ -145,7 +145,7 @@ namespace MaaCopilotServer.Api.Test.Properties
             await ControllerTestUtils.TestControllerEndpoint(
                 this._mediator,
                 new LoginCopilotUserCommand(),
-                new LoginCopilotUserDto(default, default, default),
+                new LoginCopilotUserDto(),
                 controller.LoginCopilotUser);
         }
 
@@ -232,7 +232,7 @@ namespace MaaCopilotServer.Api.Test.Properties
             await ControllerTestUtils.TestControllerEndpoint(
                 this._mediator,
                 string.Empty,
-                new GetCopilotUserDto(default, default, default, default),
+                new GetCopilotUserDto(),
                 controller.GetCopilotUser);
         }
 

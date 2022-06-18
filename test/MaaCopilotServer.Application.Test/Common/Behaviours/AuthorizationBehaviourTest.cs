@@ -116,7 +116,7 @@ namespace MaaCopilotServer.Application.Test.Common.Behaviours
         /// <summary>
         /// A test class with <see cref="UserRole.User"/> role for authorization testing.
         /// </summary>
-        [Authorized(UserRole.User)]
+        [Authorized(UserRole.User, true)]
         class TestUserRole : IRequest<object>
         {
         }
@@ -124,7 +124,7 @@ namespace MaaCopilotServer.Application.Test.Common.Behaviours
         /// <summary>
         /// A test class with <see cref="UserRole.Uploader"/> role for authorization testing.
         /// </summary>
-        [Authorized(UserRole.Uploader)]
+        [Authorized(UserRole.Uploader, true)]
         class TestUploaderRole : IRequest<object>
         {
         }
@@ -132,7 +132,7 @@ namespace MaaCopilotServer.Application.Test.Common.Behaviours
         /// <summary>
         /// A test class with <see cref="UserRole.Admin"/> role for authorization testing.
         /// </summary>
-        [Authorized(UserRole.Admin)]
+        [Authorized(UserRole.Admin, true)]
         class TestAdminRole : IRequest<object>
         {
         }
@@ -140,7 +140,7 @@ namespace MaaCopilotServer.Application.Test.Common.Behaviours
         /// <summary>
         /// A test class with <see cref="UserRole.UploaSuperAdminder"/> role for authorization testing.
         /// </summary>
-        [Authorized(UserRole.SuperAdmin)]
+        [Authorized(UserRole.SuperAdmin, true)]
         class TestSuperAdminRole : IRequest<object>
         {
         }
