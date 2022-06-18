@@ -37,7 +37,7 @@ public class QueryCopilotOperationsQueryDto
     }
 
 #pragma warning disable CS8618
-    public QueryCopilotOperationsQueryDto(){ }
+    public QueryCopilotOperationsQueryDto() { }
 #pragma warning restore CS8618
 
     /// <summary>

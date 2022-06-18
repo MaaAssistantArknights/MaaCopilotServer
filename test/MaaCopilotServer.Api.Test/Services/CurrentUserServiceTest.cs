@@ -4,10 +4,13 @@
 
 namespace MaaCopilotServer.Api.Test.Services
 {
+    using System.Globalization;
     using System.Security.Claims;
+    using Elastic.Apm.Api;
     using MaaCopilotServer.Api.Services;
     using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Configuration;
+    using NSubstitute;
     using NSubstitute.ReturnsExtensions;
 
     /// <summary>
@@ -96,6 +99,9 @@ namespace MaaCopilotServer.Api.Test.Services
         [DataTestMethod]
         [DataRow(false, "test_contextIdentifier", "test_apmIdentifier", "test_contextIdentifier")]
         [DataRow(false, null, "test_apmIdentifier", "")]
+        [DataRow(true, "test_contextIdentifier", "test_apmIdentifier", "test_apmIdentifier")]
+        [DataRow(true, "test_contextIdentifier", null, "test_contextIdentifier")]
+        [DataRow(true, null, null, "")]
         public void TestGetTrackingId(bool apmSwitch, string? contextIdentifier, string? apmIdentifier, string? expected)
         {
             this._httpContextAccessor.HttpContext.Returns(_ =>
@@ -119,10 +125,89 @@ namespace MaaCopilotServer.Api.Test.Services
                 .AddInMemoryCollection(testConfiguration)
                 .Build();
 
-            // TODO: refactor implementation to make APM testing possible.
-            var currentUserService = new CurrentUserService(this._httpContextAccessor, this._configuration);
+            CurrentTransactionProvider provider = () =>
+            {
+                if (apmIdentifier == null)
+                {
+                    return null;
+                }
+                else
+                {
+                    var transaction = Substitute.For<ITransaction>();
+                    transaction.TraceId.Returns(apmIdentifier);
+                    return transaction;
+                }
+            };
+
+            var currentUserService = new CurrentUserService(this._httpContextAccessor,
+                                                            this._configuration,
+                                                            provider);
             var trackingId = currentUserService.GetTrackingId();
             trackingId.Should().BeEquivalentTo(expected);
+        }
+
+        /// <summary>
+        /// Tests <see cref="CurrentUserService.GetCulture"/>.
+        /// </summary>
+        /// <param name="isNullContext">Indicates whether the HTTP context is null.</param>
+        /// <param name="noValue">Indicates whether the items of the context contains <c>"culture"</c> key.</param>
+        /// <param name="isNullCultureInfo">Indicates whether the culture info is null.</param>
+        /// <param name="isOtherType">Indicates whether the value of the key is of other type instead of <see cref="CultureInfo"/>.</param>
+        /// <param name="givenCulture">The culture string given.</param>
+        /// <param name="expected">The expected culture result.</param>
+        [DataTestMethod]
+        [DataRow(false, false, false, false, "zh-cn", "zh-cn")]
+        [DataRow(false, false, false, false, "en", "en")]
+        [DataRow(true, false, false, false, "zh-cn", "zh-cn")]
+        [DataRow(false, true, false, false, "zh-cn", "zh-cn")]
+        [DataRow(false, false, true, false, "zh-cn", "zh-cn")]
+        [DataRow(false, false, false, true, "zh-cn", "zh-cn")]
+        public void TestGetCulture(bool isNullContext,
+                                   bool noValue,
+                                   bool isNullCultureInfo,
+                                   bool isOtherType,
+                                   string givenCulture,
+                                   string expected)
+        {
+            if (isNullContext)
+            {
+                this._httpContextAccessor.HttpContext.ReturnsNull();
+            }
+            else
+            {
+                this._httpContextAccessor.HttpContext.Returns(_ =>
+                {
+                    var context = Substitute.For<HttpContext>();
+                    if (noValue)
+                    {
+                        context.Items.Returns(new Dictionary<object, object?>());
+                    }
+                    else
+                    {
+                        var returnedDict = new Dictionary<object, object?>();
+                        if (isNullCultureInfo)
+                        {
+                            returnedDict.Add("culture", null);
+                        }
+                        else
+                        {
+                            if (isOtherType)
+                            {
+                                returnedDict.Add("culture", new object());
+                            }
+                            else
+                            {
+                                returnedDict.Add("culture", new CultureInfo(givenCulture));
+                            }
+                        }
+                        context.Items.Returns(returnedDict);
+                    }
+                    return context;
+                });
+            }
+
+            var currentUserService = new CurrentUserService(this._httpContextAccessor, this._configuration);
+            currentUserService.GetCulture().Should().BeEquivalentTo(new CultureInfo(expected));
         }
     }
 }

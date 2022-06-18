@@ -5,8 +5,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using MaaCopilotServer.Application.Common.Extensions;
-using MaaCopilotServer.Domain.Attributes;
-using MaaCopilotServer.Domain.Extensions;
 
 namespace MaaCopilotServer.Api.Helper;
 

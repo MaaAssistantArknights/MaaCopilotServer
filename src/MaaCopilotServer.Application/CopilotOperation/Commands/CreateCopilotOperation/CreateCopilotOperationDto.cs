@@ -21,7 +21,7 @@ public class CreateCopilotOperationDto
     }
 
 #pragma warning disable CS8618
-    public CreateCopilotOperationDto(){ }
+    public CreateCopilotOperationDto() { }
 #pragma warning restore CS8618
 
     /// <summary>
