@@ -25,6 +25,10 @@ public class LoginCopilotUserDto
         UserInfo = userInfo;
     }
 
+#pragma warning disable CS8618
+    public LoginCopilotUserDto() { }
+#pragma warning restore CS8618
+
     /// <summary>
     /// The token expiration time.
     /// </summary>

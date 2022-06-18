@@ -31,6 +31,10 @@ public class GetCopilotUserDto
         FavoriteLists = favoriteLists;
     }
 
+#pragma warning disable CS8618
+    public GetCopilotUserDto() { }
+#pragma warning restore CS8618
+
     /// <summary>
     /// The user ID.
     /// </summary>

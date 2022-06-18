@@ -36,6 +36,10 @@ public class QueryCopilotOperationsQueryDto
         Operators = operators;
     }
 
+#pragma warning disable CS8618
+    public QueryCopilotOperationsQueryDto(){ }
+#pragma warning restore CS8618
+
     /// <summary>
     /// The operation ID.
     /// </summary>
