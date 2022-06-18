@@ -2,13 +2,18 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using MaaCopilotServer.Application.CopilotUser.Commands.ActivateCopilotAccount;
 using MaaCopilotServer.Application.CopilotUser.Commands.ChangeCopilotUserInfo;
 using MaaCopilotServer.Application.CopilotUser.Commands.CreateCopilotUser;
 using MaaCopilotServer.Application.CopilotUser.Commands.DeleteCopilotUser;
 using MaaCopilotServer.Application.CopilotUser.Commands.LoginCopilotUser;
+using MaaCopilotServer.Application.CopilotUser.Commands.PasswordReset;
+using MaaCopilotServer.Application.CopilotUser.Commands.RegisterCopilotAccount;
+using MaaCopilotServer.Application.CopilotUser.Commands.RequestPasswordReset;
 using MaaCopilotServer.Application.CopilotUser.Commands.UpdateCopilotUserInfo;
 using MaaCopilotServer.Application.CopilotUser.Commands.UpdateCopilotUserPassword;
 using MaaCopilotServer.Application.CopilotUser.Queries.GetCopilotUser;
+using MaaCopilotServer.Application.CopilotUser.Queries.GetCopilotUserFavorites;
 using MaaCopilotServer.Application.CopilotUser.Queries.QueryCopilotUser;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -114,6 +119,38 @@ public class CopilotUserController : MaaControllerBase
     [HttpGet("query")]
     public async Task<ActionResult> QueryCopilotUser([FromQuery] QueryCopilotUserQuery query)
     {
+        return await GetResponse(query);
+    }
+
+    [HttpPost("register")]
+    public async Task<ActionResult> RegisterAccount([FromBody] RegisterCopilotAccountCommand command)
+    {
+        return await GetResponse(command);
+    }
+
+    [HttpPost("activate")]
+    public async Task<ActionResult> ActivateAccount([FromBody] ActivateCopilotAccountCommand command)
+    {
+        return await GetResponse(command);
+    }
+
+
+    [HttpPost("password/reset_request")]
+    public async Task<ActionResult> RequestPasswordChange([FromBody] RequestPasswordResetCommand command)
+    {
+        return await GetResponse(command);
+    }
+
+    [HttpPost("password/reset")]
+    public async Task<ActionResult> PasswordChange([FromBody] PasswordResetCommand command)
+    {
+        return await GetResponse(command);
+    }
+
+    [HttpGet("favorites/{id}")]
+    public async Task<ActionResult> GetFavorites(string? id)
+    {
+        var query = new GetCopilotUserFavoritesQuery { FavoriteListId = id };
         return await GetResponse(query);
     }
 }

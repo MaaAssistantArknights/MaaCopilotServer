@@ -15,14 +15,21 @@ public class AuthorizedAttribute : Attribute
     /// <summary>
     /// The constructor of <see cref="AuthorizedAttribute"/>.
     /// </summary>
-    /// <param name="role">The role of the user.</param>
-    public AuthorizedAttribute(UserRole role)
+    /// <param name="role">The role of the user that is required.</param>
+    /// <param name="allowInActivated">Allow inactivated account access.</param>
+    public AuthorizedAttribute(UserRole role, bool allowInActivated = false)
     {
         Role = role;
+        AllowInActivated = allowInActivated;
     }
 
     /// <summary>
-    /// The role of the user.
+    /// The role of the user that is required.
     /// </summary>
     public UserRole Role { get; }
+
+    /// <summary>
+    /// Allow inactivated account access.
+    /// </summary>
+    public bool AllowInActivated { get; set; }
 }

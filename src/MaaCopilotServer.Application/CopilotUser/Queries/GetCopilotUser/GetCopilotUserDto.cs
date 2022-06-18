@@ -19,12 +19,16 @@ public class GetCopilotUserDto
     /// <param name="userName">The username.</param>
     /// <param name="userRole">The role of the user.</param>
     /// <param name="uploadCount">The number of uploads.</param>
-    public GetCopilotUserDto(Guid id, string userName, UserRole userRole, int uploadCount)
+    /// <param name="accountActivated">Account activation status.</param>
+    /// <param name="favoriteLists">The list of favorite list.</param>
+    public GetCopilotUserDto(Guid id, string userName, UserRole userRole, int uploadCount, bool accountActivated, Dictionary<string, string> favoriteLists)
     {
         Id = id;
         UserName = userName;
         UserRole = userRole;
         UploadCount = uploadCount;
+        AccountActivated = accountActivated;
+        FavoriteLists = favoriteLists;
     }
 
     /// <summary>
@@ -43,6 +47,18 @@ public class GetCopilotUserDto
     [JsonPropertyName("role")]
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public UserRole UserRole { get; set; }
+
+    /// <summary>
+    /// Account activation status.
+    /// </summary>
+    [JsonPropertyName("activated")]
+    public bool AccountActivated { get; set; }
+
+    /// <summary>
+    /// User favorite lists.
+    /// </summary>
+    [JsonPropertyName("favorite_lists")]
+    public Dictionary<string, string> FavoriteLists { get; set; }
 
     /// <summary>
     /// The number of uploads.

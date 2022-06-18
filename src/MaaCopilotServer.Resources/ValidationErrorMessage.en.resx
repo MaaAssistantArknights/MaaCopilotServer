@@ -47,4 +47,7 @@
   <data name="UserRoleIsInvalid" xml:space="preserve">
     <value>Invalid user role name</value>
   </data>
+  <data name="TokenIsInvalid" xml:space="preserve">
+    <value>Invalid token</value>
+  </data>
 </root>

@@ -4,6 +4,7 @@
 
 using System.Text.Json.Serialization;
 using Destructurama.Attributed;
+using MaaCopilotServer.Application.CopilotUser.Queries.GetCopilotUser;
 using Microsoft.EntityFrameworkCore;
 
 namespace MaaCopilotServer.Application.CopilotUser.Commands.LoginCopilotUser;
@@ -81,7 +82,9 @@ public class
     public async Task<MaaActionResult<LoginCopilotUserDto>> Handle(LoginCopilotUserCommand request,
         CancellationToken cancellationToken)
     {
-        var user = await _dbContext.CopilotUsers.FirstOrDefaultAsync(x => x.Email == request.Email, cancellationToken);
+        var user = await _dbContext.CopilotUsers
+            .Include(x => x.UserFavorites)
+            .FirstOrDefaultAsync(x => x.Email == request.Email, cancellationToken);
         if (user is null)
         {
             throw new PipelineException(MaaApiResponse.BadRequest(_currentUserService.GetTrackingId(), _apiErrorMessage.LoginFailed));
@@ -94,8 +97,16 @@ public class
                 _apiErrorMessage.LoginFailed));
         }
 
+        var uploadCount = await _dbContext.CopilotOperations
+            .Include(x => x.Author)
+            .Where(x => x.Author.EntityId == user.EntityId)
+            .CountAsync(cancellationToken);
+
         var (token, expire) = _secretService.GenerateJwtToken(user.EntityId);
-        var dto = new LoginCopilotUserDto(token, expire.ToString("o", _apiErrorMessage.CultureInfo), user.UserName);
+        var favList = user.UserFavorites
+            .ToDictionary(fav => fav.EntityId.ToString(), fav => fav.FavoriteName);
+        var dto = new LoginCopilotUserDto(token, expire.ToString("o", _apiErrorMessage.CultureInfo),
+            new GetCopilotUserDto(user.EntityId, user.UserName, user.UserRole, uploadCount, user.UserActivated, favList));
         return MaaApiResponse.Ok(dto, _currentUserService.GetTrackingId());
     }
 }

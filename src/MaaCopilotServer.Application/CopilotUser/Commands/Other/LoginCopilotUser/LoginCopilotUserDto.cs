@@ -3,6 +3,7 @@
 // Licensed under the AGPL-3.0 license.
 
 using System.Text.Json.Serialization;
+using MaaCopilotServer.Application.CopilotUser.Queries.GetCopilotUser;
 
 namespace MaaCopilotServer.Application.CopilotUser.Commands.LoginCopilotUser;
 
@@ -16,18 +17,13 @@ public class LoginCopilotUserDto
     /// </summary>
     /// <param name="token">The user token.</param>
     /// <param name="validBefore">The token expiration time.</param>
-    /// <param name="userName">The username.</param>
-    public LoginCopilotUserDto(string token, string validBefore, string userName)
+    /// <param name="userInfo">The user information.</param>
+    public LoginCopilotUserDto(string token, string validBefore, GetCopilotUserDto userInfo)
     {
         Token = token;
         ValidBefore = validBefore;
-        UserName = userName;
+        UserInfo = userInfo;
     }
-
-    /// <summary>
-    /// The user token.
-    /// </summary>
-    [JsonPropertyName("user_name")] public string UserName { get; set; }
 
     /// <summary>
     /// The token expiration time.
@@ -38,4 +34,9 @@ public class LoginCopilotUserDto
     /// The username.
     /// </summary>
     [JsonPropertyName("valid_before")] public string ValidBefore { get; set; }
+
+    /// <summary>
+    /// The user information.
+    /// </summary>
+    [JsonPropertyName("user_info")] public GetCopilotUserDto UserInfo { get; set; }
 }

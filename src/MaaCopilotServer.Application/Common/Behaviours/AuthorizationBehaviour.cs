@@ -2,7 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
-using System.Reflection;
+using MaaCopilotServer.Domain.Extensions;
 
 namespace MaaCopilotServer.Application.Common.Behaviours;
 
@@ -58,8 +58,8 @@ public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRe
     public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken,
         RequestHandlerDelegate<TResponse> next)
     {
-        var authorizeAttributes = request.GetType().GetCustomAttributes<AuthorizedAttribute>().ToList();
-        if (authorizeAttributes.Count == 0)
+        var authorizeAttribute = request.GetType().ReadAttribute<AuthorizedAttribute>();
+        if (authorizeAttribute is null)
         {
             return await next();
         }
@@ -77,10 +77,14 @@ public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRe
                 string.Format(_apiErrorMessage.UserWithIdNotFound!, userId)));
         }
 
-        var roleRequired = authorizeAttributes.First().Role;
-        if (user.UserRole < roleRequired)
+        if (user.UserRole < authorizeAttribute.Role)
         {
             throw new PipelineException(MaaApiResponse.Forbidden(_currentUserService.GetTrackingId(), _apiErrorMessage.PermissionDenied));
+        }
+
+        if (authorizeAttribute.AllowInActivated is false && user.UserActivated is false)
+        {
+            throw new PipelineException(MaaApiResponse.Forbidden(_currentUserService.GetTrackingId(), _apiErrorMessage.UserInactivated));
         }
 
         return await next();

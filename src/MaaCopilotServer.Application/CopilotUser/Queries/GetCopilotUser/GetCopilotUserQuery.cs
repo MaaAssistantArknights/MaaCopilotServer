@@ -80,7 +80,9 @@ public class GetCopilotUserQueryHandler : IRequestHandler<GetCopilotUserQuery, M
             userId = Guid.Parse(request.UserId!);
         }
 
-        var user = await _dbContext.CopilotUsers.FirstOrDefaultAsync(x => x.EntityId == userId, cancellationToken);
+        var user = await _dbContext.CopilotUsers
+            .Include(x => x.UserFavorites)
+            .FirstOrDefaultAsync(x => x.EntityId == userId, cancellationToken);
 
         if (user is null)
         {
@@ -93,7 +95,10 @@ public class GetCopilotUserQueryHandler : IRequestHandler<GetCopilotUserQuery, M
             .Where(x => x.Author.EntityId == userId)
             .CountAsync(cancellationToken);
 
-        var dto = new GetCopilotUserDto(userId, user.UserName, user.UserRole, uploadCount);
+        var favList = user.UserFavorites
+            .ToDictionary(fav => fav.EntityId.ToString(), fav => fav.FavoriteName);
+
+        var dto = new GetCopilotUserDto(userId, user.UserName, user.UserRole, uploadCount, user.UserActivated, favList);
         return MaaApiResponse.Ok(dto, _currentUserService.GetTrackingId());
     }
 }

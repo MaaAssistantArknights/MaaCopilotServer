@@ -7,5 +7,6 @@ namespace MaaCopilotServer.Domain.Enums;
 public enum TokenType
 {
     UserActivation = 0,
-    UserPasswordReset = 1
+    UserPasswordReset = 1,
+    UserEmailChange = 2,
 }
