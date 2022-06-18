@@ -91,8 +91,8 @@ public class
 
         var dto = new GetCopilotOperationQueryDto(
             request.Id!, entity.StageName, entity.MinimumRequired,
-            entity.CreateAt.ToString("o", _apiErrorMessage.CultureInfo)
-            , entity.Content, entity.Author.UserName, entity.Title, entity.Details, entity.Downloads);
+            entity.CreateAt.ToIsoString()
+            , entity.Content, entity.Author.UserName, entity.Title, entity.Details, entity.Downloads, entity.Operators);
 
         entity.AddDownloadCount();
         _dbContext.CopilotOperations.Update(entity);

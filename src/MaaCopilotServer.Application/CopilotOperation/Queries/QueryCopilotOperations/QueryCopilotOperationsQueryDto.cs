@@ -23,7 +23,7 @@ public class QueryCopilotOperationsQueryDto
     /// <param name="detail">The detail of the operation.</param>
     /// <param name="downloads">The number of times of downloads.</param>
     public QueryCopilotOperationsQueryDto(string id, string stageName, string minimumRequired, string uploadTime,
-        string uploader, string title, string detail, int downloads)
+        string uploader, string title, string detail, int downloads, List<string> operators)
     {
         Id = id;
         StageName = stageName;
@@ -33,7 +33,12 @@ public class QueryCopilotOperationsQueryDto
         Title = title;
         Detail = detail;
         Downloads = downloads;
+        Operators = operators;
     }
+
+#pragma warning disable CS8618
+    public QueryCopilotOperationsQueryDto(){ }
+#pragma warning restore CS8618
 
     /// <summary>
     /// The operation ID.
@@ -69,6 +74,12 @@ public class QueryCopilotOperationsQueryDto
     /// The detail of the operation.
     /// </summary>
     [JsonPropertyName("uploader")] public string Uploader { get; }
+
+    /// <summary>
+    /// Operators used.
+    /// </summary>
+    [JsonPropertyName("operators")]
+    public List<string> Operators { get; }
 
     /// <summary>
     /// The number of times of downloads.

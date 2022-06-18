@@ -46,8 +46,8 @@ public class GetCopilotUserFavoritesQueryHandler :
         }
 
         var operationsDto = list.Operations.Select(x => new QueryCopilotOperationsQueryDto(
-            _copilotIdService.EncodeId(x.Id), x.StageName, x.MinimumRequired, x.CreateAt.ToUtc8String(),
-            x.Author.UserName, x.Title, x.Details, x.Downloads)).ToList();
+            _copilotIdService.EncodeId(x.Id), x.StageName, x.MinimumRequired, x.CreateAt.ToIsoString(),
+            x.Author.UserName, x.Title, x.Details, x.Downloads, x.Operators)).ToList();
         var dto = new GetCopilotUserFavoritesDto(list.EntityId.ToString(), list.FavoriteName, operationsDto);
         return MaaApiResponse.Ok(dto, _currentUserService.GetTrackingId());
     }

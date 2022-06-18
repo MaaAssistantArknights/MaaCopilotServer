@@ -13,4 +13,4 @@ namespace MaaCopilotServer.Domain.Email.Models;
 /// <param name="Token">The activation code.</param>
 /// <param name="ValidBefore">The time that the token is valid before.</param>
 [EmailTemplate("EmailPasswordReset")]
-public record EmailPasswordReset(string UserName, string Token, string ValidBefore) : IEmailModel;
+public record EmailPasswordReset(string UserName, string Token, string ValidBefore, bool HasCallbackUrl) : IEmailModel;

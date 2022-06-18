@@ -25,6 +25,10 @@ public class QueryCopilotUserDto
         UserRole = userRole;
     }
 
+#pragma warning disable CS8618
+    public QueryCopilotUserDto() { }
+#pragma warning restore CS8618
+
     /// <summary>
     /// The user ID.
     /// </summary>

@@ -16,6 +16,10 @@ public class GetCopilotUserFavoritesDto
         FavoriteItems = favoriteItems;
     }
 
+#pragma warning disable CS8618
+    public GetCopilotUserFavoritesDto() { }
+#pragma warning restore CS8618
+
     [JsonPropertyName("favorite_list_id")]
     public string FavoriteListId { get; set; }
 

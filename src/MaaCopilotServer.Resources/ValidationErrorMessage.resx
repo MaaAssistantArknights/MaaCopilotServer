@@ -57,4 +57,7 @@
   <data name="TokenIsInvalid" xml:space="preserve">
     <value>Token 非法</value>
   </data>
+  <data name="FavoriteIdIsInvalid" xml:space="preserve">
+    <value>收藏列表 ID 非法</value>
+  </data>
 </root>

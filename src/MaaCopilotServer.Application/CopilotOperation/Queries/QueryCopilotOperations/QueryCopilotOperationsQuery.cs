@@ -173,7 +173,7 @@ public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOp
 
         var dtos = result.Select(x => new QueryCopilotOperationsQueryDto(
                 _copilotIdService.EncodeId(x.Id), x.StageName, x.MinimumRequired, x.CreateAt.ToString("o", _apiErrorMessage.CultureInfo),
-                x.Author.UserName, x.Title, x.Details, x.Downloads))
+                x.Author.UserName, x.Title, x.Details, x.Downloads, x.Operators))
             .ToList();
         var paginationResult = new PaginationResult<QueryCopilotOperationsQueryDto>(hasNext, page, totalCount, dtos);
         return MaaApiResponse.Ok(paginationResult, _currentUserService.GetTrackingId());

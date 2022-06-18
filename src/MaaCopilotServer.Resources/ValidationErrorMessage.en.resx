@@ -50,4 +50,7 @@
   <data name="TokenIsInvalid" xml:space="preserve">
     <value>Invalid token</value>
   </data>
+  <data name="FavoriteIdIsInvalid" xml:space="preserve">
+    <value>Invalid favorite list id</value>
+  </data>
 </root>

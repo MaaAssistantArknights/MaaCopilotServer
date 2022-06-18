@@ -105,7 +105,7 @@ public class
         var (token, expire) = _secretService.GenerateJwtToken(user.EntityId);
         var favList = user.UserFavorites
             .ToDictionary(fav => fav.EntityId.ToString(), fav => fav.FavoriteName);
-        var dto = new LoginCopilotUserDto(token, expire.ToString("o", _apiErrorMessage.CultureInfo),
+        var dto = new LoginCopilotUserDto(token, expire.ToIsoString(),
             new GetCopilotUserDto(user.EntityId, user.UserName, user.UserRole, uploadCount, user.UserActivated, favList));
         return MaaApiResponse.Ok(dto, _currentUserService.GetTrackingId());
     }
