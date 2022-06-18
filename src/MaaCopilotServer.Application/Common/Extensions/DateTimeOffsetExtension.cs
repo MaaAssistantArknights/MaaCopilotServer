@@ -10,4 +10,9 @@ public static class DateTimeOffsetExtension
     {
         return dateTimeOffset.AddHours(8).ToString("yyyy-MM-dd HH:mm:ss") + " (UTC+8)";
     }
+
+    public static string ToIsoString(this DateTimeOffset dateTimeOffset)
+    {
+        return dateTimeOffset.ToString("O");
+    }
 }
