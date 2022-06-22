@@ -32,7 +32,7 @@ public static class Program
     public static void Main()
     {
         // Get global configuration.
-        var configuration = ConfigurationHelper.BuildConfiguration();
+        var configuration = new ConfigurationHelper().BuildConfiguration();
 
         // Create logger.
         Log.Logger = configuration.GetLoggerConfiguration().CreateLogger();
