@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Security.Claims;
 using Elastic.Apm;
@@ -41,6 +42,7 @@ public class CurrentUserService : ICurrentUserService
     /// </summary>
     /// <param name="httpContextAccessor">The HTTP context accessor.</param>
     /// <param name="configuration">The configuration.</param>
+    [ExcludeFromCodeCoverage]
     public CurrentUserService(IHttpContextAccessor httpContextAccessor,
         IConfiguration configuration) : this(httpContextAccessor,
         configuration,

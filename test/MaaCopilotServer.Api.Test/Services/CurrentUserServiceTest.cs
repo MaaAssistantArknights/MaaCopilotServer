@@ -44,8 +44,8 @@ public class CurrentUserServiceTest
     [TestMethod]
     public void TestConstructor()
     {
-        var currentUserService = new CurrentUserService(_httpContextAccessor, _configuration);
-        currentUserService.Should().NotBeNull();
+        new CurrentUserService(_httpContextAccessor, _configuration).Should().NotBeNull();
+        new CurrentUserService(_httpContextAccessor, _configuration, () => Substitute.For<ITransaction>()).Should().NotBeNull();
     }
 
     /// <summary>
@@ -90,6 +90,18 @@ public class CurrentUserServiceTest
     }
 
     /// <summary>
+    ///     Tests <see cref="CurrentUserService.GetUserIdentity" /> with null HTTP context.
+    /// </summary>
+    [TestMethod]
+    public void TestGetUserIdentity_NullHttpContext()
+    {
+        _httpContextAccessor.HttpContext.ReturnsNull();
+        var currentUserService = new CurrentUserService(_httpContextAccessor, _configuration);
+        var userIdentity = currentUserService.GetUserIdentity();
+        userIdentity.Should().BeNull();
+    }
+
+    /// <summary>
     ///     Tests <see cref="CurrentUserService.GetTrackingId" />
     /// </summary>
     /// <param name="apmSwitch">Indicates whether the APM feature is on/off.</param>
@@ -118,6 +130,43 @@ public class CurrentUserServiceTest
 
             return httpContext;
         });
+        var testConfiguration = new Dictionary<string, string> { { "Switches:Apm", apmSwitch.ToString().ToLower() } };
+        _configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(testConfiguration)
+            .Build();
+
+        CurrentTransactionProvider provider = () =>
+        {
+            if (apmIdentifier == null)
+            {
+                return null;
+            }
+
+            var transaction = Substitute.For<ITransaction>();
+            transaction.TraceId.Returns(apmIdentifier);
+            return transaction;
+        };
+
+        var currentUserService = new CurrentUserService(_httpContextAccessor,
+            _configuration,
+            provider);
+        var trackingId = currentUserService.GetTrackingId();
+        trackingId.Should().BeEquivalentTo(expected);
+    }
+
+    /// <summary>
+    ///     Tests <see cref="CurrentUserService.GetTrackingId" /> with null HTTP context.
+    /// </summary>
+    /// <param name="apmSwitch">Indicates whether the APM feature is on/off.</param>
+    /// <param name="apmIdentifier">The identifier in APM.</param>
+    /// <param name="expected">The expected identifier.</param>
+    [DataTestMethod]
+    [DataRow(false, "test_apmIdentifier", "")]
+    [DataRow(true, "test_apmIdentifier", "test_apmIdentifier")]
+    [DataRow(true, null, "")]
+    public void TestGetTrackingId_NullHttpContext(bool apmSwitch, string? apmIdentifier, string? expected)
+    {
+        _httpContextAccessor.HttpContext.ReturnsNull();
         var testConfiguration = new Dictionary<string, string> { { "Switches:Apm", apmSwitch.ToString().ToLower() } };
         _configuration = new ConfigurationBuilder()
             .AddInMemoryCollection(testConfiguration)
