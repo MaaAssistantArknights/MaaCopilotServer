@@ -12,7 +12,7 @@ namespace MaaCopilotServer.Api.Helper;
 /// The helper of global settings.
 /// </summary>
 [ExcludeFromCodeCoverage]
-public class GlobalSettingHelper
+public class GlobalSettingsHelper
 {
     /// <summary>
     /// The production environment string.
@@ -139,6 +139,83 @@ public class GlobalSettingHelper
         get
         {
             return Environment.GetEnvironmentVariable("MAACOPILOT_APP_VERSION") ?? "0.0.0";
+        }
+    }
+
+    /// <summary>
+    /// The original templates directory.
+    /// </summary>
+    public string OriginalTemplatesDirectory
+    {
+        get
+        {
+            return this.AssemblyDirectory.CombinePath("templates");
+        }
+    }
+
+    /// <summary>
+    /// The target templates directory.
+    /// </summary>
+    public string TargetTemplatesDirectory
+    {
+        get
+        {
+            return this.DataDirectory.CombinePath("templates");
+        }
+    }
+
+    /// <summary>
+    /// The default user email.
+    /// </summary>
+    public string DefaultUserEmail
+    {
+        get
+        {
+            return Environment.GetEnvironmentVariable("DEFAULT_USER_EMAIL") ?? "super@prts.plus";
+        }
+    }
+
+    /// <summary>
+    /// Indicates whether the default user email is empty.
+    /// </summary>
+    public bool IsDefaultUserEmailEmpty
+    {
+        get
+        {
+            return string.IsNullOrEmpty(Environment.GetEnvironmentVariable("DEFAULT_USER_EMAIL"));
+        }
+    }
+
+    /// <summary>
+    /// The default user password.
+    /// </summary>
+    public string DefaultUserPassword
+    {
+        get
+        {
+            return Environment.GetEnvironmentVariable("DEFAULT_USER_PASSWORD") ?? "";
+        }
+    }
+
+    /// <summary>
+    /// Indicates whether the default user password is empty.
+    /// </summary>
+    public bool IsDefaultUserPasswordEmpty
+    {
+        get
+        {
+            return string.IsNullOrEmpty(Environment.GetEnvironmentVariable("DEFAULT_USER_PASSWORD"));
+        }
+    }
+
+    /// <summary>
+    /// The default username.
+    /// </summary>
+    public string DefaultUsername
+    {
+        get
+        {
+            return Environment.GetEnvironmentVariable("DEFAULT_USER_NAME") ?? "Maa";
         }
     }
 }

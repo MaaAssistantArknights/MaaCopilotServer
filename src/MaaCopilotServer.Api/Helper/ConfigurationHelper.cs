@@ -16,19 +16,19 @@ public class ConfigurationHelper
     /// <summary>
     /// The global setting helper.
     /// </summary>
-    private readonly GlobalSettingHelper _settings;
+    private readonly GlobalSettingsHelper _settings;
 
     /// <summary>
     /// The constructor.
     /// </summary>
-    public ConfigurationHelper() : this(new GlobalSettingHelper())
+    public ConfigurationHelper() : this(new GlobalSettingsHelper())
     { }
 
     /// <summary>
     /// The constructor with all properties.
     /// </summary>
     /// <param name="globalSettingHelper"></param>
-    public ConfigurationHelper(GlobalSettingHelper globalSettingHelper)
+    public ConfigurationHelper(GlobalSettingsHelper globalSettingHelper)
     {
         this._settings = globalSettingHelper;
     }

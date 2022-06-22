@@ -31,14 +31,17 @@ public static class Program
     /// </summary>
     public static void Main()
     {
+        var settings = new GlobalSettingsHelper();
+
         // Get global configuration.
-        var configuration = new ConfigurationHelper().BuildConfiguration();
+        var configuration = new ConfigurationHelper(settings).BuildConfiguration();
 
         // Create logger.
         Log.Logger = configuration.GetLoggerConfiguration().CreateLogger();
         SelfLog.Enable(Console.Error); // Direct log output to standard error stream.
 
-        InitializeHelper.InitializeEmailTemplates(configuration);
+        var initializeHelper = new InitializeHelper(configuration, settings);
+        initializeHelper.InitializeEmailTemplates();
 
         var builder = WebApplication.CreateBuilder();
 
@@ -55,7 +58,7 @@ public static class Program
 
         var app = builder.Build();
 
-        InitializeHelper.InitializeDatabase(configuration);
+        initializeHelper.InitializeDatabase();
 
         var switchesOption = configuration.GetOption<SwitchesOption>();
         if (switchesOption.Apm)
