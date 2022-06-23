@@ -90,7 +90,7 @@ public class CreateCopilotOperationCommandHandler : IRequestHandler<CreateCopilo
         var docDetails = string.Empty;
         var hasDoc = doc.TryGetProperty("doc", out var docElement);
         var hasOperator = doc.TryGetProperty("opers", out var operatorElement);
-        if (hasDoc)
+        if (hasDoc && docElement.ValueKind != JsonValueKind.Null)
         {
             var docTitleElementExist = docElement.TryGetProperty("title", out var titleElement);
             var docDetailsElementExist = docElement.TryGetProperty("details", out var detailsElement);
@@ -106,14 +106,14 @@ public class CreateCopilotOperationCommandHandler : IRequestHandler<CreateCopilo
         }
 
         var operators = new List<string>();
-        if (hasOperator)
+        if (hasOperator && operatorElement.ValueKind != JsonValueKind.Null)
         {
             var operatorElementList = operatorElement.EnumerateArray();
             foreach (var operatorElementItem in operatorElementList)
             {
                 var hasName = operatorElementItem.TryGetProperty("name", out var operatorNameElement);
                 var hasSkill = operatorElementItem.TryGetProperty("skill", out var operatorSkillElement);
-                if (hasName is false)
+                if (hasName is false || operatorNameElement.ValueKind == JsonValueKind.Null)
                 {
                     throw new PipelineException(MaaApiResponse.BadRequest(_currentUserService.GetTrackingId(),
                         _validationErrorMessage.CopilotOperationJsonIsInvalid));

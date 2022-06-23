@@ -39,10 +39,12 @@ public class CopilotUser : EditableEntity
         }
     }
 
-#pragma warning disable CS8618
+    /// <summary>
+    ///     The default constructor.
+    /// </summary>
     // ReSharper disable once UnusedMember.Local
-    private CopilotUser() { }
-#pragma warning restore CS8618
+    public CopilotUser() : this(default!, default!, default!, UserRole.User, null)
+    { }
 
     /// <summary>
     ///     邮箱
