@@ -4,6 +4,7 @@
 
 using MaaCopilotServer.Application.Common.Behaviours;
 using MaaCopilotServer.Application.Common.Exceptions;
+using MaaCopilotServer.Application.Common.Helpers;
 using MaaCopilotServer.Application.Common.Models;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -43,7 +44,7 @@ public class PipelineExceptionBehaviourTest
         var behaviour = new PipelineExceptionBehaviour<IRequest<string>, string>(_logger);
         var action = async () => await behaviour.Handle(null, new CancellationToken(), () =>
         {
-            throw new PipelineException(MaaApiResponse.Ok(new EmptyObject(), string.Empty));
+            throw new PipelineException(MaaActionResultHelper.Ok<EmptyObject>(new EmptyObject(), string.Empty));
         });
         await action.Should().ThrowAsync<PipelineException>();
     }

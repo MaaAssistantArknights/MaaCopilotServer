@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using MaaCopilotServer.Application.Common.Helpers;
 using Microsoft.Extensions.Logging;
 
 namespace MaaCopilotServer.Application.Common.Behaviours;
@@ -72,7 +73,7 @@ public class UnhandledExceptionBehaviour<TRequest, TResponse> : IPipelineBehavio
                 "MaaCopilotServer: Type -> {LoggingType}; Request Name -> {Name}; Request -> {@Request};",
                 (string)LoggingType.Exception, requestName, request);
 
-            throw new PipelineException(MaaApiResponse.InternalError(_currentUserService.GetTrackingId(),
+            throw new PipelineException(MaaActionResultHelper.InternalError(_currentUserService.GetTrackingId(),
                 _apiErrorMessage.InternalException));
         }
     }

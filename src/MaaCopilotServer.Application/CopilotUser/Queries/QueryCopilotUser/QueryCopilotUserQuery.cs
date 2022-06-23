@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using MaaCopilotServer.Application.Common.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -91,6 +92,6 @@ public class QueryCopilotUserQueryHandler : IRequestHandler<QueryCopilotUserQuer
             .Select(x => new QueryCopilotUserDto(x.EntityId, x.UserName, x.UserRole))
             .ToList();
         var paginationResult = new PaginationResult<QueryCopilotUserDto>(hasNext, page, totalCount, dtos);
-        return MaaApiResponse.Ok(paginationResult, _currentUserService.GetTrackingId());
+        return MaaActionResultHelper.Ok<PaginationResult<QueryCopilotUserDto>>(paginationResult, _currentUserService.GetTrackingId());
     }
 }

@@ -3,6 +3,7 @@
 // Licensed under the AGPL-3.0 license.
 
 using System.Text.Json.Serialization;
+using MaaCopilotServer.Application.Common.Helpers;
 using MaaCopilotServer.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 
@@ -73,7 +74,7 @@ public class DeleteCopilotUserCommandHandler : IRequestHandler<DeleteCopilotUser
         var user = await _dbContext.CopilotUsers.FirstOrDefaultAsync(x => x.EntityId == userId, cancellationToken);
         if (user == null)
         {
-            throw new PipelineException(MaaApiResponse.NotFound(_currentUserService.GetTrackingId(),
+            throw new PipelineException(MaaActionResultHelper.NotFound(_currentUserService.GetTrackingId(),
                 string.Format(_apiErrorMessage.UserWithIdNotFound!, userId)));
         }
 
@@ -81,19 +82,19 @@ public class DeleteCopilotUserCommandHandler : IRequestHandler<DeleteCopilotUser
             x => x.EntityId == _currentUserService.GetUserIdentity(), cancellationToken);
         if (@operator is null)
         {
-            throw new PipelineException(MaaApiResponse.InternalError(_currentUserService.GetTrackingId(),
+            throw new PipelineException(MaaActionResultHelper.InternalError(_currentUserService.GetTrackingId(),
                 _apiErrorMessage.InternalException));
         }
 
         if (@operator.UserRole <= user.UserRole)
         {
-            throw new PipelineException(MaaApiResponse.Forbidden(_currentUserService.GetTrackingId(),
+            throw new PipelineException(MaaActionResultHelper.Forbidden(_currentUserService.GetTrackingId(),
                 _apiErrorMessage.PermissionDenied));
         }
 
         user.Delete(_currentUserService.GetUserIdentity()!.Value);
         _dbContext.CopilotUsers.Remove(user);
         await _dbContext.SaveChangesAsync(cancellationToken);
-        return MaaApiResponse.Ok(null, _currentUserService.GetTrackingId());
+        return MaaActionResultHelper.Ok<EmptyObject>(null, _currentUserService.GetTrackingId());
     }
 }

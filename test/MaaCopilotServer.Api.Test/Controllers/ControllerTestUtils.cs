@@ -3,6 +3,7 @@
 // Licensed under the AGPL-3.0 license.
 
 using MaaCopilotServer.Application.Common.Exceptions;
+using MaaCopilotServer.Application.Common.Helpers;
 using MaaCopilotServer.Application.Common.Models;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -24,7 +25,7 @@ internal sealed class ControllerTestUtils
     internal static async Task TestControllerEndpoint<TRequest, TResponse>(IMediator mediator, TRequest testRequest,
         TResponse testResponse, Func<TRequest, Task<ActionResult>> controllerAction)
     {
-        var testResponseData = (MaaActionResult<TResponse>)MaaApiResponse.Ok(testResponse, string.Empty);
+        var testResponseData = MaaActionResultHelper.Ok<TResponse>(testResponse, string.Empty);
         mediator.Send(default).ReturnsForAnyArgs(testResponseData);
 
         var actualResponse = await controllerAction.Invoke(testRequest);
@@ -42,7 +43,7 @@ internal sealed class ControllerTestUtils
     internal static async Task TestControllerEndpointWithException<TRequest>(IMediator mediator, TRequest testRequest,
         Func<TRequest, Task<ActionResult>> controllerAction)
     {
-        var testResponseData = (MaaActionResult<EmptyObject>)MaaApiResponse.Ok(new EmptyObject(), string.Empty);
+        var testResponseData = MaaActionResultHelper.Ok<EmptyObject>(new EmptyObject(), string.Empty);
         mediator.Send(default).ThrowsForAnyArgs(new PipelineException(testResponseData));
 
         ActionResult actualResponse = default!;

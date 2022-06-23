@@ -21,7 +21,7 @@ public class MaaActionResult<T>
     ///     The constructor of <see cref="MaaActionResult{T}" />.
     /// </summary>
     /// <param name="maaApiResponse">The API response.</param>
-    private MaaActionResult(MaaApiResponse maaApiResponse)
+    public MaaActionResult(MaaApiResponse maaApiResponse)
     {
         _maaApiResponse = maaApiResponse;
     }
@@ -43,14 +43,5 @@ public class MaaActionResult<T>
     public static implicit operator OkObjectResult(MaaActionResult<T> result)
     {
         return new OkObjectResult(result._maaApiResponse);
-    }
-
-    /// <summary>
-    ///     The implicit operator from <see cref="MaaApiResponse" /> to <see cref="MaaActionResult{T}" />.
-    /// </summary>
-    /// <param name="response">The <see cref="MaaApiResponse" />.</param>
-    public static implicit operator MaaActionResult<T>(MaaApiResponse response)
-    {
-        return new MaaActionResult<T>(response);
     }
 }

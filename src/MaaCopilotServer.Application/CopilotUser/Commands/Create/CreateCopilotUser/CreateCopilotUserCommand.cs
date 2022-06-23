@@ -4,6 +4,7 @@
 
 using System.Text.Json.Serialization;
 using Destructurama.Attributed;
+using MaaCopilotServer.Application.Common.Helpers;
 using MaaCopilotServer.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 
@@ -98,7 +99,7 @@ public class CreateCopilotUserCommandHandler : IRequestHandler<CreateCopilotUser
         var emailColliding = await _dbContext.CopilotUsers.AnyAsync(x => x.Email == request.Email, cancellationToken);
         if (emailColliding)
         {
-            throw new PipelineException(MaaApiResponse.BadRequest(_currentUserService.GetTrackingId(),
+            throw new PipelineException(MaaActionResultHelper.BadRequest(_currentUserService.GetTrackingId(),
                 _apiErrorMessage.EmailAlreadyInUse));
         }
 
@@ -107,6 +108,6 @@ public class CreateCopilotUserCommandHandler : IRequestHandler<CreateCopilotUser
             Enum.Parse<UserRole>(request.Role!), _currentUserService.GetUserIdentity()!.Value);
         _dbContext.CopilotUsers.Add(user);
         await _dbContext.SaveChangesAsync(cancellationToken);
-        return MaaApiResponse.Ok(null, _currentUserService.GetTrackingId());
+        return MaaActionResultHelper.Ok<EmptyObject>(null, _currentUserService.GetTrackingId());
     }
 }

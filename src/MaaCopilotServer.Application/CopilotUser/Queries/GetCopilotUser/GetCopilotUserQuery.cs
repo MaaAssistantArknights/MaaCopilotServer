@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using MaaCopilotServer.Application.Common.Helpers;
 using Microsoft.EntityFrameworkCore;
 
 namespace MaaCopilotServer.Application.CopilotUser.Queries.GetCopilotUser;
@@ -69,7 +70,7 @@ public class GetCopilotUserQueryHandler : IRequestHandler<GetCopilotUserQuery, M
             var id = _currentUserService.GetUserIdentity();
             if (id is null)
             {
-                throw new PipelineException(MaaApiResponse.BadRequest(_currentUserService.GetTrackingId(),
+                throw new PipelineException(MaaActionResultHelper.BadRequest(_currentUserService.GetTrackingId(),
                     _apiErrorMessage.MeNotFound));
             }
 
@@ -86,7 +87,7 @@ public class GetCopilotUserQueryHandler : IRequestHandler<GetCopilotUserQuery, M
 
         if (user is null)
         {
-            throw new PipelineException(MaaApiResponse.NotFound(_currentUserService.GetTrackingId(),
+            throw new PipelineException(MaaActionResultHelper.NotFound(_currentUserService.GetTrackingId(),
                 string.Format(_apiErrorMessage.UserWithIdNotFound!, request.UserId)));
         }
 
@@ -99,6 +100,6 @@ public class GetCopilotUserQueryHandler : IRequestHandler<GetCopilotUserQuery, M
             .ToDictionary(fav => fav.EntityId.ToString(), fav => fav.FavoriteName);
 
         var dto = new GetCopilotUserDto(userId, user.UserName, user.UserRole, uploadCount, user.UserActivated, favList);
-        return MaaApiResponse.Ok(dto, _currentUserService.GetTrackingId());
+        return MaaActionResultHelper.Ok<GetCopilotUserDto>(dto, _currentUserService.GetTrackingId());
     }
 }

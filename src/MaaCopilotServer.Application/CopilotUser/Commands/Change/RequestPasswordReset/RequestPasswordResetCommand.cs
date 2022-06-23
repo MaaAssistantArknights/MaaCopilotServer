@@ -3,6 +3,7 @@
 // Licensed under the AGPL-3.0 license.
 
 using System.Text.Json.Serialization;
+using MaaCopilotServer.Application.Common.Helpers;
 using MaaCopilotServer.Domain.Email.Models;
 using MaaCopilotServer.Domain.Entities;
 using MaaCopilotServer.Domain.Enums;
@@ -49,7 +50,7 @@ public class RequestPasswordResetCommandHandler :
         var user = await _dbContext.CopilotUsers.FirstOrDefaultAsync(x => x.Email == request.Email, cancellationToken);
         if (user is null)
         {
-            throw new PipelineException(MaaApiResponse.NotFound(_currentUserService.GetTrackingId(),
+            throw new PipelineException(MaaActionResultHelper.NotFound(_currentUserService.GetTrackingId(),
                 _apiErrorMessage.EmailNotRegister));
         }
 
@@ -69,12 +70,12 @@ public class RequestPasswordResetCommandHandler :
 
         if (success is false)
         {
-            throw new PipelineException(MaaApiResponse.InternalError(_currentUserService.GetTrackingId(),
+            throw new PipelineException(MaaActionResultHelper.InternalError(_currentUserService.GetTrackingId(),
                 _apiErrorMessage.EmailSendFailed));
         }
 
         _dbContext.CopilotTokens.Add(new CopilotToken(user.EntityId, TokenType.UserPasswordReset, token, time));
         await _dbContext.SaveChangesAsync(cancellationToken);
-        return MaaApiResponse.Ok(null, _currentUserService.GetTrackingId());
+        return MaaActionResultHelper.Ok<EmptyObject>(null, _currentUserService.GetTrackingId());
     }
 }

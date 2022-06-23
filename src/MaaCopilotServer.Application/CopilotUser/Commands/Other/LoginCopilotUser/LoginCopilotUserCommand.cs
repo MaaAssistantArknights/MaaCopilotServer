@@ -4,6 +4,7 @@
 
 using System.Text.Json.Serialization;
 using Destructurama.Attributed;
+using MaaCopilotServer.Application.Common.Helpers;
 using MaaCopilotServer.Application.CopilotUser.Queries.GetCopilotUser;
 using Microsoft.EntityFrameworkCore;
 
@@ -88,14 +89,14 @@ public class
             .FirstOrDefaultAsync(x => x.Email == request.Email, cancellationToken);
         if (user is null)
         {
-            throw new PipelineException(MaaApiResponse.BadRequest(_currentUserService.GetTrackingId(),
+            throw new PipelineException(MaaActionResultHelper.BadRequest(_currentUserService.GetTrackingId(),
                 _apiErrorMessage.LoginFailed));
         }
 
         var ok = _secretService.VerifyPassword(user.Password, request.Password!);
         if (ok is false)
         {
-            throw new PipelineException(MaaApiResponse.BadRequest(_currentUserService.GetTrackingId(),
+            throw new PipelineException(MaaActionResultHelper.BadRequest(_currentUserService.GetTrackingId(),
                 _apiErrorMessage.LoginFailed));
         }
 
@@ -110,6 +111,6 @@ public class
         var dto = new LoginCopilotUserDto(token, expire.ToIsoString(),
             new GetCopilotUserDto(user.EntityId, user.UserName, user.UserRole, uploadCount, user.UserActivated,
                 favList));
-        return MaaApiResponse.Ok(dto, _currentUserService.GetTrackingId());
+        return MaaActionResultHelper.Ok<LoginCopilotUserDto>(dto, _currentUserService.GetTrackingId());
     }
 }

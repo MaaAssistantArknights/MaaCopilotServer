@@ -4,6 +4,7 @@
 
 using System.Text.Json.Serialization;
 using Destructurama.Attributed;
+using MaaCopilotServer.Application.Common.Helpers;
 using MaaCopilotServer.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 
@@ -45,14 +46,14 @@ public class PasswordResetCommandHandler :
             cancellationToken);
         if (token is null || token.ValidBefore < DateTimeOffset.UtcNow || token.Type != TokenType.UserPasswordReset)
         {
-            throw new PipelineException(MaaApiResponse.BadRequest(_currentUserService.GetTrackingId(),
+            throw new PipelineException(MaaActionResultHelper.BadRequest(_currentUserService.GetTrackingId(),
                 _apiErrorMessage.TokenInvalid));
         }
 
         var user = _dbContext.CopilotUsers.FirstOrDefault(x => x.EntityId == token.ResourceId);
         if (user is null)
         {
-            throw new PipelineException(MaaApiResponse.InternalError(_currentUserService.GetTrackingId(),
+            throw new PipelineException(MaaActionResultHelper.InternalError(_currentUserService.GetTrackingId(),
                 string.Format(_apiErrorMessage.UserWithIdNotFound!, token.ResourceId.ToString())));
         }
 
@@ -60,6 +61,6 @@ public class PasswordResetCommandHandler :
 
         _dbContext.CopilotUsers.Update(user);
         await _dbContext.SaveChangesAsync(cancellationToken);
-        return MaaApiResponse.Ok(null, _currentUserService.GetTrackingId());
+        return MaaActionResultHelper.Ok<EmptyObject>(null, _currentUserService.GetTrackingId());
     }
 }

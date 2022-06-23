@@ -4,6 +4,7 @@
 
 using System.Text.Json.Serialization;
 using Destructurama.Attributed;
+using MaaCopilotServer.Application.Common.Helpers;
 using MaaCopilotServer.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 
@@ -90,7 +91,7 @@ public class UpdateCopilotUserPasswordCommandHandler : IRequestHandler<UpdateCop
 
         if (user is null)
         {
-            throw new PipelineException(MaaApiResponse.InternalError(_currentUserService.GetTrackingId(),
+            throw new PipelineException(MaaActionResultHelper.InternalError(_currentUserService.GetTrackingId(),
                 _apiErrorMessage.InternalException));
         }
 
@@ -98,7 +99,7 @@ public class UpdateCopilotUserPasswordCommandHandler : IRequestHandler<UpdateCop
 
         if (ok is false)
         {
-            throw new PipelineException(MaaApiResponse.BadRequest(_currentUserService.GetTrackingId(),
+            throw new PipelineException(MaaActionResultHelper.BadRequest(_currentUserService.GetTrackingId(),
                 _apiErrorMessage.PasswordInvalid));
         }
 
@@ -106,6 +107,6 @@ public class UpdateCopilotUserPasswordCommandHandler : IRequestHandler<UpdateCop
         user.UpdatePassword(user.EntityId, hash);
         _dbContext.CopilotUsers.Update(user);
         await _dbContext.SaveChangesAsync(cancellationToken);
-        return MaaApiResponse.Ok(null, _currentUserService.GetTrackingId());
+        return MaaActionResultHelper.Ok<EmptyObject>(null, _currentUserService.GetTrackingId());
     }
 }

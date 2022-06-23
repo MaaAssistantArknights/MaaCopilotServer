@@ -4,6 +4,7 @@
 
 using System.Text.Json.Serialization;
 using Destructurama.Attributed;
+using MaaCopilotServer.Application.Common.Helpers;
 using MaaCopilotServer.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 
@@ -111,7 +112,7 @@ public class
 
         if (user is null)
         {
-            throw new PipelineException(MaaApiResponse.NotFound(_currentUserService.GetTrackingId(),
+            throw new PipelineException(MaaActionResultHelper.NotFound(_currentUserService.GetTrackingId(),
                 string.Format(_apiErrorMessage.UserWithIdNotFound!, request.UserId)));
         }
 
@@ -119,13 +120,13 @@ public class
             x => x.EntityId == _currentUserService.GetUserIdentity(), cancellationToken);
         if (@operator is null)
         {
-            throw new PipelineException(MaaApiResponse.InternalError(_currentUserService.GetTrackingId(),
+            throw new PipelineException(MaaActionResultHelper.InternalError(_currentUserService.GetTrackingId(),
                 _apiErrorMessage.InternalException));
         }
 
         if (@operator.UserRole is UserRole.Admin && user.UserRole >= UserRole.Admin)
         {
-            throw new PipelineException(MaaApiResponse.Forbidden(_currentUserService.GetTrackingId(),
+            throw new PipelineException(MaaActionResultHelper.Forbidden(_currentUserService.GetTrackingId(),
                 _apiErrorMessage.PermissionDenied));
         }
 
@@ -140,7 +141,7 @@ public class
             var exist = _dbContext.CopilotUsers.Any(x => x.Email == request.Email);
             if (exist)
             {
-                throw new PipelineException(MaaApiResponse.BadRequest(_currentUserService.GetTrackingId(),
+                throw new PipelineException(MaaActionResultHelper.BadRequest(_currentUserService.GetTrackingId(),
                     _apiErrorMessage.EmailAlreadyInUse));
             }
         }
@@ -150,6 +151,6 @@ public class
         _dbContext.CopilotUsers.Update(user);
         await _dbContext.SaveChangesAsync(cancellationToken);
 
-        return MaaApiResponse.Ok(null, _currentUserService.GetTrackingId());
+        return MaaActionResultHelper.Ok<EmptyObject>(null, _currentUserService.GetTrackingId());
     }
 }

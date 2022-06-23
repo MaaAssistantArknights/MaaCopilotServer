@@ -3,6 +3,7 @@
 // Licensed under the AGPL-3.0 license.
 
 using System.Text.Json.Serialization;
+using MaaCopilotServer.Application.Common.Helpers;
 using MaaCopilotServer.Domain.Email.Models;
 using MaaCopilotServer.Domain.Enums;
 using MaaCopilotServer.Domain.Options;
@@ -97,7 +98,7 @@ public class
 
         if (user is null)
         {
-            throw new PipelineException(MaaApiResponse.InternalError(_currentUserService.GetTrackingId(),
+            throw new PipelineException(MaaActionResultHelper.InternalError(_currentUserService.GetTrackingId(),
                 _apiErrorMessage.InternalException));
         }
 
@@ -106,7 +107,7 @@ public class
             var exist = _dbContext.CopilotUsers.Any(x => x.Email == request.Email);
             if (exist)
             {
-                throw new PipelineException(MaaApiResponse.BadRequest(_currentUserService.GetTrackingId(),
+                throw new PipelineException(MaaActionResultHelper.BadRequest(_currentUserService.GetTrackingId(),
                     _apiErrorMessage.EmailAlreadyInUse));
             }
 
@@ -119,7 +120,7 @@ public class
 
             if (result is false)
             {
-                throw new PipelineException(MaaApiResponse.InternalError(_currentUserService.GetTrackingId(),
+                throw new PipelineException(MaaActionResultHelper.InternalError(_currentUserService.GetTrackingId(),
                     _apiErrorMessage.EmailSendFailed));
             }
         }
@@ -127,6 +128,6 @@ public class
         user.UpdateUserInfo(user.EntityId, request.Email, request.UserName);
         _dbContext.CopilotUsers.Update(user);
         await _dbContext.SaveChangesAsync(cancellationToken);
-        return MaaApiResponse.Ok(null, _currentUserService.GetTrackingId());
+        return MaaActionResultHelper.Ok<EmptyObject>(null, _currentUserService.GetTrackingId());
     }
 }

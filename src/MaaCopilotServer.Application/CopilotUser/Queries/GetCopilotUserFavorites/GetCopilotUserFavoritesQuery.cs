@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using MaaCopilotServer.Application.Common.Helpers;
 using MaaCopilotServer.Application.CopilotOperation.Queries.QueryCopilotOperations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -42,13 +43,13 @@ public class GetCopilotUserFavoritesQueryHandler :
             .FirstOrDefaultAsync(x => x.EntityId == favListId, cancellationToken);
         if (list is null)
         {
-            throw new PipelineException(MaaApiResponse.NotFound(_currentUserService.GetTrackingId(), ""));
+            throw new PipelineException(MaaActionResultHelper.NotFound(_currentUserService.GetTrackingId(), ""));
         }
 
         var operationsDto = list.Operations.Select(x => new QueryCopilotOperationsQueryDto(
             _copilotIdService.EncodeId(x.Id), x.StageName, x.MinimumRequired, x.CreateAt.ToIsoString(),
             x.Author.UserName, x.Title, x.Details, x.Downloads, x.Operators)).ToList();
         var dto = new GetCopilotUserFavoritesDto(list.EntityId.ToString(), list.FavoriteName, operationsDto);
-        return MaaApiResponse.Ok(dto, _currentUserService.GetTrackingId());
+        return MaaActionResultHelper.Ok<GetCopilotUserFavoritesDto>(dto, _currentUserService.GetTrackingId());
     }
 }

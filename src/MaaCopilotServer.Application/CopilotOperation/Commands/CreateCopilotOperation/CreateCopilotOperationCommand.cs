@@ -4,6 +4,7 @@
 
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using MaaCopilotServer.Application.Common.Helpers;
 using MaaCopilotServer.Domain.Enums;
 
 namespace MaaCopilotServer.Application.CopilotOperation.Commands.CreateCopilotOperation;
@@ -94,7 +95,7 @@ public class CreateCopilotOperationCommandHandler : IRequestHandler<CreateCopilo
             {
                 if (item.Name == null)
                 {
-                    throw new PipelineException(MaaApiResponse.BadRequest(_currentUserService.GetTrackingId(),
+                    throw new PipelineException(MaaActionResultHelper.BadRequest(_currentUserService.GetTrackingId(),
                         _validationErrorMessage.CopilotOperationJsonIsInvalid));
                 }
 
@@ -111,7 +112,7 @@ public class CreateCopilotOperationCommandHandler : IRequestHandler<CreateCopilo
         await _dbContext.SaveChangesAsync(cancellationToken);
 
         var id = _copilotIdService.EncodeId(entity.Id);
-        return MaaApiResponse.Ok(new CreateCopilotOperationDto(id), _currentUserService.GetTrackingId());
+        return MaaActionResultHelper.Ok<CreateCopilotOperationDto>(new CreateCopilotOperationDto(id), _currentUserService.GetTrackingId());
     }
 }
 

@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using MaaCopilotServer.Application.Common.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -124,7 +125,7 @@ public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOp
             var id = _currentUserService.GetUserIdentity();
             if (id is null)
             {
-                throw new PipelineException(MaaApiResponse.BadRequest(_currentUserService.GetTrackingId(),
+                throw new PipelineException(MaaActionResultHelper.BadRequest(_currentUserService.GetTrackingId(),
                     _apiErrorMessage.MeNotFound));
             }
 
@@ -185,6 +186,6 @@ public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOp
                 x.Author.UserName, x.Title, x.Details, x.Downloads, x.Operators))
             .ToList();
         var paginationResult = new PaginationResult<QueryCopilotOperationsQueryDto>(hasNext, page, totalCount, dtos);
-        return MaaApiResponse.Ok(paginationResult, _currentUserService.GetTrackingId());
+        return MaaActionResultHelper.Ok<PaginationResult<QueryCopilotOperationsQueryDto>>(paginationResult, _currentUserService.GetTrackingId());
     }
 }

@@ -2,6 +2,8 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using MaaCopilotServer.Application.Common.Helpers;
+
 namespace MaaCopilotServer.Application.Common.Behaviours;
 
 /// <summary>
@@ -63,7 +65,7 @@ public class ValidationBehaviour<TRequest, TResponse> : IPipelineBehavior<TReque
         var failureMessage = string.Join("\n", failures.Select(f => f.ToString()));
         if (failures.Any())
         {
-            throw new PipelineException(MaaApiResponse.BadRequest(_currentUserService.GetTrackingId(), failureMessage));
+            throw new PipelineException(MaaActionResultHelper.BadRequest(_currentUserService.GetTrackingId(), failureMessage));
         }
 
         return await next();

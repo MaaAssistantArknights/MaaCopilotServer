@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using MaaCopilotServer.Application.Common.Helpers;
 using Microsoft.EntityFrameworkCore;
 
 namespace MaaCopilotServer.Application.CopilotOperation.Queries.GetCopilotOperation;
@@ -76,7 +77,7 @@ public class
         var id = _copilotIdService.DecodeId(request.Id!);
         if (id is null)
         {
-            throw new PipelineException(MaaApiResponse.NotFound(_currentUserService.GetTrackingId(),
+            throw new PipelineException(MaaActionResultHelper.NotFound(_currentUserService.GetTrackingId(),
                 string.Format(_apiErrorMessage.CopilotOperationWithIdNotFound!, request.Id)));
         }
 
@@ -85,7 +86,7 @@ public class
             .FirstOrDefaultAsync(x => x.Id == id.Value, cancellationToken);
         if (entity is null)
         {
-            throw new PipelineException(MaaApiResponse.NotFound(_currentUserService.GetTrackingId(),
+            throw new PipelineException(MaaActionResultHelper.NotFound(_currentUserService.GetTrackingId(),
                 string.Format(_apiErrorMessage.CopilotOperationWithIdNotFound!, request.Id)));
         }
 
@@ -98,6 +99,6 @@ public class
         _dbContext.CopilotOperations.Update(entity);
         await _dbContext.SaveChangesAsync(cancellationToken);
 
-        return MaaApiResponse.Ok(dto, _currentUserService.GetTrackingId());
+        return MaaActionResultHelper.Ok<GetCopilotOperationQueryDto>(dto, _currentUserService.GetTrackingId());
     }
 }
