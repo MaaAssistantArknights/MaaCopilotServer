@@ -2,17 +2,11 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 using MaaCopilotServer.Application.Common.Exceptions;
 using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Application.CopilotOperation.Commands.CreateCopilotOperation;
-using MaaCopilotServer.Domain.Entities;
 using MaaCopilotServer.Resources;
 using Microsoft.EntityFrameworkCore;
 
@@ -245,7 +239,7 @@ public class CreateCopilotOperationCommandTest
 /// <summary>
 /// The test JSON request content.
 /// </summary>
-class TestRequestContent
+record TestRequestContent
 {
     /// <summary>
     /// The <c>stage_name</c> field.
@@ -275,7 +269,7 @@ class TestRequestContent
 /// <summary>
 /// The test JSON content of <c>doc</c>.
 /// </summary>
-class TestDocContent
+record TestDocContent
 {
     /// <summary>
     /// The <c>title</c> field.
@@ -293,7 +287,7 @@ class TestDocContent
 /// <summary>
 /// The test JSON content of <c>operator</c>.
 /// </summary>
-class TestOperatorContent
+record TestOperatorContent
 {
     /// <summary>
     /// The <c>name</c> field.

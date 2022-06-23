@@ -79,53 +79,29 @@ public class CreateCopilotOperationCommandHandler : IRequestHandler<CreateCopilo
     public async Task<MaaActionResult<CreateCopilotOperationDto>> Handle(CreateCopilotOperationCommand request,
         CancellationToken cancellationToken)
     {
-        var doc = JsonDocument.Parse(request.Content!).RootElement;
+        var content = JsonSerializer.Deserialize<CreateCopilotOperationContent>(request.Content!).IsNotNull();
 
         // Parse stage_name and version.
-        var stageName = doc.GetProperty("stage_name").GetString();
-        var minimumRequired = doc.GetProperty("minimum_required").GetString();
+        var stageName = content.StageName;
+        var minimumRequired = content.MinimumRequired;
 
         // Parse doc.
-        var docTitle = string.Empty;
-        var docDetails = string.Empty;
-        var hasDoc = doc.TryGetProperty("doc", out var docElement);
-        var hasOperator = doc.TryGetProperty("opers", out var operatorElement);
-        if (hasDoc && docElement.ValueKind != JsonValueKind.Null)
-        {
-            var docTitleElementExist = docElement.TryGetProperty("title", out var titleElement);
-            var docDetailsElementExist = docElement.TryGetProperty("details", out var detailsElement);
-            if (docTitleElementExist)
-            {
-                docTitle = titleElement.GetString() ?? string.Empty;
-            }
+        var docTitle = content.Doc?.Title ?? string.Empty;
+        var docDetails = content.Doc?.Details ?? string.Empty;
 
-            if (docDetailsElementExist)
+        var operators = (content.Operators ?? Array.Empty<Operator>())
+            .Select(item =>
             {
-                docDetails = detailsElement.GetString() ?? string.Empty;
-            }
-        }
-
-        var operators = new List<string>();
-        if (hasOperator && operatorElement.ValueKind != JsonValueKind.Null)
-        {
-            var operatorElementList = operatorElement.EnumerateArray();
-            foreach (var operatorElementItem in operatorElementList)
-            {
-                var hasName = operatorElementItem.TryGetProperty("name", out var operatorNameElement);
-                var hasSkill = operatorElementItem.TryGetProperty("skill", out var operatorSkillElement);
-                if (hasName is false || operatorNameElement.ValueKind == JsonValueKind.Null)
+                if (item.Name == null)
                 {
                     throw new PipelineException(MaaApiResponse.BadRequest(_currentUserService.GetTrackingId(),
                         _validationErrorMessage.CopilotOperationJsonIsInvalid));
                 }
 
-                var operatorItem =
-                    $"{operatorNameElement.GetString()}::{(hasSkill ? operatorSkillElement.GetInt32().ToString() : "1")}";
-                operators.Add(operatorItem);
-            }
-        }
-
-        operators = operators.Distinct().ToList();
+                return $"{item.Name}::{item.Skill ?? 1}";
+            })
+            .Distinct() // Remove duplicate operators.
+            .ToList();
 
         var user = await _identityService.GetUserAsync(_currentUserService.GetUserIdentity()!.Value);
         var entity = new Domain.Entities.CopilotOperation(
@@ -137,4 +113,70 @@ public class CreateCopilotOperationCommandHandler : IRequestHandler<CreateCopilo
         var id = _copilotIdService.EncodeId(entity.Id);
         return MaaApiResponse.Ok(new CreateCopilotOperationDto(id), _currentUserService.GetTrackingId());
     }
+}
+
+/// <summary>
+/// The JSON request content of creating copilot operation.
+/// </summary>
+record CreateCopilotOperationContent
+{
+    /// <summary>
+    /// The <c>stage_name</c> field.
+    /// </summary>
+    [JsonPropertyName("stage_name")]
+    public string? StageName { get; set; }
+
+    /// <summary>
+    /// The <c>minimum_required</c> field.
+    /// </summary>
+    [JsonPropertyName("minimum_required")]
+    public string? MinimumRequired { get; set; }
+
+    /// <summary>
+    /// The <c>doc</c> field.
+    /// </summary>
+    [JsonPropertyName("doc")]
+    public Doc? Doc { get; set; }
+
+    /// <summary>
+    /// The <c>opers</c> field.
+    /// </summary>
+    [JsonPropertyName("opers")]
+    public Operator[]? Operators { get; set; }
+}
+
+/// <summary>
+/// The JSON content of <c>doc</c>.
+/// </summary>
+record Doc
+{
+    /// <summary>
+    /// The <c>title</c> field.
+    /// </summary>
+    [JsonPropertyName("title")]
+    public string? Title { get; set; }
+
+    /// <summary>
+    /// The <c>details</c> field.
+    /// </summary>
+    [JsonPropertyName("details")]
+    public string? Details { get; set; }
+}
+
+/// <summary>
+/// The JSON content of <c>operator</c>.
+/// </summary>
+record Operator
+{
+    /// <summary>
+    /// The <c>name</c> field.
+    /// </summary>
+    [JsonPropertyName("name")]
+    public string? Name { get; set; }
+
+    /// <summary>
+    /// The <c>skill</c> field.
+    /// </summary>
+    [JsonPropertyName("skill")]
+    public int? Skill { get; set; }
 }
