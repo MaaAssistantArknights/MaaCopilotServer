@@ -110,7 +110,7 @@ public class AuthorizationBehaviourTest
         {
             await action.Should()
                 .ThrowAsync<PipelineException>()
-                .Where(e => e.Result.RealStatusCode == expectedErrorStatusCode);
+                .Where(e => e.Result.StatusCode == expectedErrorStatusCode);
         }
         else
         {

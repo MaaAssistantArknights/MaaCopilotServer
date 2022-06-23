@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using MaaCopilotServer.Application.Common.Helpers;
 using MaaCopilotServer.Domain.Extensions;
 
 namespace MaaCopilotServer.Application.Common.Behaviours;
@@ -67,26 +68,26 @@ public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRe
         var userId = _currentUserService.GetUserIdentity();
         if (userId is null)
         {
-            throw new PipelineException(MaaApiResponse.Unauthorized(_currentUserService.GetTrackingId(),
+            throw new PipelineException(MaaApiResponseHelper.Unauthorized(_currentUserService.GetTrackingId(),
                 _apiErrorMessage.Unauthorized));
         }
 
         var user = await _identityService.GetUserAsync(userId.Value);
         if (user is null)
         {
-            throw new PipelineException(MaaApiResponse.NotFound(_currentUserService.GetTrackingId(),
+            throw new PipelineException(MaaApiResponseHelper.NotFound(_currentUserService.GetTrackingId(),
                 string.Format(_apiErrorMessage.UserWithIdNotFound!, userId)));
         }
 
         if (user.UserRole < authorizeAttribute.Role)
         {
-            throw new PipelineException(MaaApiResponse.Forbidden(_currentUserService.GetTrackingId(),
+            throw new PipelineException(MaaApiResponseHelper.Forbidden(_currentUserService.GetTrackingId(),
                 _apiErrorMessage.PermissionDenied));
         }
 
         if (authorizeAttribute.AllowInActivated is false && user.UserActivated is false)
         {
-            throw new PipelineException(MaaApiResponse.Forbidden(_currentUserService.GetTrackingId(),
+            throw new PipelineException(MaaApiResponseHelper.Forbidden(_currentUserService.GetTrackingId(),
                 _apiErrorMessage.UserInactivated));
         }
 

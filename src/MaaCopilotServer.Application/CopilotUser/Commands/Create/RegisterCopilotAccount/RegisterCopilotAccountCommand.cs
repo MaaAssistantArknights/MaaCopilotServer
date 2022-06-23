@@ -4,6 +4,7 @@
 
 using System.Text.Json.Serialization;
 using Destructurama.Attributed;
+using MaaCopilotServer.Application.Common.Helpers;
 using MaaCopilotServer.Domain.Email.Models;
 using MaaCopilotServer.Domain.Entities;
 using MaaCopilotServer.Domain.Enums;
@@ -16,7 +17,7 @@ namespace MaaCopilotServer.Application.CopilotUser.Commands.RegisterCopilotAccou
 /// <summary>
 ///     Request dto for registering a new copilot account.
 /// </summary>
-public record RegisterCopilotAccountCommand : IRequest<MaaActionResult<EmptyObject>>
+public record RegisterCopilotAccountCommand : IRequest<MaaApiResponse<EmptyObject>>
 {
     /// <summary>
     ///     The user email.
@@ -39,7 +40,7 @@ public record RegisterCopilotAccountCommand : IRequest<MaaActionResult<EmptyObje
 }
 
 public class RegisterCopilotAccountCommandHandler :
-    IRequestHandler<RegisterCopilotAccountCommand, MaaActionResult<EmptyObject>>
+    IRequestHandler<RegisterCopilotAccountCommand, MaaApiResponse<EmptyObject>>
 {
     private readonly ApiErrorMessage _apiErrorMessage;
     private readonly ICurrentUserService _currentUserService;
@@ -64,13 +65,13 @@ public class RegisterCopilotAccountCommandHandler :
         _apiErrorMessage = apiErrorMessage;
     }
 
-    public async Task<MaaActionResult<EmptyObject>> Handle(RegisterCopilotAccountCommand request,
+    public async Task<MaaApiResponse<EmptyObject>> Handle(RegisterCopilotAccountCommand request,
         CancellationToken cancellationToken)
     {
         var emailExist = await _dbContext.CopilotUsers.AnyAsync(x => x.Email == request.Email, cancellationToken);
         if (emailExist)
         {
-            throw new PipelineException(MaaApiResponse.BadRequest(_currentUserService.GetTrackingId(),
+            throw new PipelineException(MaaApiResponseHelper.BadRequest(_currentUserService.GetTrackingId(),
                 _apiErrorMessage.EmailAlreadyInUse));
         }
 
@@ -87,7 +88,7 @@ public class RegisterCopilotAccountCommandHandler :
 
         if (result is false)
         {
-            throw new PipelineException(MaaApiResponse.InternalError(_currentUserService.GetTrackingId(),
+            throw new PipelineException(MaaApiResponseHelper.InternalError(_currentUserService.GetTrackingId(),
                 _apiErrorMessage.EmailSendFailed));
         }
 
@@ -95,6 +96,6 @@ public class RegisterCopilotAccountCommandHandler :
         _dbContext.CopilotTokens.Add(tokenEntity);
         await _dbContext.SaveChangesAsync(cancellationToken);
 
-        return MaaApiResponse.Ok(null, _currentUserService.GetTrackingId());
+        return MaaApiResponseHelper.Ok<EmptyObject>(null, _currentUserService.GetTrackingId());
     }
 }

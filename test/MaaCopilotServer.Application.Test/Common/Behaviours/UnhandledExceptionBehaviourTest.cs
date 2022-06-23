@@ -4,6 +4,7 @@
 
 using MaaCopilotServer.Application.Common.Behaviours;
 using MaaCopilotServer.Application.Common.Exceptions;
+using MaaCopilotServer.Application.Common.Helpers;
 using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Application.Common.Models;
 using MaaCopilotServer.Resources;
@@ -58,7 +59,7 @@ public class UnhandledExceptionBehaviourTest
             new UnhandledExceptionBehaviour<IRequest<string>, string>(_logger, _currentUserService, _apiErrorMessage);
         var action = async () => await behaviour.Handle(null, new CancellationToken(), () =>
         {
-            throw new PipelineException(MaaApiResponse.Ok(new EmptyObject(), string.Empty));
+            throw new PipelineException(MaaApiResponseHelper.Ok<EmptyObject>(new EmptyObject(), string.Empty));
         });
         await action.Should().ThrowAsync<PipelineException>();
     }

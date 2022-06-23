@@ -4,6 +4,7 @@
 
 using System.Text.Json.Serialization;
 using Destructurama.Attributed;
+using MaaCopilotServer.Application.Common.Helpers;
 using MaaCopilotServer.Application.CopilotUser.Queries.GetCopilotUser;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,7 +13,7 @@ namespace MaaCopilotServer.Application.CopilotUser.Commands.LoginCopilotUser;
 /// <summary>
 ///     The record of user login.
 /// </summary>
-public record LoginCopilotUserCommand : IRequest<MaaActionResult<LoginCopilotUserDto>>
+public record LoginCopilotUserCommand : IRequest<MaaApiResponse<LoginCopilotUserDto>>
 {
     /// <summary>
     ///     The user email.
@@ -32,7 +33,7 @@ public record LoginCopilotUserCommand : IRequest<MaaActionResult<LoginCopilotUse
 ///     The handler of user login.
 /// </summary>
 public class
-    LoginCopilotUserCommandHandler : IRequestHandler<LoginCopilotUserCommand, MaaActionResult<LoginCopilotUserDto>>
+    LoginCopilotUserCommandHandler : IRequestHandler<LoginCopilotUserCommand, MaaApiResponse<LoginCopilotUserDto>>
 {
     /// <summary>
     ///     The API error message.
@@ -80,7 +81,7 @@ public class
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>A task with username, user token and token expiration time.</returns>
     /// <exception cref="PipelineException">Thrown when the email does not exist, or the password is incorrect.</exception>
-    public async Task<MaaActionResult<LoginCopilotUserDto>> Handle(LoginCopilotUserCommand request,
+    public async Task<MaaApiResponse<LoginCopilotUserDto>> Handle(LoginCopilotUserCommand request,
         CancellationToken cancellationToken)
     {
         var user = await _dbContext.CopilotUsers
@@ -88,14 +89,14 @@ public class
             .FirstOrDefaultAsync(x => x.Email == request.Email, cancellationToken);
         if (user is null)
         {
-            throw new PipelineException(MaaApiResponse.BadRequest(_currentUserService.GetTrackingId(),
+            throw new PipelineException(MaaApiResponseHelper.BadRequest(_currentUserService.GetTrackingId(),
                 _apiErrorMessage.LoginFailed));
         }
 
         var ok = _secretService.VerifyPassword(user.Password, request.Password!);
         if (ok is false)
         {
-            throw new PipelineException(MaaApiResponse.BadRequest(_currentUserService.GetTrackingId(),
+            throw new PipelineException(MaaApiResponseHelper.BadRequest(_currentUserService.GetTrackingId(),
                 _apiErrorMessage.LoginFailed));
         }
 
@@ -110,6 +111,6 @@ public class
         var dto = new LoginCopilotUserDto(token, expire.ToIsoString(),
             new GetCopilotUserDto(user.EntityId, user.UserName, user.UserRole, uploadCount, user.UserActivated,
                 favList));
-        return MaaApiResponse.Ok(dto, _currentUserService.GetTrackingId());
+        return MaaApiResponseHelper.Ok(dto, _currentUserService.GetTrackingId());
     }
 }

@@ -16,7 +16,7 @@ public class PipelineException : Exception
     ///     The constructor of <see cref="PipelineException" />.
     /// </summary>
     /// <param name="result">The action result.</param>
-    public PipelineException(MaaActionResult<EmptyObject> result)
+    public PipelineException(MaaApiResponse<EmptyObject> result)
     {
         Result = result;
     }
@@ -24,5 +24,5 @@ public class PipelineException : Exception
     /// <summary>
     ///     The action result.
     /// </summary>
-    public MaaActionResult<EmptyObject> Result { get; }
+    public MaaApiResponse<EmptyObject> Result { get; }
 }

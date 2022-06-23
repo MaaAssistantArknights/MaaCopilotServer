@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using MaaCopilotServer.Application.Common.Helpers;
 using Microsoft.EntityFrameworkCore;
 
 namespace MaaCopilotServer.Application.CopilotOperation.Queries.GetCopilotOperation;
@@ -9,7 +10,7 @@ namespace MaaCopilotServer.Application.CopilotOperation.Queries.GetCopilotOperat
 /// <summary>
 ///     The record of querying operation.
 /// </summary>
-public record GetCopilotOperationQuery : IRequest<MaaActionResult<GetCopilotOperationQueryDto>>
+public record GetCopilotOperationQuery : IRequest<MaaApiResponse<GetCopilotOperationQueryDto>>
 {
     /// <summary>
     ///     The operation ID.
@@ -22,7 +23,7 @@ public record GetCopilotOperationQuery : IRequest<MaaActionResult<GetCopilotOper
 /// </summary>
 public class
     GetCopilotOperationQueryHandler : IRequestHandler<GetCopilotOperationQuery,
-        MaaActionResult<GetCopilotOperationQueryDto>>
+        MaaApiResponse<GetCopilotOperationQueryDto>>
 {
     /// <summary>
     ///     The API error message.
@@ -70,13 +71,13 @@ public class
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>A task with a single operation and info.</returns>
     /// <exception cref="PipelineException">Thrown when the operation ID is invalid or not found.</exception>
-    public async Task<MaaActionResult<GetCopilotOperationQueryDto>> Handle(GetCopilotOperationQuery request,
+    public async Task<MaaApiResponse<GetCopilotOperationQueryDto>> Handle(GetCopilotOperationQuery request,
         CancellationToken cancellationToken)
     {
         var id = _copilotIdService.DecodeId(request.Id!);
         if (id is null)
         {
-            throw new PipelineException(MaaApiResponse.NotFound(_currentUserService.GetTrackingId(),
+            throw new PipelineException(MaaApiResponseHelper.NotFound(_currentUserService.GetTrackingId(),
                 string.Format(_apiErrorMessage.CopilotOperationWithIdNotFound!, request.Id)));
         }
 
@@ -85,7 +86,7 @@ public class
             .FirstOrDefaultAsync(x => x.Id == id.Value, cancellationToken);
         if (entity is null)
         {
-            throw new PipelineException(MaaApiResponse.NotFound(_currentUserService.GetTrackingId(),
+            throw new PipelineException(MaaApiResponseHelper.NotFound(_currentUserService.GetTrackingId(),
                 string.Format(_apiErrorMessage.CopilotOperationWithIdNotFound!, request.Id)));
         }
 
@@ -98,6 +99,6 @@ public class
         _dbContext.CopilotOperations.Update(entity);
         await _dbContext.SaveChangesAsync(cancellationToken);
 
-        return MaaApiResponse.Ok(dto, _currentUserService.GetTrackingId());
+        return MaaApiResponseHelper.Ok(dto, _currentUserService.GetTrackingId());
     }
 }

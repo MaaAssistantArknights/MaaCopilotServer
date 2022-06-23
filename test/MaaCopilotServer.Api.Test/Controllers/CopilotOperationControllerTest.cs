@@ -144,7 +144,7 @@ public class CopilotOperationControllerTest
         await ControllerTestUtils.TestControllerEndpoint(
             _mediator,
             new QueryCopilotOperationsQuery(),
-            new PaginationResult<QueryCopilotOperationsQueryDto>(default, default, default, default),
+            new PaginationResult<QueryCopilotOperationsQueryDto>(),
             controller.QueryCopilotOperation);
     }
 

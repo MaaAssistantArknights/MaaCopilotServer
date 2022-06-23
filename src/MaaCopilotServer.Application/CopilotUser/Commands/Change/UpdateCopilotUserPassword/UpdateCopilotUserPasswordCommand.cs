@@ -4,6 +4,7 @@
 
 using System.Text.Json.Serialization;
 using Destructurama.Attributed;
+using MaaCopilotServer.Application.Common.Helpers;
 using MaaCopilotServer.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,7 +14,7 @@ namespace MaaCopilotServer.Application.CopilotUser.Commands.UpdateCopilotUserPas
 ///     The record of updating user password.
 /// </summary>
 [Authorized(UserRole.User, true)]
-public record UpdateCopilotUserPasswordCommand : IRequest<MaaActionResult<EmptyObject>>
+public record UpdateCopilotUserPasswordCommand : IRequest<MaaApiResponse<EmptyObject>>
 {
     /// <summary>
     ///     The original password.
@@ -34,7 +35,7 @@ public record UpdateCopilotUserPasswordCommand : IRequest<MaaActionResult<EmptyO
 ///     The handler of updating user password.
 /// </summary>
 public class UpdateCopilotUserPasswordCommandHandler : IRequestHandler<UpdateCopilotUserPasswordCommand,
-    MaaActionResult<EmptyObject>>
+    MaaApiResponse<EmptyObject>>
 {
     /// <summary>
     ///     The API error message.
@@ -82,7 +83,7 @@ public class UpdateCopilotUserPasswordCommandHandler : IRequestHandler<UpdateCop
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>A task with no contents if the request completes successfully.</returns>
     /// <exception cref="PipelineException">Thrown when an internal error occurs, or the original password is incorrect.</exception>
-    public async Task<MaaActionResult<EmptyObject>> Handle(UpdateCopilotUserPasswordCommand request,
+    public async Task<MaaApiResponse<EmptyObject>> Handle(UpdateCopilotUserPasswordCommand request,
         CancellationToken cancellationToken)
     {
         var user = await _dbContext.CopilotUsers
@@ -90,7 +91,7 @@ public class UpdateCopilotUserPasswordCommandHandler : IRequestHandler<UpdateCop
 
         if (user is null)
         {
-            throw new PipelineException(MaaApiResponse.InternalError(_currentUserService.GetTrackingId(),
+            throw new PipelineException(MaaApiResponseHelper.InternalError(_currentUserService.GetTrackingId(),
                 _apiErrorMessage.InternalException));
         }
 
@@ -98,7 +99,7 @@ public class UpdateCopilotUserPasswordCommandHandler : IRequestHandler<UpdateCop
 
         if (ok is false)
         {
-            throw new PipelineException(MaaApiResponse.BadRequest(_currentUserService.GetTrackingId(),
+            throw new PipelineException(MaaApiResponseHelper.BadRequest(_currentUserService.GetTrackingId(),
                 _apiErrorMessage.PasswordInvalid));
         }
 
@@ -106,6 +107,6 @@ public class UpdateCopilotUserPasswordCommandHandler : IRequestHandler<UpdateCop
         user.UpdatePassword(user.EntityId, hash);
         _dbContext.CopilotUsers.Update(user);
         await _dbContext.SaveChangesAsync(cancellationToken);
-        return MaaApiResponse.Ok(null, _currentUserService.GetTrackingId());
+        return MaaApiResponseHelper.Ok<EmptyObject>(null, _currentUserService.GetTrackingId());
     }
 }

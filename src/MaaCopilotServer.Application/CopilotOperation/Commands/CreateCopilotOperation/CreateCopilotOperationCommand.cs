@@ -4,6 +4,7 @@
 
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using MaaCopilotServer.Application.Common.Helpers;
 using MaaCopilotServer.Domain.Enums;
 
 namespace MaaCopilotServer.Application.CopilotOperation.Commands.CreateCopilotOperation;
@@ -12,7 +13,7 @@ namespace MaaCopilotServer.Application.CopilotOperation.Commands.CreateCopilotOp
 ///     The record of creating operation.
 /// </summary>
 [Authorized(UserRole.Uploader)]
-public record CreateCopilotOperationCommand : IRequest<MaaActionResult<CreateCopilotOperationDto>>
+public record CreateCopilotOperationCommand : IRequest<MaaApiResponse<CreateCopilotOperationDto>>
 {
     /// <summary>
     ///     The operation content.
@@ -25,7 +26,7 @@ public record CreateCopilotOperationCommand : IRequest<MaaActionResult<CreateCop
 ///     The handler of creating operation.
 /// </summary>
 public class CreateCopilotOperationCommandHandler : IRequestHandler<CreateCopilotOperationCommand,
-    MaaActionResult<CreateCopilotOperationDto>>
+    MaaApiResponse<CreateCopilotOperationDto>>
 {
     /// <summary>
     ///     The service for processing copilot ID.
@@ -76,7 +77,7 @@ public class CreateCopilotOperationCommandHandler : IRequestHandler<CreateCopilo
     /// <param name="request">The request.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>A task with the response.</returns>
-    public async Task<MaaActionResult<CreateCopilotOperationDto>> Handle(CreateCopilotOperationCommand request,
+    public async Task<MaaApiResponse<CreateCopilotOperationDto>> Handle(CreateCopilotOperationCommand request,
         CancellationToken cancellationToken)
     {
         var content = JsonSerializer.Deserialize<CreateCopilotOperationContent>(request.Content!).IsNotNull();
@@ -94,7 +95,7 @@ public class CreateCopilotOperationCommandHandler : IRequestHandler<CreateCopilo
             {
                 if (item.Name == null)
                 {
-                    throw new PipelineException(MaaApiResponse.BadRequest(_currentUserService.GetTrackingId(),
+                    throw new PipelineException(MaaApiResponseHelper.BadRequest(_currentUserService.GetTrackingId(),
                         _validationErrorMessage.CopilotOperationJsonIsInvalid));
                 }
 
@@ -111,7 +112,7 @@ public class CreateCopilotOperationCommandHandler : IRequestHandler<CreateCopilo
         await _dbContext.SaveChangesAsync(cancellationToken);
 
         var id = _copilotIdService.EncodeId(entity.Id);
-        return MaaApiResponse.Ok(new CreateCopilotOperationDto(id), _currentUserService.GetTrackingId());
+        return MaaApiResponseHelper.Ok(new CreateCopilotOperationDto(id), _currentUserService.GetTrackingId());
     }
 }
 

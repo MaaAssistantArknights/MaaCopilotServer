@@ -37,12 +37,13 @@ public abstract class MaaControllerBase : ControllerBase
     {
         try
         {
+            // response will be of type MaaApiResponse<T>.
             dynamic response = (await _mediator.Send(request))!;
-            return response;
+            return new OkObjectResult(response);
         }
         catch (PipelineException ex)
         {
-            return ex.Result;
+            return new OkObjectResult(ex.Result);
         }
     }
 }

@@ -21,7 +21,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{D24D095C-F
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MaaCopilotServer.Api.Test", "test\MaaCopilotServer.Api.Test\MaaCopilotServer.Api.Test.csproj", "{27C4F564-3CA0-40F4-B39C-D20FC5760404}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaaCopilotServer.Application.Test", "test\MaaCopilotServer.Application.Test\MaaCopilotServer.Application.Test.csproj", "{58F833E3-A620-4B51-84A6-9CBC80B41D8D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MaaCopilotServer.Application.Test", "test\MaaCopilotServer.Application.Test\MaaCopilotServer.Application.Test.csproj", "{58F833E3-A620-4B51-84A6-9CBC80B41D8D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

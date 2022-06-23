@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using MaaCopilotServer.Application.Common.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,7 +11,7 @@ namespace MaaCopilotServer.Application.CopilotOperation.Queries.QueryCopilotOper
 /// <summary>
 ///     The record of querying multiple operations.
 /// </summary>
-public record QueryCopilotOperationsQuery : IRequest<MaaActionResult<PaginationResult<QueryCopilotOperationsQueryDto>>>
+public record QueryCopilotOperationsQuery : IRequest<MaaApiResponse<PaginationResult<QueryCopilotOperationsQueryDto>>>
 {
     /// <summary>
     ///     The page number to query.
@@ -65,7 +66,7 @@ public record QueryCopilotOperationsQuery : IRequest<MaaActionResult<PaginationR
 ///     The handler of querying multiple operations.
 /// </summary>
 public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOperationsQuery,
-    MaaActionResult<PaginationResult<QueryCopilotOperationsQueryDto>>>
+    MaaApiResponse<PaginationResult<QueryCopilotOperationsQueryDto>>>
 {
     /// <summary>
     ///     The API error message.
@@ -113,7 +114,7 @@ public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOp
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>A task with an array of multiple operations without contents.</returns>
     /// <exception cref="PipelineException">Thrown when the uploader ID does not exist.</exception>
-    public async Task<MaaActionResult<PaginationResult<QueryCopilotOperationsQueryDto>>> Handle(
+    public async Task<MaaApiResponse<PaginationResult<QueryCopilotOperationsQueryDto>>> Handle(
         QueryCopilotOperationsQuery request, CancellationToken cancellationToken)
     {
         var limit = request.Limit ?? 10;
@@ -124,7 +125,7 @@ public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOp
             var id = _currentUserService.GetUserIdentity();
             if (id is null)
             {
-                throw new PipelineException(MaaApiResponse.BadRequest(_currentUserService.GetTrackingId(),
+                throw new PipelineException(MaaApiResponseHelper.BadRequest(_currentUserService.GetTrackingId(),
                     _apiErrorMessage.MeNotFound));
             }
 
@@ -184,7 +185,13 @@ public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOp
                 x.CreateAt.ToString("o", _apiErrorMessage.CultureInfo),
                 x.Author.UserName, x.Title, x.Details, x.Downloads, x.Operators))
             .ToList();
-        var paginationResult = new PaginationResult<QueryCopilotOperationsQueryDto>(hasNext, page, totalCount, dtos);
-        return MaaApiResponse.Ok(paginationResult, _currentUserService.GetTrackingId());
+        var paginationResult = new PaginationResult<QueryCopilotOperationsQueryDto>
+        {
+            HasNext = hasNext,
+            Page = page,
+            Total = totalCount,
+            Data = dtos,
+        };
+        return MaaApiResponseHelper.Ok(paginationResult, _currentUserService.GetTrackingId());
     }
 }
