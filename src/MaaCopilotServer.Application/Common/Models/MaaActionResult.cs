@@ -15,7 +15,7 @@ public class MaaActionResult<T>
     /// <summary>
     ///     The API response.
     /// </summary>
-    private readonly MaaApiResponse _maaApiResponse;
+    public readonly MaaApiResponse _maaApiResponse;
 
     /// <summary>
     ///     The constructor of <see cref="MaaActionResult{T}" />.
@@ -30,6 +30,11 @@ public class MaaActionResult<T>
     ///     The status code of the response, not to be confused with the HTTP status code.
     /// </summary>
     public int RealStatusCode => _maaApiResponse.StatusCode;
+
+    /// <summary>
+    ///     The data of the response.
+    /// </summary>
+    public T? RealData => (T?)_maaApiResponse.Data;
 
     /// <summary>
     ///     The implicit operator from <see cref="MaaActionResult{T}" /> to <see cref="OkObjectResult" />.

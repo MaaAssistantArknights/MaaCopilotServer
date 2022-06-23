@@ -3,7 +3,6 @@
 // Licensed under the AGPL-3.0 license.
 
 using System.Diagnostics.CodeAnalysis;
-using System.Reflection;
 using MaaCopilotServer.Application.Common.Extensions;
 
 namespace MaaCopilotServer.Api.Helper;
@@ -11,37 +10,42 @@ namespace MaaCopilotServer.Api.Helper;
 /// <summary>
 ///     The helper class of the configurations of the application.
 /// </summary>
-[ExcludeFromCodeCoverage] // TODO: need refactor
-public static class ConfigurationHelper
+[ExcludeFromCodeCoverage]
+public class ConfigurationHelper
 {
     /// <summary>
-    ///     构建 <see cref="IConfiguration" />
+    /// The global setting helper.
     /// </summary>
-    /// <remarks>不适用于 Azure Functions 等云服务</remarks>
-    /// <returns><see cref="IConfiguration" /> 实例 (<see cref="ConfigurationRoot" /> 对象)</returns>
-    public static IConfiguration BuildConfiguration()
+    private readonly GlobalSettingsHelper _settings;
+
+    /// <summary>
+    /// The constructor.
+    /// </summary>
+    public ConfigurationHelper() : this(new GlobalSettingsHelper())
+    { }
+
+    /// <summary>
+    /// The constructor with all properties.
+    /// </summary>
+    /// <param name="globalSettingHelper"></param>
+    public ConfigurationHelper(GlobalSettingsHelper globalSettingHelper)
     {
-        // Get data directory from environment variables.
-        var dataDirectoryEnv = Environment.GetEnvironmentVariable("MAA_DATA_DIRECTORY");
-        var isInDocker = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") ?? "false";
+        this._settings = globalSettingHelper;
+    }
 
-        // Get assembly and data directories.
-        var assemblyDirectory = new FileInfo(Assembly.GetExecutingAssembly().Location).Directory.IsNotNull();
-        var dataDirectory = string.IsNullOrEmpty(dataDirectoryEnv)
-            ? new DirectoryInfo(assemblyDirectory.FullName.CombinePath("data")).EnsureCreated()
-            : new DirectoryInfo(dataDirectoryEnv).EnsureCreated();
-
-        // Get DEV/PROD environment.
-        var currentEnvironment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production";
-
+    /// <summary>
+    /// Ensures settings files are created correctly.
+    /// </summary>
+    private void EnsureSettingsFileCreated()
+    {
         // Get settings file locations.
-        var appsettingsFile = new FileInfo(dataDirectory.FullName.CombinePath("appsettings.json"));
+        var appsettingsFile = new FileInfo(this._settings.AppSettings);
         var appsettingsEnvFile =
-            new FileInfo(dataDirectory.FullName.CombinePath($"appsettings.{currentEnvironment}.json"));
+            new FileInfo(this._settings.AppSettingsEnv);
         var originalAppsettingsFile =
-            new FileInfo(assemblyDirectory.FullName.CombinePath("appsettings.json")).AssertExist();
+            new FileInfo(this._settings.OriginalAppSettings).AssertExist();
         var originalAppsettingsEnvFile =
-            new FileInfo(assemblyDirectory.FullName.CombinePath($"appsettings.{currentEnvironment}.json"));
+            new FileInfo(this._settings.OriginalAppSettingsEnv);
 
         if (appsettingsFile.Exists is false)
         {
@@ -49,10 +53,10 @@ public static class ConfigurationHelper
             appsettingsFile.EnsureDeleted();
 
             var text = File.ReadAllText(originalAppsettingsFile.FullName);
-            text = text.Replace("{{ DATA DIRECTORY }}", dataDirectory.FullName);
+            text = text.Replace("{{ DATA DIRECTORY }}", this._settings.DataDirectory);
             File.WriteAllText(appsettingsFile.FullName, text);
 
-            if (currentEnvironment == "Production")
+            if (this._settings.IsProductionEnvironment)
             {
                 Environment.Exit(0);
             }
@@ -67,21 +71,31 @@ public static class ConfigurationHelper
         {
             appsettingsEnvFile.EnsureDeleted();
         }
+    }
+
+    /// <summary>
+    ///     构建 <see cref="IConfiguration" />
+    /// </summary>
+    /// <remarks>不适用于 Azure Functions 等云服务</remarks>
+    /// <returns><see cref="IConfiguration" /> 实例 (<see cref="ConfigurationRoot" /> 对象)</returns>
+    public IConfiguration BuildConfiguration()
+    {
+        EnsureSettingsFileCreated();
 
         // Build configurations.
         var configurationBuilder = new ConfigurationBuilder();
 
-        configurationBuilder.AddJsonFile(appsettingsFile.FullName, false, true);
-        configurationBuilder.AddJsonFile(appsettingsEnvFile.FullName, true, true);
+        configurationBuilder.AddJsonFile(this._settings.AppSettings, false, true);
+        configurationBuilder.AddJsonFile(this._settings.AppSettingsEnv, true, true);
 
         configurationBuilder.AddEnvironmentVariables("MAA_");
 
-        var appVersion = Environment.GetEnvironmentVariable("MAACOPILOT_APP_VERSION") ?? "0.0.0";
+        var appVersion = this._settings.AppVersion;
 
         configurationBuilder.AddInMemoryCollection(new List<KeyValuePair<string, string>>
         {
-            new("Application:AssemblyPath", assemblyDirectory.FullName),
-            new("Application:DataDirectory", dataDirectory.FullName),
+            new("Application:AssemblyPath", this._settings.AssemblyDirectory),
+            new("Application:DataDirectory", this._settings.DataDirectory),
             new("Application:Version", appVersion),
             new("ElasticApm:ServiceVersion", appVersion)
         });

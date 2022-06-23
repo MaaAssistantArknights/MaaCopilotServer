@@ -18,14 +18,46 @@ namespace MaaCopilotServer.Api.Helper;
 /// <summary>
 ///     The helper class of database connection.
 /// </summary>
-[ExcludeFromCodeCoverage] // TODO: need refactor
-public static class InitializeHelper
+public class InitializeHelper
 {
-    public static void InitializeEmailTemplates(IConfiguration configuration)
+    /// <summary>
+    /// The configuration.
+    /// </summary>
+    private readonly IConfiguration _configuration;
+
+    /// <summary>
+    /// The global settings helper.
+    /// </summary>
+    private readonly GlobalSettingsHelper _settings;
+
+    /// <summary>
+    /// The constructor.
+    /// </summary>
+    /// <param name="configuration">The configuration.</param>
+    public InitializeHelper(IConfiguration configuration) : this(configuration, new GlobalSettingsHelper())
     {
-        var applicationOption = configuration.GetOption<ApplicationOption>();
-        var originalTemplatesDirectory = new DirectoryInfo(applicationOption.AssemblyPath.CombinePath("templates"));
-        var targetTemplatesDirectory = new DirectoryInfo(applicationOption.DataDirectory.CombinePath("templates"));
+        _configuration = configuration;
+    }
+
+    /// <summary>
+    /// The constructor with all properties.
+    /// </summary>
+    /// <param name="configuration">The configuration.</param>
+    /// <param name="settings">The global settings helper.</param>
+    public InitializeHelper(IConfiguration configuration, GlobalSettingsHelper settings)
+    {
+        this._configuration = configuration;
+        _settings = settings;
+    }
+
+    /// <summary>
+    /// Initializes email templates.
+    /// </summary>
+    [ExcludeFromCodeCoverage]
+    public void InitializeEmailTemplates()
+    {
+        var originalTemplatesDirectory = new DirectoryInfo(this._settings.OriginalTemplatesDirectory);
+        var targetTemplatesDirectory = new DirectoryInfo(this._settings.TargetTemplatesDirectory);
 
         if (targetTemplatesDirectory.Exists is false)
         {
@@ -44,10 +76,14 @@ public static class InitializeHelper
         }
     }
 
-    public static void InitializeDatabase(IConfiguration configuration)
+    /// <summary>
+    /// Initializes the database.
+    /// </summary>
+    [ExcludeFromCodeCoverage]
+    public void InitializeDatabase()
     {
         // Establish database connection.
-        var dbOptions = configuration.GetOption<DatabaseOption>();
+        var dbOptions = this._configuration.GetOption<DatabaseOption>();
         var db = new MaaCopilotDbContext(new OptionsWrapper<DatabaseOption>(dbOptions));
         var pendingMigrations = db.Database.GetPendingMigrations().Count();
         if (pendingMigrations > 0)
@@ -62,20 +98,22 @@ public static class InitializeHelper
         if (haveUser is false)
         {
             // New DB without any existing users. Initialize default user.
-            var defaultUserEmail = Environment.GetEnvironmentVariable("DEFAULT_USER_EMAIL") ?? "super@prts.plus";
-            var defaultUserPassword = Environment.GetEnvironmentVariable("DEFAULT_USER_PASSWORD") ?? GeneratePassword();
-            var defaultUserName = Environment.GetEnvironmentVariable("DEFAULT_USER_NAME") ?? "Maa";
+            var defaultUserEmail = this._settings.DefaultUserEmail;
+            var defaultUserPassword = this._settings.DefaultUserPassword;
+            if (defaultUserPassword == "")
+            {
+                defaultUserPassword = GeneratePassword();
+            }
+            var defaultUserName = this._settings.DefaultUsername;
 
-            if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("DEFAULT_USER_EMAIL")) ||
-                string.IsNullOrEmpty(Environment.GetEnvironmentVariable("DEFAULT_USER_PASSWORD")))
+            if (this._settings.IsDefaultUserEmailEmpty || this._settings.IsDefaultUserPasswordEmpty)
             {
                 Log.Logger.Information("Creating default user with email {DefaultEmail} and password {DefaultPassword}",
                     defaultUserEmail, defaultUserPassword);
             }
 
             var hash = BCrypt.Net.BCrypt.HashPassword(defaultUserPassword);
-            var user = new CopilotUser(defaultUserEmail, hash, defaultUserName, UserRole.SuperAdmin,
-                Guid.Parse("00000000-0000-0000-0000-000000000000"));
+            var user = new CopilotUser(defaultUserEmail, hash, defaultUserName, UserRole.SuperAdmin, Guid.Empty);
             db.CopilotUsers.Add(user);
             db.SaveChanges();
         }
@@ -87,7 +125,7 @@ public static class InitializeHelper
     ///     Generates a new password. The generated password matches regexp like <c>^[A-Z]{16}$</c>.
     /// </summary>
     /// <returns>The new password.</returns>
-    private static string GeneratePassword()
+    public static string GeneratePassword()
     {
         var builder = new StringBuilder();
         var random = new Random();
