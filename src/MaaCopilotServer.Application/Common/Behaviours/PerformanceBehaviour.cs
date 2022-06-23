@@ -73,7 +73,7 @@ public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequ
 
             _logger.LogInformation(
                 "MaaCopilotServer: Type -> {LoggingType}; Request Name -> {Name}; Time -> {ElapsedTime}; User -> {UserId}; Request -> {@Request}",
-                (string)LoggingType.Request, requestName, elapsedMilliseconds, userId, request);
+                LoggingType.Request, requestName, elapsedMilliseconds, userId, request);
         }
     }
 }

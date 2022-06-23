@@ -41,12 +41,9 @@ public struct LoggingType
     /// </summary>
     public static LoggingType Exception => new("Exception");
 
-    /// <summary>
-    ///     The implicit operator from <see cref="LoggingType" /> to <see cref="string" />.
-    /// </summary>
-    /// <param name="loggingType">The logging type.</param>
-    public static implicit operator string(LoggingType loggingType)
+    /// <inheritdoc/>
+    public override string ToString()
     {
-        return loggingType._value;
+        return _value;
     }
 }

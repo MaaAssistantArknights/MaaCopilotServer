@@ -71,7 +71,7 @@ public class UnhandledExceptionBehaviour<TRequest, TResponse> : IPipelineBehavio
             var requestName = typeof(TRequest).Name;
             _logger.LogError(ex,
                 "MaaCopilotServer: Type -> {LoggingType}; Request Name -> {Name}; Request -> {@Request};",
-                (string)LoggingType.Exception, requestName, request);
+                LoggingType.Exception, requestName, request);
 
             throw new PipelineException(MaaApiResponseHelper.InternalError(_currentUserService.GetTrackingId(),
                 _apiErrorMessage.InternalException));
