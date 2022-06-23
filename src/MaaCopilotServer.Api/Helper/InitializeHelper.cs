@@ -114,6 +114,7 @@ public class InitializeHelper
 
             var hash = BCrypt.Net.BCrypt.HashPassword(defaultUserPassword);
             var user = new CopilotUser(defaultUserEmail, hash, defaultUserName, UserRole.SuperAdmin, Guid.Empty);
+            user.ActivateUser(Guid.Empty);
             db.CopilotUsers.Add(user);
             db.SaveChanges();
         }
