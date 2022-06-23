@@ -49,7 +49,7 @@ public class PipelineExceptionBehaviour<TRequest, TResponse> : IPipelineBehavior
 
             _logger.LogError(
                 "MaaCopilotServer: Type -> {LoggingType}; Status Code -> {StatusCode}; Request Name -> {Name}; Request -> {@Request}",
-                (string)LoggingType.FailedRequest, ex.Result.RealStatusCode, requestName, request);
+                (string)LoggingType.FailedRequest, ex.Result.StatusCode, requestName, request);
 
             throw;
         }

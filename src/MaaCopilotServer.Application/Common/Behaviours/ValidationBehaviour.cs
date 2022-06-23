@@ -65,7 +65,7 @@ public class ValidationBehaviour<TRequest, TResponse> : IPipelineBehavior<TReque
         var failureMessage = string.Join("\n", failures.Select(f => f.ToString()));
         if (failures.Any())
         {
-            throw new PipelineException(MaaActionResultHelper.BadRequest(_currentUserService.GetTrackingId(), failureMessage));
+            throw new PipelineException(MaaApiResponseHelper.BadRequest(_currentUserService.GetTrackingId(), failureMessage));
         }
 
         return await next();

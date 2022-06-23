@@ -9,14 +9,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MaaCopilotServer.Application.CopilotUser.Queries.GetCopilotUserFavorites;
 
-public record GetCopilotUserFavoritesQuery : IRequest<MaaActionResult<GetCopilotUserFavoritesDto>>
+public record GetCopilotUserFavoritesQuery : IRequest<MaaApiResponse<GetCopilotUserFavoritesDto>>
 {
     [FromQuery(Name = "id")] public string? FavoriteListId { get; set; }
 }
 
 public class GetCopilotUserFavoritesQueryHandler :
     IRequestHandler<GetCopilotUserFavoritesQuery,
-        MaaActionResult<GetCopilotUserFavoritesDto>>
+        MaaApiResponse<GetCopilotUserFavoritesDto>>
 {
     private readonly IMaaCopilotDbContext _copilotDbContext;
     private readonly ICopilotIdService _copilotIdService;
@@ -32,7 +32,7 @@ public class GetCopilotUserFavoritesQueryHandler :
         _copilotDbContext = copilotDbContext;
     }
 
-    public async Task<MaaActionResult<GetCopilotUserFavoritesDto>> Handle(GetCopilotUserFavoritesQuery request,
+    public async Task<MaaApiResponse<GetCopilotUserFavoritesDto>> Handle(GetCopilotUserFavoritesQuery request,
         CancellationToken cancellationToken)
     {
         var favListId = Guid.Parse(request.FavoriteListId!);
@@ -43,13 +43,13 @@ public class GetCopilotUserFavoritesQueryHandler :
             .FirstOrDefaultAsync(x => x.EntityId == favListId, cancellationToken);
         if (list is null)
         {
-            throw new PipelineException(MaaActionResultHelper.NotFound(_currentUserService.GetTrackingId(), ""));
+            throw new PipelineException(MaaApiResponseHelper.NotFound(_currentUserService.GetTrackingId(), ""));
         }
 
         var operationsDto = list.Operations.Select(x => new QueryCopilotOperationsQueryDto(
             _copilotIdService.EncodeId(x.Id), x.StageName, x.MinimumRequired, x.CreateAt.ToIsoString(),
             x.Author.UserName, x.Title, x.Details, x.Downloads, x.Operators)).ToList();
         var dto = new GetCopilotUserFavoritesDto(list.EntityId.ToString(), list.FavoriteName, operationsDto);
-        return MaaActionResultHelper.Ok<GetCopilotUserFavoritesDto>(dto, _currentUserService.GetTrackingId());
+        return MaaApiResponseHelper.Ok(dto, _currentUserService.GetTrackingId());
     }
 }

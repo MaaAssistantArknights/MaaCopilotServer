@@ -13,13 +13,13 @@ using Microsoft.Extensions.Options;
 
 namespace MaaCopilotServer.Application.CopilotUser.Commands.RequestPasswordReset;
 
-public record RequestPasswordResetCommand : IRequest<MaaActionResult<EmptyObject>>
+public record RequestPasswordResetCommand : IRequest<MaaApiResponse<EmptyObject>>
 {
     [JsonPropertyName("email")] public string? Email { get; set; }
 }
 
 public class RequestPasswordResetCommandHandler :
-    IRequestHandler<RequestPasswordResetCommand, MaaActionResult<EmptyObject>>
+    IRequestHandler<RequestPasswordResetCommand, MaaApiResponse<EmptyObject>>
 {
     private readonly ApiErrorMessage _apiErrorMessage;
     private readonly ICurrentUserService _currentUserService;
@@ -44,13 +44,13 @@ public class RequestPasswordResetCommandHandler :
         _apiErrorMessage = apiErrorMessage;
     }
 
-    public async Task<MaaActionResult<EmptyObject>> Handle(RequestPasswordResetCommand request,
+    public async Task<MaaApiResponse<EmptyObject>> Handle(RequestPasswordResetCommand request,
         CancellationToken cancellationToken)
     {
         var user = await _dbContext.CopilotUsers.FirstOrDefaultAsync(x => x.Email == request.Email, cancellationToken);
         if (user is null)
         {
-            throw new PipelineException(MaaActionResultHelper.NotFound(_currentUserService.GetTrackingId(),
+            throw new PipelineException(MaaApiResponseHelper.NotFound(_currentUserService.GetTrackingId(),
                 _apiErrorMessage.EmailNotRegister));
         }
 
@@ -70,12 +70,12 @@ public class RequestPasswordResetCommandHandler :
 
         if (success is false)
         {
-            throw new PipelineException(MaaActionResultHelper.InternalError(_currentUserService.GetTrackingId(),
+            throw new PipelineException(MaaApiResponseHelper.InternalError(_currentUserService.GetTrackingId(),
                 _apiErrorMessage.EmailSendFailed));
         }
 
         _dbContext.CopilotTokens.Add(new CopilotToken(user.EntityId, TokenType.UserPasswordReset, token, time));
         await _dbContext.SaveChangesAsync(cancellationToken);
-        return MaaActionResultHelper.Ok<EmptyObject>(null, _currentUserService.GetTrackingId());
+        return MaaApiResponseHelper.Ok<EmptyObject>(null, _currentUserService.GetTrackingId());
     }
 }

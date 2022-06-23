@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MaaCopilotServer.Application.CopilotUser.Commands.ActivateCopilotAccount;
 
-public record ActivateCopilotAccountCommand : IRequest<MaaActionResult<EmptyObject>>
+public record ActivateCopilotAccountCommand : IRequest<MaaApiResponse<EmptyObject>>
 {
     /// <summary>
     ///     Account activation token.
@@ -19,7 +19,7 @@ public record ActivateCopilotAccountCommand : IRequest<MaaActionResult<EmptyObje
 }
 
 public class
-    ActivateCopilotAccountCommandHandler : IRequestHandler<ActivateCopilotAccountCommand, MaaActionResult<EmptyObject>>
+    ActivateCopilotAccountCommandHandler : IRequestHandler<ActivateCopilotAccountCommand, MaaApiResponse<EmptyObject>>
 {
     private readonly ApiErrorMessage _apiErrorMessage;
     private readonly ICurrentUserService _currentUserService;
@@ -35,21 +35,21 @@ public class
         _apiErrorMessage = apiErrorMessage;
     }
 
-    public async Task<MaaActionResult<EmptyObject>> Handle(ActivateCopilotAccountCommand request,
+    public async Task<MaaApiResponse<EmptyObject>> Handle(ActivateCopilotAccountCommand request,
         CancellationToken cancellationToken)
     {
         var token = await _dbContext.CopilotTokens.FirstOrDefaultAsync(x => x.Token == request.Token,
             cancellationToken);
         if (token is null || token.ValidBefore < DateTimeOffset.UtcNow || token.Type != TokenType.UserActivation)
         {
-            throw new PipelineException(MaaActionResultHelper.BadRequest(_currentUserService.GetTrackingId(),
+            throw new PipelineException(MaaApiResponseHelper.BadRequest(_currentUserService.GetTrackingId(),
                 _apiErrorMessage.TokenInvalid));
         }
 
         var user = _dbContext.CopilotUsers.FirstOrDefault(x => x.EntityId == token.ResourceId);
         if (user is null)
         {
-            throw new PipelineException(MaaActionResultHelper.InternalError(_currentUserService.GetTrackingId(),
+            throw new PipelineException(MaaApiResponseHelper.InternalError(_currentUserService.GetTrackingId(),
                 string.Format(_apiErrorMessage.UserWithIdNotFound!, token.ResourceId.ToString())));
         }
 
@@ -59,6 +59,6 @@ public class
         _dbContext.CopilotTokens.Remove(token);
         await _dbContext.SaveChangesAsync(cancellationToken);
 
-        return MaaActionResultHelper.Ok<EmptyObject>(null, _currentUserService.GetTrackingId());
+        return MaaApiResponseHelper.Ok<EmptyObject>(null, _currentUserService.GetTrackingId());
     }
 }

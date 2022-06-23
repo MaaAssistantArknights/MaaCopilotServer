@@ -59,7 +59,7 @@ public class UnhandledExceptionBehaviourTest
             new UnhandledExceptionBehaviour<IRequest<string>, string>(_logger, _currentUserService, _apiErrorMessage);
         var action = async () => await behaviour.Handle(null, new CancellationToken(), () =>
         {
-            throw new PipelineException(MaaActionResultHelper.Ok<EmptyObject>(new EmptyObject(), string.Empty));
+            throw new PipelineException(MaaApiResponseHelper.Ok<EmptyObject>(new EmptyObject(), string.Empty));
         });
         await action.Should().ThrowAsync<PipelineException>();
     }
