@@ -128,7 +128,33 @@ public class CreateCopilotOperationCommandTest
     }
 
     /// <summary>
-    /// Tests <see cref="CreateCopilotOperationCommandHandler.Handle(CreateCopilotOperationCommand, CancellationToken)"/> without <c>doc</c> field.
+    /// Tests <see cref="CreateCopilotOperationCommandHandler.Handle(CreateCopilotOperationCommand, CancellationToken)"/> without <c>doc</c> field (undefined).
+    /// </summary>
+    /// <returns>N/A</returns>
+    [TestMethod]
+    public async Task TestHandle_WithoutDocUndefined()
+    {
+        var testJsonContent = new TestRequestContent
+        {
+            StageName = "test_stage_name",
+            MinimumRequired = "0.0.1",
+            Operators = new TestOperatorContent[]
+            {
+                new TestOperatorContent {
+                    Name = "test_oper_0_name",
+                    Skill = 0,
+                },
+                new TestOperatorContent {
+                    Name = "test_oper_1_name",
+                    Skill = 1,
+                },
+            },
+        };
+        await TestHandle(testJsonContent, removeNullFields: true);
+    }
+
+    /// <summary>
+    /// Tests <see cref="CreateCopilotOperationCommandHandler.Handle(CreateCopilotOperationCommand, CancellationToken)"/> without a <c>name</c> field in <c>operators</c>.
     /// </summary>
     /// <returns>N/A</returns>
     [TestMethod]
@@ -153,7 +179,7 @@ public class CreateCopilotOperationCommandTest
     }
 
     /// <summary>
-    /// Tests <see cref="CreateCopilotOperationCommandHandler.Handle(CreateCopilotOperationCommand, CancellationToken)"/> without <c>doc</c> field.
+    /// Tests <see cref="CreateCopilotOperationCommandHandler.Handle(CreateCopilotOperationCommand, CancellationToken)"/> with duplicate items in <c>operators</c> field.
     /// </summary>
     /// <returns>N/A</returns>
     [TestMethod]
@@ -178,9 +204,12 @@ public class CreateCopilotOperationCommandTest
         await TestHandle(testJsonContent);
     }
 
-    private async Task TestHandle(TestRequestContent testJsonContent, bool expectException = false)
+    private async Task TestHandle(TestRequestContent testJsonContent, bool expectException = false, bool removeNullFields = false)
     {
-        var testContent = JsonSerializer.Serialize(testJsonContent);
+        var testContent = JsonSerializer.Serialize(testJsonContent, new JsonSerializerOptions()
+        {
+            DefaultIgnoreCondition = removeNullFields ? JsonIgnoreCondition.Never : JsonIgnoreCondition.WhenWritingNull
+        });
         Domain.Entities.CopilotOperation? entity = null;
         _dbContext.CopilotOperations.When(x => x.Add(Arg.Any<Domain.Entities.CopilotOperation>())).Do(c =>
         {
