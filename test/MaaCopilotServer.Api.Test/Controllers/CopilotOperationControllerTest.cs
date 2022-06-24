@@ -81,10 +81,10 @@ public class CopilotOperationControllerTest
     public async Task TestDeleteCopilotOperation()
     {
         var controller = new CopilotOperationController(_mediator);
-        await ControllerTestUtils.TestControllerEndpoint(
+        await ControllerTestUtils.TestControllerEndpoint<DeleteCopilotOperationCommand, object>(
             _mediator,
             new DeleteCopilotOperationCommand(),
-            new EmptyObject(),
+            null,
             controller.DeleteCopilotOperation);
     }
 
