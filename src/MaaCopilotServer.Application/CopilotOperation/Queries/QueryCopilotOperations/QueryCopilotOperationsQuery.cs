@@ -11,7 +11,7 @@ namespace MaaCopilotServer.Application.CopilotOperation.Queries.QueryCopilotOper
 /// <summary>
 ///     The record of querying multiple operations.
 /// </summary>
-public record QueryCopilotOperationsQuery : IRequest<MaaApiResponse<PaginationResult<QueryCopilotOperationsQueryDto>>>
+public record QueryCopilotOperationsQuery : IRequest<MaaApiResponse>
 {
     /// <summary>
     ///     The page number to query.
@@ -66,7 +66,7 @@ public record QueryCopilotOperationsQuery : IRequest<MaaApiResponse<PaginationRe
 ///     The handler of querying multiple operations.
 /// </summary>
 public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOperationsQuery,
-    MaaApiResponse<PaginationResult<QueryCopilotOperationsQueryDto>>>
+    MaaApiResponse>
 {
     /// <summary>
     ///     The API error message.
@@ -112,9 +112,11 @@ public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOp
     /// </summary>
     /// <param name="request">The request.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns>A task with an array of multiple operations without contents.</returns>
-    /// <exception cref="PipelineException">Thrown when the uploader ID does not exist.</exception>
-    public async Task<MaaApiResponse<PaginationResult<QueryCopilotOperationsQueryDto>>> Handle(
+    /// <returns>
+    ///     <para>A task with an array of multiple operations without contents.</para>
+    ///     <para>400 when the uploader ID does not exist.</para>
+    /// </returns>
+    public async Task<MaaApiResponse> Handle(
         QueryCopilotOperationsQuery request, CancellationToken cancellationToken)
     {
         var limit = request.Limit ?? 10;
@@ -125,8 +127,7 @@ public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOp
             var id = _currentUserService.GetUserIdentity();
             if (id is null)
             {
-                throw new PipelineException(MaaApiResponseHelper.BadRequest(_currentUserService.GetTrackingId(),
-                    _apiErrorMessage.MeNotFound));
+                return MaaApiResponseHelper.BadRequest(_apiErrorMessage.MeNotFound);
             }
 
             uploaderId = id.Value;
@@ -192,6 +193,6 @@ public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOp
             Total = totalCount,
             Data = dtos,
         };
-        return MaaApiResponseHelper.Ok(paginationResult, _currentUserService.GetTrackingId());
+        return MaaApiResponseHelper.Ok(paginationResult);
     }
 }

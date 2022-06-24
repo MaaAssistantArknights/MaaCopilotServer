@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MaaCopilotServer.Application.CopilotUser.Commands.PasswordReset;
 
-public record PasswordResetCommand : IRequest<MaaApiResponse<EmptyObject>>
+public record PasswordResetCommand : IRequest<MaaApiResponse>
 {
     [JsonPropertyName("token")] public string? Token { get; set; }
 
@@ -20,47 +20,42 @@ public record PasswordResetCommand : IRequest<MaaApiResponse<EmptyObject>>
 }
 
 public class PasswordResetCommandHandler :
-    IRequestHandler<PasswordResetCommand, MaaApiResponse<EmptyObject>>
+    IRequestHandler<PasswordResetCommand, MaaApiResponse>
 {
     private readonly ApiErrorMessage _apiErrorMessage;
-    private readonly ICurrentUserService _currentUserService;
     private readonly IMaaCopilotDbContext _dbContext;
     private readonly ISecretService _secretService;
 
     public PasswordResetCommandHandler(
-        ICurrentUserService currentUserService,
         ISecretService secretService,
         IMaaCopilotDbContext dbContext,
         ApiErrorMessage apiErrorMessage)
     {
-        _currentUserService = currentUserService;
         _secretService = secretService;
         _dbContext = dbContext;
         _apiErrorMessage = apiErrorMessage;
     }
 
-    public async Task<MaaApiResponse<EmptyObject>> Handle(PasswordResetCommand request,
+    public async Task<MaaApiResponse> Handle(PasswordResetCommand request,
         CancellationToken cancellationToken)
     {
         var token = await _dbContext.CopilotTokens.FirstOrDefaultAsync(x => x.Token == request.Token,
             cancellationToken);
         if (token is null || token.ValidBefore < DateTimeOffset.UtcNow || token.Type != TokenType.UserPasswordReset)
         {
-            throw new PipelineException(MaaApiResponseHelper.BadRequest(_currentUserService.GetTrackingId(),
-                _apiErrorMessage.TokenInvalid));
+            return MaaApiResponseHelper.BadRequest(_apiErrorMessage.TokenInvalid);
         }
 
         var user = _dbContext.CopilotUsers.FirstOrDefault(x => x.EntityId == token.ResourceId);
         if (user is null)
         {
-            throw new PipelineException(MaaApiResponseHelper.InternalError(_currentUserService.GetTrackingId(),
-                string.Format(_apiErrorMessage.UserWithIdNotFound!, token.ResourceId.ToString())));
+            return MaaApiResponseHelper.InternalError(string.Format(_apiErrorMessage.UserWithIdNotFound!, token.ResourceId.ToString()));
         }
 
         user.UpdatePassword(user.EntityId, _secretService.HashPassword(request.Password!));
 
         _dbContext.CopilotUsers.Update(user);
         await _dbContext.SaveChangesAsync(cancellationToken);
-        return MaaApiResponseHelper.Ok<EmptyObject>(null, _currentUserService.GetTrackingId());
+        return MaaApiResponseHelper.Ok();
     }
 }

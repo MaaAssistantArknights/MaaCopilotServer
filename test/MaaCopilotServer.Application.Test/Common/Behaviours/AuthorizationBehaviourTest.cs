@@ -3,8 +3,10 @@
 // Licensed under the AGPL-3.0 license.
 
 using MaaCopilotServer.Application.Common.Behaviours;
-using MaaCopilotServer.Application.Common.Exceptions;
+
+using MaaCopilotServer.Application.Common.Helpers;
 using MaaCopilotServer.Application.Common.Interfaces;
+using MaaCopilotServer.Application.Common.Models;
 using MaaCopilotServer.Application.Common.Security;
 using MaaCopilotServer.Domain.Enums;
 using MaaCopilotServer.Resources;
@@ -71,7 +73,7 @@ public class AuthorizationBehaviourTest
         UserRole requiredRole,
         int? expectedErrorStatusCode)
     {
-        IRequest<object> testRequest = requiredRole switch
+        IRequest<MaaApiResponse> testRequest = requiredRole switch
         {
             UserRole.User => new TestUserRole(),
             UserRole.Uploader => new TestUploaderRole(),
@@ -101,16 +103,13 @@ public class AuthorizationBehaviourTest
                 .ReturnsForAnyArgs(new Domain.Entities.CopilotUser(default, default, default, userRole, default));
         }
 
-        var behaviour = new AuthorizationBehaviour<IRequest<object>, object>(_identityService,
-            _currentUserService,
-            _apiErrorMessage);
+        var behaviour = new AuthorizationBehaviour<IRequest<MaaApiResponse>, MaaApiResponse>(_identityService, _currentUserService, _apiErrorMessage);
         var action = async () =>
-            await behaviour.Handle(testRequest, new CancellationToken(), () => Task.FromResult(new object()));
+            await behaviour.Handle(testRequest, new CancellationToken(), () => Task.FromResult(MaaApiResponseHelper.Ok()));
         if (expectedErrorStatusCode != null)
         {
-            await action.Should()
-                .ThrowAsync<PipelineException>()
-                .Where(e => e.Result.StatusCode == expectedErrorStatusCode);
+            var response = await action();
+            response.StatusCode.Should().Be(expectedErrorStatusCode);
         }
         else
         {
@@ -122,7 +121,7 @@ public class AuthorizationBehaviourTest
     ///     A test class with <see cref="UserRole.User" /> role for authorization testing.
     /// </summary>
     [Authorized(UserRole.User, true)]
-    private class TestUserRole : IRequest<object>
+    private class TestUserRole : IRequest<MaaApiResponse>
     {
     }
 
@@ -130,7 +129,7 @@ public class AuthorizationBehaviourTest
     ///     A test class with <see cref="UserRole.Uploader" /> role for authorization testing.
     /// </summary>
     [Authorized(UserRole.Uploader, true)]
-    private class TestUploaderRole : IRequest<object>
+    private class TestUploaderRole : IRequest<MaaApiResponse>
     {
     }
 
@@ -138,7 +137,7 @@ public class AuthorizationBehaviourTest
     ///     A test class with <see cref="UserRole.Admin" /> role for authorization testing.
     /// </summary>
     [Authorized(UserRole.Admin, true)]
-    private class TestAdminRole : IRequest<object>
+    private class TestAdminRole : IRequest<MaaApiResponse>
     {
     }
 
@@ -146,7 +145,7 @@ public class AuthorizationBehaviourTest
     ///     A test class with <see cref="UserRole.UploaSuperAdminder" /> role for authorization testing.
     /// </summary>
     [Authorized(UserRole.SuperAdmin, true)]
-    private class TestSuperAdminRole : IRequest<object>
+    private class TestSuperAdminRole : IRequest<MaaApiResponse>
     {
     }
 }

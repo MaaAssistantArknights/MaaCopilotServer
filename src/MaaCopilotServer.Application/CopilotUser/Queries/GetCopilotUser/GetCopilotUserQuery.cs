@@ -10,7 +10,7 @@ namespace MaaCopilotServer.Application.CopilotUser.Queries.GetCopilotUser;
 /// <summary>
 ///     The record of getting user.
 /// </summary>
-public record GetCopilotUserQuery : IRequest<MaaApiResponse<GetCopilotUserDto>>
+public record GetCopilotUserQuery : IRequest<MaaApiResponse>
 {
     /// <summary>
     ///     The user ID.
@@ -21,7 +21,7 @@ public record GetCopilotUserQuery : IRequest<MaaApiResponse<GetCopilotUserDto>>
 /// <summary>
 ///     The handler of getting user.
 /// </summary>
-public class GetCopilotUserQueryHandler : IRequestHandler<GetCopilotUserQuery, MaaApiResponse<GetCopilotUserDto>>
+public class GetCopilotUserQueryHandler : IRequestHandler<GetCopilotUserQuery, MaaApiResponse>
 {
     /// <summary>
     ///     The API error message.
@@ -59,9 +59,12 @@ public class GetCopilotUserQueryHandler : IRequestHandler<GetCopilotUserQuery, M
     /// </summary>
     /// <param name="request">The request.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns>A task with user info of the user.</returns>
-    /// <exception cref="PipelineException">Thrown when the current user ID or the user ID to get is not found.</exception>
-    public async Task<MaaApiResponse<GetCopilotUserDto>> Handle(GetCopilotUserQuery request,
+    /// <returns>
+    ///     <para>A task with user info of the user.</para>
+    ///     <para>400 when the current user ID is not found.</para>
+    ///     <para>404 when the user ID to get is not found.</para>
+    /// </returns>
+    public async Task<MaaApiResponse> Handle(GetCopilotUserQuery request,
         CancellationToken cancellationToken)
     {
         Guid userId;
@@ -70,8 +73,8 @@ public class GetCopilotUserQueryHandler : IRequestHandler<GetCopilotUserQuery, M
             var id = _currentUserService.GetUserIdentity();
             if (id is null)
             {
-                throw new PipelineException(MaaApiResponseHelper.BadRequest(_currentUserService.GetTrackingId(),
-                    _apiErrorMessage.MeNotFound));
+                return MaaApiResponseHelper.BadRequest(
+                    _apiErrorMessage.MeNotFound);
             }
 
             userId = id.Value;
@@ -87,8 +90,8 @@ public class GetCopilotUserQueryHandler : IRequestHandler<GetCopilotUserQuery, M
 
         if (user is null)
         {
-            throw new PipelineException(MaaApiResponseHelper.NotFound(_currentUserService.GetTrackingId(),
-                string.Format(_apiErrorMessage.UserWithIdNotFound!, request.UserId)));
+            return MaaApiResponseHelper.NotFound(
+                string.Format(_apiErrorMessage.UserWithIdNotFound!, request.UserId));
         }
 
         var uploadCount = await _dbContext.CopilotOperations
@@ -100,6 +103,6 @@ public class GetCopilotUserQueryHandler : IRequestHandler<GetCopilotUserQuery, M
             .ToDictionary(fav => fav.EntityId.ToString(), fav => fav.FavoriteName);
 
         var dto = new GetCopilotUserDto(userId, user.UserName, user.UserRole, uploadCount, user.UserActivated, favList);
-        return MaaApiResponseHelper.Ok(dto, _currentUserService.GetTrackingId());
+        return MaaApiResponseHelper.Ok(dto);
     }
 }

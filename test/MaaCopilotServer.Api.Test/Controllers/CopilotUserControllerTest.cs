@@ -3,8 +3,9 @@
 // Licensed under the AGPL-3.0 license.
 
 using MaaCopilotServer.Api.Controllers;
-using MaaCopilotServer.Application.Common.Exceptions;
+
 using MaaCopilotServer.Application.Common.Models;
+using MaaCopilotServer.Application.CopilotOperation.Commands.DeleteCopilotOperation;
 using MaaCopilotServer.Application.CopilotUser.Commands.ActivateCopilotAccount;
 using MaaCopilotServer.Application.CopilotUser.Commands.ChangeCopilotUserInfo;
 using MaaCopilotServer.Application.CopilotUser.Commands.CreateCopilotUser;
@@ -60,25 +61,10 @@ public class CopilotUserControllerTest
     public async Task TestChangeCopilotUserInfo()
     {
         var controller = new CopilotUserController(_mediator);
-        await ControllerTestUtils.TestControllerEndpoint(
+        await ControllerTestUtils.TestControllerEndpoint<ChangeCopilotUserInfoCommand, object?>(
             _mediator,
             new ChangeCopilotUserInfoCommand(),
-            new EmptyObject(),
-            controller.ChangeCopilotUserInfo);
-    }
-
-    /// <summary>
-    ///     Tests <see cref="CopilotUserController.ChangeCopilotUserInfo(ChangeCopilotUserInfoCommand)" /> with
-    ///     <see cref="PipelineException" /> thrown.
-    /// </summary>
-    /// <returns>N/A</returns>
-    [TestMethod]
-    public async Task TestCreateCopilotOperation_WithException()
-    {
-        var controller = new CopilotUserController(_mediator);
-        await ControllerTestUtils.TestControllerEndpointWithException(
-            _mediator,
-            new ChangeCopilotUserInfoCommand(),
+            null,
             controller.ChangeCopilotUserInfo);
     }
 
@@ -90,25 +76,10 @@ public class CopilotUserControllerTest
     public async Task TestCreateCopilotUser()
     {
         var controller = new CopilotUserController(_mediator);
-        await ControllerTestUtils.TestControllerEndpoint(
+        await ControllerTestUtils.TestControllerEndpoint<CreateCopilotUserCommand, object?>(
             _mediator,
             new CreateCopilotUserCommand(),
-            new EmptyObject(),
-            controller.CreateCopilotUser);
-    }
-
-    /// <summary>
-    ///     Tests <see cref="CopilotUserController.CreateCopilotUser(CreateCopilotUserCommand)" /> with
-    ///     <see cref="PipelineException" /> thrown.
-    /// </summary>
-    /// <returns>N/A</returns>
-    [TestMethod]
-    public async Task TestCreateCopilotUser_WithException()
-    {
-        var controller = new CopilotUserController(_mediator);
-        await ControllerTestUtils.TestControllerEndpointWithException(
-            _mediator,
-            new CreateCopilotUserCommand(),
+            null,
             controller.CreateCopilotUser);
     }
 
@@ -120,25 +91,10 @@ public class CopilotUserControllerTest
     public async Task TestDeleteCopilotUser()
     {
         var controller = new CopilotUserController(_mediator);
-        await ControllerTestUtils.TestControllerEndpoint(
+        await ControllerTestUtils.TestControllerEndpoint<DeleteCopilotUserCommand, object?>(
             _mediator,
             new DeleteCopilotUserCommand(),
-            new EmptyObject(),
-            controller.DeleteCopilotUser);
-    }
-
-    /// <summary>
-    ///     Tests <see cref="CopilotUserController.DeleteCopilotUser(DeleteCopilotUserCommand)" /> with
-    ///     <see cref="PipelineException" /> thrown.
-    /// </summary>
-    /// <returns>N/A</returns>
-    [TestMethod]
-    public async Task TestDeleteCopilotUser_WithException()
-    {
-        var controller = new CopilotUserController(_mediator);
-        await ControllerTestUtils.TestControllerEndpointWithException(
-            _mediator,
-            new DeleteCopilotUserCommand(),
+            null,
             controller.DeleteCopilotUser);
     }
 
@@ -158,21 +114,6 @@ public class CopilotUserControllerTest
     }
 
     /// <summary>
-    ///     Tests <see cref="CopilotUserController.LoginCopilotUser(LoginCopilotUserCommand)" /> with
-    ///     <see cref="PipelineException" /> thrown.
-    /// </summary>
-    /// <returns>N/A</returns>
-    [TestMethod]
-    public async Task TestLoginCopilotUser_WithException()
-    {
-        var controller = new CopilotUserController(_mediator);
-        await ControllerTestUtils.TestControllerEndpointWithException(
-            _mediator,
-            new LoginCopilotUserCommand(),
-            controller.LoginCopilotUser);
-    }
-
-    /// <summary>
     ///     Tests <see cref="CopilotUserController.UpdateCopilotUserInfo(UpdateCopilotUserInfoCommand)" />.
     /// </summary>
     /// <returns>N/A</returns>
@@ -180,25 +121,10 @@ public class CopilotUserControllerTest
     public async Task TestUpdateCopilotUserInfo()
     {
         var controller = new CopilotUserController(_mediator);
-        await ControllerTestUtils.TestControllerEndpoint(
+        await ControllerTestUtils.TestControllerEndpoint<UpdateCopilotUserInfoCommand, object?>(
             _mediator,
             new UpdateCopilotUserInfoCommand(),
-            new EmptyObject(),
-            controller.UpdateCopilotUserInfo);
-    }
-
-    /// <summary>
-    ///     Tests <see cref="CopilotUserController.UpdateCopilotUserInfo(UpdateCopilotUserInfoCommand)" /> with
-    ///     <see cref="PipelineException" /> thrown.
-    /// </summary>
-    /// <returns>N/A</returns>
-    [TestMethod]
-    public async Task TestUpdateCopilotUserInfo_WithException()
-    {
-        var controller = new CopilotUserController(_mediator);
-        await ControllerTestUtils.TestControllerEndpointWithException(
-            _mediator,
-            new UpdateCopilotUserInfoCommand(),
+            null,
             controller.UpdateCopilotUserInfo);
     }
 
@@ -210,25 +136,10 @@ public class CopilotUserControllerTest
     public async Task TestUpdateCopilotUserPassword()
     {
         var controller = new CopilotUserController(_mediator);
-        await ControllerTestUtils.TestControllerEndpoint(
+        await ControllerTestUtils.TestControllerEndpoint<UpdateCopilotUserPasswordCommand, object?>(
             _mediator,
             new UpdateCopilotUserPasswordCommand(),
-            new EmptyObject(),
-            controller.UpdateCopilotUserPassword);
-    }
-
-    /// <summary>
-    ///     Tests <see cref="CopilotUserController.UpdateCopilotUserPassword(UpdateCopilotUserPasswordCommand)" /> with
-    ///     <see cref="PipelineException" /> thrown.
-    /// </summary>
-    /// <returns>N/A</returns>
-    [TestMethod]
-    public async Task TestUpdateCopilotUserPassword_WithException()
-    {
-        var controller = new CopilotUserController(_mediator);
-        await ControllerTestUtils.TestControllerEndpointWithException(
-            _mediator,
-            new UpdateCopilotUserPasswordCommand(),
+            null,
             controller.UpdateCopilotUserPassword);
     }
 
@@ -248,20 +159,6 @@ public class CopilotUserControllerTest
     }
 
     /// <summary>
-    ///     Tests <see cref="CopilotUserController.GetCopilotUser(string?)" /> with <see cref="PipelineException" /> thrown.
-    /// </summary>
-    /// <returns>N/A</returns>
-    [TestMethod]
-    public async Task TestGetCopilotUser_WithException()
-    {
-        var controller = new CopilotUserController(_mediator);
-        await ControllerTestUtils.TestControllerEndpointWithException(
-            _mediator,
-            string.Empty,
-            controller.GetCopilotUser);
-    }
-
-    /// <summary>
     ///     Tests <see cref="CopilotUserController.QueryCopilotUser(QueryCopilotUserQuery)" />.
     /// </summary>
     /// <returns>N/A</returns>
@@ -277,21 +174,6 @@ public class CopilotUserControllerTest
     }
 
     /// <summary>
-    ///     Tests <see cref="CopilotUserController.QueryCopilotUser(QueryCopilotUserQuery)" /> with
-    ///     <see cref="PipelineException" /> thrown.
-    /// </summary>
-    /// <returns>N/A</returns>
-    [TestMethod]
-    public async Task TestQueryCopilotUser_WithException()
-    {
-        var controller = new CopilotUserController(_mediator);
-        await ControllerTestUtils.TestControllerEndpointWithException(
-            _mediator,
-            new QueryCopilotUserQuery(),
-            controller.QueryCopilotUser);
-    }
-
-    /// <summary>
     ///     Tests <see cref="CopilotUserController.RegisterAccount(RegisterCopilotAccountCommand)" />.
     /// </summary>
     /// <returns>N/A</returns>
@@ -299,25 +181,10 @@ public class CopilotUserControllerTest
     public async Task TestRegisterAccount()
     {
         var controller = new CopilotUserController(_mediator);
-        await ControllerTestUtils.TestControllerEndpoint(
+        await ControllerTestUtils.TestControllerEndpoint<RegisterCopilotAccountCommand, object?>(
             _mediator,
             new RegisterCopilotAccountCommand(),
-            new EmptyObject(),
-            controller.RegisterAccount);
-    }
-
-    /// <summary>
-    ///     Tests <see cref="CopilotUserController.RegisterAccount(RegisterCopilotAccountCommand)" /> with
-    ///     <see cref="PipelineException" /> thrown.
-    /// </summary>
-    /// <returns>N/A</returns>
-    [TestMethod]
-    public async Task TestRegisterAccount_WithException()
-    {
-        var controller = new CopilotUserController(_mediator);
-        await ControllerTestUtils.TestControllerEndpointWithException(
-            _mediator,
-            new RegisterCopilotAccountCommand(),
+            null,
             controller.RegisterAccount);
     }
 
@@ -329,26 +196,11 @@ public class CopilotUserControllerTest
     public async Task TestActivateAccount()
     {
         var controller = new CopilotUserController(_mediator);
-        await ControllerTestUtils.TestControllerEndpoint(
+        await ControllerTestUtils.TestControllerEndpoint<ActivateCopilotAccountCommand, object?>(
             _mediator,
             new ActivateCopilotAccountCommand(),
-            new EmptyObject(),
+            null,
             controller.ActivateAccount);
-    }
-
-    /// <summary>
-    ///     Tests <see cref="CopilotUserController.ActivateAccount(ActivateCopilotAccountCommand)" /> with
-    ///     <see cref="PipelineException" /> thrown.
-    /// </summary>
-    /// <returns>N/A</returns>
-    [TestMethod]
-    public async Task TestRequestPasswordChange_WithException()
-    {
-        var controller = new CopilotUserController(_mediator);
-        await ControllerTestUtils.TestControllerEndpointWithException(
-            _mediator,
-            new RequestPasswordResetCommand(),
-            controller.RequestPasswordChange);
     }
 
     /// <summary>
@@ -359,25 +211,10 @@ public class CopilotUserControllerTest
     public async Task TestRequestPasswordChange()
     {
         var controller = new CopilotUserController(_mediator);
-        await ControllerTestUtils.TestControllerEndpoint(
+        await ControllerTestUtils.TestControllerEndpoint<RequestPasswordResetCommand, object?>(
             _mediator,
             new RequestPasswordResetCommand(),
-            new EmptyObject(),
-            controller.RequestPasswordChange);
-    }
-
-    /// <summary>
-    ///     Tests <see cref="CopilotUserController.RequestPasswordChange(RequestPasswordResetCommand)" /> with
-    ///     <see cref="PipelineException" /> thrown.
-    /// </summary>
-    /// <returns>N/A</returns>
-    [TestMethod]
-    public async Task TestActivateAccount_WithException()
-    {
-        var controller = new CopilotUserController(_mediator);
-        await ControllerTestUtils.TestControllerEndpointWithException(
-            _mediator,
-            new RequestPasswordResetCommand(),
+            null,
             controller.RequestPasswordChange);
     }
 
@@ -389,25 +226,10 @@ public class CopilotUserControllerTest
     public async Task TestPasswordChange()
     {
         var controller = new CopilotUserController(_mediator);
-        await ControllerTestUtils.TestControllerEndpoint(
+        await ControllerTestUtils.TestControllerEndpoint<PasswordResetCommand, object?>(
             _mediator,
             new PasswordResetCommand(),
-            new EmptyObject(),
-            controller.PasswordChange);
-    }
-
-    /// <summary>
-    ///     Tests <see cref="CopilotUserController.PasswordChange(PasswordResetCommand)" /> with
-    ///     <see cref="PipelineException" /> thrown.
-    /// </summary>
-    /// <returns>N/A</returns>
-    [TestMethod]
-    public async Task TestPasswordChange_WithException()
-    {
-        var controller = new CopilotUserController(_mediator);
-        await ControllerTestUtils.TestControllerEndpointWithException(
-            _mediator,
-            new PasswordResetCommand(),
+            null,
             controller.PasswordChange);
     }
 
@@ -423,20 +245,6 @@ public class CopilotUserControllerTest
             _mediator,
             string.Empty,
             new GetCopilotUserFavoritesDto(),
-            controller.GetFavorites);
-    }
-
-    /// <summary>
-    ///     Tests <see cref="CopilotUserController.GetFavorites(string?)" /> with <see cref="PipelineException" /> thrown.
-    /// </summary>
-    /// <returns>N/A</returns>
-    [TestMethod]
-    public async Task TestGetFavorites_WithException()
-    {
-        var controller = new CopilotUserController(_mediator);
-        await ControllerTestUtils.TestControllerEndpointWithException(
-            _mediator,
-            string.Empty,
             controller.GetFavorites);
     }
 }

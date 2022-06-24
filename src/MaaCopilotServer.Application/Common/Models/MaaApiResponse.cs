@@ -9,8 +9,7 @@ namespace MaaCopilotServer.Application.Common.Models;
 /// <summary>
 ///     The model of API response.
 /// </summary>
-/// <typeparam name="T">The type of the data.</typeparam>
-public record MaaApiResponse<T>
+public record MaaApiResponse
 {
     /// <summary>
     ///     The status code.
@@ -31,8 +30,8 @@ public record MaaApiResponse<T>
     public string TraceId { get; set; } = string.Empty;
 
     /// <summary>
-    ///     The request body.
+    ///     The response body.
     /// </summary>
     [JsonPropertyName("data")]
-    public T? Data { get; set; }
+    public object? Data { get; set; }
 }

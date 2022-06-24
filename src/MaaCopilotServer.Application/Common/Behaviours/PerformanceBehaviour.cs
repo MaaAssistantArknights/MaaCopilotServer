@@ -11,9 +11,11 @@ namespace MaaCopilotServer.Application.Common.Behaviours;
 ///     The behaviour to record the performance data, e.g. time elapsed of a request.
 /// </summary>
 /// <typeparam name="TRequest">The type of the request.</typeparam>
-/// <typeparam name="TResponse">The type of the response.</typeparam>
-public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
-    where TRequest : IRequest<TResponse>
+/// <typeparam name="TResponse">The type of the response, it will always be <see cref="MaaApiResponse"/>.</typeparam>
+/// <remarks>You can not remove the unused <see cref="TResponse"/>, or the service can not be injected to DI container.</remarks>
+// ReSharper disable once UnusedTypeParameter
+public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, MaaApiResponse>
+    where TRequest : IRequest<MaaApiResponse> where TResponse : MaaApiResponse
 {
     /// <summary>
     ///     The service of current user.
@@ -31,7 +33,7 @@ public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequ
     private readonly Stopwatch _timer;
 
     /// <summary>
-    ///     The constructor of <see cref="PerformanceBehaviour{TRequest, TResponse}" />.
+    ///     The constructor.
     /// </summary>
     /// <param name="logger">The logger.</param>
     /// <param name="currentUserService">The service of current user.</param>
@@ -53,8 +55,8 @@ public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequ
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <param name="next">The next request handler.</param>
     /// <returns>The response.</returns>
-    public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken,
-        RequestHandlerDelegate<TResponse> next)
+    public async Task<MaaApiResponse> Handle(TRequest request, CancellationToken cancellationToken,
+        RequestHandlerDelegate<MaaApiResponse> next)
     {
         _timer.Start();
 

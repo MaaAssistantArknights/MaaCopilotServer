@@ -2,10 +2,12 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using Microsoft.AspNetCore.Http;
+
 namespace MaaCopilotServer.Application.Common.Helpers
 {
     /// <summary>
-    ///     The helper class of <see cref="MaaApiResponse{T}"/>.
+    ///     The helper class of <see cref="MaaApiResponse"/>.
     /// </summary>
     public static class MaaApiResponseHelper
     {
@@ -13,16 +15,15 @@ namespace MaaCopilotServer.Application.Common.Helpers
         /// <summary>
         ///     Responds HTTP 400 Bad Request.
         /// </summary>
-        /// <param name="id">The tracking ID.</param>
         /// <param name="message">The message, <c>"Bad Request"</c> by default.</param>
         /// <returns>The response.</returns>
-        public static MaaApiResponse<EmptyObject> BadRequest(string id, string? message)
+        public static MaaApiResponse BadRequest(string? message = null)
         {
-            return new MaaApiResponse<EmptyObject>
+            return new MaaApiResponse
             {
-                StatusCode = 400,
+                StatusCode = StatusCodes.Status400BadRequest,
                 Message = message ?? "Bad Request",
-                TraceId = id,
+                TraceId = string.Empty,
                 Data = null,
             };
         }
@@ -30,16 +31,15 @@ namespace MaaCopilotServer.Application.Common.Helpers
         /// <summary>
         ///     Responds HTTP 403 Forbidden.
         /// </summary>
-        /// <param name="id">The tracking ID.</param>
         /// <param name="message">The message, <c>"Forbidden. Permission Denied"</c> by default</param>
         /// <returns>The response.</returns>
-        public static MaaApiResponse<EmptyObject> Forbidden(string id, string? message)
+        public static MaaApiResponse Forbidden(string? message = null)
         {
-            return new MaaApiResponse<EmptyObject>
+            return new MaaApiResponse
             {
-                StatusCode = 403,
+                StatusCode = StatusCodes.Status403Forbidden,
                 Message = message ?? "Forbidden. Permission Denied",
-                TraceId = id,
+                TraceId = string.Empty,
                 Data = null,
             };
         }
@@ -47,16 +47,15 @@ namespace MaaCopilotServer.Application.Common.Helpers
         /// <summary>
         ///     Responds HTTP 500 Internal Error.
         /// </summary>
-        /// <param name="id">The tracking ID.</param>
         /// <param name="message">The message, <c>"Internal Server Error"</c> by default.</param>
         /// <returns>The response.</returns>
-        public static MaaApiResponse<EmptyObject> InternalError(string id, string? message)
+        public static MaaApiResponse InternalError(string? message = null)
         {
-            return new MaaApiResponse<EmptyObject>
+            return new MaaApiResponse
             {
-                StatusCode = 500,
+                StatusCode = StatusCodes.Status500InternalServerError,
                 Message = message ?? "Internal Server Error",
-                TraceId = id,
+                TraceId = string.Empty,
                 Data = null,
             };
         }
@@ -64,16 +63,15 @@ namespace MaaCopilotServer.Application.Common.Helpers
         /// <summary>
         ///     Responds HTTP 404 Not Found.
         /// </summary>
-        /// <param name="id">The tracking ID.</param>
         /// <param name="message">The message, <c>"Not Found"</c> by default.</param>
         /// <returns>The response.</returns>
-        public static MaaApiResponse<EmptyObject> NotFound(string id, string? message)
+        public static MaaApiResponse NotFound(string? message = null)
         {
-            return new MaaApiResponse<EmptyObject>
+            return new MaaApiResponse
             {
-                StatusCode = 404,
+                StatusCode = StatusCodes.Status404NotFound,
                 Message = message ?? "Not Found",
-                TraceId = id,
+                TraceId = string.Empty,
                 Data = null,
             };
         }
@@ -82,16 +80,14 @@ namespace MaaCopilotServer.Application.Common.Helpers
         ///     Responds HTTP 200 OK.
         /// </summary>
         /// <param name="obj">The request body.</param>
-        /// <param name="id">The tracking ID.</param>
-        /// <typeparam name="T">The response type.</typeparam>
         /// <returns>The response.</returns>
-        public static MaaApiResponse<T> Ok<T>(T? obj, string id)
+        public static MaaApiResponse Ok(object? obj = null)
         {
-            return new MaaApiResponse<T>
+            return new MaaApiResponse
             {
-                StatusCode = 200,
+                StatusCode = StatusCodes.Status200OK,
                 Message = "OK",
-                TraceId = id,
+                TraceId = string.Empty,
                 Data = obj,
             };
         }
@@ -99,16 +95,15 @@ namespace MaaCopilotServer.Application.Common.Helpers
         /// <summary>
         ///     Responds HTTP 401 Unauthorized.
         /// </summary>
-        /// <param name="id">The tracking ID.</param>
         /// <param name="message">The message, <c>"Unauthorized"</c> by default.</param>
         /// <returns>The response.</returns>
-        public static MaaApiResponse<EmptyObject> Unauthorized(string id, string? message)
+        public static MaaApiResponse Unauthorized(string? message = null)
         {
-            return new MaaApiResponse<EmptyObject>
+            return new MaaApiResponse
             {
-                StatusCode = 401,
+                StatusCode = StatusCodes.Status401Unauthorized,
                 Message = message ?? "Unauthorized",
-                TraceId = id,
+                TraceId = string.Empty,
                 Data = null,
             };
         }

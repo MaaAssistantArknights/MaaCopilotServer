@@ -14,7 +14,7 @@ namespace MaaCopilotServer.Application.CopilotUser.Commands.CreateCopilotUser;
 ///     The record of creating user.
 /// </summary>
 [Authorized(UserRole.Admin)]
-public record CreateCopilotUserCommand : IRequest<MaaApiResponse<EmptyObject>>
+public record CreateCopilotUserCommand : IRequest<MaaApiResponse>
 {
     /// <summary>
     ///     The user email.
@@ -45,7 +45,7 @@ public record CreateCopilotUserCommand : IRequest<MaaApiResponse<EmptyObject>>
 /// <summary>
 ///     The handler of creating user.
 /// </summary>
-public class CreateCopilotUserCommandHandler : IRequestHandler<CreateCopilotUserCommand, MaaApiResponse<EmptyObject>>
+public class CreateCopilotUserCommandHandler : IRequestHandler<CreateCopilotUserCommand, MaaApiResponse>
 {
     /// <summary>
     ///     The API error message.
@@ -91,16 +91,18 @@ public class CreateCopilotUserCommandHandler : IRequestHandler<CreateCopilotUser
     /// </summary>
     /// <param name="request">The request.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns>A task with no contents if the request completes successfully.</returns>
-    /// <exception cref="PipelineException">Thrown when the email is already in use.</exception>
-    public async Task<MaaApiResponse<EmptyObject>> Handle(CreateCopilotUserCommand request,
+    /// <returns>
+    ///     <para>A task with no contents if the request completes successfully.</para>
+    ///     <para>400 when the email is already in use.</para>
+    /// </returns>
+    public async Task<MaaApiResponse> Handle(CreateCopilotUserCommand request,
         CancellationToken cancellationToken)
     {
         var emailColliding = await _dbContext.CopilotUsers.AnyAsync(x => x.Email == request.Email, cancellationToken);
         if (emailColliding)
         {
-            throw new PipelineException(MaaApiResponseHelper.BadRequest(_currentUserService.GetTrackingId(),
-                _apiErrorMessage.EmailAlreadyInUse));
+            return MaaApiResponseHelper.BadRequest(
+                _apiErrorMessage.EmailAlreadyInUse);
         }
 
         var hashedPassword = _secretService.HashPassword(request.Password!);
@@ -108,6 +110,6 @@ public class CreateCopilotUserCommandHandler : IRequestHandler<CreateCopilotUser
             Enum.Parse<UserRole>(request.Role!), _currentUserService.GetUserIdentity()!.Value);
         _dbContext.CopilotUsers.Add(user);
         await _dbContext.SaveChangesAsync(cancellationToken);
-        return MaaApiResponseHelper.Ok<EmptyObject>(null, _currentUserService.GetTrackingId());
+        return MaaApiResponseHelper.Ok();
     }
 }

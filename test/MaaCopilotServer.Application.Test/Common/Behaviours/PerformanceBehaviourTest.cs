@@ -3,7 +3,9 @@
 // Licensed under the AGPL-3.0 license.
 
 using MaaCopilotServer.Application.Common.Behaviours;
+using MaaCopilotServer.Application.Common.Helpers;
 using MaaCopilotServer.Application.Common.Interfaces;
+using MaaCopilotServer.Application.Common.Models;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -23,7 +25,7 @@ public class PerformanceBehaviourTest
     /// <summary>
     ///     The logger.
     /// </summary>
-    private ILogger<IRequest<string>> _logger;
+    private ILogger<IRequest<MaaApiResponse>> _logger;
 
     /// <summary>
     ///     Initializes tests.
@@ -32,7 +34,7 @@ public class PerformanceBehaviourTest
     public void Initialize()
     {
         _currentUserService = Substitute.For<ICurrentUserService>();
-        _logger = Substitute.For<ILogger<IRequest<string>>>();
+        _logger = Substitute.For<ILogger<IRequest<MaaApiResponse>>>();
     }
 
     /// <summary>
@@ -47,9 +49,10 @@ public class PerformanceBehaviourTest
     {
         var testUserId = new Guid();
         _currentUserService.GetUserIdentity().Returns(testUserId);
-        var behaviour = new PerformanceBehaviour<IRequest<string>, string>(_logger, _currentUserService);
+        var behaviour =
+            new PerformanceBehaviour<IRequest<MaaApiResponse>, MaaApiResponse>(_logger, _currentUserService);
         var action = async () =>
-            await behaviour.Handle(null, new CancellationToken(), () => Task.FromResult(string.Empty));
+            await behaviour.Handle(null, new CancellationToken(), () => Task.FromResult(MaaApiResponseHelper.Ok()));
         await action.Should().NotThrowAsync();
     }
 }

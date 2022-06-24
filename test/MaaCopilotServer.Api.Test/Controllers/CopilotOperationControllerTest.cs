@@ -3,7 +3,7 @@
 // Licensed under the AGPL-3.0 license.
 
 using MaaCopilotServer.Api.Controllers;
-using MaaCopilotServer.Application.Common.Exceptions;
+
 using MaaCopilotServer.Application.Common.Models;
 using MaaCopilotServer.Application.CopilotOperation.Commands.CreateCopilotOperation;
 using MaaCopilotServer.Application.CopilotOperation.Commands.DeleteCopilotOperation;
@@ -59,21 +59,6 @@ public class CopilotOperationControllerTest
     }
 
     /// <summary>
-    ///     Tests <see cref="CopilotOperationController.CreateCopilotOperation(CreateCopilotOperationCommand)" /> with
-    ///     <see cref="PipelineException" /> thrown.
-    /// </summary>
-    /// <returns>N/A</returns>
-    [TestMethod]
-    public async Task TestCreateCopilotOperation_WithException()
-    {
-        var controller = new CopilotOperationController(_mediator);
-        await ControllerTestUtils.TestControllerEndpointWithException(
-            _mediator,
-            new CreateCopilotOperationCommand(),
-            controller.CreateCopilotOperation);
-    }
-
-    /// <summary>
     ///     Tests <see cref="CopilotOperationController.DeleteCopilotOperation(DeleteCopilotOperationCommand)" />.
     /// </summary>
     /// <returns>N/A</returns>
@@ -81,25 +66,10 @@ public class CopilotOperationControllerTest
     public async Task TestDeleteCopilotOperation()
     {
         var controller = new CopilotOperationController(_mediator);
-        await ControllerTestUtils.TestControllerEndpoint(
+        await ControllerTestUtils.TestControllerEndpoint<DeleteCopilotOperationCommand, object>(
             _mediator,
             new DeleteCopilotOperationCommand(),
-            new EmptyObject(),
-            controller.DeleteCopilotOperation);
-    }
-
-    /// <summary>
-    ///     Tests <see cref="CopilotOperationController.CreateCopilotOperation(CreateCopilotOperationCommand)" /> with
-    ///     <see cref="PipelineException" /> thrown.
-    /// </summary>
-    /// <returns>N/A</returns>
-    [TestMethod]
-    public async Task TestDeleteCopilotOperation_WithException()
-    {
-        var controller = new CopilotOperationController(_mediator);
-        await ControllerTestUtils.TestControllerEndpointWithException(
-            _mediator,
-            new DeleteCopilotOperationCommand(),
+            null,
             controller.DeleteCopilotOperation);
     }
 
@@ -119,21 +89,6 @@ public class CopilotOperationControllerTest
     }
 
     /// <summary>
-    ///     Tests <see cref="CopilotOperationController.GetCopilotOperation(string)" /> with <see cref="PipelineException" />
-    ///     thrown.
-    /// </summary>
-    /// <returns>N/A</returns>
-    [TestMethod]
-    public async Task TestGetCopilotOperation_WithException()
-    {
-        var controller = new CopilotOperationController(_mediator);
-        await ControllerTestUtils.TestControllerEndpointWithException(
-            _mediator,
-            string.Empty,
-            controller.GetCopilotOperation);
-    }
-
-    /// <summary>
     ///     Tests <see cref="CopilotOperationController.QueryCopilotOperation(QueryCopilotOperationsQuery)" />.
     /// </summary>
     /// <returns>N/A</returns>
@@ -145,21 +100,6 @@ public class CopilotOperationControllerTest
             _mediator,
             new QueryCopilotOperationsQuery(),
             new PaginationResult<QueryCopilotOperationsQueryDto>(),
-            controller.QueryCopilotOperation);
-    }
-
-    /// <summary>
-    ///     Tests <see cref="CopilotOperationController.QueryCopilotOperation(QueryCopilotOperationsQuery)" /> with
-    ///     <see cref="PipelineException" /> thrown.
-    /// </summary>
-    /// <returns>N/A</returns>
-    [TestMethod]
-    public async Task TestQueryCopilotOperation_WithException()
-    {
-        var controller = new CopilotOperationController(_mediator);
-        await ControllerTestUtils.TestControllerEndpointWithException(
-            _mediator,
-            new QueryCopilotOperationsQuery(),
             controller.QueryCopilotOperation);
     }
 }

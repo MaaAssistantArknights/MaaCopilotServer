@@ -13,7 +13,7 @@ namespace MaaCopilotServer.Application.CopilotOperation.Commands.CreateCopilotOp
 ///     The record of creating operation.
 /// </summary>
 [Authorized(UserRole.Uploader)]
-public record CreateCopilotOperationCommand : IRequest<MaaApiResponse<CreateCopilotOperationDto>>
+public record CreateCopilotOperationCommand : IRequest<MaaApiResponse>
 {
     /// <summary>
     ///     The operation content.
@@ -25,8 +25,7 @@ public record CreateCopilotOperationCommand : IRequest<MaaApiResponse<CreateCopi
 /// <summary>
 ///     The handler of creating operation.
 /// </summary>
-public class CreateCopilotOperationCommandHandler : IRequestHandler<CreateCopilotOperationCommand,
-    MaaApiResponse<CreateCopilotOperationDto>>
+public class CreateCopilotOperationCommandHandler : IRequestHandler<CreateCopilotOperationCommand, MaaApiResponse>
 {
     /// <summary>
     ///     The service for processing copilot ID.
@@ -57,6 +56,7 @@ public class CreateCopilotOperationCommandHandler : IRequestHandler<CreateCopilo
     /// <param name="identityService"> The service for user Identity.</param>
     /// <param name="currentUserService">The service for current user.</param>
     /// <param name="copilotIdService">The service for processing copilot ID.</param>
+    /// <param name="validationErrorMessage">The resource of validation error messages.</param>
     public CreateCopilotOperationCommandHandler(
         IMaaCopilotDbContext dbContext,
         IIdentityService identityService,
@@ -77,8 +77,7 @@ public class CreateCopilotOperationCommandHandler : IRequestHandler<CreateCopilo
     /// <param name="request">The request.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>A task with the response.</returns>
-    public async Task<MaaApiResponse<CreateCopilotOperationDto>> Handle(CreateCopilotOperationCommand request,
-        CancellationToken cancellationToken)
+    public async Task<MaaApiResponse> Handle(CreateCopilotOperationCommand request, CancellationToken cancellationToken)
     {
         var content = JsonSerializer.Deserialize<CreateCopilotOperationContent>(request.Content!).IsNotNull();
 
@@ -90,17 +89,14 @@ public class CreateCopilotOperationCommandHandler : IRequestHandler<CreateCopilo
         var docTitle = content.Doc?.Title ?? string.Empty;
         var docDetails = content.Doc?.Details ?? string.Empty;
 
-        var operators = (content.Operators ?? Array.Empty<Operator>())
-            .Select(item =>
-            {
-                if (item.Name == null)
-                {
-                    throw new PipelineException(MaaApiResponseHelper.BadRequest(_currentUserService.GetTrackingId(),
-                        _validationErrorMessage.CopilotOperationJsonIsInvalid));
-                }
+        var operatorArray = content.Operators ?? Array.Empty<Operator>();
+        if (operatorArray.Any(item => item.Name == null))
+        {
+            return MaaApiResponseHelper.BadRequest(_validationErrorMessage.CopilotOperationJsonIsInvalid);
+        }
 
-                return $"{item.Name}::{item.Skill ?? 1}";
-            })
+        var operators = (content.Operators ?? Array.Empty<Operator>())
+            .Select(item => $"{item.Name}::{item.Skill ?? 1}")
             .Distinct() // Remove duplicate operators.
             .ToList();
 
@@ -112,14 +108,14 @@ public class CreateCopilotOperationCommandHandler : IRequestHandler<CreateCopilo
         await _dbContext.SaveChangesAsync(cancellationToken);
 
         var id = _copilotIdService.EncodeId(entity.Id);
-        return MaaApiResponseHelper.Ok(new CreateCopilotOperationDto(id), _currentUserService.GetTrackingId());
+        return MaaApiResponseHelper.Ok(new CreateCopilotOperationDto(id));
     }
 }
 
 /// <summary>
 /// The JSON request content of creating copilot operation.
 /// </summary>
-record CreateCopilotOperationContent
+internal record CreateCopilotOperationContent
 {
     /// <summary>
     /// The <c>stage_name</c> field.
@@ -149,7 +145,7 @@ record CreateCopilotOperationContent
 /// <summary>
 /// The JSON content of <c>doc</c>.
 /// </summary>
-record Doc
+internal record Doc
 {
     /// <summary>
     /// The <c>title</c> field.
@@ -167,7 +163,7 @@ record Doc
 /// <summary>
 /// The JSON content of <c>operator</c>.
 /// </summary>
-record Operator
+internal record Operator
 {
     /// <summary>
     /// The <c>name</c> field.

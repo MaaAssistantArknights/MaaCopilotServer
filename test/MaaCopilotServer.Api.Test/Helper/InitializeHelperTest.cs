@@ -21,7 +21,8 @@ public class InitializeHelperTest
     public void TestConstructor()
     {
         new InitializeHelper(Substitute.For<IConfiguration>()).Should().NotBeNull();
-        new InitializeHelper(Substitute.For<IConfiguration>(), Substitute.For<GlobalSettingsHelper>()).Should().NotBeNull();
+        new InitializeHelper(Substitute.For<IConfiguration>(), Substitute.For<GlobalSettingsHelper>()).Should()
+            .NotBeNull();
     }
 
     /// <summary>

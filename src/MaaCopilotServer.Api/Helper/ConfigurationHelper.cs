@@ -22,7 +22,8 @@ public class ConfigurationHelper
     /// The constructor.
     /// </summary>
     public ConfigurationHelper() : this(new GlobalSettingsHelper())
-    { }
+    {
+    }
 
     /// <summary>
     /// The constructor with all properties.
@@ -30,7 +31,7 @@ public class ConfigurationHelper
     /// <param name="globalSettingHelper"></param>
     public ConfigurationHelper(GlobalSettingsHelper globalSettingHelper)
     {
-        this._settings = globalSettingHelper;
+        _settings = globalSettingHelper;
     }
 
     /// <summary>
@@ -39,13 +40,13 @@ public class ConfigurationHelper
     private void EnsureSettingsFileCreated()
     {
         // Get settings file locations.
-        var appsettingsFile = new FileInfo(this._settings.AppSettings);
+        var appsettingsFile = new FileInfo(_settings.AppSettings);
         var appsettingsEnvFile =
-            new FileInfo(this._settings.AppSettingsEnv);
+            new FileInfo(_settings.AppSettingsEnv);
         var originalAppsettingsFile =
-            new FileInfo(this._settings.OriginalAppSettings).AssertExist();
+            new FileInfo(_settings.OriginalAppSettings).AssertExist();
         var originalAppsettingsEnvFile =
-            new FileInfo(this._settings.OriginalAppSettingsEnv);
+            new FileInfo(_settings.OriginalAppSettingsEnv);
 
         if (appsettingsFile.Exists is false)
         {
@@ -53,10 +54,10 @@ public class ConfigurationHelper
             appsettingsFile.EnsureDeleted();
 
             var text = File.ReadAllText(originalAppsettingsFile.FullName);
-            text = text.Replace("{{ DATA DIRECTORY }}", this._settings.DataDirectory);
+            text = text.Replace("{{ DATA DIRECTORY }}", _settings.DataDirectory);
             File.WriteAllText(appsettingsFile.FullName, text);
 
-            if (this._settings.IsProductionEnvironment)
+            if (_settings.IsProductionEnvironment)
             {
                 Environment.Exit(0);
             }
@@ -85,17 +86,17 @@ public class ConfigurationHelper
         // Build configurations.
         var configurationBuilder = new ConfigurationBuilder();
 
-        configurationBuilder.AddJsonFile(this._settings.AppSettings, false, true);
-        configurationBuilder.AddJsonFile(this._settings.AppSettingsEnv, true, true);
+        configurationBuilder.AddJsonFile(_settings.AppSettings, false, true);
+        configurationBuilder.AddJsonFile(_settings.AppSettingsEnv, true, true);
 
         configurationBuilder.AddEnvironmentVariables("MAA_");
 
-        var appVersion = this._settings.AppVersion;
+        var appVersion = _settings.AppVersion;
 
         configurationBuilder.AddInMemoryCollection(new List<KeyValuePair<string, string>>
         {
-            new("Application:AssemblyPath", this._settings.AssemblyDirectory),
-            new("Application:DataDirectory", this._settings.DataDirectory),
+            new("Application:AssemblyPath", _settings.AssemblyDirectory),
+            new("Application:DataDirectory", _settings.DataDirectory),
             new("Application:Version", appVersion),
             new("ElasticApm:ServiceVersion", appVersion)
         });

@@ -8,6 +8,7 @@ using Elastic.Apm.AspNetCore.DiagnosticListener;
 using Elastic.Apm.DiagnosticSource;
 using Elastic.Apm.Elasticsearch;
 using Elastic.Apm.EntityFrameworkCore;
+using MaaCopilotServer.Api.Formatter;
 using MaaCopilotServer.Api.Helper;
 using MaaCopilotServer.Api.Middleware;
 using MaaCopilotServer.Application;
@@ -50,7 +51,8 @@ public static class Program
         builder.Configuration.AddConfiguration(configuration);
 
         builder.Services.AddCors();
-        builder.Services.AddControllers();
+        builder.Services.AddControllers(options =>
+            options.OutputFormatters.Insert(0, new MaaResponseFormatter()));
         builder.Services.AddResources();
         builder.Services.AddInfrastructureServices(configuration);
         builder.Services.AddApplicationServices();

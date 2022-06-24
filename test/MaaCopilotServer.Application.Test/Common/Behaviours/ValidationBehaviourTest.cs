@@ -5,9 +5,12 @@
 using FluentValidation;
 using FluentValidation.Results;
 using MaaCopilotServer.Application.Common.Behaviours;
-using MaaCopilotServer.Application.Common.Exceptions;
+
+using MaaCopilotServer.Application.Common.Helpers;
 using MaaCopilotServer.Application.Common.Interfaces;
+using MaaCopilotServer.Application.Common.Models;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 
 namespace MaaCopilotServer.Application.Test.Common.Behaviours;
 
@@ -25,7 +28,7 @@ public class ValidationBehaviourTest
     /// <summary>
     ///     The validators.
     /// </summary>
-    private IEnumerable<IValidator<IRequest<string>>> _validators;
+    private IEnumerable<IValidator<IRequest<MaaApiResponse>>> _validators;
 
     /// <summary>
     ///     Initializes tests.
@@ -46,11 +49,12 @@ public class ValidationBehaviourTest
     [TestMethod]
     public async Task TestHandle_EmptyValidators()
     {
-        _validators = new List<IValidator<IRequest<string>>>();
-        var behaviour = new ValidationBehaviour<IRequest<string>, string>(_validators, _currentUserService);
-        var action = async () => await behaviour.Handle(Substitute.For<IRequest<string>>(),
+        _validators = new List<IValidator<IRequest<MaaApiResponse>>>();
+        var behaviour =
+            new ValidationBehaviour<IRequest<MaaApiResponse>, MaaApiResponse>(_validators, _currentUserService);
+        var action = async () => await behaviour.Handle(Substitute.For<IRequest<MaaApiResponse>>(),
             new CancellationToken(),
-            () => Task.FromResult(string.Empty));
+            () => Task.FromResult(MaaApiResponseHelper.Ok()));
         await action.Should().NotThrowAsync();
     }
 
@@ -73,14 +77,16 @@ public class ValidationBehaviourTest
     {
         var validator1 = new TestValidator(validator1Passed);
         var validator2 = new TestValidator(validator2Passed);
-        _validators = new List<IValidator<IRequest<string>>> { validator1, validator2 };
-        var behaviour = new ValidationBehaviour<IRequest<string>, string>(_validators, _currentUserService);
-        var action = async () => await behaviour.Handle(Substitute.For<IRequest<string>>(),
+        _validators = new List<IValidator<IRequest<MaaApiResponse>>> { validator1, validator2 };
+        var behaviour =
+            new ValidationBehaviour<IRequest<MaaApiResponse>, MaaApiResponse>(_validators, _currentUserService);
+        var action = async () => await behaviour.Handle(Substitute.For<IRequest<MaaApiResponse>>(),
             new CancellationToken(),
-            () => Task.FromResult(string.Empty));
+            () => Task.FromResult(MaaApiResponseHelper.Ok()));
         if (expectException)
         {
-            await action.Should().ThrowAsync<PipelineException>();
+            var response = await action();
+            response.StatusCode.Should().NotBe(StatusCodes.Status200OK);
         }
         else
         {
@@ -92,7 +98,7 @@ public class ValidationBehaviourTest
 /// <summary>
 ///     The mock validator.
 /// </summary>
-internal class TestValidator : IValidator<IRequest<string>>
+internal class TestValidator : IValidator<IRequest<MaaApiResponse>>
 {
     /// <summary>
     ///     The flag that the validator should pass or not.
@@ -121,7 +127,7 @@ internal class TestValidator : IValidator<IRequest<string>>
     }
 
     /// <inheritdoc />
-    public ValidationResult Validate(IRequest<string> instance)
+    public ValidationResult Validate(IRequest<MaaApiResponse> instance)
     {
         throw new NotImplementedException();
     }
@@ -133,7 +139,8 @@ internal class TestValidator : IValidator<IRequest<string>>
     }
 
     /// <inheritdoc />
-    public Task<ValidationResult> ValidateAsync(IRequest<string> instance, CancellationToken cancellation = default)
+    public Task<ValidationResult> ValidateAsync(IRequest<MaaApiResponse> instance,
+        CancellationToken cancellation = default)
     {
         throw new NotImplementedException();
     }

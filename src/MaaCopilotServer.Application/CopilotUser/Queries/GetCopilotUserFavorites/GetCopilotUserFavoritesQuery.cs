@@ -9,14 +9,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MaaCopilotServer.Application.CopilotUser.Queries.GetCopilotUserFavorites;
 
-public record GetCopilotUserFavoritesQuery : IRequest<MaaApiResponse<GetCopilotUserFavoritesDto>>
+public record GetCopilotUserFavoritesQuery : IRequest<MaaApiResponse>
 {
     [FromQuery(Name = "id")] public string? FavoriteListId { get; set; }
 }
 
-public class GetCopilotUserFavoritesQueryHandler :
-    IRequestHandler<GetCopilotUserFavoritesQuery,
-        MaaApiResponse<GetCopilotUserFavoritesDto>>
+public class GetCopilotUserFavoritesQueryHandler : IRequestHandler<GetCopilotUserFavoritesQuery, MaaApiResponse>
 {
     private readonly IMaaCopilotDbContext _copilotDbContext;
     private readonly ICopilotIdService _copilotIdService;
@@ -32,7 +30,7 @@ public class GetCopilotUserFavoritesQueryHandler :
         _copilotDbContext = copilotDbContext;
     }
 
-    public async Task<MaaApiResponse<GetCopilotUserFavoritesDto>> Handle(GetCopilotUserFavoritesQuery request,
+    public async Task<MaaApiResponse> Handle(GetCopilotUserFavoritesQuery request,
         CancellationToken cancellationToken)
     {
         var favListId = Guid.Parse(request.FavoriteListId!);
@@ -43,13 +41,13 @@ public class GetCopilotUserFavoritesQueryHandler :
             .FirstOrDefaultAsync(x => x.EntityId == favListId, cancellationToken);
         if (list is null)
         {
-            throw new PipelineException(MaaApiResponseHelper.NotFound(_currentUserService.GetTrackingId(), ""));
+            return MaaApiResponseHelper.NotFound("");
         }
 
         var operationsDto = list.Operations.Select(x => new QueryCopilotOperationsQueryDto(
             _copilotIdService.EncodeId(x.Id), x.StageName, x.MinimumRequired, x.CreateAt.ToIsoString(),
             x.Author.UserName, x.Title, x.Details, x.Downloads, x.Operators)).ToList();
         var dto = new GetCopilotUserFavoritesDto(list.EntityId.ToString(), list.FavoriteName, operationsDto);
-        return MaaApiResponseHelper.Ok(dto, _currentUserService.GetTrackingId());
+        return MaaApiResponseHelper.Ok(dto);
     }
 }
