@@ -90,17 +90,15 @@ public class CreateCopilotOperationCommandHandler : IRequestHandler<CreateCopilo
         var docTitle = content.Doc?.Title ?? string.Empty;
         var docDetails = content.Doc?.Details ?? string.Empty;
 
-        var operators = (content.Operators ?? Array.Empty<Operator>())
-            .Select(item =>
-            {
-                if (item.Name == null)
-                {
-                    throw new PipelineException(MaaApiResponseHelper.BadRequest(_currentUserService.GetTrackingId(),
-                        _validationErrorMessage.CopilotOperationJsonIsInvalid));
-                }
+        var operatorArray = (content.Operators ?? Array.Empty<Operator>());
+        if (operatorArray.Select(item => item.Name == null).Any())
+        {
+            return MaaApiResponseHelper.BadRequest<CreateCopilotOperationDto>(_currentUserService.GetTrackingId(),
+                        _validationErrorMessage.CopilotOperationJsonIsInvalid);
+        }
 
-                return $"{item.Name}::{item.Skill ?? 1}";
-            })
+        var operators = operatorArray
+            .Select(item => $"{item.Name}::{item.Skill ?? 1}")
             .Distinct() // Remove duplicate operators.
             .ToList();
 

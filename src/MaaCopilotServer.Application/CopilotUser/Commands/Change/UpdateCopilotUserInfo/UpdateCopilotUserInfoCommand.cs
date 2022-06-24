@@ -16,7 +16,7 @@ namespace MaaCopilotServer.Application.CopilotUser.Commands.UpdateCopilotUserInf
 ///     The record of updating user info.
 /// </summary>
 [Authorized(UserRole.User, true)]
-public record UpdateCopilotUserInfoCommand : IRequest<MaaApiResponse<EmptyObject>>
+public record UpdateCopilotUserInfoCommand : IRequest<MaaApiResponse<GetCopilotUserDto>>
 {
     /// <summary>
     ///     The user email.
@@ -35,7 +35,7 @@ public record UpdateCopilotUserInfoCommand : IRequest<MaaApiResponse<EmptyObject
 ///     The handler of updating user info.
 /// </summary>
 public class
-    UpdateCopilotUserInfoCommandHandler : IRequestHandler<UpdateCopilotUserInfoCommand, MaaApiResponse<EmptyObject>>
+    UpdateCopilotUserInfoCommandHandler : IRequestHandler<UpdateCopilotUserInfoCommand, MaaApiResponse<GetCopilotUserDto>>
 {
     /// <summary>
     ///     The API error message.
@@ -90,7 +90,7 @@ public class
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>A task with no contents if the request completes successfully.</returns>
     /// <exception cref="PipelineException">Thrown when an internal error occurs, or the email is already in use.</exception>
-    public async Task<MaaApiResponse<EmptyObject>> Handle(UpdateCopilotUserInfoCommand request,
+    public async Task<MaaApiResponse<GetCopilotUserDto>> Handle(UpdateCopilotUserInfoCommand request,
         CancellationToken cancellationToken)
     {
         var user = await _dbContext.CopilotUsers
@@ -98,8 +98,8 @@ public class
 
         if (user is null)
         {
-            throw new PipelineException(MaaApiResponseHelper.InternalError(_currentUserService.GetTrackingId(),
-                _apiErrorMessage.InternalException));
+            return MaaApiResponseHelper.InternalError<GetCopilotUserDto>(_currentUserService.GetTrackingId(),
+                _apiErrorMessage.InternalException);
         }
 
         if (string.IsNullOrEmpty(request.Email) is false)
@@ -107,8 +107,8 @@ public class
             var exist = _dbContext.CopilotUsers.Any(x => x.Email == request.Email);
             if (exist)
             {
-                throw new PipelineException(MaaApiResponseHelper.BadRequest(_currentUserService.GetTrackingId(),
-                    _apiErrorMessage.EmailAlreadyInUse));
+                return MaaApiResponseHelper.BadRequest<GetCopilotUserDto>(_currentUserService.GetTrackingId(),
+                    _apiErrorMessage.EmailAlreadyInUse);
             }
 
             var (token, time) = _secretService.GenerateToken(user.EntityId, TimeSpan.FromMinutes(
@@ -120,14 +120,14 @@ public class
 
             if (result is false)
             {
-                throw new PipelineException(MaaApiResponseHelper.InternalError(_currentUserService.GetTrackingId(),
-                    _apiErrorMessage.EmailSendFailed));
+                return MaaApiResponseHelper.InternalError<GetCopilotUserDto>(_currentUserService.GetTrackingId(),
+                    _apiErrorMessage.EmailSendFailed);
             }
         }
 
         user.UpdateUserInfo(user.EntityId, request.Email, request.UserName);
         _dbContext.CopilotUsers.Update(user);
         await _dbContext.SaveChangesAsync(cancellationToken);
-        return MaaApiResponseHelper.Ok<EmptyObject>(null, _currentUserService.GetTrackingId());
+        return MaaApiResponseHelper.Ok<GetCopilotUserDto>(null, _currentUserService.GetTrackingId());
     }
 }

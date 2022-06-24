@@ -13,13 +13,13 @@ using Microsoft.Extensions.Options;
 
 namespace MaaCopilotServer.Application.CopilotUser.Commands.RequestPasswordReset;
 
-public record RequestPasswordResetCommand : IRequest<MaaApiResponse<EmptyObject>>
+public record RequestPasswordResetCommand : IRequest<MaaApiResponse<GetCopilotUserDto>>
 {
     [JsonPropertyName("email")] public string? Email { get; set; }
 }
 
 public class RequestPasswordResetCommandHandler :
-    IRequestHandler<RequestPasswordResetCommand, MaaApiResponse<EmptyObject>>
+    IRequestHandler<RequestPasswordResetCommand, MaaApiResponse<GetCopilotUserDto>>
 {
     private readonly ApiErrorMessage _apiErrorMessage;
     private readonly ICurrentUserService _currentUserService;
@@ -44,14 +44,14 @@ public class RequestPasswordResetCommandHandler :
         _apiErrorMessage = apiErrorMessage;
     }
 
-    public async Task<MaaApiResponse<EmptyObject>> Handle(RequestPasswordResetCommand request,
+    public async Task<MaaApiResponse<GetCopilotUserDto>> Handle(RequestPasswordResetCommand request,
         CancellationToken cancellationToken)
     {
         var user = await _dbContext.CopilotUsers.FirstOrDefaultAsync(x => x.Email == request.Email, cancellationToken);
         if (user is null)
         {
-            throw new PipelineException(MaaApiResponseHelper.NotFound(_currentUserService.GetTrackingId(),
-                _apiErrorMessage.EmailNotRegister));
+            return MaaApiResponseHelper.NotFound<GetCopilotUserDto>(_currentUserService.GetTrackingId(),
+                _apiErrorMessage.EmailNotRegister);
         }
 
         var alreadyHaveToken = await _dbContext.CopilotTokens.FirstOrDefaultAsync(
@@ -70,12 +70,12 @@ public class RequestPasswordResetCommandHandler :
 
         if (success is false)
         {
-            throw new PipelineException(MaaApiResponseHelper.InternalError(_currentUserService.GetTrackingId(),
-                _apiErrorMessage.EmailSendFailed));
+            return MaaApiResponseHelper.InternalError<GetCopilotUserDto>(_currentUserService.GetTrackingId(),
+                _apiErrorMessage.EmailSendFailed);
         }
 
         _dbContext.CopilotTokens.Add(new CopilotToken(user.EntityId, TokenType.UserPasswordReset, token, time));
         await _dbContext.SaveChangesAsync(cancellationToken);
-        return MaaApiResponseHelper.Ok<EmptyObject>(null, _currentUserService.GetTrackingId());
+        return MaaApiResponseHelper.Ok<GetCopilotUserDto>(null, _currentUserService.GetTrackingId());
     }
 }

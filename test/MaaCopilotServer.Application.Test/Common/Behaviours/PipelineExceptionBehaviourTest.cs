@@ -44,7 +44,7 @@ public class PipelineExceptionBehaviourTest
         var behaviour = new PipelineExceptionBehaviour<IRequest<string>, string>(_logger);
         var action = async () => await behaviour.Handle(null, new CancellationToken(), () =>
         {
-            throw new PipelineException(MaaApiResponseHelper.Ok<EmptyObject>(new EmptyObject(), string.Empty));
+            throw new PipelineException(MaaApiResponseHelper.Ok<GetCopilotUserDto>(new GetCopilotUserDto(), string.Empty));
         });
         await action.Should().ThrowAsync<PipelineException>();
     }

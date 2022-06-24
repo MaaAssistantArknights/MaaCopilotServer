@@ -60,10 +60,10 @@ public class CopilotUserControllerTest
     public async Task TestChangeCopilotUserInfo()
     {
         var controller = new CopilotUserController(_mediator);
-        await ControllerTestUtils.TestControllerEndpoint(
+        await ControllerTestUtils.TestControllerEndpoint<ChangeCopilotUserInfoCommand, Application.Common.Models.GetCopilotUserDto>(
             _mediator,
             new ChangeCopilotUserInfoCommand(),
-            new EmptyObject(),
+            new Application.Common.Models.GetCopilotUserDto(),
             controller.ChangeCopilotUserInfo);
     }
 
@@ -90,10 +90,10 @@ public class CopilotUserControllerTest
     public async Task TestCreateCopilotUser()
     {
         var controller = new CopilotUserController(_mediator);
-        await ControllerTestUtils.TestControllerEndpoint(
+        await ControllerTestUtils.TestControllerEndpoint<CreateCopilotUserCommand, Application.Common.Models.GetCopilotUserDto>(
             _mediator,
             new CreateCopilotUserCommand(),
-            new EmptyObject(),
+            new Application.Common.Models.GetCopilotUserDto(),
             controller.CreateCopilotUser);
     }
 
@@ -120,10 +120,10 @@ public class CopilotUserControllerTest
     public async Task TestDeleteCopilotUser()
     {
         var controller = new CopilotUserController(_mediator);
-        await ControllerTestUtils.TestControllerEndpoint(
+        await ControllerTestUtils.TestControllerEndpoint<DeleteCopilotUserCommand, Application.Common.Models.GetCopilotUserDto>(
             _mediator,
             new DeleteCopilotUserCommand(),
-            new EmptyObject(),
+            new Application.Common.Models.GetCopilotUserDto(),
             controller.DeleteCopilotUser);
     }
 
@@ -180,10 +180,10 @@ public class CopilotUserControllerTest
     public async Task TestUpdateCopilotUserInfo()
     {
         var controller = new CopilotUserController(_mediator);
-        await ControllerTestUtils.TestControllerEndpoint(
+        await ControllerTestUtils.TestControllerEndpoint<UpdateCopilotUserInfoCommand, Application.Common.Models.GetCopilotUserDto>(
             _mediator,
             new UpdateCopilotUserInfoCommand(),
-            new EmptyObject(),
+            new Application.Common.Models.GetCopilotUserDto(),
             controller.UpdateCopilotUserInfo);
     }
 
@@ -210,10 +210,10 @@ public class CopilotUserControllerTest
     public async Task TestUpdateCopilotUserPassword()
     {
         var controller = new CopilotUserController(_mediator);
-        await ControllerTestUtils.TestControllerEndpoint(
+        await ControllerTestUtils.TestControllerEndpoint<UpdateCopilotUserPasswordCommand, Application.Common.Models.GetCopilotUserDto>(
             _mediator,
             new UpdateCopilotUserPasswordCommand(),
-            new EmptyObject(),
+            new Application.Common.Models.GetCopilotUserDto(),
             controller.UpdateCopilotUserPassword);
     }
 
@@ -240,10 +240,10 @@ public class CopilotUserControllerTest
     public async Task TestGetCopilotUser()
     {
         var controller = new CopilotUserController(_mediator);
-        await ControllerTestUtils.TestControllerEndpoint(
+        await ControllerTestUtils.TestControllerEndpoint<string, Application.CopilotUser.Queries.GetCopilotUser.GetCopilotUserDto>(
             _mediator,
             string.Empty,
-            new GetCopilotUserDto(),
+            new Application.CopilotUser.Queries.GetCopilotUser.GetCopilotUserDto(),
             controller.GetCopilotUser);
     }
 
@@ -299,10 +299,10 @@ public class CopilotUserControllerTest
     public async Task TestRegisterAccount()
     {
         var controller = new CopilotUserController(_mediator);
-        await ControllerTestUtils.TestControllerEndpoint(
+        await ControllerTestUtils.TestControllerEndpoint<RegisterCopilotAccountCommand, Application.Common.Models.GetCopilotUserDto>(
             _mediator,
             new RegisterCopilotAccountCommand(),
-            new EmptyObject(),
+            new Application.Common.Models.GetCopilotUserDto(),
             controller.RegisterAccount);
     }
 
@@ -329,10 +329,10 @@ public class CopilotUserControllerTest
     public async Task TestActivateAccount()
     {
         var controller = new CopilotUserController(_mediator);
-        await ControllerTestUtils.TestControllerEndpoint(
+        await ControllerTestUtils.TestControllerEndpoint<ActivateCopilotAccountCommand, Application.Common.Models.GetCopilotUserDto>(
             _mediator,
             new ActivateCopilotAccountCommand(),
-            new EmptyObject(),
+            new Application.Common.Models.GetCopilotUserDto(),
             controller.ActivateAccount);
     }
 
@@ -359,10 +359,10 @@ public class CopilotUserControllerTest
     public async Task TestRequestPasswordChange()
     {
         var controller = new CopilotUserController(_mediator);
-        await ControllerTestUtils.TestControllerEndpoint(
+        await ControllerTestUtils.TestControllerEndpoint<RequestPasswordResetCommand, Application.Common.Models.GetCopilotUserDto>(
             _mediator,
             new RequestPasswordResetCommand(),
-            new EmptyObject(),
+            new Application.Common.Models.GetCopilotUserDto(),
             controller.RequestPasswordChange);
     }
 
@@ -389,10 +389,10 @@ public class CopilotUserControllerTest
     public async Task TestPasswordChange()
     {
         var controller = new CopilotUserController(_mediator);
-        await ControllerTestUtils.TestControllerEndpoint(
+        await ControllerTestUtils.TestControllerEndpoint<PasswordResetCommand, Application.Common.Models.GetCopilotUserDto>(
             _mediator,
             new PasswordResetCommand(),
-            new EmptyObject(),
+            new Application.Common.Models.GetCopilotUserDto(),
             controller.PasswordChange);
     }
 
