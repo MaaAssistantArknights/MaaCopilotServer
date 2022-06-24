@@ -16,7 +16,7 @@ namespace MaaCopilotServer.Application.CopilotUser.Commands.UpdateCopilotUserInf
 ///     The record of updating user info.
 /// </summary>
 [Authorized(UserRole.User, true)]
-public record UpdateCopilotUserInfoCommand : IRequest<MaaApiResponse<EmptyObject>>
+public record UpdateCopilotUserInfoCommand : IRequest<MaaApiResponse>
 {
     /// <summary>
     ///     The user email.
@@ -35,7 +35,7 @@ public record UpdateCopilotUserInfoCommand : IRequest<MaaApiResponse<EmptyObject
 ///     The handler of updating user info.
 /// </summary>
 public class
-    UpdateCopilotUserInfoCommandHandler : IRequestHandler<UpdateCopilotUserInfoCommand, MaaApiResponse<EmptyObject>>
+    UpdateCopilotUserInfoCommandHandler : IRequestHandler<UpdateCopilotUserInfoCommand, MaaApiResponse>
 {
     /// <summary>
     ///     The API error message.
@@ -90,7 +90,7 @@ public class
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>A task with no contents if the request completes successfully.</returns>
     /// <exception cref="PipelineException">Thrown when an internal error occurs, or the email is already in use.</exception>
-    public async Task<MaaApiResponse<EmptyObject>> Handle(UpdateCopilotUserInfoCommand request,
+    public async Task<MaaApiResponse> Handle(UpdateCopilotUserInfoCommand request,
         CancellationToken cancellationToken)
     {
         var user = await _dbContext.CopilotUsers
@@ -128,6 +128,6 @@ public class
         user.UpdateUserInfo(user.EntityId, request.Email, request.UserName);
         _dbContext.CopilotUsers.Update(user);
         await _dbContext.SaveChangesAsync(cancellationToken);
-        return MaaApiResponseHelper.Ok<EmptyObject>(null, _currentUserService.GetTrackingId());
+        return MaaApiResponseHelper.Ok(null, _currentUserService.GetTrackingId());
     }
 }

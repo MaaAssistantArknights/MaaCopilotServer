@@ -11,7 +11,7 @@ namespace MaaCopilotServer.Application.CopilotOperation.Queries.QueryCopilotOper
 /// <summary>
 ///     The record of querying multiple operations.
 /// </summary>
-public record QueryCopilotOperationsQuery : IRequest<MaaApiResponse<PaginationResult<QueryCopilotOperationsQueryDto>>>
+public record QueryCopilotOperationsQuery : IRequest<MaaApiResponse>
 {
     /// <summary>
     ///     The page number to query.
@@ -65,8 +65,7 @@ public record QueryCopilotOperationsQuery : IRequest<MaaApiResponse<PaginationRe
 /// <summary>
 ///     The handler of querying multiple operations.
 /// </summary>
-public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOperationsQuery,
-    MaaApiResponse<PaginationResult<QueryCopilotOperationsQueryDto>>>
+public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOperationsQuery, MaaApiResponse>
 {
     /// <summary>
     ///     The API error message.
@@ -114,7 +113,7 @@ public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOp
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>A task with an array of multiple operations without contents.</returns>
     /// <exception cref="PipelineException">Thrown when the uploader ID does not exist.</exception>
-    public async Task<MaaApiResponse<PaginationResult<QueryCopilotOperationsQueryDto>>> Handle(
+    public async Task<MaaApiResponse> Handle(
         QueryCopilotOperationsQuery request, CancellationToken cancellationToken)
     {
         var limit = request.Limit ?? 10;

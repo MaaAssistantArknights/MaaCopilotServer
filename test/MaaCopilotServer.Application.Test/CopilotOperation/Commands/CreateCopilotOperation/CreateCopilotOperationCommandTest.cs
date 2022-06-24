@@ -221,7 +221,9 @@ public class CreateCopilotOperationCommandTest
         else
         {
             var response = await action();
-            response.Data.Id.Should().Be("10000");
+            response.Data.Should().BeOfType<CreateCopilotOperationDto>();
+            var dto = response.Data as CreateCopilotOperationDto;
+            dto!.Id.Should().Be("10000");
             entity.Should().NotBeNull();
             entity.Content.Should().Be(testContent);
             entity.StageName.Should().Be(testJsonContent.StageName);

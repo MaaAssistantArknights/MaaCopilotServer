@@ -13,13 +13,13 @@ using Microsoft.Extensions.Options;
 
 namespace MaaCopilotServer.Application.CopilotUser.Commands.RequestPasswordReset;
 
-public record RequestPasswordResetCommand : IRequest<MaaApiResponse<EmptyObject>>
+public record RequestPasswordResetCommand : IRequest<MaaApiResponse>
 {
     [JsonPropertyName("email")] public string? Email { get; set; }
 }
 
 public class RequestPasswordResetCommandHandler :
-    IRequestHandler<RequestPasswordResetCommand, MaaApiResponse<EmptyObject>>
+    IRequestHandler<RequestPasswordResetCommand, MaaApiResponse>
 {
     private readonly ApiErrorMessage _apiErrorMessage;
     private readonly ICurrentUserService _currentUserService;
@@ -44,7 +44,7 @@ public class RequestPasswordResetCommandHandler :
         _apiErrorMessage = apiErrorMessage;
     }
 
-    public async Task<MaaApiResponse<EmptyObject>> Handle(RequestPasswordResetCommand request,
+    public async Task<MaaApiResponse> Handle(RequestPasswordResetCommand request,
         CancellationToken cancellationToken)
     {
         var user = await _dbContext.CopilotUsers.FirstOrDefaultAsync(x => x.Email == request.Email, cancellationToken);
@@ -76,6 +76,6 @@ public class RequestPasswordResetCommandHandler :
 
         _dbContext.CopilotTokens.Add(new CopilotToken(user.EntityId, TokenType.UserPasswordReset, token, time));
         await _dbContext.SaveChangesAsync(cancellationToken);
-        return MaaApiResponseHelper.Ok<EmptyObject>(null, _currentUserService.GetTrackingId());
+        return MaaApiResponseHelper.Ok(null, _currentUserService.GetTrackingId());
     }
 }

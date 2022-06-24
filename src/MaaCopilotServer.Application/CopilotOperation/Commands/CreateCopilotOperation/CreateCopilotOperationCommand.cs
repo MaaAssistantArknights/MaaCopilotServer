@@ -13,7 +13,7 @@ namespace MaaCopilotServer.Application.CopilotOperation.Commands.CreateCopilotOp
 ///     The record of creating operation.
 /// </summary>
 [Authorized(UserRole.Uploader)]
-public record CreateCopilotOperationCommand : IRequest<MaaApiResponse<CreateCopilotOperationDto>>
+public record CreateCopilotOperationCommand : IRequest<MaaApiResponse>
 {
     /// <summary>
     ///     The operation content.
@@ -25,8 +25,7 @@ public record CreateCopilotOperationCommand : IRequest<MaaApiResponse<CreateCopi
 /// <summary>
 ///     The handler of creating operation.
 /// </summary>
-public class CreateCopilotOperationCommandHandler : IRequestHandler<CreateCopilotOperationCommand,
-    MaaApiResponse<CreateCopilotOperationDto>>
+public class CreateCopilotOperationCommandHandler : IRequestHandler<CreateCopilotOperationCommand, MaaApiResponse>
 {
     /// <summary>
     ///     The service for processing copilot ID.
@@ -77,8 +76,7 @@ public class CreateCopilotOperationCommandHandler : IRequestHandler<CreateCopilo
     /// <param name="request">The request.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>A task with the response.</returns>
-    public async Task<MaaApiResponse<CreateCopilotOperationDto>> Handle(CreateCopilotOperationCommand request,
-        CancellationToken cancellationToken)
+    public async Task<MaaApiResponse> Handle(CreateCopilotOperationCommand request, CancellationToken cancellationToken)
     {
         var content = JsonSerializer.Deserialize<CreateCopilotOperationContent>(request.Content!).IsNotNull();
 

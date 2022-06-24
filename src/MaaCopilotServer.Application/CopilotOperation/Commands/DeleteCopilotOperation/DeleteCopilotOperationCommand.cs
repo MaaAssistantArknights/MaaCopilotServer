@@ -13,7 +13,7 @@ namespace MaaCopilotServer.Application.CopilotOperation.Commands.DeleteCopilotOp
 ///     The record of deleting operation.
 /// </summary>
 [Authorized(UserRole.Admin)]
-public record DeleteCopilotOperationCommand : IRequest<MaaApiResponse<EmptyObject>>
+public record DeleteCopilotOperationCommand : IRequest<MaaApiResponse>
 {
     /// <summary>
     ///     The operation ID.
@@ -26,7 +26,7 @@ public record DeleteCopilotOperationCommand : IRequest<MaaApiResponse<EmptyObjec
 ///     The handler of deleting operation.
 /// </summary>
 public class DeleteCopilotOperationCommandHandler : IRequestHandler<DeleteCopilotOperationCommand,
-    MaaApiResponse<EmptyObject>>
+    MaaApiResponse>
 {
     /// <summary>
     ///     The API error message.
@@ -76,7 +76,7 @@ public class DeleteCopilotOperationCommandHandler : IRequestHandler<DeleteCopilo
     /// <exception cref="PipelineException">
     ///     Thrown when the operation ID is invalid, or the operation does not exist.
     /// </exception>
-    public async Task<MaaApiResponse<EmptyObject>> Handle(DeleteCopilotOperationCommand request,
+    public async Task<MaaApiResponse> Handle(DeleteCopilotOperationCommand request,
         CancellationToken cancellationToken)
     {
         var id = _copilotIdService.DecodeId(request.Id!);
@@ -96,6 +96,6 @@ public class DeleteCopilotOperationCommandHandler : IRequestHandler<DeleteCopilo
         entity.Delete(_currentUserService.GetUserIdentity()!.Value);
         _dbContext.CopilotOperations.Remove(entity);
         await _dbContext.SaveChangesAsync(cancellationToken);
-        return MaaApiResponseHelper.Ok<EmptyObject>(null, _currentUserService.GetTrackingId());
+        return MaaApiResponseHelper.Ok(null, _currentUserService.GetTrackingId());
     }
 }

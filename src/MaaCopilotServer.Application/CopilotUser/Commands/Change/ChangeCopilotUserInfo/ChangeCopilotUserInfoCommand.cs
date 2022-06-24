@@ -14,7 +14,7 @@ namespace MaaCopilotServer.Application.CopilotUser.Commands.ChangeCopilotUserInf
 ///     The record of changing user info.
 /// </summary>
 [Authorized(UserRole.Admin)]
-public record ChangeCopilotUserInfoCommand : IRequest<MaaApiResponse<EmptyObject>>
+public record ChangeCopilotUserInfoCommand : IRequest<MaaApiResponse>
 {
     /// <summary>
     ///     The user ID.
@@ -53,7 +53,7 @@ public record ChangeCopilotUserInfoCommand : IRequest<MaaApiResponse<EmptyObject
 ///     The handler of changing user info.
 /// </summary>
 public class
-    ChangeCopilotUserInfoCommandHandler : IRequestHandler<ChangeCopilotUserInfoCommand, MaaApiResponse<EmptyObject>>
+    ChangeCopilotUserInfoCommandHandler : IRequestHandler<ChangeCopilotUserInfoCommand, MaaApiResponse>
 {
     /// <summary>
     ///     The API error message.
@@ -103,7 +103,7 @@ public class
     /// <exception cref="PipelineException">
     ///     Thrown when the user ID does not exist, or an internal error occurs, or the user permission is insufficient.
     /// </exception>
-    public async Task<MaaApiResponse<EmptyObject>> Handle(ChangeCopilotUserInfoCommand request,
+    public async Task<MaaApiResponse> Handle(ChangeCopilotUserInfoCommand request,
         CancellationToken cancellationToken)
     {
         var userId = Guid.Parse(request.UserId!);
@@ -151,6 +151,6 @@ public class
         _dbContext.CopilotUsers.Update(user);
         await _dbContext.SaveChangesAsync(cancellationToken);
 
-        return MaaApiResponseHelper.Ok<EmptyObject>(null, _currentUserService.GetTrackingId());
+        return MaaApiResponseHelper.Ok(null, _currentUserService.GetTrackingId());
     }
 }

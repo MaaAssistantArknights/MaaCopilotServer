@@ -13,7 +13,7 @@ namespace MaaCopilotServer.Application.CopilotUser.Commands.DeleteCopilotUser;
 ///     The record of deleting user.
 /// </summary>
 [Authorized(UserRole.Admin)]
-public record DeleteCopilotUserCommand : IRequest<MaaApiResponse<EmptyObject>>
+public record DeleteCopilotUserCommand : IRequest<MaaApiResponse>
 {
     /// <summary>
     ///     The user ID.
@@ -25,7 +25,7 @@ public record DeleteCopilotUserCommand : IRequest<MaaApiResponse<EmptyObject>>
 /// <summary>
 ///     The handler of deleting user.
 /// </summary>
-public class DeleteCopilotUserCommandHandler : IRequestHandler<DeleteCopilotUserCommand, MaaApiResponse<EmptyObject>>
+public class DeleteCopilotUserCommandHandler : IRequestHandler<DeleteCopilotUserCommand, MaaApiResponse>
 {
     /// <summary>
     ///     The API error message.
@@ -67,7 +67,7 @@ public class DeleteCopilotUserCommandHandler : IRequestHandler<DeleteCopilotUser
     /// <exception cref="PipelineException">
     ///     Thrown when the user ID does not exist, or an internal error occurs, or the user permission is insufficient.
     /// </exception>
-    public async Task<MaaApiResponse<EmptyObject>> Handle(DeleteCopilotUserCommand request,
+    public async Task<MaaApiResponse> Handle(DeleteCopilotUserCommand request,
         CancellationToken cancellationToken)
     {
         var userId = Guid.Parse(request.UserId!);
@@ -95,6 +95,6 @@ public class DeleteCopilotUserCommandHandler : IRequestHandler<DeleteCopilotUser
         user.Delete(_currentUserService.GetUserIdentity()!.Value);
         _dbContext.CopilotUsers.Remove(user);
         await _dbContext.SaveChangesAsync(cancellationToken);
-        return MaaApiResponseHelper.Ok<EmptyObject>(null, _currentUserService.GetTrackingId());
+        return MaaApiResponseHelper.Ok(null, _currentUserService.GetTrackingId());
     }
 }
