@@ -15,15 +15,16 @@ namespace MaaCopilotServer.Application.Common.Helpers
         /// </summary>
         /// <param name="id">The tracking ID.</param>
         /// <param name="message">The message, <c>"Bad Request"</c> by default.</param>
+        /// <typeparam name="T">The response type.</typeparam>
         /// <returns>The response.</returns>
-        public static MaaApiResponse<EmptyObject> BadRequest(string id, string? message)
+        public static MaaApiResponse<T> BadRequest<T>(string id, string? message)
         {
-            return new MaaApiResponse<EmptyObject>
+            return new MaaApiResponse<T>
             {
                 StatusCode = 400,
                 Message = message ?? "Bad Request",
                 TraceId = id,
-                Data = null,
+                Data = default,
             };
         }
 
@@ -32,15 +33,16 @@ namespace MaaCopilotServer.Application.Common.Helpers
         /// </summary>
         /// <param name="id">The tracking ID.</param>
         /// <param name="message">The message, <c>"Forbidden. Permission Denied"</c> by default</param>
+        /// <typeparam name="T">The response type.</typeparam>
         /// <returns>The response.</returns>
-        public static MaaApiResponse<EmptyObject> Forbidden(string id, string? message)
+        public static MaaApiResponse<T> Forbidden<T>(string id, string? message)
         {
-            return new MaaApiResponse<EmptyObject>
+            return new MaaApiResponse<T>
             {
                 StatusCode = 403,
                 Message = message ?? "Forbidden. Permission Denied",
                 TraceId = id,
-                Data = null,
+                Data = default,
             };
         }
 
@@ -49,15 +51,16 @@ namespace MaaCopilotServer.Application.Common.Helpers
         /// </summary>
         /// <param name="id">The tracking ID.</param>
         /// <param name="message">The message, <c>"Internal Server Error"</c> by default.</param>
+        /// <typeparam name="T">The response type.</typeparam>
         /// <returns>The response.</returns>
-        public static MaaApiResponse<EmptyObject> InternalError(string id, string? message)
+        public static MaaApiResponse<T> InternalError<T>(string id, string? message)
         {
-            return new MaaApiResponse<EmptyObject>
+            return new MaaApiResponse<T>
             {
                 StatusCode = 500,
                 Message = message ?? "Internal Server Error",
                 TraceId = id,
-                Data = null,
+                Data = default,
             };
         }
 
@@ -66,15 +69,16 @@ namespace MaaCopilotServer.Application.Common.Helpers
         /// </summary>
         /// <param name="id">The tracking ID.</param>
         /// <param name="message">The message, <c>"Not Found"</c> by default.</param>
+        /// <typeparam name="T">The response type.</typeparam>
         /// <returns>The response.</returns>
-        public static MaaApiResponse<EmptyObject> NotFound(string id, string? message)
+        public static MaaApiResponse<T> NotFound<T>(string id, string? message)
         {
-            return new MaaApiResponse<EmptyObject>
+            return new MaaApiResponse<T>
             {
                 StatusCode = 404,
                 Message = message ?? "Not Found",
                 TraceId = id,
-                Data = null,
+                Data = default,
             };
         }
 
@@ -101,15 +105,16 @@ namespace MaaCopilotServer.Application.Common.Helpers
         /// </summary>
         /// <param name="id">The tracking ID.</param>
         /// <param name="message">The message, <c>"Unauthorized"</c> by default.</param>
+        /// <typeparam name="T">The response type.</typeparam>
         /// <returns>The response.</returns>
-        public static MaaApiResponse<EmptyObject> Unauthorized(string id, string? message)
+        public static MaaApiResponse<T> Unauthorized<T>(string id, string? message)
         {
-            return new MaaApiResponse<EmptyObject>
+            return new MaaApiResponse<T>
             {
                 StatusCode = 401,
                 Message = message ?? "Unauthorized",
                 TraceId = id,
-                Data = null,
+                Data = default,
             };
         }
     }
