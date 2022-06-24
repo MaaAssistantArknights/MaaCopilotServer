@@ -88,8 +88,11 @@ public class
     /// </summary>
     /// <param name="request">The request.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns>A task with no contents if the request completes successfully.</returns>
-    /// <exception cref="PipelineException">Thrown when an internal error occurs, or the email is already in use.</exception>
+    /// <returns>
+    ///     <para>A task with no contents if the request completes successfully.</para>
+    ///     <para>400 when the email is already in use.</para>
+    ///     <para>500 when an internal error occurs.</para>
+    /// </returns>
     public async Task<MaaApiResponse> Handle(UpdateCopilotUserInfoCommand request,
         CancellationToken cancellationToken)
     {
@@ -98,8 +101,8 @@ public class
 
         if (user is null)
         {
-            throw new PipelineException(MaaApiResponseHelper.InternalError(_currentUserService.GetTrackingId(),
-                _apiErrorMessage.InternalException));
+            return MaaApiResponseHelper.InternalError(_currentUserService.GetTrackingId(),
+                _apiErrorMessage.InternalException);
         }
 
         if (string.IsNullOrEmpty(request.Email) is false)
@@ -107,8 +110,8 @@ public class
             var exist = _dbContext.CopilotUsers.Any(x => x.Email == request.Email);
             if (exist)
             {
-                throw new PipelineException(MaaApiResponseHelper.BadRequest(_currentUserService.GetTrackingId(),
-                    _apiErrorMessage.EmailAlreadyInUse));
+                return MaaApiResponseHelper.BadRequest(_currentUserService.GetTrackingId(),
+                    _apiErrorMessage.EmailAlreadyInUse);
             }
 
             var (token, time) = _secretService.GenerateToken(user.EntityId, TimeSpan.FromMinutes(
@@ -120,8 +123,8 @@ public class
 
             if (result is false)
             {
-                throw new PipelineException(MaaApiResponseHelper.InternalError(_currentUserService.GetTrackingId(),
-                    _apiErrorMessage.EmailSendFailed));
+                return MaaApiResponseHelper.InternalError(_currentUserService.GetTrackingId(),
+                    _apiErrorMessage.EmailSendFailed);
             }
         }
 

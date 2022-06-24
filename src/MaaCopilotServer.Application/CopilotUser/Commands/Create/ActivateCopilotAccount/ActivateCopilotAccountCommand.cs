@@ -42,15 +42,15 @@ public class
             cancellationToken);
         if (token is null || token.ValidBefore < DateTimeOffset.UtcNow || token.Type != TokenType.UserActivation)
         {
-            throw new PipelineException(MaaApiResponseHelper.BadRequest(_currentUserService.GetTrackingId(),
-                _apiErrorMessage.TokenInvalid));
+            return MaaApiResponseHelper.BadRequest(_currentUserService.GetTrackingId(),
+                _apiErrorMessage.TokenInvalid);
         }
 
         var user = _dbContext.CopilotUsers.FirstOrDefault(x => x.EntityId == token.ResourceId);
         if (user is null)
         {
-            throw new PipelineException(MaaApiResponseHelper.InternalError(_currentUserService.GetTrackingId(),
-                string.Format(_apiErrorMessage.UserWithIdNotFound!, token.ResourceId.ToString())));
+            return MaaApiResponseHelper.InternalError(_currentUserService.GetTrackingId(),
+                string.Format(_apiErrorMessage.UserWithIdNotFound!, token.ResourceId.ToString()));
         }
 
         user.ActivateUser(user.EntityId);

@@ -88,15 +88,15 @@ public class CreateCopilotOperationCommandHandler : IRequestHandler<CreateCopilo
         var docTitle = content.Doc?.Title ?? string.Empty;
         var docDetails = content.Doc?.Details ?? string.Empty;
 
+        var operatorArray = content.Operators ?? Array.Empty<Operator>();
+        if (operatorArray.Where(item => item.Name == null).Any())
+        {
+            return MaaApiResponseHelper.BadRequest(_currentUserService.GetTrackingId(),
+                        _validationErrorMessage.CopilotOperationJsonIsInvalid);
+        }
         var operators = (content.Operators ?? Array.Empty<Operator>())
             .Select(item =>
             {
-                if (item.Name == null)
-                {
-                    throw new PipelineException(MaaApiResponseHelper.BadRequest(_currentUserService.GetTrackingId(),
-                        _validationErrorMessage.CopilotOperationJsonIsInvalid));
-                }
-
                 return $"{item.Name}::{item.Skill ?? 1}";
             })
             .Distinct() // Remove duplicate operators.

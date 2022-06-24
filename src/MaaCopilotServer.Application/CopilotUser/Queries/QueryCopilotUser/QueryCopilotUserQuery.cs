@@ -35,7 +35,8 @@ public record QueryCopilotUserQuery : IRequest<MaaApiResponse>
 /// <summary>
 ///     The handler of querying multiple users.
 /// </summary>
-public class QueryCopilotUserQueryHandler : IRequestHandler<QueryCopilotUserQuery, MaaApiResponse>
+public class QueryCopilotUserQueryHandler : IRequestHandler<QueryCopilotUserQuery,
+    MaaApiResponse>
 {
     /// <summary>
     ///     The service for current user.

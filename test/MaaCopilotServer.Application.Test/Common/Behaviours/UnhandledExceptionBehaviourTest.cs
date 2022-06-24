@@ -9,6 +9,7 @@ using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Application.Common.Models;
 using MaaCopilotServer.Resources;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
 namespace MaaCopilotServer.Application.Test.Common.Behaviours;
@@ -32,7 +33,7 @@ public class UnhandledExceptionBehaviourTest
     /// <summary>
     ///     The logger.
     /// </summary>
-    private ILogger<IRequest<string>> _logger;
+    private ILogger<IRequest<MaaApiResponse>> _logger;
 
     /// <summary>
     ///     Initializes tests.
@@ -40,7 +41,7 @@ public class UnhandledExceptionBehaviourTest
     [TestInitialize]
     public void Initialize()
     {
-        _logger = Substitute.For<ILogger<IRequest<string>>>();
+        _logger = Substitute.For<ILogger<IRequest<MaaApiResponse>>>();
         _currentUserService = Substitute.For<ICurrentUserService>();
         _apiErrorMessage = Substitute.For<ApiErrorMessage>();
     }
@@ -48,38 +49,19 @@ public class UnhandledExceptionBehaviourTest
     /// <summary>
     ///     Tests
     ///     <see
-    ///         cref="UnhandledExceptionBehaviour{TRequest, TResponse}.Handle(TRequest, CancellationToken, MediatR.RequestHandlerDelegate{TResponse})" />
-    ///     with <see cref="PipelineException" />.
-    /// </summary>
-    /// <returns>N/A</returns>
-    [TestMethod]
-    public async Task TestHandle_PipelineException()
-    {
-        var behaviour =
-            new UnhandledExceptionBehaviour<IRequest<string>, string>(_logger, _currentUserService, _apiErrorMessage);
-        var action = async () => await behaviour.Handle(null, new CancellationToken(), () =>
-        {
-            throw new PipelineException(MaaApiResponseHelper.Ok(null, string.Empty));
-        });
-        await action.Should().ThrowAsync<PipelineException>();
-    }
-
-    /// <summary>
-    ///     Tests
-    ///     <see
-    ///         cref="UnhandledExceptionBehaviour{TRequest, TResponse}.Handle(TRequest, CancellationToken, MediatR.RequestHandlerDelegate{TResponse})" />
+    ///         cref="UnhandledExceptionBehaviour{TRequest}.Handle(TRequest, CancellationToken, MediatR.RequestHandlerDelegate{MaaApiResponse})" />
     ///     with <see cref="Exception" />.
     /// </summary>
     /// <returns>N/A</returns>
     [TestMethod]
-    public async Task TestHandle_OtherException()
+    public async Task TestHandle_Exception()
     {
         var behaviour =
-            new UnhandledExceptionBehaviour<IRequest<string>, string>(_logger, _currentUserService, _apiErrorMessage);
-        var action = async () => await behaviour.Handle(null, new CancellationToken(), () =>
+            new UnhandledExceptionBehaviour<IRequest<MaaApiResponse>>(_logger, _currentUserService, _apiErrorMessage);
+        var response = await behaviour.Handle(null, new CancellationToken(), () =>
         {
             throw new Exception();
         });
-        await action.Should().ThrowAsync<PipelineException>();
+        response.StatusCode.Should().Be(StatusCodes.Status500InternalServerError);
     }
 }

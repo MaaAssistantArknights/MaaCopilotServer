@@ -21,7 +21,9 @@ public record GetCopilotOperationQuery : IRequest<MaaApiResponse>
 /// <summary>
 ///     The handler of querying operation.
 /// </summary>
-public class GetCopilotOperationQueryHandler : IRequestHandler<GetCopilotOperationQuery, MaaApiResponse>
+public class
+    GetCopilotOperationQueryHandler : IRequestHandler<GetCopilotOperationQuery,
+        MaaApiResponse>
 {
     /// <summary>
     ///     The API error message.
@@ -67,16 +69,18 @@ public class GetCopilotOperationQueryHandler : IRequestHandler<GetCopilotOperati
     /// </summary>
     /// <param name="request">The request.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns>A task with a single operation and info.</returns>
-    /// <exception cref="PipelineException">Thrown when the operation ID is invalid or not found.</exception>
+    /// <returns>
+    ///     <para>A task with a single operation and info.</para>
+    ///     <para>404 when the operation ID is invalid or not found.</para>
+    /// </returns>
     public async Task<MaaApiResponse> Handle(GetCopilotOperationQuery request,
         CancellationToken cancellationToken)
     {
         var id = _copilotIdService.DecodeId(request.Id!);
         if (id is null)
         {
-            throw new PipelineException(MaaApiResponseHelper.NotFound(_currentUserService.GetTrackingId(),
-                string.Format(_apiErrorMessage.CopilotOperationWithIdNotFound!, request.Id)));
+            return MaaApiResponseHelper.NotFound(_currentUserService.GetTrackingId(),
+                string.Format(_apiErrorMessage.CopilotOperationWithIdNotFound!, request.Id));
         }
 
         var entity = await _dbContext.CopilotOperations
@@ -84,8 +88,8 @@ public class GetCopilotOperationQueryHandler : IRequestHandler<GetCopilotOperati
             .FirstOrDefaultAsync(x => x.Id == id.Value, cancellationToken);
         if (entity is null)
         {
-            throw new PipelineException(MaaApiResponseHelper.NotFound(_currentUserService.GetTrackingId(),
-                string.Format(_apiErrorMessage.CopilotOperationWithIdNotFound!, request.Id)));
+            return MaaApiResponseHelper.NotFound(_currentUserService.GetTrackingId(),
+                string.Format(_apiErrorMessage.CopilotOperationWithIdNotFound!, request.Id));
         }
 
         var dto = new GetCopilotOperationQueryDto(

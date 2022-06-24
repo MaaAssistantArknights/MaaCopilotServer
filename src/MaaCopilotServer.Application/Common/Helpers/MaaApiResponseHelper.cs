@@ -2,6 +2,8 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using Microsoft.AspNetCore.Http;
+
 namespace MaaCopilotServer.Application.Common.Helpers
 {
     /// <summary>
@@ -20,7 +22,7 @@ namespace MaaCopilotServer.Application.Common.Helpers
         {
             return new MaaApiResponse
             {
-                StatusCode = 400,
+                StatusCode = StatusCodes.Status400BadRequest,
                 Message = message ?? "Bad Request",
                 TraceId = id,
                 Data = null,
@@ -37,7 +39,7 @@ namespace MaaCopilotServer.Application.Common.Helpers
         {
             return new MaaApiResponse
             {
-                StatusCode = 403,
+                StatusCode = StatusCodes.Status403Forbidden,
                 Message = message ?? "Forbidden. Permission Denied",
                 TraceId = id,
                 Data = null,
@@ -54,7 +56,7 @@ namespace MaaCopilotServer.Application.Common.Helpers
         {
             return new MaaApiResponse
             {
-                StatusCode = 500,
+                StatusCode = StatusCodes.Status500InternalServerError,
                 Message = message ?? "Internal Server Error",
                 TraceId = id,
                 Data = null,
@@ -71,7 +73,7 @@ namespace MaaCopilotServer.Application.Common.Helpers
         {
             return new MaaApiResponse
             {
-                StatusCode = 404,
+                StatusCode = StatusCodes.Status404NotFound,
                 Message = message ?? "Not Found",
                 TraceId = id,
                 Data = null,
@@ -88,7 +90,7 @@ namespace MaaCopilotServer.Application.Common.Helpers
         {
             return new MaaApiResponse
             {
-                StatusCode = 200,
+                StatusCode = StatusCodes.Status200OK,
                 Message = "OK",
                 TraceId = id,
                 Data = obj,
@@ -105,7 +107,7 @@ namespace MaaCopilotServer.Application.Common.Helpers
         {
             return new MaaApiResponse
             {
-                StatusCode = 401,
+                StatusCode = StatusCodes.Status401Unauthorized,
                 Message = message ?? "Unauthorized",
                 TraceId = id,
                 Data = null,

@@ -63,10 +63,12 @@ public class DeleteCopilotUserCommandHandler : IRequestHandler<DeleteCopilotUser
     /// </summary>
     /// <param name="request">The request.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns>A task with no contents if the request completes successfully.</returns>
-    /// <exception cref="PipelineException">
-    ///     Thrown when the user ID does not exist, or an internal error occurs, or the user permission is insufficient.
-    /// </exception>
+    /// <returns>
+    ///     <para>A task with no contents if the request completes successfully.</para>
+    ///     <para>403 when the user permission is insufficient.</para>
+    ///     <para>404 when the user ID does not exist.</para>
+    ///     <para>500 when an internal error occurs.</para>
+    /// </returns>
     public async Task<MaaApiResponse> Handle(DeleteCopilotUserCommand request,
         CancellationToken cancellationToken)
     {
@@ -74,22 +76,22 @@ public class DeleteCopilotUserCommandHandler : IRequestHandler<DeleteCopilotUser
         var user = await _dbContext.CopilotUsers.FirstOrDefaultAsync(x => x.EntityId == userId, cancellationToken);
         if (user == null)
         {
-            throw new PipelineException(MaaApiResponseHelper.NotFound(_currentUserService.GetTrackingId(),
-                string.Format(_apiErrorMessage.UserWithIdNotFound!, userId)));
+            return MaaApiResponseHelper.NotFound(_currentUserService.GetTrackingId(),
+                string.Format(_apiErrorMessage.UserWithIdNotFound!, userId));
         }
 
         var @operator = await _dbContext.CopilotUsers.FirstOrDefaultAsync(
             x => x.EntityId == _currentUserService.GetUserIdentity(), cancellationToken);
         if (@operator is null)
         {
-            throw new PipelineException(MaaApiResponseHelper.InternalError(_currentUserService.GetTrackingId(),
-                _apiErrorMessage.InternalException));
+            return MaaApiResponseHelper.InternalError(_currentUserService.GetTrackingId(),
+                _apiErrorMessage.InternalException);
         }
 
         if (@operator.UserRole <= user.UserRole)
         {
-            throw new PipelineException(MaaApiResponseHelper.Forbidden(_currentUserService.GetTrackingId(),
-                _apiErrorMessage.PermissionDenied));
+            return MaaApiResponseHelper.Forbidden(_currentUserService.GetTrackingId(),
+                _apiErrorMessage.PermissionDenied);
         }
 
         user.Delete(_currentUserService.GetUserIdentity()!.Value);

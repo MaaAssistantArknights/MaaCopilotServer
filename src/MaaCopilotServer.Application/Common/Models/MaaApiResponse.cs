@@ -9,7 +9,6 @@ namespace MaaCopilotServer.Application.Common.Models;
 /// <summary>
 ///     The model of API response.
 /// </summary>
-/// <typeparam name="T">The type of the data.</typeparam>
 public record MaaApiResponse
 {
     /// <summary>
