@@ -50,7 +50,7 @@ public class ValidationBehaviourTest
     public async Task TestHandle_EmptyValidators()
     {
         _validators = new List<IValidator<IRequest<MaaApiResponse>>>();
-        var behaviour = new ValidationBehaviour<IRequest<MaaApiResponse>>(_validators, _currentUserService);
+        var behaviour = new ValidationBehaviour<IRequest<MaaApiResponse>, MaaApiResponse>(_validators, _currentUserService);
         var action = async () => await behaviour.Handle(Substitute.For<IRequest<MaaApiResponse>>(),
             new CancellationToken(),
             () => Task.FromResult(MaaApiResponseHelper.Ok(null, string.Empty)));
@@ -77,7 +77,7 @@ public class ValidationBehaviourTest
         var validator1 = new TestValidator(validator1Passed);
         var validator2 = new TestValidator(validator2Passed);
         _validators = new List<IValidator<IRequest<MaaApiResponse>>> { validator1, validator2 };
-        var behaviour = new ValidationBehaviour<IRequest<MaaApiResponse>>(_validators, _currentUserService);
+        var behaviour = new ValidationBehaviour<IRequest<MaaApiResponse>, MaaApiResponse>(_validators, _currentUserService);
         var action = async () => await behaviour.Handle(Substitute.For<IRequest<MaaApiResponse>>(),
             new CancellationToken(),
             () => Task.FromResult(MaaApiResponseHelper.Ok(null, string.Empty)));

@@ -57,7 +57,7 @@ public class UnhandledExceptionBehaviourTest
     public async Task TestHandle_Exception()
     {
         var behaviour =
-            new UnhandledExceptionBehaviour<IRequest<MaaApiResponse>>(_logger, _currentUserService, _apiErrorMessage);
+            new UnhandledExceptionBehaviour<IRequest<MaaApiResponse>, MaaApiResponse>(_logger, _currentUserService, _apiErrorMessage);
         var response = await behaviour.Handle(null, new CancellationToken(), () =>
         {
             throw new Exception();

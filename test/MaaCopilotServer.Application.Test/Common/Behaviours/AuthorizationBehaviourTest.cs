@@ -103,7 +103,7 @@ public class AuthorizationBehaviourTest
                 .ReturnsForAnyArgs(new Domain.Entities.CopilotUser(default, default, default, userRole, default));
         }
 
-        var behaviour = new AuthorizationBehaviour<IRequest<MaaApiResponse>>(_identityService,
+        var behaviour = new AuthorizationBehaviour<IRequest<MaaApiResponse>, MaaApiResponse>(_identityService,
             _currentUserService,
             _apiErrorMessage);
         var action = async () =>
