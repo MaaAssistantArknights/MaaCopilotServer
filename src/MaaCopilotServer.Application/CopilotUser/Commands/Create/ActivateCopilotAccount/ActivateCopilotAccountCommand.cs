@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MaaCopilotServer.Application.CopilotUser.Commands.ActivateCopilotAccount;
 
-public record ActivateCopilotAccountCommand : IRequest<MaaApiResponse<EmptyObject>>
+public record ActivateCopilotAccountCommand : IRequest<MaaApiResponse>
 {
     /// <summary>
     ///     Account activation token.
@@ -19,7 +19,7 @@ public record ActivateCopilotAccountCommand : IRequest<MaaApiResponse<EmptyObjec
 }
 
 public class
-    ActivateCopilotAccountCommandHandler : IRequestHandler<ActivateCopilotAccountCommand, MaaApiResponse<EmptyObject>>
+    ActivateCopilotAccountCommandHandler : IRequestHandler<ActivateCopilotAccountCommand, MaaApiResponse>
 {
     private readonly ApiErrorMessage _apiErrorMessage;
     private readonly ICurrentUserService _currentUserService;
@@ -35,7 +35,7 @@ public class
         _apiErrorMessage = apiErrorMessage;
     }
 
-    public async Task<MaaApiResponse<EmptyObject>> Handle(ActivateCopilotAccountCommand request,
+    public async Task<MaaApiResponse> Handle(ActivateCopilotAccountCommand request,
         CancellationToken cancellationToken)
     {
         var token = await _dbContext.CopilotTokens.FirstOrDefaultAsync(x => x.Token == request.Token,
@@ -59,6 +59,6 @@ public class
         _dbContext.CopilotTokens.Remove(token);
         await _dbContext.SaveChangesAsync(cancellationToken);
 
-        return MaaApiResponseHelper.Ok<EmptyObject>(null, _currentUserService.GetTrackingId());
+        return MaaApiResponseHelper.Ok(null, _currentUserService.GetTrackingId());
     }
 }

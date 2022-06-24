@@ -11,7 +11,7 @@ namespace MaaCopilotServer.Application.CopilotUser.Queries.QueryCopilotUser;
 /// <summary>
 ///     The record of querying multiple users.
 /// </summary>
-public record QueryCopilotUserQuery : IRequest<MaaApiResponse<PaginationResult<QueryCopilotUserDto>>>
+public record QueryCopilotUserQuery : IRequest<MaaApiResponse>
 {
     /// <summary>
     ///     The page number to query.
@@ -36,7 +36,7 @@ public record QueryCopilotUserQuery : IRequest<MaaApiResponse<PaginationResult<Q
 ///     The handler of querying multiple users.
 /// </summary>
 public class QueryCopilotUserQueryHandler : IRequestHandler<QueryCopilotUserQuery,
-    MaaApiResponse<PaginationResult<QueryCopilotUserDto>>>
+    MaaApiResponse>
 {
     /// <summary>
     ///     The service for current user.
@@ -67,7 +67,7 @@ public class QueryCopilotUserQueryHandler : IRequestHandler<QueryCopilotUserQuer
     /// <param name="request">The request.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>A task with an array of multiple users, excluding <c>upload_count</c>.</returns>
-    public async Task<MaaApiResponse<PaginationResult<QueryCopilotUserDto>>> Handle(QueryCopilotUserQuery request,
+    public async Task<MaaApiResponse> Handle(QueryCopilotUserQuery request,
         CancellationToken cancellationToken)
     {
         var limit = request.Limit ?? 10;

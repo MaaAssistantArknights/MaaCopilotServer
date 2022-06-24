@@ -9,14 +9,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MaaCopilotServer.Application.CopilotUser.Queries.GetCopilotUserFavorites;
 
-public record GetCopilotUserFavoritesQuery : IRequest<MaaApiResponse<GetCopilotUserFavoritesDto>>
+public record GetCopilotUserFavoritesQuery : IRequest<MaaApiResponse>
 {
     [FromQuery(Name = "id")] public string? FavoriteListId { get; set; }
 }
 
 public class GetCopilotUserFavoritesQueryHandler :
     IRequestHandler<GetCopilotUserFavoritesQuery,
-        MaaApiResponse<GetCopilotUserFavoritesDto>>
+        MaaApiResponse>
 {
     private readonly IMaaCopilotDbContext _copilotDbContext;
     private readonly ICopilotIdService _copilotIdService;
@@ -32,7 +32,7 @@ public class GetCopilotUserFavoritesQueryHandler :
         _copilotDbContext = copilotDbContext;
     }
 
-    public async Task<MaaApiResponse<GetCopilotUserFavoritesDto>> Handle(GetCopilotUserFavoritesQuery request,
+    public async Task<MaaApiResponse> Handle(GetCopilotUserFavoritesQuery request,
         CancellationToken cancellationToken)
     {
         var favListId = Guid.Parse(request.FavoriteListId!);

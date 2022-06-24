@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MaaCopilotServer.Application.CopilotUser.Commands.PasswordReset;
 
-public record PasswordResetCommand : IRequest<MaaApiResponse<EmptyObject>>
+public record PasswordResetCommand : IRequest<MaaApiResponse>
 {
     [JsonPropertyName("token")] public string? Token { get; set; }
 
@@ -20,7 +20,7 @@ public record PasswordResetCommand : IRequest<MaaApiResponse<EmptyObject>>
 }
 
 public class PasswordResetCommandHandler :
-    IRequestHandler<PasswordResetCommand, MaaApiResponse<EmptyObject>>
+    IRequestHandler<PasswordResetCommand, MaaApiResponse>
 {
     private readonly ApiErrorMessage _apiErrorMessage;
     private readonly ICurrentUserService _currentUserService;
@@ -39,7 +39,7 @@ public class PasswordResetCommandHandler :
         _apiErrorMessage = apiErrorMessage;
     }
 
-    public async Task<MaaApiResponse<EmptyObject>> Handle(PasswordResetCommand request,
+    public async Task<MaaApiResponse> Handle(PasswordResetCommand request,
         CancellationToken cancellationToken)
     {
         var token = await _dbContext.CopilotTokens.FirstOrDefaultAsync(x => x.Token == request.Token,
@@ -61,6 +61,6 @@ public class PasswordResetCommandHandler :
 
         _dbContext.CopilotUsers.Update(user);
         await _dbContext.SaveChangesAsync(cancellationToken);
-        return MaaApiResponseHelper.Ok<EmptyObject>(null, _currentUserService.GetTrackingId());
+        return MaaApiResponseHelper.Ok(null, _currentUserService.GetTrackingId());
     }
 }

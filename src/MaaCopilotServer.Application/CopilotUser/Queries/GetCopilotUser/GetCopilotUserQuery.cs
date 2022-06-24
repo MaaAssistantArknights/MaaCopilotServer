@@ -10,7 +10,7 @@ namespace MaaCopilotServer.Application.CopilotUser.Queries.GetCopilotUser;
 /// <summary>
 ///     The record of getting user.
 /// </summary>
-public record GetCopilotUserQuery : IRequest<MaaApiResponse<GetCopilotUserDto>>
+public record GetCopilotUserQuery : IRequest<MaaApiResponse>
 {
     /// <summary>
     ///     The user ID.
@@ -21,7 +21,7 @@ public record GetCopilotUserQuery : IRequest<MaaApiResponse<GetCopilotUserDto>>
 /// <summary>
 ///     The handler of getting user.
 /// </summary>
-public class GetCopilotUserQueryHandler : IRequestHandler<GetCopilotUserQuery, MaaApiResponse<GetCopilotUserDto>>
+public class GetCopilotUserQueryHandler : IRequestHandler<GetCopilotUserQuery, MaaApiResponse>
 {
     /// <summary>
     ///     The API error message.
@@ -61,7 +61,7 @@ public class GetCopilotUserQueryHandler : IRequestHandler<GetCopilotUserQuery, M
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>A task with user info of the user.</returns>
     /// <exception cref="PipelineException">Thrown when the current user ID or the user ID to get is not found.</exception>
-    public async Task<MaaApiResponse<GetCopilotUserDto>> Handle(GetCopilotUserQuery request,
+    public async Task<MaaApiResponse> Handle(GetCopilotUserQuery request,
         CancellationToken cancellationToken)
     {
         Guid userId;

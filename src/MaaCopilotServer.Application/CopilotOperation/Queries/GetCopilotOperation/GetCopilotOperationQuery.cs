@@ -10,7 +10,7 @@ namespace MaaCopilotServer.Application.CopilotOperation.Queries.GetCopilotOperat
 /// <summary>
 ///     The record of querying operation.
 /// </summary>
-public record GetCopilotOperationQuery : IRequest<MaaApiResponse<GetCopilotOperationQueryDto>>
+public record GetCopilotOperationQuery : IRequest<MaaApiResponse>
 {
     /// <summary>
     ///     The operation ID.
@@ -23,7 +23,7 @@ public record GetCopilotOperationQuery : IRequest<MaaApiResponse<GetCopilotOpera
 /// </summary>
 public class
     GetCopilotOperationQueryHandler : IRequestHandler<GetCopilotOperationQuery,
-        MaaApiResponse<GetCopilotOperationQueryDto>>
+        MaaApiResponse>
 {
     /// <summary>
     ///     The API error message.
@@ -71,7 +71,7 @@ public class
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>A task with a single operation and info.</returns>
     /// <exception cref="PipelineException">Thrown when the operation ID is invalid or not found.</exception>
-    public async Task<MaaApiResponse<GetCopilotOperationQueryDto>> Handle(GetCopilotOperationQuery request,
+    public async Task<MaaApiResponse> Handle(GetCopilotOperationQuery request,
         CancellationToken cancellationToken)
     {
         var id = _copilotIdService.DecodeId(request.Id!);

@@ -16,9 +16,9 @@ namespace MaaCopilotServer.Application.Common.Helpers
         /// <param name="id">The tracking ID.</param>
         /// <param name="message">The message, <c>"Bad Request"</c> by default.</param>
         /// <returns>The response.</returns>
-        public static MaaApiResponse<EmptyObject> BadRequest(string id, string? message)
+        public static MaaApiResponse BadRequest(string id, string? message)
         {
-            return new MaaApiResponse<EmptyObject>
+            return new MaaApiResponse
             {
                 StatusCode = 400,
                 Message = message ?? "Bad Request",
@@ -33,9 +33,9 @@ namespace MaaCopilotServer.Application.Common.Helpers
         /// <param name="id">The tracking ID.</param>
         /// <param name="message">The message, <c>"Forbidden. Permission Denied"</c> by default</param>
         /// <returns>The response.</returns>
-        public static MaaApiResponse<EmptyObject> Forbidden(string id, string? message)
+        public static MaaApiResponse Forbidden(string id, string? message)
         {
-            return new MaaApiResponse<EmptyObject>
+            return new MaaApiResponse
             {
                 StatusCode = 403,
                 Message = message ?? "Forbidden. Permission Denied",
@@ -50,9 +50,9 @@ namespace MaaCopilotServer.Application.Common.Helpers
         /// <param name="id">The tracking ID.</param>
         /// <param name="message">The message, <c>"Internal Server Error"</c> by default.</param>
         /// <returns>The response.</returns>
-        public static MaaApiResponse<EmptyObject> InternalError(string id, string? message)
+        public static MaaApiResponse InternalError(string id, string? message)
         {
-            return new MaaApiResponse<EmptyObject>
+            return new MaaApiResponse
             {
                 StatusCode = 500,
                 Message = message ?? "Internal Server Error",
@@ -67,9 +67,9 @@ namespace MaaCopilotServer.Application.Common.Helpers
         /// <param name="id">The tracking ID.</param>
         /// <param name="message">The message, <c>"Not Found"</c> by default.</param>
         /// <returns>The response.</returns>
-        public static MaaApiResponse<EmptyObject> NotFound(string id, string? message)
+        public static MaaApiResponse NotFound(string id, string? message)
         {
-            return new MaaApiResponse<EmptyObject>
+            return new MaaApiResponse
             {
                 StatusCode = 404,
                 Message = message ?? "Not Found",
@@ -83,11 +83,10 @@ namespace MaaCopilotServer.Application.Common.Helpers
         /// </summary>
         /// <param name="obj">The request body.</param>
         /// <param name="id">The tracking ID.</param>
-        /// <typeparam name="T">The response type.</typeparam>
         /// <returns>The response.</returns>
-        public static MaaApiResponse<T> Ok<T>(T? obj, string id)
+        public static MaaApiResponse Ok(object? obj, string id)
         {
-            return new MaaApiResponse<T>
+            return new MaaApiResponse
             {
                 StatusCode = 200,
                 Message = "OK",
@@ -102,9 +101,9 @@ namespace MaaCopilotServer.Application.Common.Helpers
         /// <param name="id">The tracking ID.</param>
         /// <param name="message">The message, <c>"Unauthorized"</c> by default.</param>
         /// <returns>The response.</returns>
-        public static MaaApiResponse<EmptyObject> Unauthorized(string id, string? message)
+        public static MaaApiResponse Unauthorized(string id, string? message)
         {
-            return new MaaApiResponse<EmptyObject>
+            return new MaaApiResponse
             {
                 StatusCode = 401,
                 Message = message ?? "Unauthorized",

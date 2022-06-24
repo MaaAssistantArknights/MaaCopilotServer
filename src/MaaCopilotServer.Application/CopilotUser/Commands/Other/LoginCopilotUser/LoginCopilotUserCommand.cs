@@ -13,7 +13,7 @@ namespace MaaCopilotServer.Application.CopilotUser.Commands.LoginCopilotUser;
 /// <summary>
 ///     The record of user login.
 /// </summary>
-public record LoginCopilotUserCommand : IRequest<MaaApiResponse<LoginCopilotUserDto>>
+public record LoginCopilotUserCommand : IRequest<MaaApiResponse>
 {
     /// <summary>
     ///     The user email.
@@ -33,7 +33,7 @@ public record LoginCopilotUserCommand : IRequest<MaaApiResponse<LoginCopilotUser
 ///     The handler of user login.
 /// </summary>
 public class
-    LoginCopilotUserCommandHandler : IRequestHandler<LoginCopilotUserCommand, MaaApiResponse<LoginCopilotUserDto>>
+    LoginCopilotUserCommandHandler : IRequestHandler<LoginCopilotUserCommand, MaaApiResponse>
 {
     /// <summary>
     ///     The API error message.
@@ -81,7 +81,7 @@ public class
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>A task with username, user token and token expiration time.</returns>
     /// <exception cref="PipelineException">Thrown when the email does not exist, or the password is incorrect.</exception>
-    public async Task<MaaApiResponse<LoginCopilotUserDto>> Handle(LoginCopilotUserCommand request,
+    public async Task<MaaApiResponse> Handle(LoginCopilotUserCommand request,
         CancellationToken cancellationToken)
     {
         var user = await _dbContext.CopilotUsers

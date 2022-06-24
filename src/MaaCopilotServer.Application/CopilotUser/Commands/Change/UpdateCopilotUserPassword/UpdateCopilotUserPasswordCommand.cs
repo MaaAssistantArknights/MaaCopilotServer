@@ -14,7 +14,7 @@ namespace MaaCopilotServer.Application.CopilotUser.Commands.UpdateCopilotUserPas
 ///     The record of updating user password.
 /// </summary>
 [Authorized(UserRole.User, true)]
-public record UpdateCopilotUserPasswordCommand : IRequest<MaaApiResponse<EmptyObject>>
+public record UpdateCopilotUserPasswordCommand : IRequest<MaaApiResponse>
 {
     /// <summary>
     ///     The original password.
@@ -35,7 +35,7 @@ public record UpdateCopilotUserPasswordCommand : IRequest<MaaApiResponse<EmptyOb
 ///     The handler of updating user password.
 /// </summary>
 public class UpdateCopilotUserPasswordCommandHandler : IRequestHandler<UpdateCopilotUserPasswordCommand,
-    MaaApiResponse<EmptyObject>>
+    MaaApiResponse>
 {
     /// <summary>
     ///     The API error message.
@@ -83,7 +83,7 @@ public class UpdateCopilotUserPasswordCommandHandler : IRequestHandler<UpdateCop
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>A task with no contents if the request completes successfully.</returns>
     /// <exception cref="PipelineException">Thrown when an internal error occurs, or the original password is incorrect.</exception>
-    public async Task<MaaApiResponse<EmptyObject>> Handle(UpdateCopilotUserPasswordCommand request,
+    public async Task<MaaApiResponse> Handle(UpdateCopilotUserPasswordCommand request,
         CancellationToken cancellationToken)
     {
         var user = await _dbContext.CopilotUsers
@@ -107,6 +107,6 @@ public class UpdateCopilotUserPasswordCommandHandler : IRequestHandler<UpdateCop
         user.UpdatePassword(user.EntityId, hash);
         _dbContext.CopilotUsers.Update(user);
         await _dbContext.SaveChangesAsync(cancellationToken);
-        return MaaApiResponseHelper.Ok<EmptyObject>(null, _currentUserService.GetTrackingId());
+        return MaaApiResponseHelper.Ok(null, _currentUserService.GetTrackingId());
     }
 }

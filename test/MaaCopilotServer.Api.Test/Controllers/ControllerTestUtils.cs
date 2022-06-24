@@ -25,7 +25,7 @@ internal sealed class ControllerTestUtils
     internal static async Task TestControllerEndpoint<TRequest, TResponse>(IMediator mediator, TRequest testRequest,
         TResponse testResponse, Func<TRequest, Task<ActionResult>> controllerAction)
     {
-        var testResponseData = MaaApiResponseHelper.Ok<TResponse>(testResponse, string.Empty);
+        var testResponseData = MaaApiResponseHelper.Ok(testResponse, string.Empty);
         mediator.Send(default).ReturnsForAnyArgs(testResponseData);
 
         var actualResponse = await controllerAction.Invoke(testRequest);
@@ -44,7 +44,7 @@ internal sealed class ControllerTestUtils
     internal static async Task TestControllerEndpointWithException<TRequest>(IMediator mediator, TRequest testRequest,
         Func<TRequest, Task<ActionResult>> controllerAction)
     {
-        var testResponseData = MaaApiResponseHelper.Ok<EmptyObject>(new EmptyObject(), string.Empty);
+        var testResponseData = MaaApiResponseHelper.Ok(new EmptyObject(), string.Empty);
         mediator.Send(default).ThrowsForAnyArgs(new PipelineException(testResponseData));
 
         ActionResult? actualResponse = default;
