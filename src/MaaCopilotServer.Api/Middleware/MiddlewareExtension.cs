@@ -19,4 +19,10 @@ public static class MiddlewareExtension
         app.UseMiddleware<RequestCultureMiddleware>();
         return app;
     }
+
+    public static IApplicationBuilder UseApmTransaction(this IApplicationBuilder app)
+    {
+        app.UseMiddleware<ApmTransactionMiddleware>();
+        return app;
+    }
 }

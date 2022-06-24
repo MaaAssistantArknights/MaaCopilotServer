@@ -28,11 +28,6 @@ public class CurrentUserService : ICurrentUserService
     private readonly IConfiguration _configuration;
 
     /// <summary>
-    ///     The provider of getting the current active transaction from APM.
-    /// </summary>
-    private readonly CurrentTransactionProvider _currentTransactionProvider;
-
-    /// <summary>
     ///     The HTTP context accessor.
     /// </summary>
     private readonly IHttpContextAccessor _httpContextAccessor;
@@ -43,26 +38,12 @@ public class CurrentUserService : ICurrentUserService
     /// <param name="httpContextAccessor">The HTTP context accessor.</param>
     /// <param name="configuration">The configuration.</param>
     [ExcludeFromCodeCoverage]
-    public CurrentUserService(IHttpContextAccessor httpContextAccessor,
-        IConfiguration configuration) : this(httpContextAccessor,
-        configuration,
-        () => Agent.Tracer.CurrentTransaction)
-    {
-    }
-
-    /// <summary>
-    ///     The constructor with all properties.
-    /// </summary>
-    /// <param name="httpContextAccessor">The HTTP context accessor.</param>
-    /// <param name="configuration">The configuration.</param>
-    /// <param name="currentTransactionProvider">The provider of getting the current active transaction from APM.</param>
     public CurrentUserService(
-        IHttpContextAccessor httpContextAccessor, IConfiguration configuration,
-        CurrentTransactionProvider currentTransactionProvider)
+        IHttpContextAccessor httpContextAccessor,
+        IConfiguration configuration)
     {
         _httpContextAccessor = httpContextAccessor;
         _configuration = configuration;
-        _currentTransactionProvider = currentTransactionProvider;
     }
 
     /// <summary>
@@ -94,10 +75,16 @@ public class CurrentUserService : ICurrentUserService
             return _httpContextAccessor.HttpContext?.TraceIdentifier ?? string.Empty;
         }
 
-        var t = _currentTransactionProvider();
-        if (t is not null)
+        var traceIdExist = _httpContextAccessor.HttpContext?.Items.ContainsKey("ApmTraceId");
+        if (traceIdExist is not true)
         {
-            return t.TraceId;
+            return _httpContextAccessor.HttpContext?.TraceIdentifier ?? string.Empty;
+        }
+
+        var traceId = _httpContextAccessor.HttpContext?.Items["ApmTraceId"];
+        if (traceId is not null)
+        {
+            return traceId.ToString()!;
         }
 
         return _httpContextAccessor.HttpContext?.TraceIdentifier ?? string.Empty;
