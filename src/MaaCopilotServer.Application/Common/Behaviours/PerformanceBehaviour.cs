@@ -59,23 +59,25 @@ public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequ
         RequestHandlerDelegate<MaaApiResponse> next)
     {
         _timer.Start();
+        var response = await next();
+        _timer.Stop();
 
-        try
+        var elapsedMilliseconds = _timer.ElapsedMilliseconds;
+
+        var requestName = typeof(TRequest).Name;
+        var userId = _currentUserService.GetUserIdentity().ToString() ?? string.Empty;
+        var statusCode = response.StatusCode;
+
+        var level = statusCode switch
         {
-            return await next();
-        }
-        finally
-        {
-            _timer.Stop();
+            >= 200 and < 400 => LogLevel.Information,
+            >= 500 and < 600 => LogLevel.Error,
+            _ => LogLevel.Warning
+        };
 
-            var elapsedMilliseconds = _timer.ElapsedMilliseconds;
-
-            var requestName = typeof(TRequest).Name;
-            var userId = _currentUserService.GetUserIdentity().ToString() ?? string.Empty;
-
-            _logger.LogInformation(
-                "MaaCopilotServer: Type -> {LoggingType}; Request Name -> {Name}; Time -> {ElapsedTime}; User -> {UserId}; Request -> {@Request}",
-                LoggingType.Request, requestName, elapsedMilliseconds, userId, request);
-        }
+        _logger.Log(level,
+            "MaaCopilotServer: Type -> {LoggingType}; Name -> {Name}; Time -> {ElapsedTime}; Status -> {StatusCode}, User -> {UserId}; Request -> {@Request}",
+            LoggingType.Request, requestName, elapsedMilliseconds.ToString(), statusCode.ToString(), userId, request);
+        return response;
     }
 }
