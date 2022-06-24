@@ -32,25 +32,4 @@ internal sealed class ControllerTestUtils
         actualResponse.Should().NotBeNull();
         actualResponse.Should().BeEquivalentTo(new OkObjectResult(testResponseData));
     }
-
-    /// <summary>
-    ///     Tests an endpoint of the controller with exception thrown.
-    /// </summary>
-    /// <typeparam name="TRequest">The type of the request, e.g. a class end with "Command".</typeparam>
-    /// <param name="mediator">The mediator.</param>
-    /// <param name="testRequest">The test request.</param>
-    /// <param name="testResponse">The test response.</param>
-    /// <returns>N/A</returns>
-    internal static async Task TestControllerEndpointWithException<TRequest>(IMediator mediator, TRequest testRequest,
-        Func<TRequest, Task<ActionResult>> controllerAction)
-    {
-        var testResponseData = MaaApiResponseHelper.Ok(new EmptyObject(), string.Empty);
-        mediator.Send(default).ThrowsForAnyArgs(new PipelineException(testResponseData));
-
-        ActionResult? actualResponse = default;
-        var action = async () => { actualResponse = await controllerAction.Invoke(testRequest); };
-        await action.Should().NotThrowAsync(); // PipelineException should be catched.
-        actualResponse.Should().NotBeNull();
-        actualResponse.Should().BeEquivalentTo(new OkObjectResult(testResponseData));
-    }
 }

@@ -50,8 +50,8 @@ public class RequestPasswordResetCommandHandler :
         var user = await _dbContext.CopilotUsers.FirstOrDefaultAsync(x => x.Email == request.Email, cancellationToken);
         if (user is null)
         {
-            throw new PipelineException(MaaApiResponseHelper.NotFound(_currentUserService.GetTrackingId(),
-                _apiErrorMessage.EmailNotRegister));
+            return MaaApiResponseHelper.NotFound(_currentUserService.GetTrackingId(),
+                _apiErrorMessage.EmailNotRegister);
         }
 
         var alreadyHaveToken = await _dbContext.CopilotTokens.FirstOrDefaultAsync(
@@ -70,8 +70,8 @@ public class RequestPasswordResetCommandHandler :
 
         if (success is false)
         {
-            throw new PipelineException(MaaApiResponseHelper.InternalError(_currentUserService.GetTrackingId(),
-                _apiErrorMessage.EmailSendFailed));
+            return MaaApiResponseHelper.InternalError(_currentUserService.GetTrackingId(),
+                _apiErrorMessage.EmailSendFailed);
         }
 
         _dbContext.CopilotTokens.Add(new CopilotToken(user.EntityId, TokenType.UserPasswordReset, token, time));

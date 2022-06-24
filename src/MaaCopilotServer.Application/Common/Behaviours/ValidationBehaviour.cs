@@ -10,9 +10,8 @@ namespace MaaCopilotServer.Application.Common.Behaviours;
 ///     The behaviour to validate request inputs.
 /// </summary>
 /// <typeparam name="TRequest">The type of the request.</typeparam>
-/// <typeparam name="TResponse">The type of the response.</typeparam>
-public class ValidationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
-    where TRequest : IRequest<TResponse>
+public class ValidationBehaviour<TRequest> : IPipelineBehavior<TRequest, MaaApiResponse>
+    where TRequest : IRequest<MaaApiResponse>
 {
     /// <summary>
     ///     The service of current user.
@@ -25,7 +24,7 @@ public class ValidationBehaviour<TRequest, TResponse> : IPipelineBehavior<TReque
     private readonly IEnumerable<IValidator<TRequest>> _validators;
 
     /// <summary>
-    ///     The constructor of <see cref="ValidationBehaviour{TRequest, TResponse}" />.
+    ///     The constructor.
     /// </summary>
     /// <param name="validators">The validators.</param>
     /// <param name="currentUserService">The service of current user.</param>
@@ -42,9 +41,8 @@ public class ValidationBehaviour<TRequest, TResponse> : IPipelineBehavior<TReque
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <param name="next">The next request handler.</param>
     /// <returns>The response.</returns>
-    /// <exception cref="PipelineException">Thrown when there are validation errors.</exception>
-    public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken,
-        RequestHandlerDelegate<TResponse> next)
+    public async Task<MaaApiResponse> Handle(TRequest request, CancellationToken cancellationToken,
+        RequestHandlerDelegate<MaaApiResponse> next)
     {
         if (_validators.Any() is false)
         {
@@ -65,7 +63,7 @@ public class ValidationBehaviour<TRequest, TResponse> : IPipelineBehavior<TReque
         var failureMessage = string.Join("\n", failures.Select(f => f.ToString()));
         if (failures.Any())
         {
-            throw new PipelineException(MaaApiResponseHelper.BadRequest(_currentUserService.GetTrackingId(), failureMessage));
+            return MaaApiResponseHelper.BadRequest(_currentUserService.GetTrackingId(), failureMessage);
         }
 
         return await next();

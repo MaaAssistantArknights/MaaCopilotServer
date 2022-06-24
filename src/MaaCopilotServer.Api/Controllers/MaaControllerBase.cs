@@ -35,15 +35,8 @@ public abstract class MaaControllerBase : ControllerBase
     /// <returns>A task with the API response.</returns>
     protected async Task<ActionResult> GetResponse(object request)
     {
-        try
-        {
-            // response will be of type MaaApiResponse.
-            var response = (await _mediator.Send(request))!;
-            return new OkObjectResult(response);
-        }
-        catch (PipelineException ex)
-        {
-            return new OkObjectResult(ex.Result);
-        }
+        // response will be of type MaaApiResponse.
+        var response = (await _mediator.Send(request))!;
+        return new OkObjectResult(response);
     }
 }

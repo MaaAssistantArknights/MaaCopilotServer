@@ -81,8 +81,11 @@ public class UpdateCopilotUserPasswordCommandHandler : IRequestHandler<UpdateCop
     /// </summary>
     /// <param name="request">The request.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns>A task with no contents if the request completes successfully.</returns>
-    /// <exception cref="PipelineException">Thrown when an internal error occurs, or the original password is incorrect.</exception>
+    /// <returns>
+    ///     <para>A task with no contents if the request completes successfully.</para>
+    ///     <para>400 when the original password is incorrect.</para>
+    ///     <para>500 when an internal error occurs.</para>
+    /// </returns>
     public async Task<MaaApiResponse> Handle(UpdateCopilotUserPasswordCommand request,
         CancellationToken cancellationToken)
     {
@@ -91,16 +94,16 @@ public class UpdateCopilotUserPasswordCommandHandler : IRequestHandler<UpdateCop
 
         if (user is null)
         {
-            throw new PipelineException(MaaApiResponseHelper.InternalError(_currentUserService.GetTrackingId(),
-                _apiErrorMessage.InternalException));
+            return MaaApiResponseHelper.InternalError(_currentUserService.GetTrackingId(),
+                _apiErrorMessage.InternalException);
         }
 
         var ok = _secretService.VerifyPassword(user!.Password, request.OriginalPassword!);
 
         if (ok is false)
         {
-            throw new PipelineException(MaaApiResponseHelper.BadRequest(_currentUserService.GetTrackingId(),
-                _apiErrorMessage.PasswordInvalid));
+            return MaaApiResponseHelper.BadRequest(_currentUserService.GetTrackingId(),
+                _apiErrorMessage.PasswordInvalid);
         }
 
         var hash = _secretService.HashPassword(request.NewPassword!);

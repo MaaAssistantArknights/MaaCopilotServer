@@ -8,6 +8,7 @@ using MaaCopilotServer.Application.Common.Exceptions;
 using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Application.CopilotOperation.Commands.CreateCopilotOperation;
 using MaaCopilotServer.Resources;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace MaaCopilotServer.Application.Test.CopilotOperation.Commands.CreateCopilotOperation;
@@ -216,7 +217,8 @@ public class CreateCopilotOperationCommandTest
 
         if (expectException)
         {
-            await action.Should().ThrowAsync<PipelineException>();
+            var response = await action();
+            response.StatusCode.Should().NotBe(StatusCodes.Status200OK);
         }
         else
         {

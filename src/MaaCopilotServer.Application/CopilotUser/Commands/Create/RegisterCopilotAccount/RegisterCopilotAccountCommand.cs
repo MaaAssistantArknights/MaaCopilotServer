@@ -71,8 +71,8 @@ public class RegisterCopilotAccountCommandHandler :
         var emailExist = await _dbContext.CopilotUsers.AnyAsync(x => x.Email == request.Email, cancellationToken);
         if (emailExist)
         {
-            throw new PipelineException(MaaApiResponseHelper.BadRequest(_currentUserService.GetTrackingId(),
-                _apiErrorMessage.EmailAlreadyInUse));
+            return MaaApiResponseHelper.BadRequest(_currentUserService.GetTrackingId(),
+                _apiErrorMessage.EmailAlreadyInUse);
         }
 
         var user = new Domain.Entities.CopilotUser(request.Email!, _secretService.HashPassword(request.Password!),
@@ -88,8 +88,8 @@ public class RegisterCopilotAccountCommandHandler :
 
         if (result is false)
         {
-            throw new PipelineException(MaaApiResponseHelper.InternalError(_currentUserService.GetTrackingId(),
-                _apiErrorMessage.EmailSendFailed));
+            return MaaApiResponseHelper.InternalError(_currentUserService.GetTrackingId(),
+                _apiErrorMessage.EmailSendFailed);
         }
 
         var tokenEntity = new CopilotToken(user.EntityId, TokenType.UserActivation, token, time);

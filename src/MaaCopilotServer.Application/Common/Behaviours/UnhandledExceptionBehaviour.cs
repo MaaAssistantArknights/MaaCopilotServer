@@ -8,12 +8,11 @@ using Microsoft.Extensions.Logging;
 namespace MaaCopilotServer.Application.Common.Behaviours;
 
 /// <summary>
-///     The behaviour to convert unhandled exceptions to <see cref="PipelineException" />.
+///     The behaviour to convert unhandled exceptions to 500 internal errors.
 /// </summary>
 /// <typeparam name="TRequest">The type of the request.</typeparam>
-/// <typeparam name="TResponse">The type of the response.</typeparam>
-public class UnhandledExceptionBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
-    where TRequest : IRequest<TResponse>
+public class UnhandledExceptionBehaviour<TRequest> : IPipelineBehavior<TRequest, MaaApiResponse>
+    where TRequest : IRequest<MaaApiResponse>
 {
     /// <summary>
     ///     The API error message.
@@ -31,7 +30,7 @@ public class UnhandledExceptionBehaviour<TRequest, TResponse> : IPipelineBehavio
     private readonly ILogger<TRequest> _logger;
 
     /// <summary>
-    ///     The constructor of <see cref="UnhandledExceptionBehaviour{TRequest, TResponse}" />.
+    ///     The constructor.
     /// </summary>
     /// <param name="logger">The logger.</param>
     /// <param name="currentUserService">The service of current user.</param>
@@ -54,17 +53,12 @@ public class UnhandledExceptionBehaviour<TRequest, TResponse> : IPipelineBehavio
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <param name="next">The next request handler.</param>
     /// <returns>The response.</returns>
-    /// <exception cref="PipelineException">Thrown when there are exceptions thrown.</exception>
-    public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken,
-        RequestHandlerDelegate<TResponse> next)
+    public async Task<MaaApiResponse> Handle(TRequest request, CancellationToken cancellationToken,
+        RequestHandlerDelegate<MaaApiResponse> next)
     {
         try
         {
             return await next();
-        }
-        catch (PipelineException)
-        {
-            throw;
         }
         catch (Exception ex)
         {
@@ -73,8 +67,8 @@ public class UnhandledExceptionBehaviour<TRequest, TResponse> : IPipelineBehavio
                 "MaaCopilotServer: Type -> {LoggingType}; Request Name -> {Name}; Request -> {@Request};",
                 LoggingType.Exception, requestName, request);
 
-            throw new PipelineException(MaaApiResponseHelper.InternalError(_currentUserService.GetTrackingId(),
-                _apiErrorMessage.InternalException));
+            return MaaApiResponseHelper.InternalError(_currentUserService.GetTrackingId(),
+                _apiErrorMessage.InternalException);
         }
     }
 }

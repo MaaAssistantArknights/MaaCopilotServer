@@ -79,8 +79,10 @@ public class
     /// </summary>
     /// <param name="request">The request.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns>A task with username, user token and token expiration time.</returns>
-    /// <exception cref="PipelineException">Thrown when the email does not exist, or the password is incorrect.</exception>
+    /// <returns>
+    ///     <para>A task with username, user token and token expiration time.</para>
+    ///     <para>400 when the email does not exist, or the password is incorrect.</para>
+    /// </returns>
     public async Task<MaaApiResponse> Handle(LoginCopilotUserCommand request,
         CancellationToken cancellationToken)
     {
@@ -89,15 +91,15 @@ public class
             .FirstOrDefaultAsync(x => x.Email == request.Email, cancellationToken);
         if (user is null)
         {
-            throw new PipelineException(MaaApiResponseHelper.BadRequest(_currentUserService.GetTrackingId(),
-                _apiErrorMessage.LoginFailed));
+            return MaaApiResponseHelper.BadRequest(_currentUserService.GetTrackingId(),
+                _apiErrorMessage.LoginFailed);
         }
 
         var ok = _secretService.VerifyPassword(user.Password, request.Password!);
         if (ok is false)
         {
-            throw new PipelineException(MaaApiResponseHelper.BadRequest(_currentUserService.GetTrackingId(),
-                _apiErrorMessage.LoginFailed));
+            return MaaApiResponseHelper.BadRequest(_currentUserService.GetTrackingId(),
+                _apiErrorMessage.LoginFailed);
         }
 
         var uploadCount = await _dbContext.CopilotOperations

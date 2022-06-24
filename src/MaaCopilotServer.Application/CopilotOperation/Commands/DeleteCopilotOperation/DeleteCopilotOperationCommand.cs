@@ -72,25 +72,25 @@ public class DeleteCopilotOperationCommandHandler : IRequestHandler<DeleteCopilo
     /// </summary>
     /// <param name="request">The request.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns>A task with the response.</returns>
-    /// <exception cref="PipelineException">
-    ///     Thrown when the operation ID is invalid, or the operation does not exist.
-    /// </exception>
+    /// <returns>
+    ///     <para>A task with the response.</para>
+    ///     <para>404 when the operation ID is invalid, or the operation does not exist.</para>
+    /// </returns>
     public async Task<MaaApiResponse> Handle(DeleteCopilotOperationCommand request,
         CancellationToken cancellationToken)
     {
         var id = _copilotIdService.DecodeId(request.Id!);
         if (id is null)
         {
-            throw new PipelineException(MaaApiResponseHelper.NotFound(_currentUserService.GetTrackingId(),
-                string.Format(_apiErrorMessage.CopilotOperationWithIdNotFound!, request.Id)));
+            return MaaApiResponseHelper.NotFound(_currentUserService.GetTrackingId(),
+                string.Format(_apiErrorMessage.CopilotOperationWithIdNotFound!, request.Id));
         }
 
         var entity = await _dbContext.CopilotOperations.FirstOrDefaultAsync(x => x.Id == id.Value, cancellationToken);
         if (entity is null)
         {
-            throw new PipelineException(MaaApiResponseHelper.NotFound(_currentUserService.GetTrackingId(),
-                string.Format(_apiErrorMessage.CopilotOperationWithIdNotFound!, request.Id)));
+            return MaaApiResponseHelper.NotFound(_currentUserService.GetTrackingId(),
+                string.Format(_apiErrorMessage.CopilotOperationWithIdNotFound!, request.Id));
         }
 
         entity.Delete(_currentUserService.GetUserIdentity()!.Value);

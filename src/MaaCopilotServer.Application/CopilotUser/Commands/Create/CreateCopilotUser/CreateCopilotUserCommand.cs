@@ -91,16 +91,18 @@ public class CreateCopilotUserCommandHandler : IRequestHandler<CreateCopilotUser
     /// </summary>
     /// <param name="request">The request.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns>A task with no contents if the request completes successfully.</returns>
-    /// <exception cref="PipelineException">Thrown when the email is already in use.</exception>
+    /// <returns>
+    ///     <para>A task with no contents if the request completes successfully.</para>
+    ///     <para>400 when the email is already in use.</para>
+    /// </returns>
     public async Task<MaaApiResponse> Handle(CreateCopilotUserCommand request,
         CancellationToken cancellationToken)
     {
         var emailColliding = await _dbContext.CopilotUsers.AnyAsync(x => x.Email == request.Email, cancellationToken);
         if (emailColliding)
         {
-            throw new PipelineException(MaaApiResponseHelper.BadRequest(_currentUserService.GetTrackingId(),
-                _apiErrorMessage.EmailAlreadyInUse));
+            return MaaApiResponseHelper.BadRequest(_currentUserService.GetTrackingId(),
+                _apiErrorMessage.EmailAlreadyInUse);
         }
 
         var hashedPassword = _secretService.HashPassword(request.Password!);
