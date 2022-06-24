@@ -2,7 +2,6 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
-using MaaCopilotServer.Application.Common.Exceptions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,7 +15,7 @@ public abstract class MaaControllerBase : ControllerBase
     /// <summary>
     ///     The mediator.
     /// </summary>
-    protected readonly IMediator _mediator;
+    protected readonly IMediator Mediator;
 
     /// <summary>
     ///     The constructor of <see cref="MaaControllerBase" />.
@@ -24,7 +23,7 @@ public abstract class MaaControllerBase : ControllerBase
     /// <param name="mediator">The mediator.</param>
     protected MaaControllerBase(IMediator mediator)
     {
-        _mediator = mediator;
+        Mediator = mediator;
     }
 
     /// <summary>
@@ -36,7 +35,7 @@ public abstract class MaaControllerBase : ControllerBase
     protected async Task<ActionResult> GetResponse(object request)
     {
         // response will be of type MaaApiResponse.
-        var response = (await _mediator.Send(request))!;
+        var response = (await Mediator.Send(request))!;
         return new OkObjectResult(response);
     }
 }

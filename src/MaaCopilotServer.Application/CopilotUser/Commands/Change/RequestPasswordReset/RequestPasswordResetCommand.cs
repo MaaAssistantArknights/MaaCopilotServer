@@ -22,7 +22,6 @@ public class RequestPasswordResetCommandHandler :
     IRequestHandler<RequestPasswordResetCommand, MaaApiResponse>
 {
     private readonly ApiErrorMessage _apiErrorMessage;
-    private readonly ICurrentUserService _currentUserService;
     private readonly IMaaCopilotDbContext _dbContext;
     private readonly IMailService _mailService;
     private readonly ISecretService _secretService;
@@ -30,14 +29,12 @@ public class RequestPasswordResetCommandHandler :
 
     public RequestPasswordResetCommandHandler(
         IOptions<TokenOption> tokenOption,
-        ICurrentUserService currentUserService,
         IMaaCopilotDbContext dbContext,
         ISecretService secretService,
         IMailService mailService,
         ApiErrorMessage apiErrorMessage)
     {
         _tokenOption = tokenOption;
-        _currentUserService = currentUserService;
         _dbContext = dbContext;
         _secretService = secretService;
         _mailService = mailService;
@@ -50,8 +47,7 @@ public class RequestPasswordResetCommandHandler :
         var user = await _dbContext.CopilotUsers.FirstOrDefaultAsync(x => x.Email == request.Email, cancellationToken);
         if (user is null)
         {
-            return MaaApiResponseHelper.NotFound(_currentUserService.GetTrackingId(),
-                _apiErrorMessage.EmailNotRegister);
+            return MaaApiResponseHelper.NotFound(_apiErrorMessage.EmailNotRegister);
         }
 
         var alreadyHaveToken = await _dbContext.CopilotTokens.FirstOrDefaultAsync(
@@ -70,12 +66,11 @@ public class RequestPasswordResetCommandHandler :
 
         if (success is false)
         {
-            return MaaApiResponseHelper.InternalError(_currentUserService.GetTrackingId(),
-                _apiErrorMessage.EmailSendFailed);
+            return MaaApiResponseHelper.InternalError(_apiErrorMessage.EmailSendFailed);
         }
 
         _dbContext.CopilotTokens.Add(new CopilotToken(user.EntityId, TokenType.UserPasswordReset, token, time));
         await _dbContext.SaveChangesAsync(cancellationToken);
-        return MaaApiResponseHelper.Ok(null, _currentUserService.GetTrackingId());
+        return MaaApiResponseHelper.Ok();
     }
 }

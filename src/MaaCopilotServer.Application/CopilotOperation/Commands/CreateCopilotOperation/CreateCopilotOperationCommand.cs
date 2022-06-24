@@ -56,6 +56,7 @@ public class CreateCopilotOperationCommandHandler : IRequestHandler<CreateCopilo
     /// <param name="identityService"> The service for user Identity.</param>
     /// <param name="currentUserService">The service for current user.</param>
     /// <param name="copilotIdService">The service for processing copilot ID.</param>
+    /// <param name="validationErrorMessage">The resource of validation error messages.</param>
     public CreateCopilotOperationCommandHandler(
         IMaaCopilotDbContext dbContext,
         IIdentityService identityService,
@@ -89,16 +90,13 @@ public class CreateCopilotOperationCommandHandler : IRequestHandler<CreateCopilo
         var docDetails = content.Doc?.Details ?? string.Empty;
 
         var operatorArray = content.Operators ?? Array.Empty<Operator>();
-        if (operatorArray.Where(item => item.Name == null).Any())
+        if (operatorArray.Any(item => item.Name == null))
         {
-            return MaaApiResponseHelper.BadRequest(_currentUserService.GetTrackingId(),
-                        _validationErrorMessage.CopilotOperationJsonIsInvalid);
+            return MaaApiResponseHelper.BadRequest(_validationErrorMessage.CopilotOperationJsonIsInvalid);
         }
+
         var operators = (content.Operators ?? Array.Empty<Operator>())
-            .Select(item =>
-            {
-                return $"{item.Name}::{item.Skill ?? 1}";
-            })
+            .Select(item => $"{item.Name}::{item.Skill ?? 1}")
             .Distinct() // Remove duplicate operators.
             .ToList();
 
@@ -110,14 +108,14 @@ public class CreateCopilotOperationCommandHandler : IRequestHandler<CreateCopilo
         await _dbContext.SaveChangesAsync(cancellationToken);
 
         var id = _copilotIdService.EncodeId(entity.Id);
-        return MaaApiResponseHelper.Ok(new CreateCopilotOperationDto(id), _currentUserService.GetTrackingId());
+        return MaaApiResponseHelper.Ok(new CreateCopilotOperationDto(id));
     }
 }
 
 /// <summary>
 /// The JSON request content of creating copilot operation.
 /// </summary>
-record CreateCopilotOperationContent
+internal record CreateCopilotOperationContent
 {
     /// <summary>
     /// The <c>stage_name</c> field.
@@ -147,7 +145,7 @@ record CreateCopilotOperationContent
 /// <summary>
 /// The JSON content of <c>doc</c>.
 /// </summary>
-record Doc
+internal record Doc
 {
     /// <summary>
     /// The <c>title</c> field.
@@ -165,7 +163,7 @@ record Doc
 /// <summary>
 /// The JSON content of <c>operator</c>.
 /// </summary>
-record Operator
+internal record Operator
 {
     /// <summary>
     /// The <c>name</c> field.

@@ -41,13 +41,13 @@ public class GetCopilotUserFavoritesQueryHandler : IRequestHandler<GetCopilotUse
             .FirstOrDefaultAsync(x => x.EntityId == favListId, cancellationToken);
         if (list is null)
         {
-            return MaaApiResponseHelper.NotFound(_currentUserService.GetTrackingId(), "");
+            return MaaApiResponseHelper.NotFound("");
         }
 
         var operationsDto = list.Operations.Select(x => new QueryCopilotOperationsQueryDto(
             _copilotIdService.EncodeId(x.Id), x.StageName, x.MinimumRequired, x.CreateAt.ToIsoString(),
             x.Author.UserName, x.Title, x.Details, x.Downloads, x.Operators)).ToList();
         var dto = new GetCopilotUserFavoritesDto(list.EntityId.ToString(), list.FavoriteName, operationsDto);
-        return MaaApiResponseHelper.Ok(dto, _currentUserService.GetTrackingId());
+        return MaaApiResponseHelper.Ok(dto);
     }
 }

@@ -79,8 +79,7 @@ public class
         var id = _copilotIdService.DecodeId(request.Id!);
         if (id is null)
         {
-            return MaaApiResponseHelper.NotFound(_currentUserService.GetTrackingId(),
-                string.Format(_apiErrorMessage.CopilotOperationWithIdNotFound!, request.Id));
+            return MaaApiResponseHelper.NotFound(string.Format(_apiErrorMessage.CopilotOperationWithIdNotFound!, request.Id));
         }
 
         var entity = await _dbContext.CopilotOperations
@@ -88,8 +87,7 @@ public class
             .FirstOrDefaultAsync(x => x.Id == id.Value, cancellationToken);
         if (entity is null)
         {
-            return MaaApiResponseHelper.NotFound(_currentUserService.GetTrackingId(),
-                string.Format(_apiErrorMessage.CopilotOperationWithIdNotFound!, request.Id));
+            return MaaApiResponseHelper.NotFound(string.Format(_apiErrorMessage.CopilotOperationWithIdNotFound!, request.Id));
         }
 
         var dto = new GetCopilotOperationQueryDto(
@@ -101,6 +99,6 @@ public class
         _dbContext.CopilotOperations.Update(entity);
         await _dbContext.SaveChangesAsync(cancellationToken);
 
-        return MaaApiResponseHelper.Ok(dto, _currentUserService.GetTrackingId());
+        return MaaApiResponseHelper.Ok(dto);
     }
 }

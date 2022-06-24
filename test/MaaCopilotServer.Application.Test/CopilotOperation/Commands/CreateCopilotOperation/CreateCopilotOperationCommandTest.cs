@@ -4,7 +4,7 @@
 
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using MaaCopilotServer.Application.Common.Exceptions;
+
 using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Application.CopilotOperation.Commands.CreateCopilotOperation;
 using MaaCopilotServer.Resources;
@@ -60,7 +60,8 @@ public class CreateCopilotOperationCommandTest
         _dbContext.SaveChangesAsync(Arg.Any<CancellationToken>()).Returns(Task.FromResult(1));
 
         _identityService = Substitute.For<IIdentityService>();
-        _identityService.GetUserAsync(Arg.Any<Guid>()).Returns(Task.FromResult(Substitute.For<Domain.Entities.CopilotUser>()));
+        _identityService.GetUserAsync(Arg.Any<Guid>())
+            .Returns(Task.FromResult(Substitute.For<Domain.Entities.CopilotUser>()));
 
         _validationErrorMessage = new ValidationErrorMessage();
     }
@@ -76,22 +77,11 @@ public class CreateCopilotOperationCommandTest
         {
             StageName = "test_stage_name",
             MinimumRequired = "0.0.1",
-            Doc = new TestDocContent
-            {
-                Title = "test_title",
-                Details = "test_details"
-            },
+            Doc = new TestDocContent { Title = "test_title", Details = "test_details" },
             Operators = new TestOperatorContent[]
             {
-                new TestOperatorContent {
-                    Name = "test_oper_0_name",
-                    Skill = 0,
-                },
-                new TestOperatorContent {
-                    Name = "test_oper_1_name",
-                    Skill = 1,
-                },
-            },
+                new() { Name = "test_oper_0_name", Skill = 0 }, new() { Name = "test_oper_1_name", Skill = 1 }
+            }
         };
         await TestHandle(testJsonContent);
     }
@@ -109,15 +99,8 @@ public class CreateCopilotOperationCommandTest
             MinimumRequired = "0.0.1",
             Operators = new TestOperatorContent[]
             {
-                new TestOperatorContent {
-                    Name = "test_oper_0_name",
-                    Skill = 0,
-                },
-                new TestOperatorContent {
-                    Name = "test_oper_1_name",
-                    Skill = 1,
-                },
-            },
+                new() { Name = "test_oper_0_name", Skill = 0 }, new() { Name = "test_oper_1_name", Skill = 1 }
+            }
         };
         await TestHandle(testJsonContent);
     }
@@ -135,15 +118,8 @@ public class CreateCopilotOperationCommandTest
             MinimumRequired = "0.0.1",
             Operators = new TestOperatorContent[]
             {
-                new TestOperatorContent {
-                    Name = "test_oper_0_name",
-                    Skill = 0,
-                },
-                new TestOperatorContent {
-                    Name = "test_oper_1_name",
-                    Skill = 1,
-                },
-            },
+                new() { Name = "test_oper_0_name", Skill = 0 }, new() { Name = "test_oper_1_name", Skill = 1 }
+            }
         };
         await TestHandle(testJsonContent, removeNullFields: true);
     }
@@ -161,16 +137,10 @@ public class CreateCopilotOperationCommandTest
             MinimumRequired = "0.0.1",
             Operators = new TestOperatorContent[]
             {
-                new TestOperatorContent {
-                    Skill = 0,
-                },
-                new TestOperatorContent {
-                    Name = "test_oper_1_name",
-                    Skill = 1,
-                },
-            },
+                new() { Skill = 0 }, new() { Name = "test_oper_1_name", Skill = 1 }
+            }
         };
-        await TestHandle(testJsonContent, expectException: true);
+        await TestHandle(testJsonContent, true);
     }
 
     /// <summary>
@@ -186,25 +156,21 @@ public class CreateCopilotOperationCommandTest
             MinimumRequired = "0.0.1",
             Operators = new TestOperatorContent[]
             {
-                new TestOperatorContent {
-                    Name = "test_oper_0_name",
-                    Skill = 0,
-                },
-                new TestOperatorContent {
-                    Name = "test_oper_0_name",
-                    Skill = 0,
-                },
-            },
+                new() { Name = "test_oper_0_name", Skill = 0 }, new() { Name = "test_oper_0_name", Skill = 0 }
+            }
         };
         await TestHandle(testJsonContent);
     }
 
-    private async Task TestHandle(TestRequestContent testJsonContent, bool expectException = false, bool removeNullFields = false)
+    private async Task TestHandle(TestRequestContent testJsonContent, bool expectException = false,
+        bool removeNullFields = false)
     {
-        var testContent = JsonSerializer.Serialize(testJsonContent, new JsonSerializerOptions()
-        {
-            DefaultIgnoreCondition = removeNullFields ? JsonIgnoreCondition.Never : JsonIgnoreCondition.WhenWritingNull
-        });
+        var testContent = JsonSerializer.Serialize(testJsonContent,
+            new JsonSerializerOptions()
+            {
+                DefaultIgnoreCondition =
+                    removeNullFields ? JsonIgnoreCondition.Never : JsonIgnoreCondition.WhenWritingNull
+            });
         Domain.Entities.CopilotOperation? entity = null;
         _dbContext.CopilotOperations.When(x => x.Add(Arg.Any<Domain.Entities.CopilotOperation>())).Do(c =>
         {
@@ -212,8 +178,10 @@ public class CreateCopilotOperationCommandTest
         });
         _copilotIdService.EncodeId(Arg.Any<long>()).Returns("10000");
 
-        var handler = new CreateCopilotOperationCommandHandler(_dbContext, _identityService, _currentUserService, _copilotIdService, _validationErrorMessage);
-        var action = async () => await handler.Handle(new CreateCopilotOperationCommand { Content = testContent }, new CancellationToken());
+        var handler = new CreateCopilotOperationCommandHandler(_dbContext, _identityService, _currentUserService,
+            _copilotIdService, _validationErrorMessage);
+        var action = async () =>
+            await handler.Handle(new CreateCopilotOperationCommand { Content = testContent }, new CancellationToken());
 
         if (expectException)
         {
@@ -232,7 +200,7 @@ public class CreateCopilotOperationCommandTest
             entity.Details.Should().Be(testJsonContent.Doc?.Details ?? string.Empty);
 
             var entityOperators = (from @operator in testJsonContent.Operators ?? Array.Empty<TestOperatorContent>()
-                                   select $"{@operator.Name}::{@operator.Skill?.ToString() ?? "1"}").Distinct().ToList();
+                select $"{@operator.Name}::{@operator.Skill?.ToString() ?? "1"}").Distinct().ToList();
             entity.Operators.Should().BeEquivalentTo(entityOperators);
         }
     }
@@ -241,7 +209,7 @@ public class CreateCopilotOperationCommandTest
 /// <summary>
 /// The test JSON request content.
 /// </summary>
-record TestRequestContent
+internal record TestRequestContent
 {
     /// <summary>
     /// The <c>stage_name</c> field.
@@ -271,7 +239,7 @@ record TestRequestContent
 /// <summary>
 /// The test JSON content of <c>doc</c>.
 /// </summary>
-record TestDocContent
+internal record TestDocContent
 {
     /// <summary>
     /// The <c>title</c> field.
@@ -289,7 +257,7 @@ record TestDocContent
 /// <summary>
 /// The test JSON content of <c>operator</c>.
 /// </summary>
-record TestOperatorContent
+internal record TestOperatorContent
 {
     /// <summary>
     /// The <c>name</c> field.

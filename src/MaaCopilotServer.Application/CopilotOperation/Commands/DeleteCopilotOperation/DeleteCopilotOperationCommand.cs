@@ -82,20 +82,18 @@ public class DeleteCopilotOperationCommandHandler : IRequestHandler<DeleteCopilo
         var id = _copilotIdService.DecodeId(request.Id!);
         if (id is null)
         {
-            return MaaApiResponseHelper.NotFound(_currentUserService.GetTrackingId(),
-                string.Format(_apiErrorMessage.CopilotOperationWithIdNotFound!, request.Id));
+            return MaaApiResponseHelper.NotFound(string.Format(_apiErrorMessage.CopilotOperationWithIdNotFound!, request.Id));
         }
 
         var entity = await _dbContext.CopilotOperations.FirstOrDefaultAsync(x => x.Id == id.Value, cancellationToken);
         if (entity is null)
         {
-            return MaaApiResponseHelper.NotFound(_currentUserService.GetTrackingId(),
-                string.Format(_apiErrorMessage.CopilotOperationWithIdNotFound!, request.Id));
+            return MaaApiResponseHelper.NotFound(string.Format(_apiErrorMessage.CopilotOperationWithIdNotFound!, request.Id));
         }
 
         entity.Delete(_currentUserService.GetUserIdentity()!.Value);
         _dbContext.CopilotOperations.Remove(entity);
         await _dbContext.SaveChangesAsync(cancellationToken);
-        return MaaApiResponseHelper.Ok(null, _currentUserService.GetTrackingId());
+        return MaaApiResponseHelper.Ok();
     }
 }

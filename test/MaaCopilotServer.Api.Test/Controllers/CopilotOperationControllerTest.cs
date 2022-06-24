@@ -3,7 +3,7 @@
 // Licensed under the AGPL-3.0 license.
 
 using MaaCopilotServer.Api.Controllers;
-using MaaCopilotServer.Application.Common.Exceptions;
+
 using MaaCopilotServer.Application.Common.Models;
 using MaaCopilotServer.Application.CopilotOperation.Commands.CreateCopilotOperation;
 using MaaCopilotServer.Application.CopilotOperation.Commands.DeleteCopilotOperation;

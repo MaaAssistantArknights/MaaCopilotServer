@@ -45,7 +45,8 @@ public class CurrentUserServiceTest
     public void TestConstructor()
     {
         new CurrentUserService(_httpContextAccessor, _configuration).Should().NotBeNull();
-        new CurrentUserService(_httpContextAccessor, _configuration, () => Substitute.For<ITransaction>()).Should().NotBeNull();
+        new CurrentUserService(_httpContextAccessor, _configuration, () => Substitute.For<ITransaction>()).Should()
+            .NotBeNull();
     }
 
     /// <summary>

@@ -114,22 +114,19 @@ public class
 
         if (user is null)
         {
-            return MaaApiResponseHelper.NotFound(_currentUserService.GetTrackingId(),
-                string.Format(_apiErrorMessage.UserWithIdNotFound!, request.UserId));
+            return MaaApiResponseHelper.NotFound(string.Format(_apiErrorMessage.UserWithIdNotFound!, request.UserId));
         }
 
         var @operator = await _dbContext.CopilotUsers.FirstOrDefaultAsync(
             x => x.EntityId == _currentUserService.GetUserIdentity(), cancellationToken);
         if (@operator is null)
         {
-            return MaaApiResponseHelper.InternalError(_currentUserService.GetTrackingId(),
-                _apiErrorMessage.InternalException);
+            return MaaApiResponseHelper.InternalError(_apiErrorMessage.InternalException);
         }
 
         if (@operator.UserRole is UserRole.Admin && user.UserRole >= UserRole.Admin)
         {
-            return MaaApiResponseHelper.Forbidden(_currentUserService.GetTrackingId(),
-                _apiErrorMessage.PermissionDenied);
+            return MaaApiResponseHelper.Forbidden(_apiErrorMessage.PermissionDenied);
         }
 
         if (request.Password is not null)
@@ -143,8 +140,7 @@ public class
             var exist = _dbContext.CopilotUsers.Any(x => x.Email == request.Email);
             if (exist)
             {
-                return MaaApiResponseHelper.BadRequest(_currentUserService.GetTrackingId(),
-                    _apiErrorMessage.EmailAlreadyInUse);
+                return MaaApiResponseHelper.BadRequest(_apiErrorMessage.EmailAlreadyInUse);
             }
         }
 
@@ -153,6 +149,6 @@ public class
         _dbContext.CopilotUsers.Update(user);
         await _dbContext.SaveChangesAsync(cancellationToken);
 
-        return MaaApiResponseHelper.Ok(null, _currentUserService.GetTrackingId());
+        return MaaApiResponseHelper.Ok();
     }
 }

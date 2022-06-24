@@ -94,22 +94,20 @@ public class UpdateCopilotUserPasswordCommandHandler : IRequestHandler<UpdateCop
 
         if (user is null)
         {
-            return MaaApiResponseHelper.InternalError(_currentUserService.GetTrackingId(),
-                _apiErrorMessage.InternalException);
+            return MaaApiResponseHelper.InternalError(_apiErrorMessage.InternalException);
         }
 
         var ok = _secretService.VerifyPassword(user!.Password, request.OriginalPassword!);
 
         if (ok is false)
         {
-            return MaaApiResponseHelper.BadRequest(_currentUserService.GetTrackingId(),
-                _apiErrorMessage.PasswordInvalid);
+            return MaaApiResponseHelper.BadRequest(_apiErrorMessage.PasswordInvalid);
         }
 
         var hash = _secretService.HashPassword(request.NewPassword!);
         user.UpdatePassword(user.EntityId, hash);
         _dbContext.CopilotUsers.Update(user);
         await _dbContext.SaveChangesAsync(cancellationToken);
-        return MaaApiResponseHelper.Ok(null, _currentUserService.GetTrackingId());
+        return MaaApiResponseHelper.Ok();
     }
 }

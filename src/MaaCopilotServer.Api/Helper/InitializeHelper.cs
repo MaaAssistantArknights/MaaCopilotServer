@@ -46,7 +46,7 @@ public class InitializeHelper
     /// <param name="settings">The global settings helper.</param>
     public InitializeHelper(IConfiguration configuration, GlobalSettingsHelper settings)
     {
-        this._configuration = configuration;
+        _configuration = configuration;
         _settings = settings;
     }
 
@@ -56,8 +56,8 @@ public class InitializeHelper
     [ExcludeFromCodeCoverage]
     public void InitializeEmailTemplates()
     {
-        var originalTemplatesDirectory = new DirectoryInfo(this._settings.OriginalTemplatesDirectory);
-        var targetTemplatesDirectory = new DirectoryInfo(this._settings.TargetTemplatesDirectory);
+        var originalTemplatesDirectory = new DirectoryInfo(_settings.OriginalTemplatesDirectory);
+        var targetTemplatesDirectory = new DirectoryInfo(_settings.TargetTemplatesDirectory);
 
         if (targetTemplatesDirectory.Exists is false)
         {
@@ -83,7 +83,7 @@ public class InitializeHelper
     public void InitializeDatabase()
     {
         // Establish database connection.
-        var dbOptions = this._configuration.GetOption<DatabaseOption>();
+        var dbOptions = _configuration.GetOption<DatabaseOption>();
         var db = new MaaCopilotDbContext(new OptionsWrapper<DatabaseOption>(dbOptions));
         var pendingMigrations = db.Database.GetPendingMigrations().Count();
         if (pendingMigrations > 0)
@@ -98,15 +98,16 @@ public class InitializeHelper
         if (haveUser is false)
         {
             // New DB without any existing users. Initialize default user.
-            var defaultUserEmail = this._settings.DefaultUserEmail;
-            var defaultUserPassword = this._settings.DefaultUserPassword;
+            var defaultUserEmail = _settings.DefaultUserEmail;
+            var defaultUserPassword = _settings.DefaultUserPassword;
             if (defaultUserPassword == "")
             {
                 defaultUserPassword = GeneratePassword();
             }
-            var defaultUserName = this._settings.DefaultUsername;
 
-            if (this._settings.IsDefaultUserEmailEmpty || this._settings.IsDefaultUserPasswordEmpty)
+            var defaultUserName = _settings.DefaultUsername;
+
+            if (_settings.IsDefaultUserEmailEmpty || _settings.IsDefaultUserPasswordEmpty)
             {
                 Log.Logger.Information("Creating default user with email {DefaultEmail} and password {DefaultPassword}",
                     defaultUserEmail, defaultUserPassword);

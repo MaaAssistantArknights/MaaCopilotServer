@@ -67,25 +67,23 @@ public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRe
         var userId = _currentUserService.GetUserIdentity();
         if (userId is null)
         {
-            return MaaApiResponseHelper.Unauthorized(_currentUserService.GetTrackingId(),
-                _apiErrorMessage.Unauthorized);
+            return MaaApiResponseHelper.Unauthorized(_apiErrorMessage.Unauthorized);
         }
 
         var user = await _identityService.GetUserAsync(userId.Value);
         if (user is null)
         {
-            return MaaApiResponseHelper.NotFound(_currentUserService.GetTrackingId(),
-                string.Format(_apiErrorMessage.UserWithIdNotFound!, userId));
+            return MaaApiResponseHelper.NotFound(string.Format(_apiErrorMessage.UserWithIdNotFound!, userId));
         }
 
         if (user.UserRole < authorizeAttribute.Role)
         {
-            return MaaApiResponseHelper.Forbidden(_currentUserService.GetTrackingId(), _apiErrorMessage.PermissionDenied);
+            return MaaApiResponseHelper.Forbidden(_apiErrorMessage.PermissionDenied);
         }
 
         if (authorizeAttribute.AllowInActivated is false && user.UserActivated is false)
         {
-            return MaaApiResponseHelper.Forbidden(_currentUserService.GetTrackingId(), _apiErrorMessage.UserInactivated);
+            return MaaApiResponseHelper.Forbidden(_apiErrorMessage.UserInactivated);
         }
 
         return await next();

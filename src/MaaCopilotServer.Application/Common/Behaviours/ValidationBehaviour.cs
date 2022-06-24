@@ -66,7 +66,7 @@ public class ValidationBehaviour<TRequest, TResponse> : IPipelineBehavior<TReque
         var failureMessage = string.Join("\n", failures.Select(f => f.ToString()));
         if (failures.Any())
         {
-            return MaaApiResponseHelper.BadRequest(_currentUserService.GetTrackingId(), failureMessage);
+            return MaaApiResponseHelper.BadRequest(failureMessage);
         }
 
         return await next();

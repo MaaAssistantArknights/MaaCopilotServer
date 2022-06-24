@@ -76,7 +76,7 @@ public class DeleteCopilotUserCommandHandler : IRequestHandler<DeleteCopilotUser
         var user = await _dbContext.CopilotUsers.FirstOrDefaultAsync(x => x.EntityId == userId, cancellationToken);
         if (user == null)
         {
-            return MaaApiResponseHelper.NotFound(_currentUserService.GetTrackingId(),
+            return MaaApiResponseHelper.NotFound(
                 string.Format(_apiErrorMessage.UserWithIdNotFound!, userId));
         }
 
@@ -84,19 +84,19 @@ public class DeleteCopilotUserCommandHandler : IRequestHandler<DeleteCopilotUser
             x => x.EntityId == _currentUserService.GetUserIdentity(), cancellationToken);
         if (@operator is null)
         {
-            return MaaApiResponseHelper.InternalError(_currentUserService.GetTrackingId(),
+            return MaaApiResponseHelper.InternalError(
                 _apiErrorMessage.InternalException);
         }
 
         if (@operator.UserRole <= user.UserRole)
         {
-            return MaaApiResponseHelper.Forbidden(_currentUserService.GetTrackingId(),
+            return MaaApiResponseHelper.Forbidden(
                 _apiErrorMessage.PermissionDenied);
         }
 
         user.Delete(_currentUserService.GetUserIdentity()!.Value);
         _dbContext.CopilotUsers.Remove(user);
         await _dbContext.SaveChangesAsync(cancellationToken);
-        return MaaApiResponseHelper.Ok(null, _currentUserService.GetTrackingId());
+        return MaaApiResponseHelper.Ok();
     }
 }

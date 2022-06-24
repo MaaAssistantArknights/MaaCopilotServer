@@ -101,8 +101,7 @@ public class
 
         if (user is null)
         {
-            return MaaApiResponseHelper.InternalError(_currentUserService.GetTrackingId(),
-                _apiErrorMessage.InternalException);
+            return MaaApiResponseHelper.InternalError(_apiErrorMessage.InternalException);
         }
 
         if (string.IsNullOrEmpty(request.Email) is false)
@@ -110,8 +109,7 @@ public class
             var exist = _dbContext.CopilotUsers.Any(x => x.Email == request.Email);
             if (exist)
             {
-                return MaaApiResponseHelper.BadRequest(_currentUserService.GetTrackingId(),
-                    _apiErrorMessage.EmailAlreadyInUse);
+                return MaaApiResponseHelper.BadRequest(_apiErrorMessage.EmailAlreadyInUse);
             }
 
             var (token, time) = _secretService.GenerateToken(user.EntityId, TimeSpan.FromMinutes(
@@ -123,14 +121,13 @@ public class
 
             if (result is false)
             {
-                return MaaApiResponseHelper.InternalError(_currentUserService.GetTrackingId(),
-                    _apiErrorMessage.EmailSendFailed);
+                return MaaApiResponseHelper.InternalError(_apiErrorMessage.EmailSendFailed);
             }
         }
 
         user.UpdateUserInfo(user.EntityId, request.Email, request.UserName);
         _dbContext.CopilotUsers.Update(user);
         await _dbContext.SaveChangesAsync(cancellationToken);
-        return MaaApiResponseHelper.Ok(null, _currentUserService.GetTrackingId());
+        return MaaApiResponseHelper.Ok();
     }
 }

@@ -91,14 +91,14 @@ public class
             .FirstOrDefaultAsync(x => x.Email == request.Email, cancellationToken);
         if (user is null)
         {
-            return MaaApiResponseHelper.BadRequest(_currentUserService.GetTrackingId(),
+            return MaaApiResponseHelper.BadRequest(
                 _apiErrorMessage.LoginFailed);
         }
 
         var ok = _secretService.VerifyPassword(user.Password, request.Password!);
         if (ok is false)
         {
-            return MaaApiResponseHelper.BadRequest(_currentUserService.GetTrackingId(),
+            return MaaApiResponseHelper.BadRequest(
                 _apiErrorMessage.LoginFailed);
         }
 
@@ -113,6 +113,6 @@ public class
         var dto = new LoginCopilotUserDto(token, expire.ToIsoString(),
             new GetCopilotUserDto(user.EntityId, user.UserName, user.UserRole, uploadCount, user.UserActivated,
                 favList));
-        return MaaApiResponseHelper.Ok(dto, _currentUserService.GetTrackingId());
+        return MaaApiResponseHelper.Ok(dto);
     }
 }

@@ -22,10 +22,6 @@ public class UnhandledExceptionBehaviour<TRequest, TResponse> : IPipelineBehavio
     /// </summary>
     private readonly ApiErrorMessage _apiErrorMessage;
 
-    /// <summary>
-    ///     The service of current user.
-    /// </summary>
-    private readonly ICurrentUserService _currentUserService;
 
     /// <summary>
     ///     The logger.
@@ -36,16 +32,14 @@ public class UnhandledExceptionBehaviour<TRequest, TResponse> : IPipelineBehavio
     ///     The constructor.
     /// </summary>
     /// <param name="logger">The logger.</param>
-    /// <param name="currentUserService">The service of current user.</param>
     /// <param name="apiErrorMessage">The API error message.</param>
     // ReSharper disable once ContextualLoggerProblem
     public UnhandledExceptionBehaviour(
+        // ReSharper disable once ContextualLoggerProblem
         ILogger<TRequest> logger,
-        ICurrentUserService currentUserService,
         ApiErrorMessage apiErrorMessage)
     {
         _logger = logger;
-        _currentUserService = currentUserService;
         _apiErrorMessage = apiErrorMessage;
     }
 
@@ -70,8 +64,7 @@ public class UnhandledExceptionBehaviour<TRequest, TResponse> : IPipelineBehavio
                 "MaaCopilotServer: Type -> {LoggingType}; Request Name -> {Name}; Request -> {@Request};",
                 LoggingType.Exception, requestName, request);
 
-            return MaaApiResponseHelper.InternalError(_currentUserService.GetTrackingId(),
-                _apiErrorMessage.InternalException);
+            return MaaApiResponseHelper.InternalError(_apiErrorMessage.InternalException);
         }
     }
 }

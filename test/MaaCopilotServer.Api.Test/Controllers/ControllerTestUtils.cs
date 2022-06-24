@@ -2,9 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
-using MaaCopilotServer.Application.Common.Exceptions;
 using MaaCopilotServer.Application.Common.Helpers;
-using MaaCopilotServer.Application.Common.Models;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,7 +23,7 @@ internal sealed class ControllerTestUtils
     internal static async Task TestControllerEndpoint<TRequest, TResponse>(IMediator mediator, TRequest testRequest,
         TResponse testResponse, Func<TRequest, Task<ActionResult>> controllerAction)
     {
-        var testResponseData = MaaApiResponseHelper.Ok(testResponse, string.Empty);
+        var testResponseData = MaaApiResponseHelper.Ok(testResponse);
         mediator.Send(default).ReturnsForAnyArgs(testResponseData);
 
         var actualResponse = await controllerAction.Invoke(testRequest);

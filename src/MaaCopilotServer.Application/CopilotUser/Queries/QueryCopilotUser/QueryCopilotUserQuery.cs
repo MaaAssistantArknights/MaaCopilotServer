@@ -98,6 +98,6 @@ public class QueryCopilotUserQueryHandler : IRequestHandler<QueryCopilotUserQuer
             Total = totalCount,
             Data = dtos,
         };
-        return MaaApiResponseHelper.Ok(paginationResult, _currentUserService.GetTrackingId());
+        return MaaApiResponseHelper.Ok(paginationResult);
     }
 }

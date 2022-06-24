@@ -73,7 +73,7 @@ public class GetCopilotUserQueryHandler : IRequestHandler<GetCopilotUserQuery, M
             var id = _currentUserService.GetUserIdentity();
             if (id is null)
             {
-                return MaaApiResponseHelper.BadRequest(_currentUserService.GetTrackingId(),
+                return MaaApiResponseHelper.BadRequest(
                     _apiErrorMessage.MeNotFound);
             }
 
@@ -90,7 +90,7 @@ public class GetCopilotUserQueryHandler : IRequestHandler<GetCopilotUserQuery, M
 
         if (user is null)
         {
-            return MaaApiResponseHelper.NotFound(_currentUserService.GetTrackingId(),
+            return MaaApiResponseHelper.NotFound(
                 string.Format(_apiErrorMessage.UserWithIdNotFound!, request.UserId));
         }
 
@@ -103,6 +103,6 @@ public class GetCopilotUserQueryHandler : IRequestHandler<GetCopilotUserQuery, M
             .ToDictionary(fav => fav.EntityId.ToString(), fav => fav.FavoriteName);
 
         var dto = new GetCopilotUserDto(userId, user.UserName, user.UserRole, uploadCount, user.UserActivated, favList);
-        return MaaApiResponseHelper.Ok(dto, _currentUserService.GetTrackingId());
+        return MaaApiResponseHelper.Ok(dto);
     }
 }

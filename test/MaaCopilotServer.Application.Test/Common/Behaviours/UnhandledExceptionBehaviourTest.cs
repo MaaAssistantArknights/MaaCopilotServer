@@ -3,7 +3,7 @@
 // Licensed under the AGPL-3.0 license.
 
 using MaaCopilotServer.Application.Common.Behaviours;
-using MaaCopilotServer.Application.Common.Exceptions;
+
 using MaaCopilotServer.Application.Common.Helpers;
 using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Application.Common.Models;
@@ -57,7 +57,8 @@ public class UnhandledExceptionBehaviourTest
     public async Task TestHandle_Exception()
     {
         var behaviour =
-            new UnhandledExceptionBehaviour<IRequest<MaaApiResponse>, MaaApiResponse>(_logger, _currentUserService, _apiErrorMessage);
+            new UnhandledExceptionBehaviour<IRequest<MaaApiResponse>, MaaApiResponse>(_logger,
+                _apiErrorMessage);
         var response = await behaviour.Handle(null, new CancellationToken(), () =>
         {
             throw new Exception();

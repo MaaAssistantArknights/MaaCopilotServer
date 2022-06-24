@@ -71,7 +71,7 @@ public class RegisterCopilotAccountCommandHandler :
         var emailExist = await _dbContext.CopilotUsers.AnyAsync(x => x.Email == request.Email, cancellationToken);
         if (emailExist)
         {
-            return MaaApiResponseHelper.BadRequest(_currentUserService.GetTrackingId(),
+            return MaaApiResponseHelper.BadRequest(
                 _apiErrorMessage.EmailAlreadyInUse);
         }
 
@@ -88,7 +88,7 @@ public class RegisterCopilotAccountCommandHandler :
 
         if (result is false)
         {
-            return MaaApiResponseHelper.InternalError(_currentUserService.GetTrackingId(),
+            return MaaApiResponseHelper.InternalError(
                 _apiErrorMessage.EmailSendFailed);
         }
 
@@ -96,6 +96,6 @@ public class RegisterCopilotAccountCommandHandler :
         _dbContext.CopilotTokens.Add(tokenEntity);
         await _dbContext.SaveChangesAsync(cancellationToken);
 
-        return MaaApiResponseHelper.Ok(null, _currentUserService.GetTrackingId());
+        return MaaApiResponseHelper.Ok();
     }
 }

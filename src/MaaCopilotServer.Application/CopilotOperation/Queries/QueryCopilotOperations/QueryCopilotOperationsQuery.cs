@@ -127,8 +127,7 @@ public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOp
             var id = _currentUserService.GetUserIdentity();
             if (id is null)
             {
-                return MaaApiResponseHelper.BadRequest(_currentUserService.GetTrackingId(),
-                    _apiErrorMessage.MeNotFound);
+                return MaaApiResponseHelper.BadRequest(_apiErrorMessage.MeNotFound);
             }
 
             uploaderId = id.Value;
@@ -194,6 +193,6 @@ public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOp
             Total = totalCount,
             Data = dtos,
         };
-        return MaaApiResponseHelper.Ok(paginationResult, _currentUserService.GetTrackingId());
+        return MaaApiResponseHelper.Ok(paginationResult);
     }
 }

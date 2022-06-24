@@ -5,7 +5,6 @@
 global using FluentValidation;
 global using MaaCopilotServer.Application.Common.Behaviours;
 global using MaaCopilotServer.Application.Common.Enum;
-global using MaaCopilotServer.Application.Common.Exceptions;
 global using MaaCopilotServer.Application.Common.Extensions;
 global using MaaCopilotServer.Application.Common.Interfaces;
 global using MaaCopilotServer.Application.Common.Models;

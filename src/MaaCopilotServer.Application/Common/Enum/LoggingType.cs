@@ -10,7 +10,7 @@ namespace MaaCopilotServer.Application.Common.Enum;
 ///     The type of log.
 /// </summary>
 [ExcludeFromCodeCoverage]
-public struct LoggingType
+public readonly struct LoggingType
 {
     /// <summary>
     ///     The value.

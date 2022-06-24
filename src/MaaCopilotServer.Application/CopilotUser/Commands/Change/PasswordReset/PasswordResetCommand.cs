@@ -23,17 +23,14 @@ public class PasswordResetCommandHandler :
     IRequestHandler<PasswordResetCommand, MaaApiResponse>
 {
     private readonly ApiErrorMessage _apiErrorMessage;
-    private readonly ICurrentUserService _currentUserService;
     private readonly IMaaCopilotDbContext _dbContext;
     private readonly ISecretService _secretService;
 
     public PasswordResetCommandHandler(
-        ICurrentUserService currentUserService,
         ISecretService secretService,
         IMaaCopilotDbContext dbContext,
         ApiErrorMessage apiErrorMessage)
     {
-        _currentUserService = currentUserService;
         _secretService = secretService;
         _dbContext = dbContext;
         _apiErrorMessage = apiErrorMessage;
@@ -46,21 +43,19 @@ public class PasswordResetCommandHandler :
             cancellationToken);
         if (token is null || token.ValidBefore < DateTimeOffset.UtcNow || token.Type != TokenType.UserPasswordReset)
         {
-            return MaaApiResponseHelper.BadRequest(_currentUserService.GetTrackingId(),
-                _apiErrorMessage.TokenInvalid);
+            return MaaApiResponseHelper.BadRequest(_apiErrorMessage.TokenInvalid);
         }
 
         var user = _dbContext.CopilotUsers.FirstOrDefault(x => x.EntityId == token.ResourceId);
         if (user is null)
         {
-            return MaaApiResponseHelper.InternalError(_currentUserService.GetTrackingId(),
-                string.Format(_apiErrorMessage.UserWithIdNotFound!, token.ResourceId.ToString()));
+            return MaaApiResponseHelper.InternalError(string.Format(_apiErrorMessage.UserWithIdNotFound!, token.ResourceId.ToString()));
         }
 
         user.UpdatePassword(user.EntityId, _secretService.HashPassword(request.Password!));
 
         _dbContext.CopilotUsers.Update(user);
         await _dbContext.SaveChangesAsync(cancellationToken);
-        return MaaApiResponseHelper.Ok(null, _currentUserService.GetTrackingId());
+        return MaaApiResponseHelper.Ok();
     }
 }

@@ -3,7 +3,7 @@
 // Licensed under the AGPL-3.0 license.
 
 using MaaCopilotServer.Application.Common.Behaviours;
-using MaaCopilotServer.Application.Common.Exceptions;
+
 using MaaCopilotServer.Application.Common.Helpers;
 using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Application.Common.Models;
@@ -103,11 +103,9 @@ public class AuthorizationBehaviourTest
                 .ReturnsForAnyArgs(new Domain.Entities.CopilotUser(default, default, default, userRole, default));
         }
 
-        var behaviour = new AuthorizationBehaviour<IRequest<MaaApiResponse>, MaaApiResponse>(_identityService,
-            _currentUserService,
-            _apiErrorMessage);
+        var behaviour = new AuthorizationBehaviour<IRequest<MaaApiResponse>, MaaApiResponse>(_identityService, _currentUserService, _apiErrorMessage);
         var action = async () =>
-            await behaviour.Handle(testRequest, new CancellationToken(), () => Task.FromResult(MaaApiResponseHelper.Ok(null, string.Empty)));
+            await behaviour.Handle(testRequest, new CancellationToken(), () => Task.FromResult(MaaApiResponseHelper.Ok()));
         if (expectedErrorStatusCode != null)
         {
             var response = await action();

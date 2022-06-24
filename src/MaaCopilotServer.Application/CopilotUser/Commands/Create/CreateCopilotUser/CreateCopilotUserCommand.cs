@@ -101,7 +101,7 @@ public class CreateCopilotUserCommandHandler : IRequestHandler<CreateCopilotUser
         var emailColliding = await _dbContext.CopilotUsers.AnyAsync(x => x.Email == request.Email, cancellationToken);
         if (emailColliding)
         {
-            return MaaApiResponseHelper.BadRequest(_currentUserService.GetTrackingId(),
+            return MaaApiResponseHelper.BadRequest(
                 _apiErrorMessage.EmailAlreadyInUse);
         }
 
@@ -110,6 +110,6 @@ public class CreateCopilotUserCommandHandler : IRequestHandler<CreateCopilotUser
             Enum.Parse<UserRole>(request.Role!), _currentUserService.GetUserIdentity()!.Value);
         _dbContext.CopilotUsers.Add(user);
         await _dbContext.SaveChangesAsync(cancellationToken);
-        return MaaApiResponseHelper.Ok(null, _currentUserService.GetTrackingId());
+        return MaaApiResponseHelper.Ok();
     }
 }
