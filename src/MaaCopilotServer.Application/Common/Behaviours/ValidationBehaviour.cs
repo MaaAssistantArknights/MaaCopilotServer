@@ -11,8 +11,8 @@ namespace MaaCopilotServer.Application.Common.Behaviours;
 /// </summary>
 /// <typeparam name="TRequest">The type of the request.</typeparam>
 /// <typeparam name="TResponse">The type of the response.</typeparam>
-public class ValidationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
-    where TRequest : IRequest<TResponse>
+public class ValidationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, MaaApiResponse<TResponse>>
+    where TRequest : IRequest<MaaApiResponse<TResponse>>
 {
     /// <summary>
     ///     The service of current user.
@@ -43,8 +43,8 @@ public class ValidationBehaviour<TRequest, TResponse> : IPipelineBehavior<TReque
     /// <param name="next">The next request handler.</param>
     /// <returns>The response.</returns>
     /// <exception cref="PipelineException">Thrown when there are validation errors.</exception>
-    public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken,
-        RequestHandlerDelegate<TResponse> next)
+    public async Task<MaaApiResponse<TResponse>> Handle(TRequest request, CancellationToken cancellationToken,
+        RequestHandlerDelegate<MaaApiResponse<TResponse>> next)
     {
         if (_validators.Any() is false)
         {
@@ -65,7 +65,7 @@ public class ValidationBehaviour<TRequest, TResponse> : IPipelineBehavior<TReque
         var failureMessage = string.Join("\n", failures.Select(f => f.ToString()));
         if (failures.Any())
         {
-            throw new PipelineException(MaaApiResponseHelper.BadRequest(_currentUserService.GetTrackingId(), failureMessage));
+            return MaaApiResponseHelper.BadRequest<TResponse>(_currentUserService.GetTrackingId(), failureMessage);
         }
 
         return await next();

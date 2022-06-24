@@ -11,8 +11,8 @@ namespace MaaCopilotServer.Application.Common.Behaviours;
 /// </summary>
 /// <typeparam name="TRequest">The type of the request.</typeparam>
 /// <typeparam name="TResponse">The type of the response.</typeparam>
-public class PipelineExceptionBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
-    where TRequest : IRequest<TResponse>
+public class PipelineExceptionBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, MaaApiResponse<TResponse>>
+    where TRequest : IRequest<MaaApiResponse<TResponse>>
 {
     /// <summary>
     ///     The logger.
@@ -36,8 +36,8 @@ public class PipelineExceptionBehaviour<TRequest, TResponse> : IPipelineBehavior
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <param name="next">The next request handler.</param>
     /// <returns>The response.</returns>
-    public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken,
-        RequestHandlerDelegate<TResponse> next)
+    public async Task<MaaApiResponse<TResponse>> Handle(TRequest request, CancellationToken cancellationToken,
+        RequestHandlerDelegate<MaaApiResponse<TResponse>> next)
     {
         try
         {
