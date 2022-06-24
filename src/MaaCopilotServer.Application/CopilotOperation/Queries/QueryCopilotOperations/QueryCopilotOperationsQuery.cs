@@ -125,9 +125,8 @@ public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOp
             var id = _currentUserService.GetUserIdentity();
             if (id is null)
             {
-                return MaaApiResponseHelper.BadRequest<PaginationResult<QueryCopilotOperationsQueryDto>>(
-                    _currentUserService.GetTrackingId(),
-                    _apiErrorMessage.MeNotFound);
+                throw new PipelineException(MaaApiResponseHelper.BadRequest(_currentUserService.GetTrackingId(),
+                    _apiErrorMessage.MeNotFound));
             }
 
             uploaderId = id.Value;

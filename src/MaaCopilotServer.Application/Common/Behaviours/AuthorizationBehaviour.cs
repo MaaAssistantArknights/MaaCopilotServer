@@ -12,8 +12,8 @@ namespace MaaCopilotServer.Application.Common.Behaviours;
 /// </summary>
 /// <typeparam name="TRequest">The type of the request.</typeparam>
 /// <typeparam name="TResponse">The type of the response.</typeparam>
-public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, MaaApiResponse<TResponse>>
-    where TRequest : IRequest<MaaApiResponse<TResponse>>
+public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+    where TRequest : IRequest<TResponse>
 {
     /// <summary>
     ///     The API error message.
@@ -56,8 +56,8 @@ public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRe
     /// <exception cref="PipelineException">
     ///     Thrown when the user ID/user is invalid, or the user role is insufficient.
     /// </exception>
-    public async Task<MaaApiResponse<TResponse>> Handle(TRequest request, CancellationToken cancellationToken,
-        RequestHandlerDelegate<MaaApiResponse<TResponse>> next)
+    public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken,
+        RequestHandlerDelegate<TResponse> next)
     {
         var authorizeAttribute = request.GetType().ReadAttribute<AuthorizedAttribute>();
         if (authorizeAttribute is null)
@@ -68,27 +68,27 @@ public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRe
         var userId = _currentUserService.GetUserIdentity();
         if (userId is null)
         {
-            return MaaApiResponseHelper.Unauthorized<TResponse>(_currentUserService.GetTrackingId(),
-                _apiErrorMessage.Unauthorized);
+            throw new PipelineException(MaaApiResponseHelper.Unauthorized(_currentUserService.GetTrackingId(),
+                _apiErrorMessage.Unauthorized));
         }
 
         var user = await _identityService.GetUserAsync(userId.Value);
         if (user is null)
         {
-            return MaaApiResponseHelper.NotFound<TResponse>(_currentUserService.GetTrackingId(),
-                string.Format(_apiErrorMessage.UserWithIdNotFound!, userId));
+            throw new PipelineException(MaaApiResponseHelper.NotFound(_currentUserService.GetTrackingId(),
+                string.Format(_apiErrorMessage.UserWithIdNotFound!, userId)));
         }
 
         if (user.UserRole < authorizeAttribute.Role)
         {
-            return MaaApiResponseHelper.Forbidden<TResponse>(_currentUserService.GetTrackingId(),
-                _apiErrorMessage.PermissionDenied);
+            throw new PipelineException(MaaApiResponseHelper.Forbidden(_currentUserService.GetTrackingId(),
+                _apiErrorMessage.PermissionDenied));
         }
 
         if (authorizeAttribute.AllowInActivated is false && user.UserActivated is false)
         {
-            return MaaApiResponseHelper.Forbidden<TResponse>(_currentUserService.GetTrackingId(),
-                _apiErrorMessage.UserInactivated);
+            throw new PipelineException(MaaApiResponseHelper.Forbidden(_currentUserService.GetTrackingId(),
+                _apiErrorMessage.UserInactivated));
         }
 
         return await next();

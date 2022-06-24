@@ -70,8 +70,8 @@ public class GetCopilotUserQueryHandler : IRequestHandler<GetCopilotUserQuery, M
             var id = _currentUserService.GetUserIdentity();
             if (id is null)
             {
-                return MaaApiResponseHelper.BadRequest<GetCopilotUserDto>(_currentUserService.GetTrackingId(),
-                    _apiErrorMessage.MeNotFound);
+                throw new PipelineException(MaaApiResponseHelper.BadRequest(_currentUserService.GetTrackingId(),
+                    _apiErrorMessage.MeNotFound));
             }
 
             userId = id.Value;
@@ -87,7 +87,7 @@ public class GetCopilotUserQueryHandler : IRequestHandler<GetCopilotUserQuery, M
 
         if (user is null)
         {
-            return (MaaApiResponseHelper.NotFound<Common.Models.GetCopilotUserDto>(_currentUserService.GetTrackingId(),
+            throw new PipelineException(MaaApiResponseHelper.NotFound(_currentUserService.GetTrackingId(),
                 string.Format(_apiErrorMessage.UserWithIdNotFound!, request.UserId)));
         }
 

@@ -13,7 +13,7 @@ namespace MaaCopilotServer.Application.CopilotUser.Commands.DeleteCopilotUser;
 ///     The record of deleting user.
 /// </summary>
 [Authorized(UserRole.Admin)]
-public record DeleteCopilotUserCommand : IRequest<MaaApiResponse<GetCopilotUserDto>>
+public record DeleteCopilotUserCommand : IRequest<MaaApiResponse<EmptyObject>>
 {
     /// <summary>
     ///     The user ID.
@@ -25,7 +25,7 @@ public record DeleteCopilotUserCommand : IRequest<MaaApiResponse<GetCopilotUserD
 /// <summary>
 ///     The handler of deleting user.
 /// </summary>
-public class DeleteCopilotUserCommandHandler : IRequestHandler<DeleteCopilotUserCommand, MaaApiResponse<GetCopilotUserDto>>
+public class DeleteCopilotUserCommandHandler : IRequestHandler<DeleteCopilotUserCommand, MaaApiResponse<EmptyObject>>
 {
     /// <summary>
     ///     The API error message.
@@ -67,34 +67,34 @@ public class DeleteCopilotUserCommandHandler : IRequestHandler<DeleteCopilotUser
     /// <exception cref="PipelineException">
     ///     Thrown when the user ID does not exist, or an internal error occurs, or the user permission is insufficient.
     /// </exception>
-    public async Task<MaaApiResponse<GetCopilotUserDto>> Handle(DeleteCopilotUserCommand request,
+    public async Task<MaaApiResponse<EmptyObject>> Handle(DeleteCopilotUserCommand request,
         CancellationToken cancellationToken)
     {
         var userId = Guid.Parse(request.UserId!);
         var user = await _dbContext.CopilotUsers.FirstOrDefaultAsync(x => x.EntityId == userId, cancellationToken);
         if (user == null)
         {
-            return MaaApiResponseHelper.NotFound<GetCopilotUserDto>(_currentUserService.GetTrackingId(),
-                string.Format(_apiErrorMessage.UserWithIdNotFound!, userId));
+            throw new PipelineException(MaaApiResponseHelper.NotFound(_currentUserService.GetTrackingId(),
+                string.Format(_apiErrorMessage.UserWithIdNotFound!, userId)));
         }
 
         var @operator = await _dbContext.CopilotUsers.FirstOrDefaultAsync(
             x => x.EntityId == _currentUserService.GetUserIdentity(), cancellationToken);
         if (@operator is null)
         {
-            return MaaApiResponseHelper.InternalError<GetCopilotUserDto>(_currentUserService.GetTrackingId(),
-                _apiErrorMessage.InternalException);
+            throw new PipelineException(MaaApiResponseHelper.InternalError(_currentUserService.GetTrackingId(),
+                _apiErrorMessage.InternalException));
         }
 
         if (@operator.UserRole <= user.UserRole)
         {
-            return MaaApiResponseHelper.Forbidden<GetCopilotUserDto>(_currentUserService.GetTrackingId(),
-                _apiErrorMessage.PermissionDenied);
+            throw new PipelineException(MaaApiResponseHelper.Forbidden(_currentUserService.GetTrackingId(),
+                _apiErrorMessage.PermissionDenied));
         }
 
         user.Delete(_currentUserService.GetUserIdentity()!.Value);
         _dbContext.CopilotUsers.Remove(user);
         await _dbContext.SaveChangesAsync(cancellationToken);
-        return MaaApiResponseHelper.Ok<GetCopilotUserDto>(null, _currentUserService.GetTrackingId());
+        return MaaApiResponseHelper.Ok<EmptyObject>(null, _currentUserService.GetTrackingId());
     }
 }

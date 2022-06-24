@@ -43,7 +43,7 @@ public class GetCopilotUserFavoritesQueryHandler :
             .FirstOrDefaultAsync(x => x.EntityId == favListId, cancellationToken);
         if (list is null)
         {
-            return MaaApiResponseHelper.NotFound<GetCopilotUserFavoritesDto>(_currentUserService.GetTrackingId(), "");
+            throw new PipelineException(MaaApiResponseHelper.NotFound(_currentUserService.GetTrackingId(), ""));
         }
 
         var operationsDto = list.Operations.Select(x => new QueryCopilotOperationsQueryDto(

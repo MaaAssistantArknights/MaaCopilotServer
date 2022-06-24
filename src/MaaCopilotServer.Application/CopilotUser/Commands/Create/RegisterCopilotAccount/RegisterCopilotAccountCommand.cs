@@ -17,7 +17,7 @@ namespace MaaCopilotServer.Application.CopilotUser.Commands.RegisterCopilotAccou
 /// <summary>
 ///     Request dto for registering a new copilot account.
 /// </summary>
-public record RegisterCopilotAccountCommand : IRequest<MaaApiResponse<GetCopilotUserDto>>
+public record RegisterCopilotAccountCommand : IRequest<MaaApiResponse<EmptyObject>>
 {
     /// <summary>
     ///     The user email.
@@ -40,7 +40,7 @@ public record RegisterCopilotAccountCommand : IRequest<MaaApiResponse<GetCopilot
 }
 
 public class RegisterCopilotAccountCommandHandler :
-    IRequestHandler<RegisterCopilotAccountCommand, MaaApiResponse<GetCopilotUserDto>>
+    IRequestHandler<RegisterCopilotAccountCommand, MaaApiResponse<EmptyObject>>
 {
     private readonly ApiErrorMessage _apiErrorMessage;
     private readonly ICurrentUserService _currentUserService;
@@ -65,7 +65,7 @@ public class RegisterCopilotAccountCommandHandler :
         _apiErrorMessage = apiErrorMessage;
     }
 
-    public async Task<MaaApiResponse<GetCopilotUserDto>> Handle(RegisterCopilotAccountCommand request,
+    public async Task<MaaApiResponse<EmptyObject>> Handle(RegisterCopilotAccountCommand request,
         CancellationToken cancellationToken)
     {
         var emailExist = await _dbContext.CopilotUsers.AnyAsync(x => x.Email == request.Email, cancellationToken);
@@ -96,6 +96,6 @@ public class RegisterCopilotAccountCommandHandler :
         _dbContext.CopilotTokens.Add(tokenEntity);
         await _dbContext.SaveChangesAsync(cancellationToken);
 
-        return MaaApiResponseHelper.Ok<GetCopilotUserDto>(null, _currentUserService.GetTrackingId());
+        return MaaApiResponseHelper.Ok<EmptyObject>(null, _currentUserService.GetTrackingId());
     }
 }

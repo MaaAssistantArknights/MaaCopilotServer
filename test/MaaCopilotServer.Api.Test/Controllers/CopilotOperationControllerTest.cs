@@ -84,7 +84,7 @@ public class CopilotOperationControllerTest
         await ControllerTestUtils.TestControllerEndpoint(
             _mediator,
             new DeleteCopilotOperationCommand(),
-            new GetCopilotUserDto(),
+            new EmptyObject(),
             controller.DeleteCopilotOperation);
     }
 
