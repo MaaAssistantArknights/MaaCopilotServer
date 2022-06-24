@@ -51,7 +51,7 @@ public class PerformanceBehaviourTest
         _currentUserService.GetUserIdentity().Returns(testUserId);
         var behaviour = new PerformanceBehaviour<IRequest<MaaApiResponse>>(_logger, _currentUserService);
         var action = async () =>
-            await behaviour.Handle(null, new CancellationToken(), () => Task.FromResult(MaaApiResponseHelper.Ok(new EmptyObject(), string.Empty)));
+            await behaviour.Handle(null, new CancellationToken(), () => Task.FromResult(MaaApiResponseHelper.Ok(null, string.Empty)));
         await action.Should().NotThrowAsync();
     }
 }

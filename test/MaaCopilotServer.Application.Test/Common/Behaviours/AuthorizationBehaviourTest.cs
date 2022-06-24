@@ -107,7 +107,7 @@ public class AuthorizationBehaviourTest
             _currentUserService,
             _apiErrorMessage);
         var action = async () =>
-            await behaviour.Handle(testRequest, new CancellationToken(), () => Task.FromResult(MaaApiResponseHelper.Ok(new EmptyObject(), string.Empty)));
+            await behaviour.Handle(testRequest, new CancellationToken(), () => Task.FromResult(MaaApiResponseHelper.Ok(null, string.Empty)));
         if (expectedErrorStatusCode != null)
         {
             var response = await action();

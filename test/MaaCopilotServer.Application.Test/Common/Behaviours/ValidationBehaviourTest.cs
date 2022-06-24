@@ -53,7 +53,7 @@ public class ValidationBehaviourTest
         var behaviour = new ValidationBehaviour<IRequest<MaaApiResponse>>(_validators, _currentUserService);
         var action = async () => await behaviour.Handle(Substitute.For<IRequest<MaaApiResponse>>(),
             new CancellationToken(),
-            () => Task.FromResult(MaaApiResponseHelper.Ok(new EmptyObject(), string.Empty)));
+            () => Task.FromResult(MaaApiResponseHelper.Ok(null, string.Empty)));
         await action.Should().NotThrowAsync();
     }
 
@@ -80,7 +80,7 @@ public class ValidationBehaviourTest
         var behaviour = new ValidationBehaviour<IRequest<MaaApiResponse>>(_validators, _currentUserService);
         var action = async () => await behaviour.Handle(Substitute.For<IRequest<MaaApiResponse>>(),
             new CancellationToken(),
-            () => Task.FromResult(MaaApiResponseHelper.Ok(new EmptyObject(), string.Empty)));
+            () => Task.FromResult(MaaApiResponseHelper.Ok(null, string.Empty)));
         if (expectException)
         {
             var response = await action();
