@@ -200,7 +200,7 @@ public class CreateCopilotOperationCommandTest
             entity.Details.Should().Be(testJsonContent.Doc?.Details ?? string.Empty);
 
             var entityOperators = (from @operator in testJsonContent.Operators ?? Array.Empty<TestOperatorContent>()
-                select $"{@operator.Name}::{@operator.Skill?.ToString() ?? "1"}").Distinct().ToList();
+                                   select $"{@operator.Name}::{@operator.Skill?.ToString() ?? "1"}").Distinct().ToList();
             entity.Operators.Should().BeEquivalentTo(entityOperators);
         }
     }
