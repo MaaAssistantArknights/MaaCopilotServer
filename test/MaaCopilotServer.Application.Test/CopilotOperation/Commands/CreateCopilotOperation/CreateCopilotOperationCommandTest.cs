@@ -7,6 +7,8 @@ using System.Text.Json.Serialization;
 
 using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Application.CopilotOperation.Commands.CreateCopilotOperation;
+using MaaCopilotServer.Application.Test.TestHelpers;
+using MaaCopilotServer.Infrastructure.Services;
 using MaaCopilotServer.Resources;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -50,14 +52,12 @@ public class CreateCopilotOperationCommandTest
     [TestInitialize]
     public void Initialize()
     {
-        _copilotIdService = Substitute.For<ICopilotIdService>();
+        _copilotIdService = new CopilotIdService();
 
         _currentUserService = Substitute.For<ICurrentUserService>();
         _currentUserService.GetUserIdentity().Returns(Guid.Empty);
 
-        _dbContext = Substitute.For<IMaaCopilotDbContext>();
-        _dbContext.CopilotOperations.Returns(Substitute.For<DbSet<Domain.Entities.CopilotOperation>>());
-        _dbContext.SaveChangesAsync(Arg.Any<CancellationToken>()).Returns(Task.FromResult(1));
+        _dbContext = TestDatabaseHelper.GetTestDbContext();
 
         _identityService = Substitute.For<IIdentityService>();
         _identityService.GetUserAsync(Arg.Any<Guid>())
@@ -171,12 +171,6 @@ public class CreateCopilotOperationCommandTest
                 DefaultIgnoreCondition =
                     removeNullFields ? JsonIgnoreCondition.Never : JsonIgnoreCondition.WhenWritingNull
             });
-        Domain.Entities.CopilotOperation? entity = null;
-        _dbContext.CopilotOperations.When(x => x.Add(Arg.Any<Domain.Entities.CopilotOperation>())).Do(c =>
-        {
-            entity = c.Arg<Domain.Entities.CopilotOperation>();
-        });
-        _copilotIdService.EncodeId(Arg.Any<long>()).Returns("10000");
 
         var handler = new CreateCopilotOperationCommandHandler(_dbContext, _identityService, _currentUserService,
             _copilotIdService, _validationErrorMessage);
@@ -187,12 +181,16 @@ public class CreateCopilotOperationCommandTest
         {
             var response = await action();
             response.StatusCode.Should().NotBe(StatusCodes.Status200OK);
+            _dbContext.CopilotOperations.Any().Should().BeFalse();
         }
         else
         {
             var response = await action();
-            ((CreateCopilotOperationDto)response.Data).Id.Should().Be("10000");
+            var id = ((CreateCopilotOperationDto)response.Data).Id;
+            _dbContext.CopilotOperations.Any().Should().BeTrue();
+            var entity = _dbContext.CopilotOperations.FirstOrDefault();
             entity.Should().NotBeNull();
+            entity.Id.Should().Be(_copilotIdService.DecodeId(id));
             entity.Content.Should().Be(testContent);
             entity.StageName.Should().Be(testJsonContent.StageName);
             entity.MinimumRequired.Should().Be(testJsonContent.MinimumRequired);
