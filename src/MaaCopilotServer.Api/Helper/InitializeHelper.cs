@@ -4,6 +4,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
+using MaaCopilotServer.Api.Constants;
 using MaaCopilotServer.Application.Common.Extensions;
 using MaaCopilotServer.Domain.Entities;
 using MaaCopilotServer.Domain.Enums;
@@ -18,46 +19,16 @@ namespace MaaCopilotServer.Api.Helper;
 /// <summary>
 ///     The helper class of database connection.
 /// </summary>
-public class InitializeHelper
+public static class InitializeHelper
 {
-    /// <summary>
-    /// The configuration.
-    /// </summary>
-    private readonly IConfiguration _configuration;
-
-    /// <summary>
-    /// The global settings helper.
-    /// </summary>
-    private readonly GlobalSettingsHelper _settings;
-
-    /// <summary>
-    /// The constructor.
-    /// </summary>
-    /// <param name="configuration">The configuration.</param>
-    public InitializeHelper(IConfiguration configuration) : this(configuration, new GlobalSettingsHelper())
-    {
-        _configuration = configuration;
-    }
-
-    /// <summary>
-    /// The constructor with all properties.
-    /// </summary>
-    /// <param name="configuration">The configuration.</param>
-    /// <param name="settings">The global settings helper.</param>
-    public InitializeHelper(IConfiguration configuration, GlobalSettingsHelper settings)
-    {
-        _configuration = configuration;
-        _settings = settings;
-    }
-
     /// <summary>
     /// Initializes email templates.
     /// </summary>
     [ExcludeFromCodeCoverage]
-    public void InitializeEmailTemplates()
+    public static void InitializeEmailTemplates()
     {
-        var originalTemplatesDirectory = new DirectoryInfo(_settings.OriginalTemplatesDirectory);
-        var targetTemplatesDirectory = new DirectoryInfo(_settings.TargetTemplatesDirectory);
+        var originalTemplatesDirectory = new DirectoryInfo(GlobalConstants.OriginalTemplatesDirectory);
+        var targetTemplatesDirectory = new DirectoryInfo(GlobalConstants.TargetTemplatesDirectory);
 
         if (targetTemplatesDirectory.Exists is false)
         {
@@ -79,11 +50,12 @@ public class InitializeHelper
     /// <summary>
     /// Initializes the database.
     /// </summary>
+    /// <param name="configuration">The configuration.</param>
     [ExcludeFromCodeCoverage]
-    public void InitializeDatabase()
+    public static void InitializeDatabase(IConfiguration configuration)
     {
         // Establish database connection.
-        var dbOptions = _configuration.GetOption<DatabaseOption>();
+        var dbOptions = configuration.GetOption<DatabaseOption>();
         var db = new MaaCopilotDbContext(new OptionsWrapper<DatabaseOption>(dbOptions));
         var pendingMigrations = db.Database.GetPendingMigrations().Count();
         if (pendingMigrations > 0)
@@ -98,16 +70,16 @@ public class InitializeHelper
         if (haveUser is false)
         {
             // New DB without any existing users. Initialize default user.
-            var defaultUserEmail = _settings.DefaultUserEmail;
-            var defaultUserPassword = _settings.DefaultUserPassword;
+            var defaultUserEmail = GlobalConstants.DefaultUserEmail;
+            var defaultUserPassword = GlobalConstants.DefaultUserPassword;
             if (defaultUserPassword == "")
             {
                 defaultUserPassword = GeneratePassword();
             }
 
-            var defaultUserName = _settings.DefaultUsername;
+            var defaultUserName = GlobalConstants.DefaultUsername;
 
-            if (_settings.IsDefaultUserEmailEmpty || _settings.IsDefaultUserPasswordEmpty)
+            if (GlobalConstants.IsDefaultUserEmailEmpty || GlobalConstants.IsDefaultUserPasswordEmpty)
             {
                 Log.Logger.Information("Creating default user with email {DefaultEmail} and password {DefaultPassword}",
                     defaultUserEmail, defaultUserPassword);

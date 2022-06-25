@@ -30,17 +30,14 @@ public static class Program
     /// </summary>
     public static void Main()
     {
-        var settings = new GlobalSettingsHelper();
-
         // Get global configuration.
-        var configuration = new ConfigurationHelper(settings).BuildConfiguration();
+        var configuration = ConfigurationHelper.BuildConfiguration();
 
         // Create logger.
         Log.Logger = configuration.GetLoggerConfiguration().CreateLogger();
         SelfLog.Enable(Console.Error); // Direct log output to standard error stream.
 
-        var initializeHelper = new InitializeHelper(configuration, settings);
-        initializeHelper.InitializeEmailTemplates();
+        InitializeHelper.InitializeEmailTemplates();
 
         var builder = WebApplication.CreateBuilder();
 
@@ -66,7 +63,7 @@ public static class Program
 
         var app = builder.Build();
 
-        initializeHelper.InitializeDatabase();
+        InitializeHelper.InitializeDatabase(configuration);
 
         // CORS settings.
         app.UseCors(options =>

@@ -3,6 +3,7 @@
 // Licensed under the AGPL-3.0 license.
 
 using System.Diagnostics.CodeAnalysis;
+using MaaCopilotServer.Api.Constants;
 using MaaCopilotServer.Application.Common.Extensions;
 
 namespace MaaCopilotServer.Api.Helper;
@@ -11,42 +12,18 @@ namespace MaaCopilotServer.Api.Helper;
 ///     The helper class of the configurations of the application.
 /// </summary>
 [ExcludeFromCodeCoverage]
-public class ConfigurationHelper
+public static class ConfigurationHelper
 {
     /// <summary>
-    /// The global setting helper.
+    ///     Ensures settings files are created correctly.
     /// </summary>
-    private readonly GlobalSettingsHelper _settings;
-
-    /// <summary>
-    /// The constructor.
-    /// </summary>
-    public ConfigurationHelper() : this(new GlobalSettingsHelper())
-    {
-    }
-
-    /// <summary>
-    /// The constructor with all properties.
-    /// </summary>
-    /// <param name="globalSettingHelper"></param>
-    public ConfigurationHelper(GlobalSettingsHelper globalSettingHelper)
-    {
-        _settings = globalSettingHelper;
-    }
-
-    /// <summary>
-    /// Ensures settings files are created correctly.
-    /// </summary>
-    private void EnsureSettingsFileCreated()
+    private static void EnsureSettingsFileCreated()
     {
         // Get settings file locations.
-        var appsettingsFile = new FileInfo(_settings.AppSettings);
-        var appsettingsEnvFile =
-            new FileInfo(_settings.AppSettingsEnv);
-        var originalAppsettingsFile =
-            new FileInfo(_settings.OriginalAppSettings).AssertExist();
-        var originalAppsettingsEnvFile =
-            new FileInfo(_settings.OriginalAppSettingsEnv);
+        var appsettingsFile = new FileInfo(GlobalConstants.AppSettings);
+        var appsettingsEnvFile = new FileInfo(GlobalConstants.AppSettingsEnv);
+        var originalAppsettingsFile = new FileInfo(GlobalConstants.OriginalAppSettings).AssertExist();
+        var originalAppsettingsEnvFile = new FileInfo(GlobalConstants.OriginalAppSettingsEnv);
 
         if (appsettingsFile.Exists is false)
         {
@@ -54,10 +31,10 @@ public class ConfigurationHelper
             appsettingsFile.EnsureDeleted();
 
             var text = File.ReadAllText(originalAppsettingsFile.FullName);
-            text = text.Replace("{{ DATA DIRECTORY }}", _settings.DataDirectory);
+            text = text.Replace("{{ DATA DIRECTORY }}", GlobalConstants.DataDirectory);
             File.WriteAllText(appsettingsFile.FullName, text);
 
-            if (_settings.IsProductionEnvironment)
+            if (GlobalConstants.IsProductionEnvironment)
             {
                 Environment.Exit(0);
             }
@@ -75,28 +52,27 @@ public class ConfigurationHelper
     }
 
     /// <summary>
-    ///     构建 <see cref="IConfiguration" />
+    ///     Construct <see cref="IConfiguration" />.
     /// </summary>
-    /// <remarks>不适用于 Azure Functions 等云服务</remarks>
-    /// <returns><see cref="IConfiguration" /> 实例 (<see cref="ConfigurationRoot" /> 对象)</returns>
-    public IConfiguration BuildConfiguration()
+    /// <returns><see cref="IConfiguration" /> (<see cref="ConfigurationRoot"/>) instance.</returns>
+    public static IConfiguration BuildConfiguration()
     {
         EnsureSettingsFileCreated();
 
         // Build configurations.
         var configurationBuilder = new ConfigurationBuilder();
 
-        configurationBuilder.AddJsonFile(_settings.AppSettings, false, true);
-        configurationBuilder.AddJsonFile(_settings.AppSettingsEnv, true, true);
+        configurationBuilder.AddJsonFile(GlobalConstants.AppSettings, false, true);
+        configurationBuilder.AddJsonFile(GlobalConstants.AppSettingsEnv, true, true);
 
         configurationBuilder.AddEnvironmentVariables("MAA_");
 
-        var appVersion = _settings.AppVersion;
+        var appVersion = GlobalConstants.AppVersion;
 
         configurationBuilder.AddInMemoryCollection(new List<KeyValuePair<string, string>>
         {
-            new("Application:AssemblyPath", _settings.AssemblyDirectory),
-            new("Application:DataDirectory", _settings.DataDirectory),
+            new("Application:AssemblyPath", GlobalConstants.AssemblyDirectory),
+            new("Application:DataDirectory", GlobalConstants.DataDirectory),
             new("Application:Version", appVersion),
             new("ElasticApm:ServiceVersion", appVersion)
         });

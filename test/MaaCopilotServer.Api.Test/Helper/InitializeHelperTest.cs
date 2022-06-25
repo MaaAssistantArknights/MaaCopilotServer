@@ -3,6 +3,7 @@
 // Licensed under the AGPL-3.0 license.
 
 using System.Text.RegularExpressions;
+using MaaCopilotServer.Api.Constants;
 using MaaCopilotServer.Api.Helper;
 using Microsoft.Extensions.Configuration;
 
@@ -14,17 +15,6 @@ namespace MaaCopilotServer.Api.Test.Helper;
 [TestClass]
 public class InitializeHelperTest
 {
-    /// <summary>
-    /// Tests constructors of <see cref="InitializeHelper"/>.
-    /// </summary>
-    [TestMethod]
-    public void TestConstructor()
-    {
-        new InitializeHelper(Substitute.For<IConfiguration>()).Should().NotBeNull();
-        new InitializeHelper(Substitute.For<IConfiguration>(), Substitute.For<GlobalSettingsHelper>()).Should()
-            .NotBeNull();
-    }
-
     /// <summary>
     /// Tests <see cref="InitializeHelper.GeneratePassword"/>.
     /// </summary>
