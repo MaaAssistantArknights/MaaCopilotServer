@@ -19,7 +19,6 @@ namespace MaaCopilotServer.Api;
 /// <summary>
 ///     The extension to add API service to the services.
 /// </summary>
-[ExcludeFromCodeCoverage]
 public static class ConfigureServices
 {
     /// <summary>

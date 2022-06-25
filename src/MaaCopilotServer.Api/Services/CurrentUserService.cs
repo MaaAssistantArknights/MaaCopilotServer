@@ -29,7 +29,6 @@ public class CurrentUserService : ICurrentUserService
     /// </summary>
     /// <param name="httpContextAccessor">The HTTP context accessor.</param>
     /// <param name="configuration">The configuration.</param>
-    [ExcludeFromCodeCoverage]
     public CurrentUserService(
         IHttpContextAccessor httpContextAccessor,
         IConfiguration configuration)

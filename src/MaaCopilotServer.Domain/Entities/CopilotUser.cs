@@ -42,34 +42,34 @@ public class CopilotUser : EditableEntity
     /// <summary>
     ///     The default constructor.
     /// </summary>
-    // ReSharper disable once UnusedMember.Local
-    public CopilotUser() : this(default!, default!, default!, UserRole.User, null)
-    { }
+    public CopilotUser()
+    {
+    }
 
     /// <summary>
     ///     邮箱
     /// </summary>
-    public string Email { get; private set; }
+    public string Email { get; set; } = string.Empty;
 
     /// <summary>
     ///     密码
     /// </summary>
-    public string Password { get; private set; }
+    public string Password { get; set; } = string.Empty;
 
     /// <summary>
     ///     用户名
     /// </summary>
-    public string UserName { get; private set; }
+    public string UserName { get; set; } = string.Empty;
 
     /// <summary>
     ///     权限组
     /// </summary>
-    public UserRole UserRole { get; private set; }
+    public UserRole UserRole { get; set; } = UserRole.User;
 
     /// <summary>
     ///     用户激活
     /// </summary>
-    public bool UserActivated { get; private set; }
+    public bool UserActivated { get; set; } = true;
 
     /// <summary>
     ///     收藏夹

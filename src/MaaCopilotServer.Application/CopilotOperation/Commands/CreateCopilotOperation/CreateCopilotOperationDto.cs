@@ -9,24 +9,11 @@ namespace MaaCopilotServer.Application.CopilotOperation.Commands.CreateCopilotOp
 /// <summary>
 ///     The DTO of creating operation.
 /// </summary>
-public class CreateCopilotOperationDto
+public record CreateCopilotOperationDto
 {
-    /// <summary>
-    ///     The constructor of <see cref="CreateCopilotOperationDto" />.
-    /// </summary>
-    /// <param name="id">The operation ID.</param>
-    public CreateCopilotOperationDto(string id)
-    {
-        Id = id;
-    }
-
-#pragma warning disable CS8618
-    public CreateCopilotOperationDto() { }
-#pragma warning restore CS8618
-
     /// <summary>
     ///     The operation ID.
     /// </summary>
     [JsonPropertyName("id")]
-    public string Id { get; set; }
+    public string Id { get; set; } = string.Empty;
 }

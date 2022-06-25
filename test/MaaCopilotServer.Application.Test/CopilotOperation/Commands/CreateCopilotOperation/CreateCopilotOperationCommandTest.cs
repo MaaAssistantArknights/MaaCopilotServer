@@ -7,6 +7,8 @@ using System.Text.Json.Serialization;
 
 using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Application.CopilotOperation.Commands.CreateCopilotOperation;
+using MaaCopilotServer.Application.Test.TestHelpers;
+using MaaCopilotServer.Infrastructure.Services;
 using MaaCopilotServer.Resources;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -50,14 +52,12 @@ public class CreateCopilotOperationCommandTest
     [TestInitialize]
     public void Initialize()
     {
-        _copilotIdService = Substitute.For<ICopilotIdService>();
+        _copilotIdService = new CopilotIdService();
 
         _currentUserService = Substitute.For<ICurrentUserService>();
         _currentUserService.GetUserIdentity().Returns(Guid.Empty);
 
-        _dbContext = Substitute.For<IMaaCopilotDbContext>();
-        _dbContext.CopilotOperations.Returns(Substitute.For<DbSet<Domain.Entities.CopilotOperation>>());
-        _dbContext.SaveChangesAsync(Arg.Any<CancellationToken>()).Returns(Task.FromResult(1));
+        _dbContext = TestDatabaseHelper.GetTestDbContext();
 
         _identityService = Substitute.For<IIdentityService>();
         _identityService.GetUserAsync(Arg.Any<Guid>())
@@ -73,12 +73,12 @@ public class CreateCopilotOperationCommandTest
     [TestMethod]
     public async Task TestHandle_Full()
     {
-        var testJsonContent = new TestRequestContent
+        var testJsonContent = new CreateCopilotOperationContent
         {
             StageName = "test_stage_name",
             MinimumRequired = "0.0.1",
-            Doc = new TestDocContent { Title = "test_title", Details = "test_details" },
-            Operators = new TestOperatorContent[]
+            Doc = new Doc { Title = "test_title", Details = "test_details" },
+            Operators = new Operator[]
             {
                 new() { Name = "test_oper_0_name", Skill = 0 }, new() { Name = "test_oper_1_name", Skill = 1 }
             }
@@ -93,11 +93,11 @@ public class CreateCopilotOperationCommandTest
     [TestMethod]
     public async Task TestHandle_WithoutDoc()
     {
-        var testJsonContent = new TestRequestContent
+        var testJsonContent = new CreateCopilotOperationContent
         {
             StageName = "test_stage_name",
             MinimumRequired = "0.0.1",
-            Operators = new TestOperatorContent[]
+            Operators = new Operator[]
             {
                 new() { Name = "test_oper_0_name", Skill = 0 }, new() { Name = "test_oper_1_name", Skill = 1 }
             }
@@ -112,11 +112,11 @@ public class CreateCopilotOperationCommandTest
     [TestMethod]
     public async Task TestHandle_WithoutDocUndefined()
     {
-        var testJsonContent = new TestRequestContent
+        var testJsonContent = new CreateCopilotOperationContent
         {
             StageName = "test_stage_name",
             MinimumRequired = "0.0.1",
-            Operators = new TestOperatorContent[]
+            Operators = new Operator[]
             {
                 new() { Name = "test_oper_0_name", Skill = 0 }, new() { Name = "test_oper_1_name", Skill = 1 }
             }
@@ -131,11 +131,11 @@ public class CreateCopilotOperationCommandTest
     [TestMethod]
     public async Task TestHandle_MissingOperatorName()
     {
-        var testJsonContent = new TestRequestContent
+        var testJsonContent = new CreateCopilotOperationContent
         {
             StageName = "test_stage_name",
             MinimumRequired = "0.0.1",
-            Operators = new TestOperatorContent[]
+            Operators = new Operator[]
             {
                 new() { Skill = 0 }, new() { Name = "test_oper_1_name", Skill = 1 }
             }
@@ -150,11 +150,11 @@ public class CreateCopilotOperationCommandTest
     [TestMethod]
     public async Task TestHandle_DuplicateOperators()
     {
-        var testJsonContent = new TestRequestContent
+        var testJsonContent = new CreateCopilotOperationContent
         {
             StageName = "test_stage_name",
             MinimumRequired = "0.0.1",
-            Operators = new TestOperatorContent[]
+            Operators = new Operator[]
             {
                 new() { Name = "test_oper_0_name", Skill = 0 }, new() { Name = "test_oper_0_name", Skill = 0 }
             }
@@ -162,7 +162,7 @@ public class CreateCopilotOperationCommandTest
         await TestHandle(testJsonContent);
     }
 
-    private async Task TestHandle(TestRequestContent testJsonContent, bool expectException = false,
+    private async Task TestHandle(CreateCopilotOperationContent testJsonContent, bool expectException = false,
         bool removeNullFields = false)
     {
         var testContent = JsonSerializer.Serialize(testJsonContent,
@@ -171,12 +171,6 @@ public class CreateCopilotOperationCommandTest
                 DefaultIgnoreCondition =
                     removeNullFields ? JsonIgnoreCondition.Never : JsonIgnoreCondition.WhenWritingNull
             });
-        Domain.Entities.CopilotOperation? entity = null;
-        _dbContext.CopilotOperations.When(x => x.Add(Arg.Any<Domain.Entities.CopilotOperation>())).Do(c =>
-        {
-            entity = c.Arg<Domain.Entities.CopilotOperation>();
-        });
-        _copilotIdService.EncodeId(Arg.Any<long>()).Returns("10000");
 
         var handler = new CreateCopilotOperationCommandHandler(_dbContext, _identityService, _currentUserService,
             _copilotIdService, _validationErrorMessage);
@@ -187,87 +181,25 @@ public class CreateCopilotOperationCommandTest
         {
             var response = await action();
             response.StatusCode.Should().NotBe(StatusCodes.Status200OK);
+            _dbContext.CopilotOperations.Any().Should().BeFalse();
         }
         else
         {
             var response = await action();
-            ((CreateCopilotOperationDto)response.Data).Id.Should().Be("10000");
+            var id = ((CreateCopilotOperationDto)response.Data).Id;
+            _dbContext.CopilotOperations.Any().Should().BeTrue();
+            var entity = _dbContext.CopilotOperations.FirstOrDefault();
             entity.Should().NotBeNull();
+            entity.Id.Should().Be(_copilotIdService.DecodeId(id));
             entity.Content.Should().Be(testContent);
             entity.StageName.Should().Be(testJsonContent.StageName);
             entity.MinimumRequired.Should().Be(testJsonContent.MinimumRequired);
             entity.Title.Should().Be(testJsonContent.Doc?.Title ?? string.Empty);
             entity.Details.Should().Be(testJsonContent.Doc?.Details ?? string.Empty);
 
-            var entityOperators = (from @operator in testJsonContent.Operators ?? Array.Empty<TestOperatorContent>()
-                select $"{@operator.Name}::{@operator.Skill?.ToString() ?? "1"}").Distinct().ToList();
+            var entityOperators = (from @operator in testJsonContent.Operators ?? Array.Empty<Operator>()
+                                   select $"{@operator.Name}::{@operator.Skill?.ToString() ?? "1"}").Distinct().ToList();
             entity.Operators.Should().BeEquivalentTo(entityOperators);
         }
     }
-}
-
-/// <summary>
-/// The test JSON request content.
-/// </summary>
-internal record TestRequestContent
-{
-    /// <summary>
-    /// The <c>stage_name</c> field.
-    /// </summary>
-    [JsonPropertyName("stage_name")]
-    public string? StageName { get; set; }
-
-    /// <summary>
-    /// The <c>minimum_required</c> field.
-    /// </summary>
-    [JsonPropertyName("minimum_required")]
-    public string? MinimumRequired { get; set; }
-
-    /// <summary>
-    /// The <c>doc</c> field.
-    /// </summary>
-    [JsonPropertyName("doc")]
-    public TestDocContent? Doc { get; set; }
-
-    /// <summary>
-    /// The <c>opers</c> field.
-    /// </summary>
-    [JsonPropertyName("opers")]
-    public TestOperatorContent[]? Operators { get; set; }
-}
-
-/// <summary>
-/// The test JSON content of <c>doc</c>.
-/// </summary>
-internal record TestDocContent
-{
-    /// <summary>
-    /// The <c>title</c> field.
-    /// </summary>
-    [JsonPropertyName("title")]
-    public string? Title { get; set; }
-
-    /// <summary>
-    /// The <c>details</c> field.
-    /// </summary>
-    [JsonPropertyName("details")]
-    public string? Details { get; set; }
-}
-
-/// <summary>
-/// The test JSON content of <c>operator</c>.
-/// </summary>
-internal record TestOperatorContent
-{
-    /// <summary>
-    /// The <c>name</c> field.
-    /// </summary>
-    [JsonPropertyName("name")]
-    public string? Name { get; set; }
-
-    /// <summary>
-    /// The <c>skill</c> field.
-    /// </summary>
-    [JsonPropertyName("skill")]
-    public int? Skill { get; set; }
 }

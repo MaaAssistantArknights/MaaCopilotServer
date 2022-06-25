@@ -11,7 +11,6 @@ namespace MaaCopilotServer.Api.Helper;
 /// <summary>
 ///     The helper class of the configurations of the application.
 /// </summary>
-[ExcludeFromCodeCoverage]
 public static class ConfigurationHelper
 {
     /// <summary>

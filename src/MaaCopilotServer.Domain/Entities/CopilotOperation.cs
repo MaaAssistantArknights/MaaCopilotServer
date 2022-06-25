@@ -52,67 +52,64 @@ public sealed class CopilotOperation : EditableEntity
         UpdateBy = createBy;
     }
 
-#pragma warning disable CS8618
-    // ReSharper disable once UnusedMember.Local
-    private CopilotOperation() { }
-#pragma warning restore CS8618
+    public CopilotOperation() { }
 
     /// <summary>
     ///     作业 ID (数字ID)
     /// </summary>
-    public long Id { get; private set; }
+    public long Id { get; set; }
 
     /// <summary>
     ///     作业组 ID
     /// </summary>
-    public Guid GroupId { get; private set; }
+    public Guid GroupId { get; set; } = Guid.Empty;
 
     /// <summary>
     ///     作业本体 JSON
     /// </summary>
-    public string Content { get; private set; }
+    public string Content { get; set; } = string.Empty;
 
     /// <summary>
     ///     下载量
     /// </summary>
-    public int Downloads { get; private set; }
+    public int Downloads { get; set; }
 
     /// <summary>
     ///     收藏量
     /// </summary>
-    public int Favorites { get; private set; }
+    public int Favorites { get; set; }
 
     // Extract from Content
 
     /// <summary>
     ///     关卡名称
     /// </summary>
-    public string StageName { get; private set; }
+    public string StageName { get; set; } = string.Empty;
 
     /// <summary>
     ///     MAA 所需最低版本
     /// </summary>
-    public string MinimumRequired { get; private set; }
+    public string MinimumRequired { get; set; } = string.Empty;
 
     /// <summary>
     ///     标题
     /// </summary>
-    public string Title { get; private set; }
+    public string Title { get; set; } = string.Empty;
 
     /// <summary>
     ///     干员列表
     /// </summary>
-    public List<string> Operators { get; private set; }
+    public List<string> Operators { get; set; } = new List<string>();
 
     /// <summary>
     ///     简介
     /// </summary>
-    public string Details { get; private set; }
+    public string Details { get; set; } = string.Empty;
 
     /// <summary>
     ///     上传者
     /// </summary>
-    public CopilotUser Author { get; private set; }
+    public CopilotUser Author { get; set; } = new CopilotUser();
 
     /// <summary>
     ///     Increases download count by 1, and updates last updated time.

@@ -10,7 +10,6 @@ namespace MaaCopilotServer.Application.Common.Extensions;
 /// <summary>
 ///     The extension of <see cref="DirectoryInfo" />.
 /// </summary>
-[ExcludeFromCodeCoverage]
 public static class DirectoryInfoExtension
 {
     /// <summary>

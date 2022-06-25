@@ -16,7 +16,6 @@ namespace MaaCopilotServer.Api.Helper;
 /// <summary>
 ///     The helper class of logger.
 /// </summary>
-[ExcludeFromCodeCoverage]
 public static class LoggerConfigurationHelper
 {
     /// <summary>
