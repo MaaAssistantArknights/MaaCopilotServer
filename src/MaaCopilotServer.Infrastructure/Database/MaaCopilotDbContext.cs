@@ -33,6 +33,11 @@ public class MaaCopilotDbContext : DbContext, IMaaCopilotDbContext
         _connectionString = dbOptions.Value.ConnectionString;
     }
 
+    public MaaCopilotDbContext(DbContextOptions options)
+        : base(options)
+    {
+    }
+
     /// <summary>
     ///     The DB set of operations.
     /// </summary>
@@ -50,8 +55,10 @@ public class MaaCopilotDbContext : DbContext, IMaaCopilotDbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        var conn = _connectionString.IsNotNull();
-        optionsBuilder.UseNpgsql(conn);
+        if (_connectionString != null)
+        {
+            optionsBuilder.UseNpgsql(_connectionString);
+        }
         base.OnConfiguring(optionsBuilder);
     }
 
