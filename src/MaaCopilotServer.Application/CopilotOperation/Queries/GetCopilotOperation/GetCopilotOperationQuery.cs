@@ -36,11 +36,6 @@ public class
     private readonly ICopilotIdService _copilotIdService;
 
     /// <summary>
-    ///     The service for current user.
-    /// </summary>
-    private readonly ICurrentUserService _currentUserService;
-
-    /// <summary>
     ///     The DB context.
     /// </summary>
     private readonly IMaaCopilotDbContext _dbContext;
@@ -50,17 +45,14 @@ public class
     /// </summary>
     /// <param name="dbContext">The DB context.</param>
     /// <param name="copilotIdService">The service for processing copilot ID.</param>
-    /// <param name="currentUserService">The service for current user.</param>
     /// <param name="apiErrorMessage">The API error message.</param>
     public GetCopilotOperationQueryHandler(
         IMaaCopilotDbContext dbContext,
         ICopilotIdService copilotIdService,
-        ICurrentUserService currentUserService,
         ApiErrorMessage apiErrorMessage)
     {
         _dbContext = dbContext;
         _copilotIdService = copilotIdService;
-        _currentUserService = currentUserService;
         _apiErrorMessage = apiErrorMessage;
     }
 
@@ -90,12 +82,21 @@ public class
             return MaaApiResponseHelper.NotFound(string.Format(_apiErrorMessage.CopilotOperationWithIdNotFound!, request.Id));
         }
 
-        var dto = new GetCopilotOperationQueryDto(
-            request.Id!, entity.StageName, entity.MinimumRequired,
-            entity.CreateAt.ToIsoString()
-            , entity.Content, entity.Author.UserName, entity.Title, entity.Details, entity.Downloads, entity.Operators);
+        var dto = new GetCopilotOperationQueryDto
+        {
+            Id = request.Id!,
+            StageName = entity.StageName,
+            MinimumRequired = entity.MinimumRequired,
+            Content = entity.Content,
+            Detail = entity.Details,
+            Operators = entity.Operators,
+            Title = entity.Title,
+            Uploader = entity.Author.UserName,
+            UploadTime = entity.CreateAt.ToIsoString(),
+            ViewCounts = entity.ViewCounts
+        };
 
-        entity.AddDownloadCount();
+        entity.AddViewCount();
         _dbContext.CopilotOperations.Update(entity);
         await _dbContext.SaveChangesAsync(cancellationToken);
 

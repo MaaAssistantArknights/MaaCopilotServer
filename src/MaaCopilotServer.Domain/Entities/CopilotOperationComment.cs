@@ -8,12 +8,19 @@ namespace MaaCopilotServer.Domain.Entities;
 
 // ReSharper disable AutoPropertyCanBeMadeGetOnly.Local
 /// <summary>
-///     评论
+///     Maa Copilot operation comment entity.
 /// </summary>
 public class CopilotOperationComment : BaseEntity
 {
-    public CopilotOperationComment(int orderId, string message, Guid replyTo, CopilotOperation operation,
-        CopilotUser user)
+    /// <summary>
+    ///     The constructor of <see cref="CopilotOperationComment"/>.
+    /// </summary>
+    /// <param name="orderId">The sorting order id.</param>
+    /// <param name="message">The comment content.</param>
+    /// <param name="replyTo">The parent comment of the comment.</param>
+    /// <param name="operation">The operation this comment is for.</param>
+    /// <param name="user">The user who create this comment.</param>
+    public CopilotOperationComment(int orderId, string message, Guid replyTo, CopilotOperation operation, CopilotUser user)
     {
         OrderId = orderId;
         Message = message;
@@ -27,28 +34,34 @@ public class CopilotOperationComment : BaseEntity
     private CopilotOperationComment() { }
 #pragma warning restore CS8618
 
+    // WARNING:
+    // YOU SHOULD NEVER EXPOSE SETTER TO PUBLIC SCOPE.
+    // YOU SHOULD NEVER EXPOSE DEFAULT CONSTRUCTOR TO PUBLIC SCOPE.
+    // YOU SHOULD ONLY USE A DOMAIN METHOD TO UPDATE PROPERTIES.
+    // YOU SHOULD CALL DELETE METHOD BEFORE YOU ACTUALLY DELETE IT.
+
     /// <summary>
-    ///     排序 ID
+    ///     Sorting Id.
     /// </summary>
     public int OrderId { get; private set; }
 
     /// <summary>
-    ///     消息体
+    ///     The comment content.
     /// </summary>
     public string Message { get; private set; }
 
     /// <summary>
-    ///     回复
+    ///     The parent comment of the comment.
     /// </summary>
     public Guid ReplyTo { get; private set; }
 
     /// <summary>
-    ///     作业
+    ///     The operation this comment is for.
     /// </summary>
     public CopilotOperation Operation { get; private set; }
 
     /// <summary>
-    ///     用户
+    ///     The user who create this comment.
     /// </summary>
     public CopilotUser User { get; private set; }
 }

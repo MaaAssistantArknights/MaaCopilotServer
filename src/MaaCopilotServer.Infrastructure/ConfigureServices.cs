@@ -23,9 +23,9 @@ public static class ConfigureServices
     ///     Adds infrastructure services.
     /// </summary>
     /// <param name="services">The service collection.</param>
+    /// <param name="configuration">The configurations.</param>
     /// <returns>The service collection with the services added.</returns>
-    public static IServiceCollection AddInfrastructureServices(this IServiceCollection services,
-        IConfiguration configuration)
+    public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
     {
         var emailOption = configuration.GetOption<EmailOption>();
 

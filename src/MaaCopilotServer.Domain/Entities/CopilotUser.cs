@@ -9,7 +9,7 @@ namespace MaaCopilotServer.Domain.Entities;
 
 // ReSharper disable AutoPropertyCanBeMadeGetOnly.Local
 /// <summary>
-///     用户
+///     Maa Copilot user entity.
 /// </summary>
 public class CopilotUser : EditableEntity
 {
@@ -39,42 +39,46 @@ public class CopilotUser : EditableEntity
         }
     }
 
-    /// <summary>
-    ///     The default constructor.
-    /// </summary>
-    public CopilotUser()
-    {
-    }
+#pragma warning disable CS8618
+    // ReSharper disable once UnusedMember.Local
+    private CopilotUser() { }
+#pragma warning restore CS8618
+
+    // WARNING:
+    // YOU SHOULD NEVER EXPOSE SETTER TO PUBLIC SCOPE.
+    // YOU SHOULD NEVER EXPOSE DEFAULT CONSTRUCTOR TO PUBLIC SCOPE.
+    // YOU SHOULD ONLY USE A DOMAIN METHOD TO UPDATE PROPERTIES.
+    // YOU SHOULD CALL DELETE METHOD BEFORE YOU ACTUALLY DELETE IT.
 
     /// <summary>
-    ///     邮箱
+    ///     The email of the user.
     /// </summary>
-    public string Email { get; set; } = string.Empty;
+    public string Email { get; private set; }
 
     /// <summary>
-    ///     密码
+    ///     The password of the user.
     /// </summary>
-    public string Password { get; set; } = string.Empty;
+    public string Password { get; private set; }
 
     /// <summary>
-    ///     用户名
+    ///     The username of the user.
     /// </summary>
-    public string UserName { get; set; } = string.Empty;
+    public string UserName { get; private set; }
 
     /// <summary>
-    ///     权限组
+    ///     The role of the user.
     /// </summary>
-    public UserRole UserRole { get; set; } = UserRole.User;
+    public UserRole UserRole { get; private set; }
 
     /// <summary>
-    ///     用户激活
+    ///     Whether the user is active.
     /// </summary>
-    public bool UserActivated { get; set; } = true;
+    public bool UserActivated { get; private set; }
 
     /// <summary>
-    ///     收藏夹
+    ///     The list of favorite operation list of the user.
     /// </summary>
-    public List<CopilotUserFavorite> UserFavorites { get; set; } = new();
+    public List<CopilotUserFavorite> UserFavorites { get; private set; } = new();
 
     public void ActivateUser(Guid @operator)
     {

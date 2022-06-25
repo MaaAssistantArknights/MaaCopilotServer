@@ -25,44 +25,12 @@ public class MaaCopilotDbContext : DbContext, IMaaCopilotDbContext
     private readonly string? _connectionString;
 
     /// <summary>
-    ///     <para>Whether the database is created for unit test or not.</para>
-    ///     <para>When in test mode, an in-memory SQLite database is created.</para>
-    ///     <para>
-    ///         Otherwise, the default PostGreSQL database is created
-    ///         with <see cref="_connectionString"/>.
-    ///     </para>
-    /// </summary>
-    private readonly bool _isTestMode = false;
-
-    /// <summary>
     ///     The constructor with <see cref="IOptions{TOptions}"/>.
     /// </summary>
     /// <param name="dbOptions">The database options.</param>
     public MaaCopilotDbContext(IOptions<DatabaseOption> dbOptions)
     {
         _connectionString = dbOptions.Value.ConnectionString;
-    }
-
-    /// <summary>
-    ///     The constructor with <see cref="DbContextOptions"/>.
-    /// </summary>
-    /// <param name="options"></param>
-    /// <remarks>
-    ///     <para>
-    ///         This constructor is to be used only with unit tests.
-    ///         It is supposed to create an temporary in-memory database
-    ///         only for testing, and will be disposed after the test exits.
-    ///     </para>
-    ///     <para>
-    ///         For development and production, please use
-    ///         <see cref="MaaCopilotDbContext(IOptions{DatabaseOption})"/>
-    ///         instead.
-    ///     </para>
-    /// </remarks>
-    public MaaCopilotDbContext(DbContextOptions options)
-        : base(options)
-    {
-        _isTestMode = true;
     }
 
     /// <summary>
@@ -83,14 +51,7 @@ public class MaaCopilotDbContext : DbContext, IMaaCopilotDbContext
     /// <inheritdoc/>
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        // Create in-memory database when in test mode.
-        if (_isTestMode)
-        {
-            base.OnConfiguring(optionsBuilder);
-            return;
-        }
-
-        // Create PostgreSQL database for development and production.
+        // Create Postgres database for development and production.
         optionsBuilder.UseNpgsql(_connectionString.IsNotNull());
         base.OnConfiguring(optionsBuilder);
     }

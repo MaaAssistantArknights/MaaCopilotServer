@@ -3,6 +3,7 @@ using System;
 using MaaCopilotServer.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MaaCopilotServer.Infrastructure.Migrations
 {
     [DbContext(typeof(MaaCopilotDbContext))]
-    partial class MaaCopilotDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220625172910_ImproveModels")]
+    partial class ImproveModels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,21 +23,6 @@ namespace MaaCopilotServer.Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("CopilotOperationCopilotUserFavorite", b =>
-                {
-                    b.Property<Guid>("FavoriteByEntityId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("OperationsEntityId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("FavoriteByEntityId", "OperationsEntityId");
-
-                    b.HasIndex("OperationsEntityId");
-
-                    b.ToTable("Map_Favorite_Operation", (string)null);
-                });
 
             modelBuilder.Entity("MaaCopilotServer.Domain.Entities.CopilotOperation", b =>
                 {
@@ -48,6 +35,9 @@ namespace MaaCopilotServer.Infrastructure.Migrations
                     b.Property<string>("Content")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<Guid?>("CopilotUserFavoriteEntityId")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTimeOffset>("CreateAt")
                         .HasColumnType("timestamp with time zone");
@@ -102,6 +92,8 @@ namespace MaaCopilotServer.Infrastructure.Migrations
                     b.HasKey("EntityId");
 
                     b.HasIndex("AuthorEntityId");
+
+                    b.HasIndex("CopilotUserFavoriteEntityId");
 
                     b.ToTable("CopilotOperations");
                 });
@@ -271,21 +263,6 @@ namespace MaaCopilotServer.Infrastructure.Migrations
                     b.ToTable("CopilotUserFavorites");
                 });
 
-            modelBuilder.Entity("CopilotOperationCopilotUserFavorite", b =>
-                {
-                    b.HasOne("MaaCopilotServer.Domain.Entities.CopilotUserFavorite", null)
-                        .WithMany()
-                        .HasForeignKey("FavoriteByEntityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("MaaCopilotServer.Domain.Entities.CopilotOperation", null)
-                        .WithMany()
-                        .HasForeignKey("OperationsEntityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("MaaCopilotServer.Domain.Entities.CopilotOperation", b =>
                 {
                     b.HasOne("MaaCopilotServer.Domain.Entities.CopilotUser", "Author")
@@ -293,6 +270,10 @@ namespace MaaCopilotServer.Infrastructure.Migrations
                         .HasForeignKey("AuthorEntityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("MaaCopilotServer.Domain.Entities.CopilotUserFavorite", null)
+                        .WithMany("Operations")
+                        .HasForeignKey("CopilotUserFavoriteEntityId");
 
                     b.Navigation("Author");
                 });
@@ -330,6 +311,11 @@ namespace MaaCopilotServer.Infrastructure.Migrations
             modelBuilder.Entity("MaaCopilotServer.Domain.Entities.CopilotUser", b =>
                 {
                     b.Navigation("UserFavorites");
+                });
+
+            modelBuilder.Entity("MaaCopilotServer.Domain.Entities.CopilotUserFavorite", b =>
+                {
+                    b.Navigation("Operations");
                 });
 #pragma warning restore 612, 618
         }

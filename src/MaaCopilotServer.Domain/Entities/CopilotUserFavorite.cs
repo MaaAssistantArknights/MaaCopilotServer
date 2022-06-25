@@ -8,10 +8,15 @@ namespace MaaCopilotServer.Domain.Entities;
 
 // ReSharper disable AutoPropertyCanBeMadeGetOnly.Local
 /// <summary>
-///     用户收藏夹
+///     Maa Copilot user favorite list entity.
 /// </summary>
 public class CopilotUserFavorite : EditableEntity
 {
+    /// <summary>
+    ///     The constructor of <see cref="CopilotUserFavorite"/>.
+    /// </summary>
+    /// <param name="user">The user who own this favorite list.</param>
+    /// <param name="favoriteName">The name of this list.</param>
     public CopilotUserFavorite(CopilotUser user, string favoriteName)
     {
         User = user;
@@ -23,54 +28,60 @@ public class CopilotUserFavorite : EditableEntity
     private CopilotUserFavorite() { }
 #pragma warning restore CS8618
 
+    // WARNING:
+    // YOU SHOULD NEVER EXPOSE SETTER TO PUBLIC SCOPE.
+    // YOU SHOULD NEVER EXPOSE DEFAULT CONSTRUCTOR TO PUBLIC SCOPE.
+    // YOU SHOULD ONLY USE A DOMAIN METHOD TO UPDATE PROPERTIES.
+    // YOU SHOULD CALL DELETE METHOD BEFORE YOU ACTUALLY DELETE IT.
+
     /// <summary>
-    ///     用户
+    ///     The user who own this favorite list.
     /// </summary>
     public CopilotUser User { get; private set; }
 
     /// <summary>
-    ///     收藏列表名
+    ///     The name of this list.
     /// </summary>
     public string FavoriteName { get; private set; }
 
     /// <summary>
-    ///     收藏作业 GroupId
+    ///     The list of favorite operation ids.
     /// </summary>
-    public List<Guid> OperationGroupIds { get; private set; } = new();
+    public List<Guid> OperationIds { get; private set; } = new();
 
     /// <summary>
-    ///     收藏的作业实体 (M2M)
+    ///     The list of favorite operations. (M2M)
     /// </summary>
     public List<CopilotOperation> Operations { get; private set; } = new();
 
     /// <summary>
-    ///     添加收藏
+    ///     Add an operation to this favorite list.
     /// </summary>
     /// <param name="operation"></param>
     public void AddFavoriteOperation(CopilotOperation operation)
     {
-        if (OperationGroupIds.Contains(operation.GroupId))
+        if (OperationIds.Contains(operation.EntityId))
         {
             return;
         }
 
-        OperationGroupIds.Add(operation.GroupId);
+        OperationIds.Add(operation.EntityId);
         Operations.Add(operation);
         UpdateAt = DateTimeOffset.UtcNow;
     }
 
     /// <summary>
-    ///     移除收藏
+    ///     Remove an operation from this favorite list.
     /// </summary>
     /// <param name="operation"></param>
     public void RemoveFavoriteOperation(CopilotOperation operation)
     {
-        if (OperationGroupIds.Contains(operation.GroupId) is false)
+        if (OperationIds.Contains(operation.EntityId) is false)
         {
             return;
         }
 
-        OperationGroupIds.Remove(operation.GroupId);
+        OperationIds.Remove(operation.EntityId);
         Operations.Remove(operation);
         UpdateAt = DateTimeOffset.UtcNow;
     }

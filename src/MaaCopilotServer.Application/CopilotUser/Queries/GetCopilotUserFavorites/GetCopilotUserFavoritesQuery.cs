@@ -3,7 +3,6 @@
 // Licensed under the AGPL-3.0 license.
 
 using MaaCopilotServer.Application.Common.Helpers;
-using MaaCopilotServer.Application.CopilotOperation.Queries.QueryCopilotOperations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,14 +17,11 @@ public class GetCopilotUserFavoritesQueryHandler : IRequestHandler<GetCopilotUse
 {
     private readonly IMaaCopilotDbContext _copilotDbContext;
     private readonly ICopilotIdService _copilotIdService;
-    private readonly ICurrentUserService _currentUserService;
 
     public GetCopilotUserFavoritesQueryHandler(
-        ICurrentUserService currentUserService,
         ICopilotIdService copilotIdService,
         IMaaCopilotDbContext copilotDbContext)
     {
-        _currentUserService = currentUserService;
         _copilotIdService = copilotIdService;
         _copilotDbContext = copilotDbContext;
     }
@@ -36,6 +32,8 @@ public class GetCopilotUserFavoritesQueryHandler : IRequestHandler<GetCopilotUse
         var favListId = Guid.Parse(request.FavoriteListId!);
 
         var list = await _copilotDbContext.CopilotUserFavorites
+            .IgnoreQueryFilters()
+            .Where(x => x.IsDeleted == false)
             .Include(x => x.Operations)
             .ThenInclude(x => x.Author)
             .FirstOrDefaultAsync(x => x.EntityId == favListId, cancellationToken);
@@ -44,9 +42,28 @@ public class GetCopilotUserFavoritesQueryHandler : IRequestHandler<GetCopilotUse
             return MaaApiResponseHelper.NotFound("");
         }
 
-        var operationsDto = list.Operations.Select(x => new QueryCopilotOperationsQueryDto(
-            _copilotIdService.EncodeId(x.Id), x.StageName, x.MinimumRequired, x.CreateAt.ToIsoString(),
-            x.Author.UserName, x.Title, x.Details, x.Downloads, x.Operators)).ToList();
+        var operationsDto = list.Operations
+            .Where(x => x.IsDeleted == false)
+            .Select(x => new FavoriteCopilotOperationsDto
+            {
+                Id = _copilotIdService.EncodeId(x.Id),
+                StageName = x.StageName,
+                MinimumRequired = x.MinimumRequired,
+                Detail = x.Details,
+                Operators = x.Operators,
+                Title = x.Title,
+                Uploader = x.Author.UserName,
+                UploadTime = x.CreateAt.ToIsoString(),
+                ViewCounts = x.ViewCounts,
+            }).ToList();
+        var operationsDtoDeleted = list.Operations
+            .Where(x => x.IsDeleted)
+            .Select(x => new FavoriteCopilotOperationsDto
+            {
+                Id = _copilotIdService.EncodeId(x.Id),
+                Deleted = true
+            });
+        operationsDto.AddRange(operationsDtoDeleted);
         var dto = new GetCopilotUserFavoritesDto(list.EntityId.ToString(), list.FavoriteName, operationsDto);
         return MaaApiResponseHelper.Ok(dto);
     }

@@ -168,9 +168,9 @@ public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOp
 
         queryable = request.OrderBy?.ToLower() switch
         {
-            "downloads" => string.IsNullOrEmpty(request.Desc)
-                ? queryable.OrderBy(x => x.Downloads)
-                : queryable.OrderByDescending(x => x.Downloads),
+            "views" => string.IsNullOrEmpty(request.Desc)
+                ? queryable.OrderBy(x => x.ViewCounts)
+                : queryable.OrderByDescending(x => x.ViewCounts),
             _ => string.IsNullOrEmpty(request.Desc)
                 ? queryable.OrderBy(x => x.Id)
                 : queryable.OrderByDescending(x => x.Id)
@@ -181,10 +181,11 @@ public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOp
         var result = queryable.ToList();
         var hasNext = limit * page >= totalCount;
 
-        var dtos = result.Select(x => new QueryCopilotOperationsQueryDto(
+        var dtos = result.Select(x =>
+                new QueryCopilotOperationsQueryDto(
                 _copilotIdService.EncodeId(x.Id), x.StageName, x.MinimumRequired,
                 x.CreateAt.ToString("o", _apiErrorMessage.CultureInfo),
-                x.Author.UserName, x.Title, x.Details, x.Downloads, x.Operators))
+                x.Author.UserName, x.Title, x.Details, x.ViewCounts, x.Operators))
             .ToList();
         var paginationResult = new PaginationResult<QueryCopilotOperationsQueryDto>
         {

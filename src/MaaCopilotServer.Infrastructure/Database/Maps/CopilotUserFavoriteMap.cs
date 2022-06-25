@@ -13,7 +13,7 @@ public class CopilotUserFavoriteMap : IEntityTypeConfiguration<CopilotUserFavori
 {
     public void Configure(EntityTypeBuilder<CopilotUserFavorite> builder)
     {
-        builder.Property(x => x.OperationGroupIds)
+        builder.Property(x => x.OperationIds)
             .HasConversion(
                 list => string.Join(";", list.Select(x => x.ToString())),
                 s => s.Split(";", StringSplitOptions.RemoveEmptyEntries)
@@ -23,7 +23,9 @@ public class CopilotUserFavoriteMap : IEntityTypeConfiguration<CopilotUserFavori
                     c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
                     c => c.ToList()));
 
-        builder.HasMany(x => x.Operations);
+        builder.HasMany(x => x.Operations)
+            .WithMany(x => x.FavoriteBy)
+            .UsingEntity(eb => eb.ToTable("Map_Favorite_Operation"));
         builder.HasQueryFilter(x => x.User.IsDeleted == false);
     }
 }

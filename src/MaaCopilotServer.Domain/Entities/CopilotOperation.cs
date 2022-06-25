@@ -8,7 +8,7 @@ namespace MaaCopilotServer.Domain.Entities;
 
 // ReSharper disable AutoPropertyCanBeMadeGetOnly.Local
 /// <summary>
-///     Maa Copilot 作业实体
+///     Maa Copilot operation entity.
 /// </summary>
 public sealed class CopilotOperation : EditableEntity
 {
@@ -22,10 +22,10 @@ public sealed class CopilotOperation : EditableEntity
     /// <param name="details">The detail of the operation.</param>
     /// <param name="author">The author of the operation.</param>
     /// <param name="createBy">The creator of the operation.</param>
+    /// <param name="operators">The operators in the operation.</param>
     public CopilotOperation(string content, string stageName, string minimumRequired, string title, string details,
         CopilotUser author, Guid createBy, List<string> operators)
     {
-        GroupId = Guid.NewGuid();
         Content = content;
         StageName = stageName;
         MinimumRequired = minimumRequired;
@@ -37,101 +37,102 @@ public sealed class CopilotOperation : EditableEntity
         UpdateBy = createBy;
     }
 
-    public CopilotOperation(Guid groupId, string content, string stageName, string minimumRequired, string title,
-        string details, CopilotUser author, Guid createBy, List<string> operators)
-    {
-        GroupId = groupId;
-        Content = content;
-        StageName = stageName;
-        MinimumRequired = minimumRequired;
-        Title = title;
-        Details = details;
-        Author = author;
-        Operators = operators;
-        CreateBy = createBy;
-        UpdateBy = createBy;
-    }
+#pragma warning disable CS8618
+    // ReSharper disable once UnusedMember.Local
+    private CopilotOperation() { }
+#pragma warning restore CS8618
 
-    public CopilotOperation() { }
+    // WARNING:
+    // YOU SHOULD NEVER EXPOSE SETTER TO PUBLIC SCOPE.
+    // YOU SHOULD NEVER EXPOSE DEFAULT CONSTRUCTOR TO PUBLIC SCOPE.
+    // YOU SHOULD ONLY USE A DOMAIN METHOD TO UPDATE PROPERTIES.
+    // YOU SHOULD CALL DELETE METHOD BEFORE YOU ACTUALLY DELETE IT.
 
     /// <summary>
-    ///     作业 ID (数字ID)
+    ///     Copilot operation id (int).
     /// </summary>
-    public long Id { get; set; }
+    // ReSharper disable once UnusedAutoPropertyAccessor.Local
+    public long Id { get; private set; }
 
     /// <summary>
-    ///     作业组 ID
+    ///     Copilot operation content (JSON).
     /// </summary>
-    public Guid GroupId { get; set; } = Guid.Empty;
+    public string Content { get; private set; }
 
     /// <summary>
-    ///     作业本体 JSON
+    ///     View counts.
     /// </summary>
-    public string Content { get; set; } = string.Empty;
+    public int ViewCounts { get; private set; }
 
     /// <summary>
-    ///     下载量
+    ///     Favorite counts.
     /// </summary>
-    public int Downloads { get; set; }
-
-    /// <summary>
-    ///     收藏量
-    /// </summary>
-    public int Favorites { get; set; }
+    public int Favorites { get; private set; }
 
     // Extract from Content
 
     /// <summary>
-    ///     关卡名称
+    ///     The stage name.
     /// </summary>
-    public string StageName { get; set; } = string.Empty;
+    public string StageName { get; private set; }
 
     /// <summary>
-    ///     MAA 所需最低版本
+    ///     The minimum required version of MAA.
     /// </summary>
-    public string MinimumRequired { get; set; } = string.Empty;
+    public string MinimumRequired { get; private set; }
 
     /// <summary>
-    ///     标题
+    ///     The title of the operation.
     /// </summary>
-    public string Title { get; set; } = string.Empty;
+    public string Title { get; private set; }
 
     /// <summary>
-    ///     干员列表
+    ///     The operators in the operation.
     /// </summary>
-    public List<string> Operators { get; set; } = new List<string>();
+    public List<string> Operators { get; private set; }
 
     /// <summary>
-    ///     简介
+    ///     The detail of the operation.
     /// </summary>
-    public string Details { get; set; } = string.Empty;
+    public string Details { get; private set; }
 
     /// <summary>
-    ///     上传者
+    ///     The uploader of the operation.
     /// </summary>
-    public CopilotUser Author { get; set; } = new CopilotUser();
+    public CopilotUser Author { get; private set; }
+
+    /// <summary>
+    ///     M2M relation. DO NOT INCLUDE QUERY THIS.
+    /// </summary>
+    public List<CopilotUserFavorite> FavoriteBy { get; private set; } = new();
 
     /// <summary>
     ///     Increases download count by 1, and updates last updated time.
     /// </summary>
-    // 这个接口是可以被匿名访问的，因此不记录更新者
-    public void AddDownloadCount()
+    /// <remarks>This API is reachable anonymously, so the update will not be recorded.</remarks>
+    public void AddViewCount()
     {
-        Downloads++;
+        ViewCounts++;
         UpdateAt = DateTimeOffset.UtcNow;
     }
 
-    // 这个接口是可以被匿名访问的，因此不记录更新者
-    public void AddFavorites()
+    /// <summary>
+    ///     Add a favorite count, and updates last updated time.
+    /// </summary>
+    public void AddFavorites(Guid @operator)
     {
         Favorites++;
         UpdateAt = DateTimeOffset.UtcNow;
+        UpdateBy = @operator;
     }
 
-    // 这个接口是可以被匿名访问的，因此不记录更新者
-    public void RemoveFavorites()
+    /// <summary>
+    ///     Remove a favorite count, and updates last updated time.
+    /// </summary>
+    public void RemoveFavorites(Guid @operator)
     {
         Favorites--;
         UpdateAt = DateTimeOffset.UtcNow;
+        UpdateBy = @operator;
     }
 }
