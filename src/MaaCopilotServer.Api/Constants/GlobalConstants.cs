@@ -50,7 +50,7 @@ public static class GlobalConstants
         Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production";
 
     /// <summary>
-    /// Indicates whether the current environemnt is production.
+    /// Indicates whether the current environment is production.
     /// </summary>
     public static bool IsProductionEnvironment => AspNetCoreEnvironment == ProductionEnvironment;
 
