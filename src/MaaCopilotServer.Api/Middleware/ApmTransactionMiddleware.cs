@@ -82,7 +82,8 @@ public class ApmTransactionMiddleware
             transaction.Result = StatusCodes.Status500InternalServerError.ToString();
             transaction.Context.Response = new Response
             {
-                Finished = false, StatusCode = StatusCodes.Status500InternalServerError
+                Finished = false,
+                StatusCode = StatusCodes.Status500InternalServerError
             };
             transaction.Result = ex.Message;
         }

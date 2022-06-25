@@ -30,16 +30,14 @@ public static class Program
     /// </summary>
     public static void Main()
     {
-        var settings = new GlobalSettingsHelper();
-
         // Get global configuration.
-        var configuration = new ConfigurationHelper(settings).BuildConfiguration();
+        var configuration = new ConfigurationHelper().BuildConfiguration();
 
         // Create logger.
         Log.Logger = configuration.GetLoggerConfiguration().CreateLogger();
         SelfLog.Enable(Console.Error); // Direct log output to standard error stream.
 
-        var initializeHelper = new InitializeHelper(configuration, settings);
+        var initializeHelper = new InitializeHelper(configuration);
         initializeHelper.InitializeEmailTemplates();
 
         var builder = WebApplication.CreateBuilder();

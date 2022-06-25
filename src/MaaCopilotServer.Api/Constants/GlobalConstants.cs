@@ -6,13 +6,13 @@ using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using MaaCopilotServer.Application.Common.Extensions;
 
-namespace MaaCopilotServer.Api.Helper;
+namespace MaaCopilotServer.Api.Constants;
 
 /// <summary>
 /// The helper of global settings.
 /// </summary>
 [ExcludeFromCodeCoverage]
-public class GlobalSettingsHelper
+public static class GlobalConstants
 {
     /// <summary>
     /// The production environment string.
@@ -22,23 +22,23 @@ public class GlobalSettingsHelper
     /// <summary>
     /// The <c>MAA_DATA_DIRECTORY</c> environment variable.
     /// </summary>
-    private string MaaDataDirectory => Environment.GetEnvironmentVariable("MAA_DATA_DIRECTORY") ?? "";
+    private static string MaaDataDirectory => Environment.GetEnvironmentVariable("MAA_DATA_DIRECTORY") ?? "";
 
     /// <summary>
     /// The <c>DOTNET_RUNNING_IN_CONTAINER</c> environment variable.
     /// </summary>
-    public string IsDotnetRunningInContainer =>
+    public static string IsDotnetRunningInContainer =>
         Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") ?? "false";
 
     /// <summary>
     /// The executing assembly directory.
     /// </summary>
-    public string AssemblyDirectory => new FileInfo(Assembly.GetExecutingAssembly().Location).Directory!.FullName;
+    public static string AssemblyDirectory => new FileInfo(Assembly.GetExecutingAssembly().Location).Directory!.FullName;
 
     /// <summary>
     /// The data directory.
     /// </summary>
-    public string DataDirectory =>
+    public static string DataDirectory =>
         string.IsNullOrEmpty(MaaDataDirectory)
             ? new DirectoryInfo(AssemblyDirectory.CombinePath("data")).EnsureCreated().FullName
             : new DirectoryInfo(MaaDataDirectory).EnsureCreated().FullName;
@@ -46,73 +46,73 @@ public class GlobalSettingsHelper
     /// <summary>
     /// The ASP.NET Core environment.
     /// </summary>
-    private string AspNetCoreEnvironment =>
+    private static string AspNetCoreEnvironment =>
         Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production";
 
     /// <summary>
     /// Indicates whether the current environemnt is production.
     /// </summary>
-    public bool IsProductionEnvironment => AspNetCoreEnvironment == ProductionEnvironment;
+    public static bool IsProductionEnvironment => AspNetCoreEnvironment == ProductionEnvironment;
 
     /// <summary>
     /// The <c>appsettings.json</c> file location.
     /// </summary>
-    public string AppSettings => DataDirectory.CombinePath("appsettings.json");
+    public static string AppSettings => DataDirectory.CombinePath("appsettings.json");
 
     /// <summary>
     /// The <c>appsettings.&lt;env&gt;.json</c> file location.
     /// </summary>
-    public string AppSettingsEnv => DataDirectory.CombinePath($"appsettings.{AspNetCoreEnvironment}.json");
+    public static string AppSettingsEnv => DataDirectory.CombinePath($"appsettings.{AspNetCoreEnvironment}.json");
 
     /// <summary>
     /// The original <c>appsettings.json</c> file location.
     /// </summary>
-    public string OriginalAppSettings => AssemblyDirectory.CombinePath("appsettings.json");
+    public static string OriginalAppSettings => AssemblyDirectory.CombinePath("appsettings.json");
 
     /// <summary>
     /// The original <c>appsettings.&lt;env&gt;.json</c> file location.
     /// </summary>
-    public string OriginalAppSettingsEnv => AssemblyDirectory.CombinePath($"appsettings.{AspNetCoreEnvironment}.json");
+    public static string OriginalAppSettingsEnv => AssemblyDirectory.CombinePath($"appsettings.{AspNetCoreEnvironment}.json");
 
     /// <summary>
     /// The App version.
     /// </summary>
-    public string AppVersion => Environment.GetEnvironmentVariable("MAACOPILOT_APP_VERSION") ?? "0.0.0";
+    public static string AppVersion => Environment.GetEnvironmentVariable("MAACOPILOT_APP_VERSION") ?? "0.0.0";
 
     /// <summary>
     /// The original templates directory.
     /// </summary>
-    public string OriginalTemplatesDirectory => AssemblyDirectory.CombinePath("templates");
+    public static string OriginalTemplatesDirectory => AssemblyDirectory.CombinePath("templates");
 
     /// <summary>
     /// The target templates directory.
     /// </summary>
-    public string TargetTemplatesDirectory => DataDirectory.CombinePath("templates");
+    public static string TargetTemplatesDirectory => DataDirectory.CombinePath("templates");
 
     /// <summary>
     /// The default user email.
     /// </summary>
-    public string DefaultUserEmail => Environment.GetEnvironmentVariable("DEFAULT_USER_EMAIL") ?? "super@prts.plus";
+    public static string DefaultUserEmail => Environment.GetEnvironmentVariable("DEFAULT_USER_EMAIL") ?? "super@prts.plus";
 
     /// <summary>
     /// Indicates whether the default user email is empty.
     /// </summary>
-    public bool IsDefaultUserEmailEmpty =>
+    public static bool IsDefaultUserEmailEmpty =>
         string.IsNullOrEmpty(Environment.GetEnvironmentVariable("DEFAULT_USER_EMAIL"));
 
     /// <summary>
     /// The default user password.
     /// </summary>
-    public string DefaultUserPassword => Environment.GetEnvironmentVariable("DEFAULT_USER_PASSWORD") ?? "";
+    public static string DefaultUserPassword => Environment.GetEnvironmentVariable("DEFAULT_USER_PASSWORD") ?? "";
 
     /// <summary>
     /// Indicates whether the default user password is empty.
     /// </summary>
-    public bool IsDefaultUserPasswordEmpty =>
+    public static bool IsDefaultUserPasswordEmpty =>
         string.IsNullOrEmpty(Environment.GetEnvironmentVariable("DEFAULT_USER_PASSWORD"));
 
     /// <summary>
     /// The default username.
     /// </summary>
-    public string DefaultUsername => Environment.GetEnvironmentVariable("DEFAULT_USER_NAME") ?? "Maa";
+    public static string DefaultUsername => Environment.GetEnvironmentVariable("DEFAULT_USER_NAME") ?? "Maa";
 }

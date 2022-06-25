@@ -4,6 +4,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
+using MaaCopilotServer.Api.Constants;
 using MaaCopilotServer.Application.Common.Extensions;
 using MaaCopilotServer.Domain.Entities;
 using MaaCopilotServer.Domain.Enums;
@@ -26,28 +27,12 @@ public class InitializeHelper
     private readonly IConfiguration _configuration;
 
     /// <summary>
-    /// The global settings helper.
-    /// </summary>
-    private readonly GlobalSettingsHelper _settings;
-
-    /// <summary>
     /// The constructor.
     /// </summary>
     /// <param name="configuration">The configuration.</param>
-    public InitializeHelper(IConfiguration configuration) : this(configuration, new GlobalSettingsHelper())
+    public InitializeHelper(IConfiguration configuration)
     {
         _configuration = configuration;
-    }
-
-    /// <summary>
-    /// The constructor with all properties.
-    /// </summary>
-    /// <param name="configuration">The configuration.</param>
-    /// <param name="settings">The global settings helper.</param>
-    public InitializeHelper(IConfiguration configuration, GlobalSettingsHelper settings)
-    {
-        _configuration = configuration;
-        _settings = settings;
     }
 
     /// <summary>
@@ -56,8 +41,8 @@ public class InitializeHelper
     [ExcludeFromCodeCoverage]
     public void InitializeEmailTemplates()
     {
-        var originalTemplatesDirectory = new DirectoryInfo(_settings.OriginalTemplatesDirectory);
-        var targetTemplatesDirectory = new DirectoryInfo(_settings.TargetTemplatesDirectory);
+        var originalTemplatesDirectory = new DirectoryInfo(GlobalConstants.OriginalTemplatesDirectory);
+        var targetTemplatesDirectory = new DirectoryInfo(GlobalConstants.TargetTemplatesDirectory);
 
         if (targetTemplatesDirectory.Exists is false)
         {
@@ -98,16 +83,16 @@ public class InitializeHelper
         if (haveUser is false)
         {
             // New DB without any existing users. Initialize default user.
-            var defaultUserEmail = _settings.DefaultUserEmail;
-            var defaultUserPassword = _settings.DefaultUserPassword;
+            var defaultUserEmail = GlobalConstants.DefaultUserEmail;
+            var defaultUserPassword = GlobalConstants.DefaultUserPassword;
             if (defaultUserPassword == "")
             {
                 defaultUserPassword = GeneratePassword();
             }
 
-            var defaultUserName = _settings.DefaultUsername;
+            var defaultUserName = GlobalConstants.DefaultUsername;
 
-            if (_settings.IsDefaultUserEmailEmpty || _settings.IsDefaultUserPasswordEmpty)
+            if (GlobalConstants.IsDefaultUserEmailEmpty || GlobalConstants.IsDefaultUserPasswordEmpty)
             {
                 Log.Logger.Information("Creating default user with email {DefaultEmail} and password {DefaultPassword}",
                     defaultUserEmail, defaultUserPassword);

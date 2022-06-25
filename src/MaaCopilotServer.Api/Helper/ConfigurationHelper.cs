@@ -3,6 +3,7 @@
 // Licensed under the AGPL-3.0 license.
 
 using System.Diagnostics.CodeAnalysis;
+using MaaCopilotServer.Api.Constants;
 using MaaCopilotServer.Application.Common.Extensions;
 
 namespace MaaCopilotServer.Api.Helper;
@@ -14,39 +15,18 @@ namespace MaaCopilotServer.Api.Helper;
 public class ConfigurationHelper
 {
     /// <summary>
-    /// The global setting helper.
-    /// </summary>
-    private readonly GlobalSettingsHelper _settings;
-
-    /// <summary>
-    /// The constructor.
-    /// </summary>
-    public ConfigurationHelper() : this(new GlobalSettingsHelper())
-    {
-    }
-
-    /// <summary>
-    /// The constructor with all properties.
-    /// </summary>
-    /// <param name="globalSettingHelper"></param>
-    public ConfigurationHelper(GlobalSettingsHelper globalSettingHelper)
-    {
-        _settings = globalSettingHelper;
-    }
-
-    /// <summary>
     /// Ensures settings files are created correctly.
     /// </summary>
-    private void EnsureSettingsFileCreated()
+    private static void EnsureSettingsFileCreated()
     {
         // Get settings file locations.
-        var appsettingsFile = new FileInfo(_settings.AppSettings);
+        var appsettingsFile = new FileInfo(GlobalConstants.AppSettings);
         var appsettingsEnvFile =
-            new FileInfo(_settings.AppSettingsEnv);
+            new FileInfo(GlobalConstants.AppSettingsEnv);
         var originalAppsettingsFile =
-            new FileInfo(_settings.OriginalAppSettings).AssertExist();
+            new FileInfo(GlobalConstants.OriginalAppSettings).AssertExist();
         var originalAppsettingsEnvFile =
-            new FileInfo(_settings.OriginalAppSettingsEnv);
+            new FileInfo(GlobalConstants.OriginalAppSettingsEnv);
 
         if (appsettingsFile.Exists is false)
         {
@@ -54,10 +34,10 @@ public class ConfigurationHelper
             appsettingsFile.EnsureDeleted();
 
             var text = File.ReadAllText(originalAppsettingsFile.FullName);
-            text = text.Replace("{{ DATA DIRECTORY }}", _settings.DataDirectory);
+            text = text.Replace("{{ DATA DIRECTORY }}", GlobalConstants.DataDirectory);
             File.WriteAllText(appsettingsFile.FullName, text);
 
-            if (_settings.IsProductionEnvironment)
+            if (GlobalConstants.IsProductionEnvironment)
             {
                 Environment.Exit(0);
             }
@@ -86,17 +66,17 @@ public class ConfigurationHelper
         // Build configurations.
         var configurationBuilder = new ConfigurationBuilder();
 
-        configurationBuilder.AddJsonFile(_settings.AppSettings, false, true);
-        configurationBuilder.AddJsonFile(_settings.AppSettingsEnv, true, true);
+        configurationBuilder.AddJsonFile(GlobalConstants.AppSettings, false, true);
+        configurationBuilder.AddJsonFile(GlobalConstants.AppSettingsEnv, true, true);
 
         configurationBuilder.AddEnvironmentVariables("MAA_");
 
-        var appVersion = _settings.AppVersion;
+        var appVersion = GlobalConstants.AppVersion;
 
         configurationBuilder.AddInMemoryCollection(new List<KeyValuePair<string, string>>
         {
-            new("Application:AssemblyPath", _settings.AssemblyDirectory),
-            new("Application:DataDirectory", _settings.DataDirectory),
+            new("Application:AssemblyPath", GlobalConstants.AssemblyDirectory),
+            new("Application:DataDirectory", GlobalConstants.DataDirectory),
             new("Application:Version", appVersion),
             new("ElasticApm:ServiceVersion", appVersion)
         });
