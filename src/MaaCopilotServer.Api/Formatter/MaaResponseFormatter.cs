@@ -3,7 +3,6 @@
 // Licensed under the AGPL-3.0 license.
 
 using System.Text;
-using System.Text.Json;
 using MaaCopilotServer.Application.Common.Helpers;
 using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Application.Common.Models;
@@ -34,17 +33,22 @@ public class MaaResponseFormatter : TextOutputFormatter
         var traceId = currentUser!.GetTrackingId();
 
         httpContext.Response.StatusCode = StatusCodes.Status200OK;
+        int realStatusCode;
 
         if (context.Object is MaaApiResponse maaApiResponse)
         {
             maaApiResponse.TraceId = traceId;
             await httpContext.Response.WriteAsJsonAsync(maaApiResponse);
+            realStatusCode = maaApiResponse.StatusCode;
         }
         else
         {
             var unknownResponse = MaaApiResponseHelper.InternalError("Unknown response type");
             unknownResponse.TraceId = traceId;
             await httpContext.Response.WriteAsJsonAsync(unknownResponse);
+            realStatusCode = StatusCodes.Status500InternalServerError;
         }
+
+        httpContext.Items.Add("StatusCode", realStatusCode);
     }
 }

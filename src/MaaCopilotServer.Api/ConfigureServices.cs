@@ -33,13 +33,13 @@ public static class ConfigureServices
         var jwtOption = configuration.GetOption<JwtOption>();
 
         services
-            .AddOption<JwtOption>(configuration)
-            .AddOption<DatabaseOption>(configuration)
-            .AddOption<ElasticLogSinkOption>(configuration)
-            .AddOption<SwitchesOption>(configuration)
-            .AddOption<EmailOption>(configuration)
-            .AddOption<ApplicationOption>(configuration)
-            .AddOption<TokenOption>(configuration);
+            .AddOption<JwtOption>()
+            .AddOption<DatabaseOption>()
+            .AddOption<ElasticLogSinkOption>()
+            .AddOption<SwitchesOption>()
+            .AddOption<EmailOption>()
+            .AddOption<ApplicationOption>()
+            .AddOption<TokenOption>();
 
         services.AddHttpContextAccessor();
         services.AddScoped<ICurrentUserService, CurrentUserService>();
@@ -63,49 +63,12 @@ public static class ConfigureServices
                     ValidAudience = jwtOption.Audience,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOption.Secret))
                 };
-
-                options.Events = new JwtBearerEvents
-                {
-                    // Set token in the context.
-                    OnMessageReceived = context =>
-                    {
-                        if (context.Request.Query.TryGetValue("access_token", out var values) is false)
-                        {
-                            return Task.CompletedTask;
-                        }
-
-                        if (values.Count > 1)
-                        {
-                            context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-                            context.Fail(
-                                "Only one 'access_token' query string parameter can be defined. " +
-                                $"However, {values.Count:N0} were included in the request."
-                            );
-                            return Task.CompletedTask;
-                        }
-
-                        var token = values.Single();
-                        if (string.IsNullOrWhiteSpace(token))
-                        {
-                            context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-                            context.Fail(
-                                "The 'access_token' query string parameter was defined, " +
-                                "but a value to represent the token was not included."
-                            );
-
-                            return Task.CompletedTask;
-                        }
-
-                        context.Token = token;
-                        return Task.CompletedTask;
-                    }
-                };
             });
 
         return services;
     }
 
-    private static IServiceCollection AddOption<T>(this IServiceCollection services, IConfiguration configuration)
+    private static IServiceCollection AddOption<T>(this IServiceCollection services)
         where T : class, new()
     {
         services.AddOptions<T>().BindConfiguration(typeof(T).ReadAttribute<OptionNameAttribute>()!.OptionName);

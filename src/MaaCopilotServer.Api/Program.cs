@@ -3,11 +3,9 @@
 // Licensed under the AGPL-3.0 license.
 
 using System.Diagnostics.CodeAnalysis;
-using Elastic.Apm.AspNetCore;
-using Elastic.Apm.AspNetCore.DiagnosticListener;
-using Elastic.Apm.DiagnosticSource;
 using Elastic.Apm.Elasticsearch;
 using Elastic.Apm.EntityFrameworkCore;
+using Elastic.Apm.Extensions.Hosting;
 using MaaCopilotServer.Api.Formatter;
 using MaaCopilotServer.Api.Helper;
 using MaaCopilotServer.Api.Middleware;
@@ -46,9 +44,17 @@ public static class Program
 
         var builder = WebApplication.CreateBuilder();
 
+        builder.Configuration.AddConfiguration(configuration);
+
         builder.Host.UseSerilog();
 
-        builder.Configuration.AddConfiguration(configuration);
+        var switchesOption = configuration.GetOption<SwitchesOption>();
+        if (switchesOption.Apm)
+        {
+            builder.Host.UseElasticApm(
+                new EfCoreDiagnosticsSubscriber(),
+                new ElasticsearchDiagnosticsSubscriber());
+        }
 
         builder.Services.AddCors();
         builder.Services.AddControllers(options =>
@@ -62,17 +68,6 @@ public static class Program
 
         initializeHelper.InitializeDatabase();
 
-        var switchesOption = configuration.GetOption<SwitchesOption>();
-        if (switchesOption.Apm)
-        {
-            app.UseElasticApm(configuration,
-                new EfCoreDiagnosticsSubscriber(),
-                new ElasticsearchDiagnosticsSubscriber(),
-                new HttpDiagnosticsSubscriber(),
-                new AspNetCoreDiagnosticSubscriber(),
-                new AspNetCoreErrorDiagnosticsSubscriber());
-        }
-
         // CORS settings.
         app.UseCors(options =>
         {
@@ -81,6 +76,8 @@ public static class Program
                 .AllowAnyHeader()
                 .AllowCredentials();
         });
+
+        app.UseApmTransaction();
 
         app.UseRequestCulture();
         app.UseAuthentication();

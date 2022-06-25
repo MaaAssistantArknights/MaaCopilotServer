@@ -61,8 +61,8 @@ public class UnhandledExceptionBehaviour<TRequest, TResponse> : IPipelineBehavio
         {
             var requestName = typeof(TRequest).Name;
             _logger.LogError(ex,
-                "MaaCopilotServer: Type -> {LoggingType}; Request Name -> {Name}; Request -> {@Request};",
-                LoggingType.Exception, requestName, request);
+                "MaaCopilotServer: Type -> {LoggingType}; Name -> {Name}; ExceptionName -> {ExceptionName}",
+                LoggingType.Exception, requestName, ex.GetType().Name);
 
             return MaaApiResponseHelper.InternalError(_apiErrorMessage.InternalException);
         }
