@@ -5,17 +5,9 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Security.Claims;
-using Elastic.Apm;
-using Elastic.Apm.Api;
 using MaaCopilotServer.Application.Common.Interfaces;
 
 namespace MaaCopilotServer.Api.Services;
-
-/// <summary>
-///     The delegate of getting the current active transaction from APM.
-/// </summary>
-/// <returns></returns>
-public delegate ITransaction? CurrentTransactionProvider();
 
 /// <summary>
 ///     The service for parsing information of the current user.
