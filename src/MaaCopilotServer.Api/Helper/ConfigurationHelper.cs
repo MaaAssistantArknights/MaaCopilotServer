@@ -15,18 +15,15 @@ namespace MaaCopilotServer.Api.Helper;
 public static class ConfigurationHelper
 {
     /// <summary>
-    /// Ensures settings files are created correctly.
+    ///     Ensures settings files are created correctly.
     /// </summary>
     private static void EnsureSettingsFileCreated()
     {
         // Get settings file locations.
         var appsettingsFile = new FileInfo(GlobalConstants.AppSettings);
-        var appsettingsEnvFile =
-            new FileInfo(GlobalConstants.AppSettingsEnv);
-        var originalAppsettingsFile =
-            new FileInfo(GlobalConstants.OriginalAppSettings).AssertExist();
-        var originalAppsettingsEnvFile =
-            new FileInfo(GlobalConstants.OriginalAppSettingsEnv);
+        var appsettingsEnvFile = new FileInfo(GlobalConstants.AppSettingsEnv);
+        var originalAppsettingsFile = new FileInfo(GlobalConstants.OriginalAppSettings).AssertExist();
+        var originalAppsettingsEnvFile = new FileInfo(GlobalConstants.OriginalAppSettingsEnv);
 
         if (appsettingsFile.Exists is false)
         {
@@ -55,10 +52,9 @@ public static class ConfigurationHelper
     }
 
     /// <summary>
-    ///     构建 <see cref="IConfiguration" />
+    ///     Construct <see cref="IConfiguration" />.
     /// </summary>
-    /// <remarks>不适用于 Azure Functions 等云服务</remarks>
-    /// <returns><see cref="IConfiguration" /> 实例 (<see cref="ConfigurationRoot" /> 对象)</returns>
+    /// <returns><see cref="IConfiguration" /> (<see cref="ConfigurationRoot"/>) instance.</returns>
     public static IConfiguration BuildConfiguration()
     {
         EnsureSettingsFileCreated();

@@ -77,7 +77,7 @@ public static class GlobalConstants
     /// <summary>
     /// The App version.
     /// </summary>
-    public static string AppVersion => Environment.GetEnvironmentVariable("MAACOPILOT_APP_VERSION") ?? "0.0.0";
+    public static string AppVersion => Environment.GetEnvironmentVariable("MAA_COPILOT_APP_VERSION") ?? "0.0.0";
 
     /// <summary>
     /// The original templates directory.
@@ -92,27 +92,27 @@ public static class GlobalConstants
     /// <summary>
     /// The default user email.
     /// </summary>
-    public static string DefaultUserEmail => Environment.GetEnvironmentVariable("DEFAULT_USER_EMAIL") ?? "super@prts.plus";
+    public static string DefaultUserEmail => Environment.GetEnvironmentVariable("MAA_DEFAULT_USER_EMAIL") ?? "super@prts.plus";
 
     /// <summary>
     /// Indicates whether the default user email is empty.
     /// </summary>
     public static bool IsDefaultUserEmailEmpty =>
-        string.IsNullOrEmpty(Environment.GetEnvironmentVariable("DEFAULT_USER_EMAIL"));
+        string.IsNullOrEmpty(Environment.GetEnvironmentVariable("MAA_DEFAULT_USER_EMAIL"));
 
     /// <summary>
     /// The default user password.
     /// </summary>
-    public static string DefaultUserPassword => Environment.GetEnvironmentVariable("DEFAULT_USER_PASSWORD") ?? "";
+    public static string DefaultUserPassword => Environment.GetEnvironmentVariable("MAA_DEFAULT_USER_PASSWORD") ?? "";
 
     /// <summary>
     /// Indicates whether the default user password is empty.
     /// </summary>
     public static bool IsDefaultUserPasswordEmpty =>
-        string.IsNullOrEmpty(Environment.GetEnvironmentVariable("DEFAULT_USER_PASSWORD"));
+        string.IsNullOrEmpty(Environment.GetEnvironmentVariable("MAA_DEFAULT_USER_PASSWORD"));
 
     /// <summary>
     /// The default username.
     /// </summary>
-    public static string DefaultUsername => Environment.GetEnvironmentVariable("DEFAULT_USER_NAME") ?? "Maa";
+    public static string DefaultUsername => Environment.GetEnvironmentVariable("MAA_DEFAULT_USER_NAME") ?? "Maa";
 }
