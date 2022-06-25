@@ -16,15 +16,6 @@ namespace MaaCopilotServer.Api.Test.Helper;
 public class InitializeHelperTest
 {
     /// <summary>
-    /// Tests constructors of <see cref="InitializeHelper"/>.
-    /// </summary>
-    [TestMethod]
-    public void TestConstructor()
-    {
-        new InitializeHelper(Substitute.For<IConfiguration>()).Should().NotBeNull();
-    }
-
-    /// <summary>
     /// Tests <see cref="InitializeHelper.GeneratePassword"/>.
     /// </summary>
     [TestMethod]

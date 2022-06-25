@@ -19,27 +19,13 @@ namespace MaaCopilotServer.Api.Helper;
 /// <summary>
 ///     The helper class of database connection.
 /// </summary>
-public class InitializeHelper
+public static class InitializeHelper
 {
-    /// <summary>
-    /// The configuration.
-    /// </summary>
-    private readonly IConfiguration _configuration;
-
-    /// <summary>
-    /// The constructor.
-    /// </summary>
-    /// <param name="configuration">The configuration.</param>
-    public InitializeHelper(IConfiguration configuration)
-    {
-        _configuration = configuration;
-    }
-
     /// <summary>
     /// Initializes email templates.
     /// </summary>
     [ExcludeFromCodeCoverage]
-    public void InitializeEmailTemplates()
+    public static void InitializeEmailTemplates()
     {
         var originalTemplatesDirectory = new DirectoryInfo(GlobalConstants.OriginalTemplatesDirectory);
         var targetTemplatesDirectory = new DirectoryInfo(GlobalConstants.TargetTemplatesDirectory);
@@ -64,11 +50,12 @@ public class InitializeHelper
     /// <summary>
     /// Initializes the database.
     /// </summary>
+    /// <param name="configuration">The configuration.</param>
     [ExcludeFromCodeCoverage]
-    public void InitializeDatabase()
+    public static void InitializeDatabase(IConfiguration configuration)
     {
         // Establish database connection.
-        var dbOptions = _configuration.GetOption<DatabaseOption>();
+        var dbOptions = configuration.GetOption<DatabaseOption>();
         var db = new MaaCopilotDbContext(new OptionsWrapper<DatabaseOption>(dbOptions));
         var pendingMigrations = db.Database.GetPendingMigrations().Count();
         if (pendingMigrations > 0)

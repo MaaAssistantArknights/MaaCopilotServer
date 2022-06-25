@@ -12,7 +12,7 @@ namespace MaaCopilotServer.Api.Helper;
 ///     The helper class of the configurations of the application.
 /// </summary>
 [ExcludeFromCodeCoverage]
-public class ConfigurationHelper
+public static class ConfigurationHelper
 {
     /// <summary>
     /// Ensures settings files are created correctly.
@@ -59,7 +59,7 @@ public class ConfigurationHelper
     /// </summary>
     /// <remarks>不适用于 Azure Functions 等云服务</remarks>
     /// <returns><see cref="IConfiguration" /> 实例 (<see cref="ConfigurationRoot" /> 对象)</returns>
-    public IConfiguration BuildConfiguration()
+    public static IConfiguration BuildConfiguration()
     {
         EnsureSettingsFileCreated();
 
