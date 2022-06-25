@@ -24,7 +24,6 @@ public static class InitializeHelper
     /// <summary>
     /// Initializes email templates.
     /// </summary>
-    [ExcludeFromCodeCoverage]
     public static void InitializeEmailTemplates()
     {
         var originalTemplatesDirectory = new DirectoryInfo(GlobalConstants.OriginalTemplatesDirectory);
@@ -51,7 +50,6 @@ public static class InitializeHelper
     /// Initializes the database.
     /// </summary>
     /// <param name="configuration">The configuration.</param>
-    [ExcludeFromCodeCoverage]
     public static void InitializeDatabase(IConfiguration configuration)
     {
         // Establish database connection.
