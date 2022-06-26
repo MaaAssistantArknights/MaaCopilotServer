@@ -84,6 +84,69 @@ public class CurrentUserServiceTest
     }
 
     /// <summary>
+    /// Tests <see cref="CurrentUserService.GetUser"/>.
+    /// </summary>
+    [TestMethod]
+    public void TestGetUser()
+    {
+        var entity = new Domain.Entities.CopilotUser(
+            string.Empty, string.Empty, string.Empty, Domain.Enums.UserRole.User, null);
+        _dbContext.CopilotUsers.Add(entity);
+        _dbContext.SaveChangesAsync(new CancellationToken()).Wait();
+        var testId = entity.EntityId;
+        testId.Should().NotBe(Guid.Empty);
+        var httpContextAccessor = new Mock<IHttpContextAccessor>();
+        httpContextAccessor.Setup(x => x.HttpContext).Returns(() =>
+        {
+            var httpContext = new Mock<HttpContext>();
+            httpContext.Setup(x => x.User).Returns(() =>
+            {
+                var claims = new List<Claim>
+                {
+                    new Claim("id", testId.ToString())
+                };
+                var user = new ClaimsPrincipal(new ClaimsIdentity(claims));
+                return user;
+            });
+            return httpContext.Object;
+        });
+
+        var currentUserService = new CurrentUserService(_dbContext, httpContextAccessor.Object, _configuration);
+        var user = currentUserService.GetUser().GetAwaiter().GetResult();
+
+        user.Should().NotBeNull();
+        user!.EntityId.Should().Be(testId);
+    }
+
+    /// <summary>
+    /// Tests <see cref="CurrentUserService.GetUser"/> with invalid identity.
+    /// </summary>
+    [TestMethod]
+    public void TestGetUser_InvalidIdentity()
+    {
+        var httpContextAccessor = new Mock<IHttpContextAccessor>();
+        httpContextAccessor.Setup(x => x.HttpContext).Returns(() =>
+        {
+            var httpContext = new Mock<HttpContext>();
+            httpContext.Setup(x => x.User).Returns(() =>
+            {
+                var claims = new List<Claim>
+                {
+                    new Claim("id", "")
+                };
+                var user = new ClaimsPrincipal(new ClaimsIdentity(claims));
+                return user;
+            });
+            return httpContext.Object;
+        });
+
+        var currentUserService = new CurrentUserService(_dbContext, httpContextAccessor.Object, _configuration);
+        var user = currentUserService.GetUser().GetAwaiter().GetResult();
+
+        user.Should().BeNull();
+    }
+
+    /// <summary>
     ///     Tests <see cref="CurrentUserService.GetTrackingId" />
     /// </summary>
     /// <param name="apmSwitch">Indicates whether the APM feature is on/off.</param>
