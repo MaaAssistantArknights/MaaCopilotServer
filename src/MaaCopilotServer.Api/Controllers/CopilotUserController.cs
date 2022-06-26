@@ -122,35 +122,47 @@ public class CopilotUserController : MaaControllerBase
         return await GetResponse(query);
     }
 
+    /// <summary>
+    ///     The handler of <c>register</c> endpoint to register a new copilot user account.
+    /// </summary>
+    /// <param name="command">The request body.</param>
+    /// <returns>The response.</returns>
     [HttpPost("register")]
     public async Task<ActionResult> RegisterAccount([FromBody] RegisterCopilotAccountCommand command)
     {
         return await GetResponse(command);
     }
 
+    /// <summary>
+    ///     The handler of <c>activate</c> endpoint to activate a copilot user account.
+    /// </summary>
+    /// <param name="command">The request body.</param>
+    /// <returns>The response.</returns>
     [HttpPost("activate")]
     public async Task<ActionResult> ActivateAccount([FromBody] ActivateCopilotAccountCommand command)
     {
         return await GetResponse(command);
     }
 
-
+    /// <summary>
+    ///     The handler of <c>password/reset_request</c> endpoint to request password reset.
+    /// </summary>
+    /// <param name="command">The request body.</param>
+    /// <returns>The response.</returns>
     [HttpPost("password/reset_request")]
     public async Task<ActionResult> RequestPasswordChange([FromBody] RequestPasswordResetCommand command)
     {
         return await GetResponse(command);
     }
 
+    /// <summary>
+    ///     The handler of <c>password/reset</c> endpoint to confirm password reset.
+    /// </summary>
+    /// <param name="command">The request body.</param>
+    /// <returns>The response.</returns>
     [HttpPost("password/reset")]
     public async Task<ActionResult> PasswordChange([FromBody] PasswordResetCommand command)
     {
         return await GetResponse(command);
-    }
-
-    [HttpGet("favorites/{id}")]
-    public async Task<ActionResult> GetFavorites(string? id)
-    {
-        var query = new GetCopilotUserFavoritesQuery { FavoriteListId = id };
-        return await GetResponse(query);
     }
 }

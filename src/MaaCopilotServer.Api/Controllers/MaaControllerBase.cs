@@ -15,7 +15,7 @@ public abstract class MaaControllerBase : ControllerBase
     /// <summary>
     ///     The mediator.
     /// </summary>
-    protected readonly IMediator Mediator;
+    private readonly IMediator _mediator;
 
     /// <summary>
     ///     The constructor of <see cref="MaaControllerBase" />.
@@ -23,7 +23,7 @@ public abstract class MaaControllerBase : ControllerBase
     /// <param name="mediator">The mediator.</param>
     protected MaaControllerBase(IMediator mediator)
     {
-        Mediator = mediator;
+        _mediator = mediator;
     }
 
     /// <summary>
@@ -35,7 +35,7 @@ public abstract class MaaControllerBase : ControllerBase
     protected async Task<ActionResult> GetResponse(object request)
     {
         // response will be of type MaaApiResponse.
-        var response = (await Mediator.Send(request))!;
+        var response = (await _mediator.Send(request))!;
         return new OkObjectResult(response);
     }
 }

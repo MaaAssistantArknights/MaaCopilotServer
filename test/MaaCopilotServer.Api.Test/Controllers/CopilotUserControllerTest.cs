@@ -232,19 +232,4 @@ public class CopilotUserControllerTest
             null,
             controller.PasswordChange);
     }
-
-    /// <summary>
-    ///     Tests <see cref="CopilotUserController.GetFavorites(string?)" />.
-    /// </summary>
-    /// <returns>N/A</returns>
-    [TestMethod]
-    public async Task TestGetFavorites()
-    {
-        var controller = new CopilotUserController(_mediator);
-        await ControllerTestUtils.TestControllerEndpoint(
-            _mediator,
-            string.Empty,
-            new GetCopilotUserFavoritesDto(),
-            controller.GetFavorites);
-    }
 }
