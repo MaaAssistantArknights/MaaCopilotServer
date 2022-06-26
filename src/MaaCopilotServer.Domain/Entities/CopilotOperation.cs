@@ -24,17 +24,9 @@ public sealed class CopilotOperation : EditableEntity
     /// <param name="createBy">The creator of the operation.</param>
     /// <param name="operators">The operators in the operation.</param>
     public CopilotOperation(string content, string stageName, string minimumRequired, string title, string details,
-        CopilotUser author, Guid createBy, List<string> operators)
+        CopilotUser author, Guid createBy, List<string> operators) :
+        this(default, content, stageName, minimumRequired, title, details, author, createBy, operators)
     {
-        Content = content;
-        StageName = stageName;
-        MinimumRequired = minimumRequired;
-        Title = title;
-        Details = details;
-        Author = author;
-        Operators = operators;
-        CreateBy = createBy;
-        UpdateBy = createBy;
     }
 
     /// <summary>
