@@ -3,13 +3,12 @@
 // Licensed under the AGPL-3.0 license.
 
 using MaaCopilotServer.Api.Controllers;
-
+using MaaCopilotServer.Api.Test.TestHelpers;
 using MaaCopilotServer.Application.Common.Models;
 using MaaCopilotServer.Application.CopilotOperation.Commands.CreateCopilotOperation;
 using MaaCopilotServer.Application.CopilotOperation.Commands.DeleteCopilotOperation;
 using MaaCopilotServer.Application.CopilotOperation.Queries.GetCopilotOperation;
 using MaaCopilotServer.Application.CopilotOperation.Queries.QueryCopilotOperations;
-using MediatR;
 
 namespace MaaCopilotServer.Api.Test.Properties;
 
@@ -20,86 +19,54 @@ namespace MaaCopilotServer.Api.Test.Properties;
 public class CopilotOperationControllerTest
 {
     /// <summary>
-    ///     The mock mediator.
-    /// </summary>
-    private IMediator _mediator;
-
-    /// <summary>
-    ///     Initializes tests.
-    /// </summary>
-    [TestInitialize]
-    public void Initialize()
-    {
-        _mediator = Substitute.For<IMediator>();
-    }
-
-    /// <summary>
-    ///     Tests constructor.
-    /// </summary>
-    [TestMethod]
-    public void TestConstructor()
-    {
-        var controller = new CopilotOperationController(_mediator);
-        controller.Should().NotBeNull();
-    }
-
-    /// <summary>
     ///     Tests <see cref="CopilotOperationController.CreateCopilotOperation(CreateCopilotOperationCommand)" />.
     /// </summary>
-    /// <returns>N/A</returns>
     [TestMethod]
-    public async Task TestCreateCopilotOperation()
+    public void TestCreateCopilotOperation()
     {
-        var controller = new CopilotOperationController(_mediator);
-        await ControllerTestUtils.TestControllerEndpoint(
-            _mediator,
+        ControllerTestHelper.TestControllerEndpoint(
             new CreateCopilotOperationCommand(),
             new CreateCopilotOperationDto(),
-            controller.CreateCopilotOperation);
+            mediator => new CopilotOperationController(mediator),
+            (controller, request) => controller.CreateCopilotOperation(request));
     }
 
     /// <summary>
     ///     Tests <see cref="CopilotOperationController.DeleteCopilotOperation(DeleteCopilotOperationCommand)" />.
     /// </summary>
-    /// <returns>N/A</returns>
     [TestMethod]
-    public async Task TestDeleteCopilotOperation()
+    public void TestDeleteCopilotOperation()
     {
-        var controller = new CopilotOperationController(_mediator);
-        await ControllerTestUtils.TestControllerEndpoint<DeleteCopilotOperationCommand, object>(
-            _mediator,
+        ControllerTestHelper.TestControllerEndpoint(
             new DeleteCopilotOperationCommand(),
             null,
-            controller.DeleteCopilotOperation);
+            mediator => new CopilotOperationController(mediator),
+            (controller, request) => controller.DeleteCopilotOperation(request));
     }
 
     /// <summary>
     ///     Tests <see cref="CopilotOperationController.GetCopilotOperation(string)" />.
     /// </summary>
-    /// <returns>N/A</returns>
     [TestMethod]
-    public async Task TestGetCopilotOperation()
+    public void TestGetCopilotOperation()
     {
-        var controller = new CopilotOperationController(_mediator);
-        await ControllerTestUtils.TestControllerEndpoint(
-            _mediator,
+        ControllerTestHelper.TestControllerEndpoint(
             string.Empty,
             new GetCopilotOperationQueryDto(),
-            controller.GetCopilotOperation);
+            mediator => new CopilotOperationController(mediator),
+            (controller, request) => controller.GetCopilotOperation(request));
     }
 
     /// <summary>
     ///     Tests <see cref="CopilotOperationController.QueryCopilotOperation(QueryCopilotOperationsQuery)" />.
     /// </summary>
-    /// <returns>N/A</returns>
     [TestMethod]
-    public async Task TestQueryCopilotOperation()
+    public void TestQueryCopilotOperation()
     {
-        var controller = new CopilotOperationController(_mediator);
-        await ControllerTestUtils.TestControllerEndpoint(
-            _mediator,
+        ControllerTestHelper.TestControllerEndpoint(
             new QueryCopilotOperationsQuery(),
             new PaginationResult<QueryCopilotOperationsQueryDto>(),
-            controller.QueryCopilotOperation);
+            mediator => new CopilotOperationController(mediator),
+            (controller, request) => controller.QueryCopilotOperation(request));
     }
 }

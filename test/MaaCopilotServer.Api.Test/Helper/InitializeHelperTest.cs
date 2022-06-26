@@ -3,9 +3,7 @@
 // Licensed under the AGPL-3.0 license.
 
 using System.Text.RegularExpressions;
-using MaaCopilotServer.Api.Constants;
 using MaaCopilotServer.Api.Helper;
-using Microsoft.Extensions.Configuration;
 
 namespace MaaCopilotServer.Api.Test.Helper;
 

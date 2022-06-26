@@ -38,7 +38,7 @@ public class ValidationBehaviourTest
         var validators = new List<IValidator<IRequest<MaaApiResponse>>>();
         var behaviour =
             new ValidationBehaviour<IRequest<MaaApiResponse>, MaaApiResponse>(validators, _currentUserService);
-        var action = async () => await behaviour.Handle(Substitute.For<IRequest<MaaApiResponse>>(),
+        var action = async () => await behaviour.Handle(Mock.Of<IRequest<MaaApiResponse>>(),
             new CancellationToken(),
             () => Task.FromResult(MaaApiResponseHelper.Ok()));
         await action.Should().NotThrowAsync();
@@ -66,7 +66,7 @@ public class ValidationBehaviourTest
         var validators = new List<IValidator<IRequest<MaaApiResponse>>> { validator1, validator2 };
         var behaviour =
             new ValidationBehaviour<IRequest<MaaApiResponse>, MaaApiResponse>(validators, _currentUserService);
-        var action = async () => await behaviour.Handle(Substitute.For<IRequest<MaaApiResponse>>(),
+        var action = async () => await behaviour.Handle(Mock.Of<IRequest<MaaApiResponse>>(),
             new CancellationToken(),
             () => Task.FromResult(MaaApiResponseHelper.Ok()));
         if (expectException)

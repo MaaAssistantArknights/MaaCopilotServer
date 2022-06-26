@@ -4,11 +4,9 @@
 
 using System.Globalization;
 using System.Security.Claims;
-using Elastic.Apm.Api;
 using MaaCopilotServer.Api.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
-using NSubstitute.ReturnsExtensions;
 
 namespace MaaCopilotServer.Api.Test.Services;
 
@@ -21,31 +19,7 @@ public class CurrentUserServiceTest
     /// <summary>
     ///     The mock configuration.
     /// </summary>
-    private IConfiguration _configuration;
-
-    /// <summary>
-    ///     The mock HTTP context accessor.
-    /// </summary>
-    private IHttpContextAccessor _httpContextAccessor;
-
-    /// <summary>
-    ///     Initializes tests.
-    /// </summary>
-    [TestInitialize]
-    public void Initialize()
-    {
-        _httpContextAccessor = Substitute.For<IHttpContextAccessor>();
-        _configuration = Substitute.For<IConfiguration>();
-    }
-
-    /// <summary>
-    ///     Tests constructor.
-    /// </summary>
-    [TestMethod]
-    public void TestConstructor()
-    {
-        new CurrentUserService(_httpContextAccessor, _configuration).Should().NotBeNull();
-    }
+    private readonly IConfiguration _configuration = Mock.Of<IConfiguration>();
 
     /// <summary>
     ///     Tests <see cref="CurrentUserService.GetUserIdentity" />.
@@ -59,10 +33,11 @@ public class CurrentUserServiceTest
     [DataRow(null, null)]
     public void TestGetUserIdentity(string? id, string? expected)
     {
-        _httpContextAccessor.HttpContext.Returns(_ =>
+        var httpContextAccessor = new Mock<IHttpContextAccessor>();
+        httpContextAccessor.Setup(x => x.HttpContext).Returns(() =>
         {
-            var httpContext = Substitute.For<HttpContext>();
-            httpContext.User.Returns(_ =>
+            var httpContext = new Mock<HttpContext>();
+            httpContext.Setup(x => x.User).Returns(() =>
             {
                 var claims = new List<Claim>();
                 if (id != null)
@@ -73,14 +48,14 @@ public class CurrentUserServiceTest
                 var user = new ClaimsPrincipal(new ClaimsIdentity(claims));
                 return user;
             });
-            return httpContext;
+            return httpContext.Object;
         });
-        var currentUserService = new CurrentUserService(_httpContextAccessor, _configuration);
+        var currentUserService = new CurrentUserService(httpContextAccessor.Object, _configuration);
         var userIdentity = currentUserService.GetUserIdentity();
         if (expected != null)
         {
             userIdentity.Should().NotBeNull();
-            userIdentity.Value.ToString().Should().Be(expected);
+            userIdentity!.Value.ToString().Should().Be(expected);
         }
         else
         {
@@ -94,8 +69,9 @@ public class CurrentUserServiceTest
     [TestMethod]
     public void TestGetUserIdentity_NullHttpContext()
     {
-        _httpContextAccessor.HttpContext.ReturnsNull();
-        var currentUserService = new CurrentUserService(_httpContextAccessor, _configuration);
+        var httpContextAccessor = new Mock<IHttpContextAccessor>();
+        httpContextAccessor.Setup(x => x.HttpContext).Returns((HttpContext?)null);
+        var currentUserService = new CurrentUserService(httpContextAccessor.Object, _configuration);
         var userIdentity = currentUserService.GetUserIdentity();
         userIdentity.Should().BeNull();
     }
@@ -115,39 +91,27 @@ public class CurrentUserServiceTest
     [DataRow(true, null, null, "")]
     public void TestGetTrackingId(bool apmSwitch, string? contextIdentifier, string? apmIdentifier, string? expected)
     {
-        _httpContextAccessor.HttpContext.Returns(_ =>
+        var httpContextAccessor = new Mock<IHttpContextAccessor>();
+        httpContextAccessor.Setup(x => x.HttpContext).Returns(() =>
         {
-            var httpContext = Substitute.For<HttpContext>();
-            if (contextIdentifier != null)
-            {
-                httpContext.TraceIdentifier.Returns(contextIdentifier);
-            }
-            else
-            {
-                httpContext.TraceIdentifier.ReturnsNull();
-            }
+            var httpContext = new Mock<HttpContext>();
+            httpContext.Setup(x => x.TraceIdentifier).Returns(contextIdentifier!);
 
+            var items = new Dictionary<object, object?>();
             if (apmIdentifier != null)
             {
-                httpContext.Items.Returns(new Dictionary<object, object>()
-                {
-                    {"ApmTraceId", apmIdentifier }
-                });
+                items.Add("ApmTraceId", apmIdentifier);
             }
-            else
-            {
-                httpContext.Items.Returns(new Dictionary<object, object>());
-            }
+            httpContext.Setup(x => x.Items).Returns(items);
 
-            return httpContext;
+            return httpContext.Object;
         });
         var testConfiguration = new Dictionary<string, string> { { "Switches:Apm", apmSwitch.ToString().ToLower() } };
-        _configuration = new ConfigurationBuilder()
+        var configuration = new ConfigurationBuilder()
             .AddInMemoryCollection(testConfiguration)
             .Build();
 
-        var currentUserService = new CurrentUserService(_httpContextAccessor,
-            _configuration);
+        var currentUserService = new CurrentUserService(httpContextAccessor.Object, configuration);
         var trackingId = currentUserService.GetTrackingId();
         trackingId.Should().BeEquivalentTo(expected);
     }
@@ -161,25 +125,27 @@ public class CurrentUserServiceTest
     [DataRow(true)]
     public void TestGetTrackingId_WithNullApmTraceId(bool apmSwitch)
     {
-        _httpContextAccessor.HttpContext.Returns(_ =>
+        var httpContextAccessor = new Mock<IHttpContextAccessor>();
+        httpContextAccessor.Setup(x => x.HttpContext).Returns(() =>
         {
-            var httpContext = Substitute.For<HttpContext>();
-            httpContext.TraceIdentifier.Returns("test_contextIdentifier");
-
-            httpContext.Items.Returns(new Dictionary<object, object>()
+            var httpContext = new Mock<HttpContext>();
+            httpContext.Setup(x => x.TraceIdentifier).Returns("test_contextIdentifier");
+            httpContext.Setup(x => x.Items).Returns(
+                new Dictionary<object, object?>()
                 {
                     {"ApmTraceId", null }
                 });
-
-            return httpContext;
+            return httpContext.Object;
         });
-        var testConfiguration = new Dictionary<string, string> { { "Switches:Apm", apmSwitch.ToString().ToLower() } };
-        _configuration = new ConfigurationBuilder()
+        var testConfiguration = new Dictionary<string, string>
+        {
+            { "Switches:Apm", apmSwitch.ToString().ToLower() }
+        };
+        var configuration = new ConfigurationBuilder()
             .AddInMemoryCollection(testConfiguration)
             .Build();
 
-        var currentUserService = new CurrentUserService(_httpContextAccessor,
-            _configuration);
+        var currentUserService = new CurrentUserService(httpContextAccessor.Object, configuration);
         var trackingId = currentUserService.GetTrackingId();
         trackingId.Should().BeEquivalentTo("test_contextIdentifier");
     }
@@ -193,14 +159,16 @@ public class CurrentUserServiceTest
     [DataRow(true)]
     public void TestGetTrackingId_NullHttpContext(bool apmSwitch)
     {
-        _httpContextAccessor.HttpContext.ReturnsNull();
-        var testConfiguration = new Dictionary<string, string> { { "Switches:Apm", apmSwitch.ToString().ToLower() } };
-        _configuration = new ConfigurationBuilder()
+        var httpContextAccessor = new Mock<IHttpContextAccessor>();
+        var testConfiguration = new Dictionary<string, string>
+        {
+            { "Switches:Apm", apmSwitch.ToString().ToLower() }
+        };
+        var configuration = new ConfigurationBuilder()
             .AddInMemoryCollection(testConfiguration)
             .Build();
 
-        var currentUserService = new CurrentUserService(_httpContextAccessor,
-            _configuration);
+        var currentUserService = new CurrentUserService(httpContextAccessor.Object, configuration);
         var trackingId = currentUserService.GetTrackingId();
         trackingId.Should().BeEquivalentTo(string.Empty);
     }
@@ -231,46 +199,41 @@ public class CurrentUserServiceTest
         string givenCulture,
         string expected)
     {
+        var httpContextAccessor = new Mock<IHttpContextAccessor>();
         if (isNullContext)
         {
-            _httpContextAccessor.HttpContext.ReturnsNull();
+            httpContextAccessor.Setup(x => x.HttpContext).Returns((HttpContext?)null);
         }
         else
         {
-            _httpContextAccessor.HttpContext.Returns(_ =>
+            httpContextAccessor.Setup(x => x.HttpContext).Returns(() =>
             {
-                var context = Substitute.For<HttpContext>();
-                if (noValue)
+                var context = new Mock<HttpContext>();
+                var items = new Dictionary<object, object?>();
+                if (!noValue)
                 {
-                    context.Items.Returns(new Dictionary<object, object?>());
-                }
-                else
-                {
-                    var returnedDict = new Dictionary<object, object?>();
                     if (isNullCultureInfo)
                     {
-                        returnedDict.Add("culture", null);
+                        items.Add("culture", null);
                     }
                     else
                     {
                         if (isOtherType)
                         {
-                            returnedDict.Add("culture", new object());
+                            items.Add("culture", new object());
                         }
                         else
                         {
-                            returnedDict.Add("culture", new CultureInfo(givenCulture));
+                            items.Add("culture", new CultureInfo(givenCulture));
                         }
                     }
-
-                    context.Items.Returns(returnedDict);
                 }
-
-                return context;
+                context.Setup(x => x.Items).Returns(items);
+                return context.Object;
             });
         }
 
-        var currentUserService = new CurrentUserService(_httpContextAccessor, _configuration);
+        var currentUserService = new CurrentUserService(httpContextAccessor.Object, _configuration);
         currentUserService.GetCulture().Should().BeEquivalentTo(new CultureInfo(expected));
     }
 }

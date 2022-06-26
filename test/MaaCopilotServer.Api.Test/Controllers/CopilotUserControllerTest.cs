@@ -3,9 +3,8 @@
 // Licensed under the AGPL-3.0 license.
 
 using MaaCopilotServer.Api.Controllers;
-
+using MaaCopilotServer.Api.Test.TestHelpers;
 using MaaCopilotServer.Application.Common.Models;
-using MaaCopilotServer.Application.CopilotOperation.Commands.DeleteCopilotOperation;
 using MaaCopilotServer.Application.CopilotUser.Commands.ActivateCopilotAccount;
 using MaaCopilotServer.Application.CopilotUser.Commands.ChangeCopilotUserInfo;
 using MaaCopilotServer.Application.CopilotUser.Commands.CreateCopilotUser;
@@ -19,7 +18,6 @@ using MaaCopilotServer.Application.CopilotUser.Commands.UpdateCopilotUserPasswor
 using MaaCopilotServer.Application.CopilotUser.Queries.GetCopilotUser;
 using MaaCopilotServer.Application.CopilotUser.Queries.GetCopilotUserFavorites;
 using MaaCopilotServer.Application.CopilotUser.Queries.QueryCopilotUser;
-using MediatR;
 
 namespace MaaCopilotServer.Api.Test.Properties;
 
@@ -30,221 +28,171 @@ namespace MaaCopilotServer.Api.Test.Properties;
 public class CopilotUserControllerTest
 {
     /// <summary>
-    ///     The mock mediator.
-    /// </summary>
-    private IMediator _mediator;
-
-    /// <summary>
-    ///     Initializes tests.
-    /// </summary>
-    [TestInitialize]
-    public void Initialize()
-    {
-        _mediator = Substitute.For<IMediator>();
-    }
-
-    /// <summary>
-    ///     Tests constructor.
-    /// </summary>
-    [TestMethod]
-    public void TestConstructor()
-    {
-        var controller = new CopilotUserController(_mediator);
-        controller.Should().NotBeNull();
-    }
-
-    /// <summary>
     ///     Tests <see cref="CopilotUserController.ChangeCopilotUserInfo(ChangeCopilotUserInfoCommand)" />.
     /// </summary>
-    /// <returns>N/A</returns>
     [TestMethod]
-    public async Task TestChangeCopilotUserInfo()
+    public void TestChangeCopilotUserInfo()
     {
-        var controller = new CopilotUserController(_mediator);
-        await ControllerTestUtils.TestControllerEndpoint<ChangeCopilotUserInfoCommand, object?>(
-            _mediator,
+        ControllerTestHelper.TestControllerEndpoint(
             new ChangeCopilotUserInfoCommand(),
             null,
-            controller.ChangeCopilotUserInfo);
+            mediator => new CopilotUserController(mediator),
+            (controller, request) => controller.ChangeCopilotUserInfo(request));
     }
 
     /// <summary>
     ///     Tests <see cref="CopilotUserController.CreateCopilotUser(CreateCopilotUserCommand)" />.
     /// </summary>
-    /// <returns>N/A</returns>
     [TestMethod]
-    public async Task TestCreateCopilotUser()
+    public void TestCreateCopilotUser()
     {
-        var controller = new CopilotUserController(_mediator);
-        await ControllerTestUtils.TestControllerEndpoint<CreateCopilotUserCommand, object?>(
-            _mediator,
+        ControllerTestHelper.TestControllerEndpoint(
             new CreateCopilotUserCommand(),
             null,
-            controller.CreateCopilotUser);
+            mediator => new CopilotUserController(mediator),
+            (controller, request) => controller.CreateCopilotUser(request));
     }
 
     /// <summary>
     ///     Tests <see cref="CopilotUserController.DeleteCopilotUser(DeleteCopilotUserCommand)" />.
     /// </summary>
-    /// <returns>N/A</returns>
     [TestMethod]
-    public async Task TestDeleteCopilotUser()
+    public void TestDeleteCopilotUser()
     {
-        var controller = new CopilotUserController(_mediator);
-        await ControllerTestUtils.TestControllerEndpoint<DeleteCopilotUserCommand, object?>(
-            _mediator,
+        ControllerTestHelper.TestControllerEndpoint(
             new DeleteCopilotUserCommand(),
             null,
-            controller.DeleteCopilotUser);
+            mediator => new CopilotUserController(mediator),
+            (controller, request) => controller.DeleteCopilotUser(request));
     }
 
     /// <summary>
     ///     Tests <see cref="CopilotUserController.LoginCopilotUser(LoginCopilotUserCommand)" />.
     /// </summary>
-    /// <returns>N/A</returns>
     [TestMethod]
-    public async Task TestLoginCopilotUser()
+    public void TestLoginCopilotUser()
     {
-        var controller = new CopilotUserController(_mediator);
-        await ControllerTestUtils.TestControllerEndpoint(
-            _mediator,
+        ControllerTestHelper.TestControllerEndpoint(
             new LoginCopilotUserCommand(),
             new LoginCopilotUserDto(),
-            controller.LoginCopilotUser);
+            mediator => new CopilotUserController(mediator),
+            (controller, request) => controller.LoginCopilotUser(request));
     }
 
     /// <summary>
     ///     Tests <see cref="CopilotUserController.UpdateCopilotUserInfo(UpdateCopilotUserInfoCommand)" />.
     /// </summary>
-    /// <returns>N/A</returns>
     [TestMethod]
-    public async Task TestUpdateCopilotUserInfo()
+    public void TestUpdateCopilotUserInfo()
     {
-        var controller = new CopilotUserController(_mediator);
-        await ControllerTestUtils.TestControllerEndpoint<UpdateCopilotUserInfoCommand, object?>(
-            _mediator,
+        ControllerTestHelper.TestControllerEndpoint(
             new UpdateCopilotUserInfoCommand(),
             null,
-            controller.UpdateCopilotUserInfo);
+            mediator => new CopilotUserController(mediator),
+            (controller, request) => controller.UpdateCopilotUserInfo(request));
     }
 
     /// <summary>
     ///     Tests <see cref="CopilotUserController.UpdateCopilotUserPassword(UpdateCopilotUserPasswordCommand)" />.
     /// </summary>
-    /// <returns>N/A</returns>
     [TestMethod]
-    public async Task TestUpdateCopilotUserPassword()
+    public void TestUpdateCopilotUserPassword()
     {
-        var controller = new CopilotUserController(_mediator);
-        await ControllerTestUtils.TestControllerEndpoint<UpdateCopilotUserPasswordCommand, object?>(
-            _mediator,
+        ControllerTestHelper.TestControllerEndpoint(
             new UpdateCopilotUserPasswordCommand(),
             null,
-            controller.UpdateCopilotUserPassword);
+            mediator => new CopilotUserController(mediator),
+            (controller, request) => controller.UpdateCopilotUserPassword(request));
     }
 
     /// <summary>
     ///     Tests <see cref="CopilotUserController.GetCopilotUser(string?)" />.
     /// </summary>
-    /// <returns>N/A</returns>
     [TestMethod]
-    public async Task TestGetCopilotUser()
+    public void TestGetCopilotUser()
     {
-        var controller = new CopilotUserController(_mediator);
-        await ControllerTestUtils.TestControllerEndpoint(
-            _mediator,
+        ControllerTestHelper.TestControllerEndpoint(
             string.Empty,
             new GetCopilotUserDto(),
-            controller.GetCopilotUser);
+            mediator => new CopilotUserController(mediator),
+            (controller, request) => controller.GetCopilotUser(request));
     }
 
     /// <summary>
     ///     Tests <see cref="CopilotUserController.QueryCopilotUser(QueryCopilotUserQuery)" />.
     /// </summary>
-    /// <returns>N/A</returns>
     [TestMethod]
-    public async Task TestQueryCopilotUser()
+    public void TestQueryCopilotUser()
     {
-        var controller = new CopilotUserController(_mediator);
-        await ControllerTestUtils.TestControllerEndpoint(
-            _mediator,
+        ControllerTestHelper.TestControllerEndpoint(
             new QueryCopilotUserQuery(),
             new PaginationResult<QueryCopilotUserDto>(),
-            controller.QueryCopilotUser);
+            mediator => new CopilotUserController(mediator),
+            (controller, request) => controller.QueryCopilotUser(request));
     }
 
     /// <summary>
     ///     Tests <see cref="CopilotUserController.RegisterAccount(RegisterCopilotAccountCommand)" />.
     /// </summary>
-    /// <returns>N/A</returns>
     [TestMethod]
-    public async Task TestRegisterAccount()
+    public void TestRegisterAccount()
     {
-        var controller = new CopilotUserController(_mediator);
-        await ControllerTestUtils.TestControllerEndpoint<RegisterCopilotAccountCommand, object?>(
-            _mediator,
+        ControllerTestHelper.TestControllerEndpoint(
             new RegisterCopilotAccountCommand(),
             null,
-            controller.RegisterAccount);
+            mediator => new CopilotUserController(mediator),
+            (controller, request) => controller.RegisterAccount(request));
     }
 
     /// <summary>
     ///     Tests <see cref="CopilotUserController.ActivateAccount(ActivateCopilotAccountCommand)" />.
     /// </summary>
-    /// <returns>N/A</returns>
     [TestMethod]
-    public async Task TestActivateAccount()
+    public void TestActivateAccount()
     {
-        var controller = new CopilotUserController(_mediator);
-        await ControllerTestUtils.TestControllerEndpoint<ActivateCopilotAccountCommand, object?>(
-            _mediator,
+        ControllerTestHelper.TestControllerEndpoint(
             new ActivateCopilotAccountCommand(),
             null,
-            controller.ActivateAccount);
+            mediator => new CopilotUserController(mediator),
+            (controller, request) => controller.ActivateAccount(request));
     }
 
     /// <summary>
     ///     Tests <see cref="CopilotUserController.RequestPasswordChange(RequestPasswordResetCommand)" />.
     /// </summary>
-    /// <returns>N/A</returns>
     [TestMethod]
-    public async Task TestRequestPasswordChange()
+    public void TestRequestPasswordChange()
     {
-        var controller = new CopilotUserController(_mediator);
-        await ControllerTestUtils.TestControllerEndpoint<RequestPasswordResetCommand, object?>(
-            _mediator,
+        ControllerTestHelper.TestControllerEndpoint(
             new RequestPasswordResetCommand(),
             null,
-            controller.RequestPasswordChange);
+            mediator => new CopilotUserController(mediator),
+            (controller, request) => controller.RequestPasswordChange(request));
     }
 
     /// <summary>
     ///     Tests <see cref="CopilotUserController.PasswordChange(PasswordResetCommand)" />.
     /// </summary>
-    /// <returns>N/A</returns>
     [TestMethod]
-    public async Task TestPasswordChange()
+    public void TestPasswordChange()
     {
-        var controller = new CopilotUserController(_mediator);
-        await ControllerTestUtils.TestControllerEndpoint<PasswordResetCommand, object?>(
-            _mediator,
+        ControllerTestHelper.TestControllerEndpoint(
             new PasswordResetCommand(),
             null,
-            controller.PasswordChange);
+            mediator => new CopilotUserController(mediator),
+            (controller, request) => controller.PasswordChange(request));
     }
 
     /// <summary>
     ///     Tests <see cref="CopilotUserController.GetFavorites(string?)" />.
     /// </summary>
-    /// <returns>N/A</returns>
     [TestMethod]
-    public async Task TestGetFavorites()
+    public void TestGetFavorites()
     {
-        var controller = new CopilotUserController(_mediator);
-        await ControllerTestUtils.TestControllerEndpoint(
-            _mediator,
+        ControllerTestHelper.TestControllerEndpoint(
             string.Empty,
             new GetCopilotUserFavoritesDto(),
-            controller.GetFavorites);
+            mediator => new CopilotUserController(mediator),
+            (controller, request) => controller.GetFavorites(request));
     }
 }
