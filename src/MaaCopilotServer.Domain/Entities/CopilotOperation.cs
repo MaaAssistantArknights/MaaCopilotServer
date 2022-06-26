@@ -96,7 +96,7 @@ public sealed class CopilotOperation : EditableEntity
     /// <summary>
     ///     Favorite counts.
     /// </summary>
-    public int Favorites { get; private set; }
+    public int FavoriteCount { get; private set; }
 
     // Extract from Content
 
@@ -133,7 +133,7 @@ public sealed class CopilotOperation : EditableEntity
     /// <summary>
     ///     M2M relation. DO NOT INCLUDE QUERY THIS.
     /// </summary>
-    public List<CopilotUserFavorite> FavoriteBy { get; private set; } = new();
+    public List<CopilotUserFavorite> Favorites { get; private set; } = new();
 
     /// <summary>
     ///     Increases download count by 1, and updates last updated time.
@@ -150,7 +150,7 @@ public sealed class CopilotOperation : EditableEntity
     /// </summary>
     public void AddFavorites(Guid @operator)
     {
-        Favorites++;
+        FavoriteCount++;
         UpdateAt = DateTimeOffset.UtcNow;
         UpdateBy = @operator;
     }
@@ -160,7 +160,7 @@ public sealed class CopilotOperation : EditableEntity
     /// </summary>
     public void RemoveFavorites(Guid @operator)
     {
-        Favorites--;
+        FavoriteCount--;
         UpdateAt = DateTimeOffset.UtcNow;
         UpdateBy = @operator;
     }
