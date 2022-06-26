@@ -4,6 +4,7 @@
 
 using MaaCopilotServer.Application.CopilotOperation.Commands.CreateCopilotOperation;
 using MaaCopilotServer.Application.CopilotOperation.Commands.DeleteCopilotOperation;
+using MaaCopilotServer.Application.CopilotOperation.Commands.UpdateCopilotOperation;
 using MaaCopilotServer.Application.CopilotOperation.Queries.GetCopilotOperation;
 using MaaCopilotServer.Application.CopilotOperation.Queries.QueryCopilotOperations;
 using MediatR;
@@ -67,5 +68,16 @@ public class CopilotOperationController : MaaControllerBase
     public async Task<ActionResult> QueryCopilotOperation([FromQuery] QueryCopilotOperationsQuery query)
     {
         return await GetResponse(query);
+    }
+
+    /// <summary>
+    ///     The handler of <c>update</c> endpoint to update a copilot operation.
+    /// </summary>
+    /// <param name="command">The update command.</param>
+    /// <returns>The response.</returns>
+    [HttpPost("update")]
+    public async Task<ActionResult> UpdateCopilotOperation([FromBody] UpdateCopilotOperationCommand command)
+    {
+        return await GetResponse(command);
     }
 }
