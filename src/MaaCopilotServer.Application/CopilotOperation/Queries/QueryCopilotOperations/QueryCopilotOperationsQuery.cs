@@ -185,7 +185,8 @@ public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOp
                 new QueryCopilotOperationsQueryDto(
                 _copilotIdService.EncodeId(x.Id), x.StageName, x.MinimumRequired,
                 x.CreateAt.ToString("o", _apiErrorMessage.CultureInfo),
-                x.Author.UserName, x.Title, x.Details, x.ViewCounts, x.Operators))
+                x.Author.UserName, x.Title, x.Details, x.ViewCounts, x.Operators,
+                x.Groups.ToArray().DeserializeGroup()))
             .ToList();
         var paginationResult = new PaginationResult<QueryCopilotOperationsQueryDto>
         {

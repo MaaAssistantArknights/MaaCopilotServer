@@ -55,6 +55,7 @@ public class GetCopilotUserFavoritesQueryHandler : IRequestHandler<GetCopilotUse
                 Uploader = x.Author.UserName,
                 UploadTime = x.CreateAt.ToIsoString(),
                 ViewCounts = x.ViewCounts,
+                Groups = x.Groups.ToArray().DeserializeGroup()
             }).ToList();
         var operationsDtoDeleted = list.Operations
             .Where(x => x.IsDeleted)

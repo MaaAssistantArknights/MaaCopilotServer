@@ -93,7 +93,8 @@ public class
             Title = entity.Title,
             Uploader = entity.Author.UserName,
             UploadTime = entity.CreateAt.ToIsoString(),
-            ViewCounts = entity.ViewCounts
+            ViewCounts = entity.ViewCounts,
+            Groups = entity.Groups.ToArray().DeserializeGroup()
         };
 
         entity.AddViewCount();

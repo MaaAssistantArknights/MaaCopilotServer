@@ -47,6 +47,7 @@ public class FavoriteCopilotOperationsDto : QueryCopilotOperationsQueryDto
     /// <param name="detail">The detail of the operation.</param>
     /// <param name="viewCounts">The view counts of the operation.</param>
     /// <param name="operators">The operators in the operation.</param>
+    /// <param name="groups">The groups in the operation.</param>
     /// <param name="deleted">Whether this operation has been deleted or not.</param>
     public FavoriteCopilotOperationsDto(
         string id,
@@ -57,9 +58,10 @@ public class FavoriteCopilotOperationsDto : QueryCopilotOperationsQueryDto
         string title,
         string detail,
         int viewCounts,
-        List<string> operators,
+        IEnumerable<string> operators,
+        IEnumerable<MaaCopilotOperationGroupStore> groups,
         bool deleted = false)
-        : base(id, stageName,  minimumRequired,  uploadTime, uploader,  title,  detail, viewCounts, operators)
+        : base(id, stageName,  minimumRequired,  uploadTime, uploader,  title,  detail, viewCounts, operators, groups)
     {
         Deleted = deleted;
     }

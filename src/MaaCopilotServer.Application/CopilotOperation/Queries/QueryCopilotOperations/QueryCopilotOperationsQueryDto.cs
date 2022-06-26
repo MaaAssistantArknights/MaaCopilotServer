@@ -23,8 +23,10 @@ public class QueryCopilotOperationsQueryDto
     /// <param name="detail">The detail of the operation.</param>
     /// <param name="viewCounts">The view counts of the operation.</param>
     /// <param name="operators">The operators in the operation.</param>
+    /// <param name="groups">The groups in the operation.</param>
     public QueryCopilotOperationsQueryDto(string id, string stageName, string minimumRequired, string uploadTime,
-        string uploader, string title, string detail, int viewCounts, List<string> operators)
+        string uploader, string title, string detail, int viewCounts, IEnumerable<string> operators,
+        IEnumerable<MaaCopilotOperationGroupStore> groups)
     {
         Id = id;
         StageName = stageName;
@@ -35,6 +37,7 @@ public class QueryCopilotOperationsQueryDto
         Detail = detail;
         ViewCounts = viewCounts;
         Operators = operators;
+        Groups = groups;
     }
 
 #pragma warning disable CS8618
@@ -87,7 +90,13 @@ public class QueryCopilotOperationsQueryDto
     ///     Operators used.
     /// </summary>
     [JsonPropertyName("operators")]
-    public List<string> Operators { get; set; }
+    public IEnumerable<string> Operators { get; set; }
+
+    /// <summary>
+    ///     Groups used.
+    /// </summary>
+    [JsonPropertyName("groups")]
+    public IEnumerable<MaaCopilotOperationGroupStore> Groups { get; set; }
 
     /// <summary>
     ///     The number of times of views.

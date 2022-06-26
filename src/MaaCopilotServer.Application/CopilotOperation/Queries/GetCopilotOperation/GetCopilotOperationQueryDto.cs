@@ -24,6 +24,7 @@ public class GetCopilotOperationQueryDto : QueryCopilotOperationsQueryDto
     /// <param name="detail">The detail of the operation.</param>
     /// <param name="viewCounts">The view counts of the operation.</param>
     /// <param name="operators">The operators in the operation.</param>
+    /// <param name="groups">The groups in the operation.</param>
     /// <param name="content">The JSON content of the operation.</param>
     public GetCopilotOperationQueryDto(
         string id,
@@ -34,9 +35,10 @@ public class GetCopilotOperationQueryDto : QueryCopilotOperationsQueryDto
         string title,
         string detail,
         int viewCounts,
-        List<string> operators,
+        IEnumerable<string> operators,
+        IEnumerable<MaaCopilotOperationGroupStore> groups,
         string content)
-        : base(id, stageName, minimumRequired, uploadTime, uploader, title, detail, viewCounts, operators)
+        : base(id, stageName, minimumRequired, uploadTime, uploader, title, detail, viewCounts, operators, groups)
     {
         Content = content;
     }

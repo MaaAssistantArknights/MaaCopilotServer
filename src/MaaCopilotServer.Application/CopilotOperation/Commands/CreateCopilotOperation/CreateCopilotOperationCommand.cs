@@ -71,30 +71,28 @@ public class CreateCopilotOperationCommandHandler : IRequestHandler<CreateCopilo
     /// <returns>A task with the response.</returns>
     public async Task<MaaApiResponse> Handle(CreateCopilotOperationCommand request, CancellationToken cancellationToken)
     {
-        var content = JsonSerializer.Deserialize<CreateCopilotOperationContent>(request.Content!).IsNotNull();
+        var content = MaaCopilotOperationHelper.DeserializeMaaCopilotOperation(request.Content!).IsNotNull();
 
         // Parse stage_name and version.
-        var stageName = content.StageName;
-        var minimumRequired = content.MinimumRequired;
+        var stageName = content.GetStageName();
+        var minimumRequired = content.GetMinimumRequired();
 
         // Parse doc.
-        var docTitle = content.Doc?.Title ?? string.Empty;
-        var docDetails = content.Doc?.Details ?? string.Empty;
+        var docTitle = content.GetDocTitle();
+        var docDetails = content.GetDocDetails();
 
-        var operatorArray = content.Operators ?? Array.Empty<Operator>();
-        if (operatorArray.Any(item => item.Name == null))
+        var operatorArray = content.Operators ?? Array.Empty<MaaCopilotOperationOperator>();
+        if (operatorArray.Any(item => item.Name is null))
         {
             return MaaApiResponseHelper.BadRequest(_validationErrorMessage.CopilotOperationJsonIsInvalid);
         }
 
-        var operators = (content.Operators ?? Array.Empty<Operator>())
-            .Select(item => $"{item.Name}::{item.Skill ?? 1}")
-            .Distinct() // Remove duplicate operators.
-            .ToList();
+        var groups = content.SerializeGroup();
+        var operators = content.SerializeOperator();
 
         var user = await _currentUserService.GetUser();
         var entity = new Domain.Entities.CopilotOperation(
-            request.Content!, stageName!, minimumRequired!, docTitle, docDetails, user!, user!.EntityId, operators);
+            request.Content!, stageName!, minimumRequired!, docTitle, docDetails, user!, user!.EntityId, operators, groups);
 
         _dbContext.CopilotOperations.Add(entity);
         await _dbContext.SaveChangesAsync(cancellationToken);
