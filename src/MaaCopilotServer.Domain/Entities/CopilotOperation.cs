@@ -37,6 +37,33 @@ public sealed class CopilotOperation : EditableEntity
         UpdateBy = createBy;
     }
 
+    /// <summary>
+    ///     The constructor with all properties.
+    /// </summary>
+    /// <param name="id">The ID.</param>
+    /// <param name="content">The content.</param>
+    /// <param name="stageName">The stage name.</param>
+    /// <param name="minimumRequired">The minimum required version of MAA.</param>
+    /// <param name="title">The title of the operation.</param>
+    /// <param name="details">The detail of the operation.</param>
+    /// <param name="author">The author of the operation.</param>
+    /// <param name="createBy">The creator of the operation.</param>
+    /// <param name="operators">The operators in the operation.</param>
+    public CopilotOperation(long id, string content, string stageName, string minimumRequired, string title, string details,
+        CopilotUser author, Guid createBy, List<string> operators)
+    {
+        Id = id;
+        Content = content;
+        StageName = stageName;
+        MinimumRequired = minimumRequired;
+        Title = title;
+        Details = details;
+        Author = author;
+        Operators = operators;
+        CreateBy = createBy;
+        UpdateBy = createBy;
+    }
+
 #pragma warning disable CS8618
     // ReSharper disable once UnusedMember.Local
     private CopilotOperation() { }

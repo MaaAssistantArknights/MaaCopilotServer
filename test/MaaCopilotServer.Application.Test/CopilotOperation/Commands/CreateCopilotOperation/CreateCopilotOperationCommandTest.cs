@@ -57,11 +57,16 @@ public class CreateCopilotOperationCommandTest
         _currentUserService = Substitute.For<ICurrentUserService>();
         _currentUserService.GetUserIdentity().Returns(Guid.Empty);
 
-        _dbContext = TestDatabaseHelper.GetTestDbContext();
+        _dbContext = new TestDbContext();
 
         _identityService = Substitute.For<IIdentityService>();
         _identityService.GetUserAsync(Arg.Any<Guid>())
-            .Returns(Task.FromResult(Substitute.For<Domain.Entities.CopilotUser>()));
+            .Returns(Task.FromResult(new Domain.Entities.CopilotUser(
+                string.Empty,
+                string.Empty,
+                string.Empty,
+                Domain.Enums.UserRole.User,
+                Guid.Empty)));
 
         _validationErrorMessage = new ValidationErrorMessage();
     }
