@@ -58,7 +58,8 @@ public class CopilotUserFavorite : EditableEntity
     ///     Add an operation to this favorite list.
     /// </summary>
     /// <param name="operation"></param>
-    public void AddFavoriteOperation(CopilotOperation operation)
+    /// <param name="operator"></param>
+    public void AddFavoriteOperation(CopilotOperation operation, Guid @operator)
     {
         if (OperationIds.Contains(operation.EntityId))
         {
@@ -67,6 +68,7 @@ public class CopilotUserFavorite : EditableEntity
 
         OperationIds.Add(operation.EntityId);
         Operations.Add(operation);
+        UpdateBy = @operator;
         UpdateAt = DateTimeOffset.UtcNow;
     }
 
@@ -74,7 +76,8 @@ public class CopilotUserFavorite : EditableEntity
     ///     Remove an operation from this favorite list.
     /// </summary>
     /// <param name="operation"></param>
-    public void RemoveFavoriteOperation(CopilotOperation operation)
+    /// <param name="operator"></param>
+    public void RemoveFavoriteOperation(CopilotOperation operation, Guid @operator)
     {
         if (OperationIds.Contains(operation.EntityId) is false)
         {
@@ -83,6 +86,7 @@ public class CopilotUserFavorite : EditableEntity
 
         OperationIds.Remove(operation.EntityId);
         Operations.Remove(operation);
+        UpdateBy = @operator;
         UpdateAt = DateTimeOffset.UtcNow;
     }
 }

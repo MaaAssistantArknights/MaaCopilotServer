@@ -5,6 +5,8 @@
 using System.Globalization;
 using System.Security.Claims;
 using MaaCopilotServer.Api.Services;
+using MaaCopilotServer.Application.Common.Interfaces;
+using MaaCopilotServer.Test.TestHelpers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 
@@ -20,6 +22,11 @@ public class CurrentUserServiceTest
     ///     The mock configuration.
     /// </summary>
     private readonly IConfiguration _configuration = Mock.Of<IConfiguration>();
+
+    /// <summary>
+    /// The DB Context.
+    /// </summary>
+    private readonly IMaaCopilotDbContext _dbContext = new TestDbContext();
 
     /// <summary>
     ///     Tests <see cref="CurrentUserService.GetUserIdentity" />.
@@ -50,7 +57,7 @@ public class CurrentUserServiceTest
             });
             return httpContext.Object;
         });
-        var currentUserService = new CurrentUserService(httpContextAccessor.Object, _configuration);
+        var currentUserService = new CurrentUserService(_dbContext, httpContextAccessor.Object, _configuration);
         var userIdentity = currentUserService.GetUserIdentity();
         if (expected != null)
         {
@@ -71,7 +78,7 @@ public class CurrentUserServiceTest
     {
         var httpContextAccessor = new Mock<IHttpContextAccessor>();
         httpContextAccessor.Setup(x => x.HttpContext).Returns((HttpContext?)null);
-        var currentUserService = new CurrentUserService(httpContextAccessor.Object, _configuration);
+        var currentUserService = new CurrentUserService(_dbContext, httpContextAccessor.Object, _configuration);
         var userIdentity = currentUserService.GetUserIdentity();
         userIdentity.Should().BeNull();
     }
@@ -111,7 +118,7 @@ public class CurrentUserServiceTest
             .AddInMemoryCollection(testConfiguration)
             .Build();
 
-        var currentUserService = new CurrentUserService(httpContextAccessor.Object, configuration);
+        var currentUserService = new CurrentUserService(_dbContext, httpContextAccessor.Object, configuration);
         var trackingId = currentUserService.GetTrackingId();
         trackingId.Should().BeEquivalentTo(expected);
     }
@@ -145,7 +152,7 @@ public class CurrentUserServiceTest
             .AddInMemoryCollection(testConfiguration)
             .Build();
 
-        var currentUserService = new CurrentUserService(httpContextAccessor.Object, configuration);
+        var currentUserService = new CurrentUserService(_dbContext, httpContextAccessor.Object, configuration);
         var trackingId = currentUserService.GetTrackingId();
         trackingId.Should().BeEquivalentTo("test_contextIdentifier");
     }
@@ -168,7 +175,7 @@ public class CurrentUserServiceTest
             .AddInMemoryCollection(testConfiguration)
             .Build();
 
-        var currentUserService = new CurrentUserService(httpContextAccessor.Object, configuration);
+        var currentUserService = new CurrentUserService(_dbContext, httpContextAccessor.Object, configuration);
         var trackingId = currentUserService.GetTrackingId();
         trackingId.Should().BeEquivalentTo(string.Empty);
     }
@@ -233,7 +240,7 @@ public class CurrentUserServiceTest
             });
         }
 
-        var currentUserService = new CurrentUserService(httpContextAccessor.Object, _configuration);
+        var currentUserService = new CurrentUserService(_dbContext, httpContextAccessor.Object, _configuration);
         currentUserService.GetCulture().Should().BeEquivalentTo(new CultureInfo(expected));
     }
 }

@@ -2,8 +2,6 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
-using System.Diagnostics.CodeAnalysis;
-using System.Net;
 using System.Text;
 using MaaCopilotServer.Api.Services;
 using MaaCopilotServer.Application.Common.Extensions;

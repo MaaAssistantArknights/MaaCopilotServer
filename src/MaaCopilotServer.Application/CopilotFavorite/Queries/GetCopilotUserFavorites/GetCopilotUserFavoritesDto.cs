@@ -5,7 +5,7 @@
 using System.Text.Json.Serialization;
 using MaaCopilotServer.Application.CopilotOperation.Queries.QueryCopilotOperations;
 
-namespace MaaCopilotServer.Application.CopilotUser.Queries.GetCopilotUserFavorites;
+namespace MaaCopilotServer.Application.CopilotFavorite.Queries.GetCopilotUserFavorites;
 
 public class GetCopilotUserFavoritesDto
 {
@@ -59,17 +59,8 @@ public class FavoriteCopilotOperationsDto : QueryCopilotOperationsQueryDto
         int viewCounts,
         List<string> operators,
         bool deleted = false)
-        : base(id, stageName,  minimumRequired,  uploadTime, uploader,  title,  detail, viewCounts,operators)
+        : base(id, stageName,  minimumRequired,  uploadTime, uploader,  title,  detail, viewCounts, operators)
     {
-        Id = id;
-        StageName = stageName;
-        MinimumRequired = minimumRequired;
-        UploadTime = uploadTime;
-        Uploader = uploader;
-        Title = title;
-        Detail = detail;
-        ViewCounts = viewCounts;
-        Operators = operators;
         Deleted = deleted;
     }
 

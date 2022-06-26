@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace MaaCopilotServer.Infrastructure.Migrations
 {
-    public partial class ImproveM2MRelations : Migration
+    public partial class FixM2MRelationMapping : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -21,26 +21,34 @@ namespace MaaCopilotServer.Infrastructure.Migrations
                 name: "CopilotUserFavoriteEntityId",
                 table: "CopilotOperations");
 
+            migrationBuilder.RenameColumn(
+                name: "Favorites",
+                table: "CopilotOperations",
+                newName: "FavoriteCount");
+
             migrationBuilder.CreateTable(
                 name: "Map_Favorite_Operation",
                 columns: table => new
                 {
-                    FavoriteByEntityId = table.Column<Guid>(type: "uuid", nullable: false),
-                    OperationsEntityId = table.Column<Guid>(type: "uuid", nullable: false)
+                    FavoritesEntityId = table.Column<Guid>(type: "uuid", nullable: false),
+                    OperationsEntityId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreateBy = table.Column<Guid>(type: "uuid", nullable: false, defaultValue: new Guid("00000000-0000-0000-0000-000000000000")),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    DeleteBy = table.Column<Guid>(type: "uuid", nullable: true, defaultValue: new Guid("00000000-0000-0000-0000-000000000000"))
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Map_Favorite_Operation", x => new { x.FavoriteByEntityId, x.OperationsEntityId });
+                    table.PrimaryKey("PK_Map_Favorite_Operation", x => new { x.FavoritesEntityId, x.OperationsEntityId });
                     table.ForeignKey(
-                        name: "FK_Map_Favorite_Operation_CopilotOperations_OperationsEntityId",
-                        column: x => x.OperationsEntityId,
-                        principalTable: "CopilotOperations",
+                        name: "FK_FavOper_Fav_FavEntityId",
+                        column: x => x.FavoritesEntityId,
+                        principalTable: "CopilotUserFavorites",
                         principalColumn: "EntityId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Map_Favorite_Operation_CopilotUserFavorites_FavoriteByEntit~",
-                        column: x => x.FavoriteByEntityId,
-                        principalTable: "CopilotUserFavorites",
+                        name: "FK_FavOper_Oper_OperEntityId",
+                        column: x => x.OperationsEntityId,
+                        principalTable: "CopilotOperations",
                         principalColumn: "EntityId",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -55,6 +63,11 @@ namespace MaaCopilotServer.Infrastructure.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Map_Favorite_Operation");
+
+            migrationBuilder.RenameColumn(
+                name: "FavoriteCount",
+                table: "CopilotOperations",
+                newName: "Favorites");
 
             migrationBuilder.AddColumn<Guid>(
                 name: "CopilotUserFavoriteEntityId",

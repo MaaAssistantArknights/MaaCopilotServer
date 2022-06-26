@@ -28,22 +28,15 @@ public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRe
     private readonly ICurrentUserService _currentUserService;
 
     /// <summary>
-    ///     The service of identity.
-    /// </summary>
-    private readonly IIdentityService _identityService;
-
-    /// <summary>
     ///     The constructor.
     /// </summary>
     /// <param name="identityService">The service of identity.</param>
     /// <param name="currentUserService">The service of current user.</param>
     /// <param name="apiErrorMessage">The API error message.</param>
     public AuthorizationBehaviour(
-        IIdentityService identityService,
         ICurrentUserService currentUserService,
         ApiErrorMessage apiErrorMessage)
     {
-        _identityService = identityService;
         _currentUserService = currentUserService;
         _apiErrorMessage = apiErrorMessage;
     }
@@ -70,7 +63,7 @@ public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRe
             return MaaApiResponseHelper.Unauthorized(_apiErrorMessage.Unauthorized);
         }
 
-        var user = await _identityService.GetUserAsync(userId.Value);
+        var user = await _currentUserService.GetUser();
         if (user is null)
         {
             return MaaApiResponseHelper.NotFound(string.Format(_apiErrorMessage.UserWithIdNotFound!, userId));

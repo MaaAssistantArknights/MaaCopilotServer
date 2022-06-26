@@ -2,7 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
-namespace MaaCopilotServer.Application.CopilotUser.Queries.GetCopilotUserFavorites;
+namespace MaaCopilotServer.Application.CopilotFavorite.Queries.GetCopilotUserFavorites;
 
 public class GetCopilotUserFavoritesQueryValidator : AbstractValidator<GetCopilotUserFavoritesQuery>
 {
@@ -10,6 +10,6 @@ public class GetCopilotUserFavoritesQueryValidator : AbstractValidator<GetCopilo
     {
         RuleFor(x => x.FavoriteListId)
             .NotEmpty().Must(FluentValidationExtension.BeValidGuid)
-            .WithMessage(errorMessage.FavoriteIdIsInvalid);
+            .WithMessage(errorMessage.FavoriteListIdIsInvalid);
     }
 }

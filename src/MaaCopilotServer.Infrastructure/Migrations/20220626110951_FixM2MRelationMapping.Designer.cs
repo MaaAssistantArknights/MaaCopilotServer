@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MaaCopilotServer.Infrastructure.Migrations
 {
     [DbContext(typeof(MaaCopilotDbContext))]
-    [Migration("20220625175622_ImproveM2MRelations")]
-    partial class ImproveM2MRelations
+    [Migration("20220626110951_FixM2MRelationMapping")]
+    partial class FixM2MRelationMapping
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,21 +23,6 @@ namespace MaaCopilotServer.Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("CopilotOperationCopilotUserFavorite", b =>
-                {
-                    b.Property<Guid>("FavoriteByEntityId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("OperationsEntityId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("FavoriteByEntityId", "OperationsEntityId");
-
-                    b.HasIndex("OperationsEntityId");
-
-                    b.ToTable("Map_Favorite_Operation", (string)null);
-                });
 
             modelBuilder.Entity("MaaCopilotServer.Domain.Entities.CopilotOperation", b =>
                 {
@@ -64,7 +49,7 @@ namespace MaaCopilotServer.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("Favorites")
+                    b.Property<int>("FavoriteCount")
                         .HasColumnType("integer");
 
                     b.Property<long>("Id")
@@ -273,19 +258,32 @@ namespace MaaCopilotServer.Infrastructure.Migrations
                     b.ToTable("CopilotUserFavorites");
                 });
 
-            modelBuilder.Entity("CopilotOperationCopilotUserFavorite", b =>
+            modelBuilder.Entity("MaaCopilotServer.Domain.Entities.MapFavoriteOperation", b =>
                 {
-                    b.HasOne("MaaCopilotServer.Domain.Entities.CopilotUserFavorite", null)
-                        .WithMany()
-                        .HasForeignKey("FavoriteByEntityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<Guid>("FavoritesEntityId")
+                        .HasColumnType("uuid");
 
-                    b.HasOne("MaaCopilotServer.Domain.Entities.CopilotOperation", null)
-                        .WithMany()
-                        .HasForeignKey("OperationsEntityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<Guid>("OperationsEntityId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CreateBy")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasDefaultValue(new Guid("00000000-0000-0000-0000-000000000000"));
+
+                    b.Property<Guid?>("DeleteBy")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasDefaultValue(new Guid("00000000-0000-0000-0000-000000000000"));
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.HasKey("FavoritesEntityId", "OperationsEntityId");
+
+                    b.HasIndex("OperationsEntityId");
+
+                    b.ToTable("Map_Favorite_Operation", (string)null);
                 });
 
             modelBuilder.Entity("MaaCopilotServer.Domain.Entities.CopilotOperation", b =>
@@ -327,6 +325,27 @@ namespace MaaCopilotServer.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("MaaCopilotServer.Domain.Entities.MapFavoriteOperation", b =>
+                {
+                    b.HasOne("MaaCopilotServer.Domain.Entities.CopilotUserFavorite", "Favorites")
+                        .WithMany()
+                        .HasForeignKey("FavoritesEntityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_FavOper_Fav_FavEntityId");
+
+                    b.HasOne("MaaCopilotServer.Domain.Entities.CopilotOperation", "Operations")
+                        .WithMany()
+                        .HasForeignKey("OperationsEntityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_FavOper_Oper_OperEntityId");
+
+                    b.Navigation("Favorites");
+
+                    b.Navigation("Operations");
                 });
 
             modelBuilder.Entity("MaaCopilotServer.Domain.Entities.CopilotUser", b =>

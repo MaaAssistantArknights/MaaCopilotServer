@@ -5,6 +5,7 @@
 using MaaCopilotServer.Api.Controllers;
 using MaaCopilotServer.Api.Test.TestHelpers;
 using MaaCopilotServer.Application.Common.Models;
+using MaaCopilotServer.Application.CopilotFavorite.Queries.GetCopilotUserFavorites;
 using MaaCopilotServer.Application.CopilotUser.Commands.ActivateCopilotAccount;
 using MaaCopilotServer.Application.CopilotUser.Commands.ChangeCopilotUserInfo;
 using MaaCopilotServer.Application.CopilotUser.Commands.CreateCopilotUser;
@@ -16,7 +17,6 @@ using MaaCopilotServer.Application.CopilotUser.Commands.RequestPasswordReset;
 using MaaCopilotServer.Application.CopilotUser.Commands.UpdateCopilotUserInfo;
 using MaaCopilotServer.Application.CopilotUser.Commands.UpdateCopilotUserPassword;
 using MaaCopilotServer.Application.CopilotUser.Queries.GetCopilotUser;
-using MaaCopilotServer.Application.CopilotUser.Queries.GetCopilotUserFavorites;
 using MaaCopilotServer.Application.CopilotUser.Queries.QueryCopilotUser;
 
 namespace MaaCopilotServer.Api.Test.Properties;
@@ -181,18 +181,5 @@ public class CopilotUserControllerTest
             null,
             mediator => new CopilotUserController(mediator),
             (controller, request) => controller.PasswordChange(request));
-    }
-
-    /// <summary>
-    ///     Tests <see cref="CopilotUserController.GetFavorites(string?)" />.
-    /// </summary>
-    [TestMethod]
-    public void TestGetFavorites()
-    {
-        ControllerTestHelper.TestControllerEndpoint(
-            string.Empty,
-            new GetCopilotUserFavoritesDto(),
-            mediator => new CopilotUserController(mediator),
-            (controller, request) => controller.GetFavorites(request));
     }
 }

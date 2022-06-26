@@ -62,4 +62,7 @@
   <data name="EmailNotRegister" xml:space="preserve">
     <value>邮箱未注册</value>
   </data>
+  <data name="FavListWithIdNotFound" xml:space="preserve">
+    <value>找不到 ID 为 {0} 的收藏列表</value>
+  </data>
 </root>

@@ -7,9 +7,9 @@ using System.Text.Json.Serialization;
 
 using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Application.CopilotOperation.Commands.CreateCopilotOperation;
-using MaaCopilotServer.Application.Test.TestHelpers;
 using MaaCopilotServer.Infrastructure.Services;
 using MaaCopilotServer.Resources;
+using MaaCopilotServer.Test.TestHelpers;
 using Microsoft.AspNetCore.Http;
 
 namespace MaaCopilotServer.Application.Test.CopilotOperation.Commands.CreateCopilotOperation;
@@ -29,20 +29,15 @@ public class CreateCopilotOperationCommandTest
     ///     The service for current user.
     /// </summary>
     private readonly ICurrentUserService _currentUserService = Mock.Of<ICurrentUserService>(
-        x => x.GetUserIdentity() == Guid.Empty);
+        x =>
+            x.GetUserIdentity() == Guid.Empty &&
+            x.GetUser().Result ==
+                new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, Domain.Enums.UserRole.User, Guid.Empty));
 
     /// <summary>
     ///     The DB context.
     /// </summary>
     private readonly IMaaCopilotDbContext _dbContext = new TestDbContext();
-
-    /// <summary>
-    ///     The service for user Identity.
-    /// </summary>
-    private readonly IIdentityService _identityService = Mock.Of<IIdentityService>(
-        x => x.GetUserAsync(It.IsAny<Guid>()).Result ==
-            new Domain.Entities.CopilotUser(
-                string.Empty, string.Empty, string.Empty, Domain.Enums.UserRole.User, Guid.Empty));
 
     /// <summary>
     /// The validation error message.
@@ -161,7 +156,7 @@ public class CreateCopilotOperationCommandTest
                     removeNullFields ? JsonIgnoreCondition.Never : JsonIgnoreCondition.WhenWritingNull
             });
 
-        var handler = new CreateCopilotOperationCommandHandler(_dbContext, _identityService, _currentUserService,
+        var handler = new CreateCopilotOperationCommandHandler(_dbContext, _currentUserService,
             _copilotIdService, _validationErrorMessage);
         var action = async () =>
             await handler.Handle(new CreateCopilotOperationCommand { Content = testContent }, new CancellationToken());

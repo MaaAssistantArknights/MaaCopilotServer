@@ -62,7 +62,10 @@
   <data name="TokenIsInvalid" xml:space="preserve">
     <value>Token 非法</value>
   </data>
-  <data name="FavoriteIdIsInvalid" xml:space="preserve">
+  <data name="FavoriteListIdIsInvalid" xml:space="preserve">
     <value>收藏列表 ID 非法</value>
+  </data>
+  <data name="FavoriteListNameIsInvalid" xml:space="preserve">
+    <value>收藏列表名称不合法，至少需要 1 位，最多 24 位</value>
   </data>
 </root>

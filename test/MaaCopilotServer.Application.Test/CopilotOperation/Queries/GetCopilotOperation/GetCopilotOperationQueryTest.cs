@@ -4,8 +4,8 @@
 
 using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Application.CopilotOperation.Queries.GetCopilotOperation;
-using MaaCopilotServer.Application.Test.TestHelpers;
 using MaaCopilotServer.Infrastructure.Services;
+using MaaCopilotServer.Test.TestHelpers;
 using Microsoft.AspNetCore.Http;
 
 namespace MaaCopilotServer.Application.Test.CopilotOperation.Queries.GetCopilotOperation;

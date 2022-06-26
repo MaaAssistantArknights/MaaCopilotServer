@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\MaaCopilotServer.Api\MaaCopilotServer.Api.csproj" />
+    <ProjectReference Include="..\..\test\MaaCopilotServer.Test\MaaCopilotServer.Test.csproj" />
   </ItemGroup>
 
 </Project>

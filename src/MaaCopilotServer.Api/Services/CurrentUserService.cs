@@ -2,10 +2,11 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Security.Claims;
 using MaaCopilotServer.Application.Common.Interfaces;
+using MaaCopilotServer.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace MaaCopilotServer.Api.Services;
 
@@ -19,6 +20,8 @@ public class CurrentUserService : ICurrentUserService
     /// </summary>
     private readonly IConfiguration _configuration;
 
+    private readonly IMaaCopilotDbContext _dbContext;
+
     /// <summary>
     ///     The HTTP context accessor.
     /// </summary>
@@ -27,20 +30,20 @@ public class CurrentUserService : ICurrentUserService
     /// <summary>
     ///     The constructor of <see cref="CurrentUserService" />.
     /// </summary>
+    /// <param name="dbContext">The db context.</param>
     /// <param name="httpContextAccessor">The HTTP context accessor.</param>
     /// <param name="configuration">The configuration.</param>
     public CurrentUserService(
+        IMaaCopilotDbContext dbContext,
         IHttpContextAccessor httpContextAccessor,
         IConfiguration configuration)
     {
+        _dbContext = dbContext;
         _httpContextAccessor = httpContextAccessor;
         _configuration = configuration;
     }
 
-    /// <summary>
-    ///     Gets user identity (GUID) of the current user.
-    /// </summary>
-    /// <returns>User GUID if it exists, otherwise <c>null</c>.</returns>
+    /// <inheritdoc />
     public Guid? GetUserIdentity()
     {
         var id = _httpContextAccessor.HttpContext?.User.FindFirstValue("id");
@@ -53,12 +56,20 @@ public class CurrentUserService : ICurrentUserService
         return null;
     }
 
-    /// <summary>
-    ///     Gets tracking ID of the current user. The tracking ID follows the rules below:
-    ///     <para>When APM is enabled, the ID will be APM Tracking ID.</para>
-    ///     <para>When APM is disabled, the ID will be <see cref="HttpContext.TraceIdentifier" /> provided by ASP.NET Core.</para>
-    /// </summary>
-    /// <returns>The tracking ID if it exists, otherwise empty string.</returns>
+    /// <inheritdoc />
+    public async Task<CopilotUser?> GetUser()
+    {
+        var identity = this.GetUserIdentity();
+        if (identity is null)
+        {
+            return null;
+        }
+
+        var user = await _dbContext.CopilotUsers.FirstOrDefaultAsync(x => x.EntityId == identity.Value);
+        return user;
+    }
+
+    /// <inheritdoc />
     public string GetTrackingId()
     {
         if (_configuration.GetValue<bool>("Switches:Apm") is false)
@@ -81,6 +92,7 @@ public class CurrentUserService : ICurrentUserService
         return _httpContextAccessor.HttpContext?.TraceIdentifier ?? string.Empty;
     }
 
+    /// <inheritdoc />
     public CultureInfo GetCulture()
     {
         var context = _httpContextAccessor.HttpContext;

@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="6.0.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\MaaCopilotServer.Api\MaaCopilotServer.Api.csproj" />
+    <ProjectReference Include="..\..\src\MaaCopilotServer.Application\MaaCopilotServer.Application.csproj" />
+    <ProjectReference Include="..\..\src\MaaCopilotServer.Domain\MaaCopilotServer.Domain.csproj" />
+    <ProjectReference Include="..\..\src\MaaCopilotServer.Infrastructure\MaaCopilotServer.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\MaaCopilotServer.Resources\MaaCopilotServer.Resources.csproj" />
+  </ItemGroup>
+
+</Project>

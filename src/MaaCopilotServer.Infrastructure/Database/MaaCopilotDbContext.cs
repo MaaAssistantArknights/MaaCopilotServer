@@ -81,6 +81,7 @@ public class MaaCopilotDbContext : DbContext, IMaaCopilotDbContext
     private void OnBeforeSaving()
     {
         var entities = ChangeTracker.Entries()
+            .Where(x => x.Entity is not RelationEntity)
             .Where(x => x.State is EntityState.Added or EntityState.Deleted)
             .ToList();
         foreach (var entry in entities)

@@ -10,7 +10,6 @@
 
   <ItemGroup>
     <PackageReference Include="FluentAssertions" Version="6.7.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="6.0.6" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.2.0" />
     <PackageReference Include="Moq" Version="4.18.1" />
     <PackageReference Include="MSTest.TestAdapter" Version="2.2.10" />
@@ -19,8 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\MaaCopilotServer.Application\MaaCopilotServer.Application.csproj" />
-    <ProjectReference Include="..\..\src\MaaCopilotServer.Infrastructure\MaaCopilotServer.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\test\MaaCopilotServer.Test\MaaCopilotServer.Test.csproj" />
   </ItemGroup>
 
 </Project>
