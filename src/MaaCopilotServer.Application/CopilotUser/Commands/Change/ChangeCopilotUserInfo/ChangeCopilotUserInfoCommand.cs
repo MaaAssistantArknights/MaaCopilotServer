@@ -45,7 +45,6 @@ public record ChangeCopilotUserInfoCommand : IRequest<MaaApiResponse>
     ///     The role of the user.
     /// </summary>
     [JsonPropertyName("role")]
-    [JsonConverter(typeof(JsonStringEnumConverter))]
     public string? Role { get; set; }
 }
 

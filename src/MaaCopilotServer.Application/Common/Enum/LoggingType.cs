@@ -41,6 +41,11 @@ public readonly struct LoggingType
     /// </summary>
     public static LoggingType Exception => new("Exception");
 
+    /// <summary>
+    ///     Exceptions thrown before reaching the mediator
+    /// </summary>
+    public static LoggingType MiddlewareException => new("Middleware Exception");
+
     /// <inheritdoc/>
     public override string ToString()
     {

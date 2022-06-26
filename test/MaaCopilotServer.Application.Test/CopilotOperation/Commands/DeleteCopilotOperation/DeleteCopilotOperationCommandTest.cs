@@ -19,7 +19,7 @@ public class DeleteCopilotOperationCommandTest
     /// <summary>
     ///     The API error message.
     /// </summary>
-    private readonly Resources.ApiErrorMessage _apiErrorMessage = new Resources.ApiErrorMessage();
+    private readonly Resources.ApiErrorMessage _apiErrorMessage = new();
 
     /// <summary>
     ///     The service for processing copilot ID.
@@ -43,6 +43,14 @@ public class DeleteCopilotOperationCommandTest
     [TestMethod]
     public void TestHandle()
     {
+        var user = new Domain.Entities.CopilotUser(
+            string.Empty,
+            string.Empty,
+            string.Empty,
+            Domain.Enums.UserRole.User,
+            Guid.Empty);
+        _dbContext.CopilotUsers.Add(user);
+        _dbContext.SaveChangesAsync(new CancellationToken()).Wait();
         var entity = new Domain.Entities.CopilotOperation(
             1,
             string.Empty,
@@ -50,19 +58,16 @@ public class DeleteCopilotOperationCommandTest
             string.Empty,
             string.Empty,
             string.Empty,
-            new Domain.Entities.CopilotUser(
-                string.Empty,
-                string.Empty,
-                string.Empty,
-                Domain.Enums.UserRole.User,
-                Guid.Empty),
+            user,
             Guid.Empty,
             new List<string>());
         _dbContext.CopilotOperations.Add(entity);
         _dbContext.SaveChangesAsync(new CancellationToken()).Wait();
+        var currentUserService = new Mock<ICurrentUserService>();
+        currentUserService.Setup(x => x.GetUser().Result).Returns(user);
 
         var handler = new DeleteCopilotOperationCommandHandler(
-            _dbContext, _copilotIdService, _currentUserService, _apiErrorMessage);
+            _dbContext, _copilotIdService, currentUserService.Object, _apiErrorMessage);
         var result = handler.Handle(new DeleteCopilotOperationCommand()
         {
             Id = _copilotIdService.EncodeId(entity.Id)

@@ -47,7 +47,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{E3AD
 		push-docker.sh = push-docker.sh
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaaCopilotServer.Test", "test\MaaCopilotServer.Test\MaaCopilotServer.Test.csproj", "{D0C5216C-73C9-4B1C-A338-EECC82DB83D7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MaaCopilotServer.Test", "test\MaaCopilotServer.Test\MaaCopilotServer.Test.csproj", "{D0C5216C-73C9-4B1C-A338-EECC82DB83D7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

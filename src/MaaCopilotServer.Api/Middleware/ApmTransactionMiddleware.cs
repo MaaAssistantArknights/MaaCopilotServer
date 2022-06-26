@@ -2,8 +2,9 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
-using System.Diagnostics;
 using Elastic.Apm.Api;
+using MaaCopilotServer.Application.Common.Enum;
+using MaaCopilotServer.Application.Common.Helpers;
 using Microsoft.AspNetCore.Http.Extensions;
 
 namespace MaaCopilotServer.Api.Middleware;
@@ -57,9 +58,7 @@ public class ApmTransactionMiddleware
 
         try
         {
-            var sw = Stopwatch.StartNew();
             await _next(context);
-            sw.Stop();
 
             var realStatusCode = 0;
             var isRealStatusCodeExist = context.Items.TryGetValue("StatusCode", out var statusCodeObj);
@@ -86,6 +85,13 @@ public class ApmTransactionMiddleware
                 StatusCode = StatusCodes.Status500InternalServerError
             };
             transaction.Result = ex.Message;
+
+            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+            await context.Response.WriteAsJsonAsync(MaaApiResponseHelper.InternalError());
+
+            logger.LogCritical(ex,
+                "MaaCopilotServer: Type -> {LoggingType}, ExceptionName -> {ExceptionName}",
+                LoggingType.MiddlewareException, ex.GetType().Name);
         }
         finally
         {
