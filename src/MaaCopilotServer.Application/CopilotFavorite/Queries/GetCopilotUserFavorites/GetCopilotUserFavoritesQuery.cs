@@ -6,7 +6,7 @@ using MaaCopilotServer.Application.Common.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace MaaCopilotServer.Application.CopilotUser.Queries.GetCopilotUserFavorites;
+namespace MaaCopilotServer.Application.CopilotFavorite.Queries.GetCopilotUserFavorites;
 
 public record GetCopilotUserFavoritesQuery : IRequest<MaaApiResponse>
 {

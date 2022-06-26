@@ -54,4 +54,7 @@
   <data name="EmailNotRegister" xml:space="preserve">
     <value>Email has not been used</value>
   </data>
+  <data name="FavListWithIdNotFound" xml:space="preserve">
+    <value>Can not find favorite list with id {0}</value>
+  </data>
 </root>

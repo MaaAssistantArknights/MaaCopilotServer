@@ -13,7 +13,6 @@ using MaaCopilotServer.Application.CopilotUser.Commands.RequestPasswordReset;
 using MaaCopilotServer.Application.CopilotUser.Commands.UpdateCopilotUserInfo;
 using MaaCopilotServer.Application.CopilotUser.Commands.UpdateCopilotUserPassword;
 using MaaCopilotServer.Application.CopilotUser.Queries.GetCopilotUser;
-using MaaCopilotServer.Application.CopilotUser.Queries.GetCopilotUserFavorites;
 using MaaCopilotServer.Application.CopilotUser.Queries.QueryCopilotUser;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
