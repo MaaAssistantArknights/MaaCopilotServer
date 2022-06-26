@@ -19,28 +19,17 @@ public class GetCopilotOperationQueryTest
     /// <summary>
     ///     The API error message.
     /// </summary>
-    private Resources.ApiErrorMessage _apiErrorMessage = default!;
+    private readonly Resources.ApiErrorMessage _apiErrorMessage = new();
 
     /// <summary>
     ///     The service for processing copilot ID.
     /// </summary>
-    private ICopilotIdService _copilotIdService = default!;
+    private readonly ICopilotIdService _copilotIdService = new CopilotIdService();
 
     /// <summary>
     ///     The DB context.
     /// </summary>
-    private IMaaCopilotDbContext _dbContext = default!;
-
-    /// <summary>
-    /// Initializes tests.
-    /// </summary>
-    [TestInitialize]
-    public void Initialize()
-    {
-        _dbContext = new TestDbContext();
-        _copilotIdService = new CopilotIdService();
-        _apiErrorMessage = new Resources.ApiErrorMessage();
-    }
+    private readonly IMaaCopilotDbContext _dbContext = new TestDbContext();
 
     /// <summary>
     /// Tests <see cref="GetCopilotOperationQueryHandler.Handle(GetCopilotOperationQuery, CancellationToken)"/>.

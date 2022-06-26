@@ -11,7 +11,6 @@ using MaaCopilotServer.Application.Test.TestHelpers;
 using MaaCopilotServer.Infrastructure.Services;
 using MaaCopilotServer.Resources;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 
 namespace MaaCopilotServer.Application.Test.CopilotOperation.Commands.CreateCopilotOperation;
 
@@ -24,52 +23,31 @@ public class CreateCopilotOperationCommandTest
     /// <summary>
     ///     The service for processing copilot ID.
     /// </summary>
-    private ICopilotIdService _copilotIdService;
+    private readonly ICopilotIdService _copilotIdService = new CopilotIdService();
 
     /// <summary>
     ///     The service for current user.
     /// </summary>
-    private ICurrentUserService _currentUserService;
+    private readonly ICurrentUserService _currentUserService = Mock.Of<ICurrentUserService>(
+        x => x.GetUserIdentity() == Guid.Empty);
 
     /// <summary>
     ///     The DB context.
     /// </summary>
-    private IMaaCopilotDbContext _dbContext;
+    private readonly IMaaCopilotDbContext _dbContext = new TestDbContext();
 
     /// <summary>
     ///     The service for user Identity.
     /// </summary>
-    private IIdentityService _identityService;
+    private readonly IIdentityService _identityService = Mock.Of<IIdentityService>(
+        x => x.GetUserAsync(It.IsAny<Guid>()).Result ==
+            new Domain.Entities.CopilotUser(
+                string.Empty, string.Empty, string.Empty, Domain.Enums.UserRole.User, Guid.Empty));
 
     /// <summary>
     /// The validation error message.
     /// </summary>
-    private ValidationErrorMessage _validationErrorMessage;
-
-    /// <summary>
-    /// Initializes tests.
-    /// </summary>
-    [TestInitialize]
-    public void Initialize()
-    {
-        _copilotIdService = new CopilotIdService();
-
-        _currentUserService = Substitute.For<ICurrentUserService>();
-        _currentUserService.GetUserIdentity().Returns(Guid.Empty);
-
-        _dbContext = new TestDbContext();
-
-        _identityService = Substitute.For<IIdentityService>();
-        _identityService.GetUserAsync(Arg.Any<Guid>())
-            .Returns(Task.FromResult(new Domain.Entities.CopilotUser(
-                string.Empty,
-                string.Empty,
-                string.Empty,
-                Domain.Enums.UserRole.User,
-                Guid.Empty)));
-
-        _validationErrorMessage = new ValidationErrorMessage();
-    }
+    private readonly ValidationErrorMessage _validationErrorMessage = new();
 
     /// <summary>
     /// Tests <see cref="CreateCopilotOperationCommandHandler.Handle(CreateCopilotOperationCommand, CancellationToken)"/>.
@@ -191,11 +169,11 @@ public class CreateCopilotOperationCommandTest
         else
         {
             var response = await action();
-            var id = ((CreateCopilotOperationDto)response.Data).Id;
+            var id = ((CreateCopilotOperationDto)response.Data!).Id;
             _dbContext.CopilotOperations.Any().Should().BeTrue();
             var entity = _dbContext.CopilotOperations.FirstOrDefault();
             entity.Should().NotBeNull();
-            entity.Id.Should().Be(_copilotIdService.DecodeId(id));
+            entity!.Id.Should().Be(_copilotIdService.DecodeId(id));
             entity.Content.Should().Be(testContent);
             entity.StageName.Should().Be(testJsonContent.StageName);
             entity.MinimumRequired.Should().Be(testJsonContent.MinimumRequired);

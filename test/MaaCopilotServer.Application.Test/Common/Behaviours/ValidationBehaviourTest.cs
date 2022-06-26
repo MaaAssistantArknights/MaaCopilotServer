@@ -23,21 +23,7 @@ public class ValidationBehaviourTest
     /// <summary>
     ///     The service of current testUser.
     /// </summary>
-    private ICurrentUserService _currentUserService;
-
-    /// <summary>
-    ///     The validators.
-    /// </summary>
-    private IEnumerable<IValidator<IRequest<MaaApiResponse>>> _validators;
-
-    /// <summary>
-    ///     Initializes tests.
-    /// </summary>
-    [TestInitialize]
-    public void Initialize()
-    {
-        _currentUserService = Substitute.For<ICurrentUserService>();
-    }
+    private readonly ICurrentUserService _currentUserService = Mock.Of<ICurrentUserService>();
 
     /// <summary>
     ///     Tests
@@ -49,9 +35,9 @@ public class ValidationBehaviourTest
     [TestMethod]
     public async Task TestHandle_EmptyValidators()
     {
-        _validators = new List<IValidator<IRequest<MaaApiResponse>>>();
+        var validators = new List<IValidator<IRequest<MaaApiResponse>>>();
         var behaviour =
-            new ValidationBehaviour<IRequest<MaaApiResponse>, MaaApiResponse>(_validators, _currentUserService);
+            new ValidationBehaviour<IRequest<MaaApiResponse>, MaaApiResponse>(validators, _currentUserService);
         var action = async () => await behaviour.Handle(Substitute.For<IRequest<MaaApiResponse>>(),
             new CancellationToken(),
             () => Task.FromResult(MaaApiResponseHelper.Ok()));
@@ -77,9 +63,9 @@ public class ValidationBehaviourTest
     {
         var validator1 = new TestValidator(validator1Passed);
         var validator2 = new TestValidator(validator2Passed);
-        _validators = new List<IValidator<IRequest<MaaApiResponse>>> { validator1, validator2 };
+        var validators = new List<IValidator<IRequest<MaaApiResponse>>> { validator1, validator2 };
         var behaviour =
-            new ValidationBehaviour<IRequest<MaaApiResponse>, MaaApiResponse>(_validators, _currentUserService);
+            new ValidationBehaviour<IRequest<MaaApiResponse>, MaaApiResponse>(validators, _currentUserService);
         var action = async () => await behaviour.Handle(Substitute.For<IRequest<MaaApiResponse>>(),
             new CancellationToken(),
             () => Task.FromResult(MaaApiResponseHelper.Ok()));

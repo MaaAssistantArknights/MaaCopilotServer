@@ -2,11 +2,6 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using MaaCopilotServer.Application.CopilotOperation.Queries.GetCopilotOperation;
 
 namespace MaaCopilotServer.Application.Test.CopilotOperation.Queries.GetCopilotOperation;
@@ -18,12 +13,17 @@ namespace MaaCopilotServer.Application.Test.CopilotOperation.Queries.GetCopilotO
 public class GetCopilotOperationQueryValidatorTest
 {
     /// <summary>
+    /// The validation error message.
+    /// </summary>
+    private readonly Resources.ValidationErrorMessage _validationErrorMessage = new();
+
+    /// <summary>
     /// Tests <see cref="GetCopilotOperationQueryValidator"/>.
     /// </summary>
     [TestMethod]
     public void Test_Valid()
     {
-        var validator = new GetCopilotOperationQueryValidator(new Resources.ValidationErrorMessage());
+        var validator = new GetCopilotOperationQueryValidator(_validationErrorMessage);
         var data = new GetCopilotOperationQuery()
         {
             Id = "10001",
@@ -40,7 +40,7 @@ public class GetCopilotOperationQueryValidatorTest
     [TestMethod]
     public void Test_EmptyId()
     {
-        var validator = new GetCopilotOperationQueryValidator(new Resources.ValidationErrorMessage());
+        var validator = new GetCopilotOperationQueryValidator(_validationErrorMessage);
         var data = new GetCopilotOperationQuery()
         {
             Id = null,

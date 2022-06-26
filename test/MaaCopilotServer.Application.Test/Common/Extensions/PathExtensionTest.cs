@@ -23,6 +23,7 @@ public class PathExtensionTest
     public void TestCombinePath(string path1, string path2)
     {
         var expected = Path.Combine(path1, path2);
+
         path1.CombinePath(path2).Should().Be(expected);
     }
 }

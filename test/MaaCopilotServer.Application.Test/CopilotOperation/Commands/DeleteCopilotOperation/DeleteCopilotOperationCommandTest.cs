@@ -5,8 +5,8 @@
 using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Application.CopilotOperation.Commands.DeleteCopilotOperation;
 using MaaCopilotServer.Application.Test.TestHelpers;
+using MaaCopilotServer.Infrastructure.Services;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 
 namespace MaaCopilotServer.Application.Test.CopilotOperation.Commands.DeleteCopilotOperation;
 
@@ -19,38 +19,23 @@ public class DeleteCopilotOperationCommandTest
     /// <summary>
     ///     The API error message.
     /// </summary>
-    private Resources.ApiErrorMessage _apiErrorMessage;
+    private readonly Resources.ApiErrorMessage _apiErrorMessage = new Resources.ApiErrorMessage();
 
     /// <summary>
     ///     The service for processing copilot ID.
     /// </summary>
-    private ICopilotIdService _copilotIdService;
+    private readonly ICopilotIdService _copilotIdService = new CopilotIdService();
 
     /// <summary>
     ///     The service for current user.
     /// </summary>
-    private ICurrentUserService _currentUserService;
+    private readonly ICurrentUserService _currentUserService = Mock.Of<ICurrentUserService>(
+        x => x.GetUserIdentity() == Guid.Empty);
 
     /// <summary>
     ///     The DB context.
     /// </summary>
-    private IMaaCopilotDbContext _dbContext;
-
-    /// <summary>
-    /// Initializes tests.
-    /// </summary>
-    [TestInitialize]
-    public void Initialize()
-    {
-        _copilotIdService = Substitute.For<ICopilotIdService>();
-
-        _currentUserService = Substitute.For<ICurrentUserService>();
-        _currentUserService.GetUserIdentity().Returns(Guid.Empty);
-
-        _dbContext = new TestDbContext();
-
-        _apiErrorMessage = new Resources.ApiErrorMessage();
-    }
+    private readonly IMaaCopilotDbContext _dbContext = new TestDbContext();
 
     /// <summary>
     /// Tests <see cref="DeleteCopilotOperationCommandHandler.Handle(DeleteCopilotOperationCommand, CancellationToken)"/>.
@@ -58,8 +43,8 @@ public class DeleteCopilotOperationCommandTest
     [TestMethod]
     public void TestHandle()
     {
-        _dbContext.CopilotOperations.Add(new Domain.Entities.CopilotOperation(
-            10000,
+        var entity = new Domain.Entities.CopilotOperation(
+            1,
             string.Empty,
             string.Empty,
             string.Empty,
@@ -72,15 +57,16 @@ public class DeleteCopilotOperationCommandTest
                 Domain.Enums.UserRole.User,
                 Guid.Empty),
             Guid.Empty,
-            new List<string>()));
+            new List<string>());
+        _dbContext.CopilotOperations.Add(entity);
         _dbContext.SaveChangesAsync(new CancellationToken()).Wait();
 
-        _copilotIdService.DecodeId(Arg.Any<string>()).ReturnsForAnyArgs(10000);
         var handler = new DeleteCopilotOperationCommandHandler(
             _dbContext, _copilotIdService, _currentUserService, _apiErrorMessage);
-        var result = handler.Handle(new DeleteCopilotOperationCommand(), new CancellationToken())
-                            .GetAwaiter()
-                            .GetResult();
+        var result = handler.Handle(new DeleteCopilotOperationCommand()
+        {
+            Id = _copilotIdService.EncodeId(entity.Id)
+        }, new CancellationToken()).GetAwaiter().GetResult();
 
         result.StatusCode.Should().Be(StatusCodes.Status200OK);
         _dbContext.CopilotOperations.Any().Should().BeFalse();
@@ -93,13 +79,12 @@ public class DeleteCopilotOperationCommandTest
     [TestMethod]
     public void TestHandle_InvalidId()
     {
-        _copilotIdService.DecodeId(Arg.Any<string>()).ReturnsForAnyArgs((long?)null);
-
         var handler = new DeleteCopilotOperationCommandHandler(
             _dbContext, _copilotIdService, _currentUserService, _apiErrorMessage);
-        var result = handler.Handle(new DeleteCopilotOperationCommand(), new CancellationToken())
-                            .GetAwaiter()
-                            .GetResult();
+        var result = handler.Handle(new DeleteCopilotOperationCommand()
+        {
+            Id = null
+        }, new CancellationToken()).GetAwaiter().GetResult();
 
         result.StatusCode.Should().Be(StatusCodes.Status404NotFound);
     }
@@ -111,13 +96,12 @@ public class DeleteCopilotOperationCommandTest
     [TestMethod]
     public void TestHandle_IdNotFound()
     {
-        _copilotIdService.DecodeId(Arg.Any<string>()).ReturnsForAnyArgs(10000);
-
         var handler = new DeleteCopilotOperationCommandHandler(
             _dbContext, _copilotIdService, _currentUserService, _apiErrorMessage);
-        var result = handler.Handle(new DeleteCopilotOperationCommand(), new CancellationToken())
-                            .GetAwaiter()
-                            .GetResult();
+        var result = handler.Handle(new DeleteCopilotOperationCommand()
+        {
+            Id = _copilotIdService.EncodeId(1)
+        }, new CancellationToken()).GetAwaiter().GetResult();
 
         result.StatusCode.Should().Be(StatusCodes.Status404NotFound);
     }
