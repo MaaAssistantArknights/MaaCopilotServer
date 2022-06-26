@@ -74,10 +74,15 @@ public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequ
             >= 500 and < 600 => LogLevel.Error,
             _ => LogLevel.Warning
         };
+        var loggingType = statusCode switch
+        {
+            >= 200 and < 300 => LoggingType.Request,
+            _ => LoggingType.FailedRequest
+        };
 
         _logger.Log(level,
             "MaaCopilotServer: Type -> {LoggingType}; Name -> {Name}; Time -> {ElapsedTime}; Status -> {StatusCode}, User -> {UserId}; Request -> {@Request}",
-            LoggingType.Request, requestName, elapsedMilliseconds.ToString(), statusCode.ToString(), userId, request);
+            loggingType, requestName, elapsedMilliseconds.ToString(), statusCode.ToString(), userId, request);
         return response;
     }
 }
