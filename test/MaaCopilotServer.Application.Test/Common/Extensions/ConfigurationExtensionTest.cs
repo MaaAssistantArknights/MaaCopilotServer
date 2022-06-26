@@ -22,9 +22,14 @@ public class ConfigurationExtensionTest
     [TestMethod]
     public void TestGetOption_WithOptionName()
     {
-        var configuration = Substitute.For<IConfiguration>();
-        configuration.GetSection("TestOption").Returns(Substitute.For<IConfigurationSection>());
+        var configurationMock = new Mock<IConfiguration>();
+        configurationMock
+            .Setup(x => x.GetSection("TestOption"))
+            .Returns(new Mock<IConfigurationSection>().Object);
+        var configuration = configurationMock.Object;
+
         var action = () => configuration.GetOption<TestOption>();
+
         action.Should().NotThrow();
     }
 
@@ -35,16 +40,20 @@ public class ConfigurationExtensionTest
     [TestMethod]
     public void TestGetOption_WithoutOptionName()
     {
-        var configuration = Substitute.For<IConfiguration>();
+        var configuration = new Mock<IConfiguration>().Object;
+
         var action = () => configuration.GetOption<ConfigurationExtensionTest>();
+
         action.Should().Throw<ArgumentException>();
+    }
+
+    /// <summary>
+    ///     The test class with <see cref="OptionNameAttribute" />.
+    /// </summary>
+    [OptionName("TestOption")]
+    private class TestOption
+    {
     }
 }
 
-/// <summary>
-///     The test class with <see cref="OptionNameAttribute" />.
-/// </summary>
-[OptionName("TestOption")]
-internal class TestOption
-{
-}
+

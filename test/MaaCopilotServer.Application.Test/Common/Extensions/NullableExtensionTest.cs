@@ -19,6 +19,7 @@ public class NullableExtensionTest
     public void TestIsNotNull_NotNull()
     {
         var testObject = new object();
+
         testObject.IsNotNull().Should().Be(testObject);
     }
 
@@ -29,7 +30,9 @@ public class NullableExtensionTest
     public void TestIsNotNull_Null()
     {
         object? testObject = null;
+
         var action = () => testObject.IsNotNull();
+
         action.Should().Throw<ArgumentNullException>();
     }
 }

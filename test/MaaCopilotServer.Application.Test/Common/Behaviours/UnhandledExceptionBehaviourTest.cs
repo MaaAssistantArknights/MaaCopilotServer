@@ -3,9 +3,6 @@
 // Licensed under the AGPL-3.0 license.
 
 using MaaCopilotServer.Application.Common.Behaviours;
-
-using MaaCopilotServer.Application.Common.Helpers;
-using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Application.Common.Models;
 using MaaCopilotServer.Resources;
 using MediatR;
@@ -23,28 +20,7 @@ public class UnhandledExceptionBehaviourTest
     /// <summary>
     ///     The API error message.
     /// </summary>
-    private ApiErrorMessage _apiErrorMessage;
-
-    /// <summary>
-    ///     The service of current user.
-    /// </summary>
-    private ICurrentUserService _currentUserService;
-
-    /// <summary>
-    ///     The logger.
-    /// </summary>
-    private ILogger<IRequest<MaaApiResponse>> _logger;
-
-    /// <summary>
-    ///     Initializes tests.
-    /// </summary>
-    [TestInitialize]
-    public void Initialize()
-    {
-        _logger = Substitute.For<ILogger<IRequest<MaaApiResponse>>>();
-        _currentUserService = Substitute.For<ICurrentUserService>();
-        _apiErrorMessage = Substitute.For<ApiErrorMessage>();
-    }
+    private readonly ApiErrorMessage _apiErrorMessage = new();
 
     /// <summary>
     ///     Tests
@@ -52,17 +28,25 @@ public class UnhandledExceptionBehaviourTest
     ///         cref="UnhandledExceptionBehaviour{TRequest}.Handle(TRequest, CancellationToken, MediatR.RequestHandlerDelegate{MaaApiResponse})" />
     ///     with <see cref="Exception" />.
     /// </summary>
-    /// <returns>N/A</returns>
     [TestMethod]
-    public async Task TestHandle_Exception()
+    public void TestHandle_Exception()
     {
+        var logger = new Mock<ILogger<IRequest<MaaApiResponse>>>();
+
         var behaviour =
-            new UnhandledExceptionBehaviour<IRequest<MaaApiResponse>, MaaApiResponse>(_logger,
-                _apiErrorMessage);
-        var response = await behaviour.Handle(null, new CancellationToken(), () =>
+            new UnhandledExceptionBehaviour<IRequest<MaaApiResponse>, MaaApiResponse>(
+                logger.Object, _apiErrorMessage);
+        var response = behaviour.Handle(default!, new CancellationToken(), () =>
         {
             throw new Exception();
-        });
+        }).GetAwaiter().GetResult();
+
         response.StatusCode.Should().Be(StatusCodes.Status500InternalServerError);
+        logger.Verify(x => x.Log(
+            LogLevel.Error,
+            It.IsAny<EventId>(),
+            It.IsAny<It.IsAnyType>(),
+            It.IsAny<Exception>(),
+            It.IsAny<Func<It.IsAnyType, Exception?, string>>()), Times.Once);
     }
 }

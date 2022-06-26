@@ -23,53 +23,32 @@ public class CreateCopilotOperationCommandTest
     /// <summary>
     ///     The service for processing copilot ID.
     /// </summary>
-    private ICopilotIdService _copilotIdService;
+    private readonly ICopilotIdService _copilotIdService = new CopilotIdService();
 
     /// <summary>
     ///     The service for current user.
     /// </summary>
-    private ICurrentUserService _currentUserService;
+    private readonly ICurrentUserService _currentUserService = Mock.Of<ICurrentUserService>(
+        x =>
+            x.GetUserIdentity() == Guid.Empty &&
+            x.GetUser().Result ==
+                new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, Domain.Enums.UserRole.User, Guid.Empty));
 
     /// <summary>
     ///     The DB context.
     /// </summary>
-    private IMaaCopilotDbContext _dbContext;
+    private readonly IMaaCopilotDbContext _dbContext = new TestDbContext();
 
     /// <summary>
     /// The validation error message.
     /// </summary>
-    private ValidationErrorMessage _validationErrorMessage;
-
-    /// <summary>
-    /// Initializes tests.
-    /// </summary>
-    [TestInitialize]
-    public void Initialize()
-    {
-        _copilotIdService = new CopilotIdService();
-
-        _currentUserService = Substitute.For<ICurrentUserService>();
-        _currentUserService.GetUserIdentity().Returns(Guid.Empty);
-        _currentUserService.GetUser().Returns(
-            Task.FromResult(
-                new Domain.Entities.CopilotUser(
-                string.Empty,
-                string.Empty,
-                string.Empty,
-                Domain.Enums.UserRole.User,
-                Guid.Empty)));
-
-        _dbContext = new TestDbContext();
-
-        _validationErrorMessage = new ValidationErrorMessage();
-    }
+    private readonly ValidationErrorMessage _validationErrorMessage = new();
 
     /// <summary>
     /// Tests <see cref="CreateCopilotOperationCommandHandler.Handle(CreateCopilotOperationCommand, CancellationToken)"/>.
     /// </summary>
-    /// <returns>N/A</returns>
     [TestMethod]
-    public async Task TestHandle_Full()
+    public void TestHandle_Full()
     {
         var testJsonContent = new CreateCopilotOperationContent
         {
@@ -78,18 +57,18 @@ public class CreateCopilotOperationCommandTest
             Doc = new Doc { Title = "test_title", Details = "test_details" },
             Operators = new Operator[]
             {
-                new() { Name = "test_oper_0_name", Skill = 0 }, new() { Name = "test_oper_1_name", Skill = 1 }
+                new() { Name = "test_oper_0_name", Skill = 0 },
+                new() { Name = "test_oper_1_name", Skill = 1 }
             }
         };
-        await TestHandle(testJsonContent);
+        TestHandle(testJsonContent);
     }
 
     /// <summary>
     /// Tests <see cref="CreateCopilotOperationCommandHandler.Handle(CreateCopilotOperationCommand, CancellationToken)"/> without <c>doc</c> field.
     /// </summary>
-    /// <returns>N/A</returns>
     [TestMethod]
-    public async Task TestHandle_WithoutDoc()
+    public void TestHandle_WithoutDoc()
     {
         var testJsonContent = new CreateCopilotOperationContent
         {
@@ -97,18 +76,18 @@ public class CreateCopilotOperationCommandTest
             MinimumRequired = "0.0.1",
             Operators = new Operator[]
             {
-                new() { Name = "test_oper_0_name", Skill = 0 }, new() { Name = "test_oper_1_name", Skill = 1 }
+                new() { Name = "test_oper_0_name", Skill = 0 },
+                new() { Name = "test_oper_1_name", Skill = 1 }
             }
         };
-        await TestHandle(testJsonContent);
+        TestHandle(testJsonContent);
     }
 
     /// <summary>
     /// Tests <see cref="CreateCopilotOperationCommandHandler.Handle(CreateCopilotOperationCommand, CancellationToken)"/> without <c>doc</c> field (undefined).
     /// </summary>
-    /// <returns>N/A</returns>
     [TestMethod]
-    public async Task TestHandle_WithoutDocUndefined()
+    public void TestHandle_WithoutDocUndefined()
     {
         var testJsonContent = new CreateCopilotOperationContent
         {
@@ -116,18 +95,18 @@ public class CreateCopilotOperationCommandTest
             MinimumRequired = "0.0.1",
             Operators = new Operator[]
             {
-                new() { Name = "test_oper_0_name", Skill = 0 }, new() { Name = "test_oper_1_name", Skill = 1 }
+                new() { Name = "test_oper_0_name", Skill = 0 },
+                new() { Name = "test_oper_1_name", Skill = 1 }
             }
         };
-        await TestHandle(testJsonContent, removeNullFields: true);
+        TestHandle(testJsonContent, removeNullFields: true);
     }
 
     /// <summary>
     /// Tests <see cref="CreateCopilotOperationCommandHandler.Handle(CreateCopilotOperationCommand, CancellationToken)"/> without a <c>name</c> field in <c>operators</c>.
     /// </summary>
-    /// <returns>N/A</returns>
     [TestMethod]
-    public async Task TestHandle_MissingOperatorName()
+    public void TestHandle_MissingOperatorName()
     {
         var testJsonContent = new CreateCopilotOperationContent
         {
@@ -135,18 +114,18 @@ public class CreateCopilotOperationCommandTest
             MinimumRequired = "0.0.1",
             Operators = new Operator[]
             {
-                new() { Skill = 0 }, new() { Name = "test_oper_1_name", Skill = 1 }
+                new() { Skill = 0 },
+                new() { Name = "test_oper_1_name", Skill = 1 }
             }
         };
-        await TestHandle(testJsonContent, true);
+        TestHandle(testJsonContent, true);
     }
 
     /// <summary>
     /// Tests <see cref="CreateCopilotOperationCommandHandler.Handle(CreateCopilotOperationCommand, CancellationToken)"/> with duplicate items in <c>operators</c> field.
     /// </summary>
-    /// <returns>N/A</returns>
     [TestMethod]
-    public async Task TestHandle_DuplicateOperators()
+    public void TestHandle_DuplicateOperators()
     {
         var testJsonContent = new CreateCopilotOperationContent
         {
@@ -154,13 +133,20 @@ public class CreateCopilotOperationCommandTest
             MinimumRequired = "0.0.1",
             Operators = new Operator[]
             {
-                new() { Name = "test_oper_0_name", Skill = 0 }, new() { Name = "test_oper_0_name", Skill = 0 }
+                new() { Name = "test_oper_0_name", Skill = 0 },
+                new() { Name = "test_oper_0_name", Skill = 0 }
             }
         };
-        await TestHandle(testJsonContent);
+        TestHandle(testJsonContent);
     }
 
-    private async Task TestHandle(CreateCopilotOperationContent testJsonContent, bool expectException = false,
+    /// <summary>
+    /// Tests <see cref="CreateCopilotOperationCommandHandler"/>.
+    /// </summary>
+    /// <param name="testJsonContent">The test JSON content.</param>
+    /// <param name="expectNon200Response"><c>true</c> if the result should not be 200, <c>false</c> otherwise.</param>
+    /// <param name="removeNullFields">Whether null fields in JSON should be removed.</param>
+    private void TestHandle(CreateCopilotOperationContent testJsonContent, bool expectNon200Response = false,
         bool removeNullFields = false)
     {
         var testContent = JsonSerializer.Serialize(testJsonContent,
@@ -175,20 +161,20 @@ public class CreateCopilotOperationCommandTest
         var action = async () =>
             await handler.Handle(new CreateCopilotOperationCommand { Content = testContent }, new CancellationToken());
 
-        if (expectException)
+        if (expectNon200Response)
         {
-            var response = await action();
+            var response = action().GetAwaiter().GetResult();
             response.StatusCode.Should().NotBe(StatusCodes.Status200OK);
             _dbContext.CopilotOperations.Any().Should().BeFalse();
         }
         else
         {
-            var response = await action();
-            var id = ((CreateCopilotOperationDto)response.Data).Id;
+            var response = action().GetAwaiter().GetResult();
+            var id = ((CreateCopilotOperationDto)response.Data!).Id;
             _dbContext.CopilotOperations.Any().Should().BeTrue();
             var entity = _dbContext.CopilotOperations.FirstOrDefault();
             entity.Should().NotBeNull();
-            entity.Id.Should().Be(_copilotIdService.DecodeId(id));
+            entity!.Id.Should().Be(_copilotIdService.DecodeId(id));
             entity.Content.Should().Be(testContent);
             entity.StageName.Should().Be(testJsonContent.StageName);
             entity.MinimumRequired.Should().Be(testJsonContent.MinimumRequired);

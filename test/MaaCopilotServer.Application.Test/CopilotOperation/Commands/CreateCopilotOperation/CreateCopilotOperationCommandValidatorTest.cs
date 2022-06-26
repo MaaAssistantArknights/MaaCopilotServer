@@ -13,23 +13,26 @@ namespace MaaCopilotServer.Application.Test.CopilotOperation.Commands.CreateCopi
 [TestClass]
 public class CreateCopilotOperationCommandValidatorTest
 {
+    private readonly Resources.ValidationErrorMessage _validationErrorMessage = new();
+
     /// <summary>
     /// Tests when the request is valid.
     /// </summary>
     [TestMethod]
     public void Test_Valid()
     {
-        var validationErrorMessage = Substitute.For<Resources.ValidationErrorMessage>();
-        var validator = new CreateCopilotOperationCommandValidator(validationErrorMessage);
+        var validator = new CreateCopilotOperationCommandValidator(_validationErrorMessage);
         var data = new CreateCopilotOperationContent()
         {
             StageName = "test_stage_name",
             MinimumRequired = "0.0.1",
         };
+
         var result = validator.Validate(new CreateCopilotOperationCommand()
         {
             Content = JsonSerializer.Serialize(data)
         });
+
         result.IsValid.Should().BeTrue();
     }
 
@@ -39,12 +42,13 @@ public class CreateCopilotOperationCommandValidatorTest
     [TestMethod]
     public void Test_EmptyContent()
     {
-        var validationErrorMessage = Substitute.For<Resources.ValidationErrorMessage>();
-        var validator = new CreateCopilotOperationCommandValidator(validationErrorMessage);
+        var validator = new CreateCopilotOperationCommandValidator(_validationErrorMessage);
+
         var result = validator.Validate(new CreateCopilotOperationCommand()
         {
             Content = null
         });
+
         result.IsValid.Should().BeFalse();
     }
 
@@ -59,17 +63,18 @@ public class CreateCopilotOperationCommandValidatorTest
     [DataRow(null, null)]
     public void Test_MissingRequiredFields(string? stageName, string? minimumRequired)
     {
-        var validationErrorMessage = Substitute.For<Resources.ValidationErrorMessage>();
-        var validator = new CreateCopilotOperationCommandValidator(validationErrorMessage);
+        var validator = new CreateCopilotOperationCommandValidator(_validationErrorMessage);
         var data = new CreateCopilotOperationContent()
         {
             StageName = stageName,
             MinimumRequired = minimumRequired,
         };
+
         var result = validator.Validate(new CreateCopilotOperationCommand()
         {
             Content = JsonSerializer.Serialize(data)
         });
+
         result.IsValid.Should().BeFalse();
     }
 }

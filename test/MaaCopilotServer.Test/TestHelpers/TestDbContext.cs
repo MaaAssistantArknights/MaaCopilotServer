@@ -14,8 +14,12 @@ namespace MaaCopilotServer.Test.TestHelpers;
 /// </summary>
 public class TestDbContext : MaaCopilotDbContext
 {
+    /// <summary>
+    /// The constructor.
+    /// </summary>
     public TestDbContext() : base(new OptionsWrapper<DatabaseOption>(new DatabaseOption())) { }
 
+    /// <inheritdoc/>
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseInMemoryDatabase(Guid.NewGuid().ToString());
