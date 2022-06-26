@@ -53,6 +53,7 @@ public class GetCopilotOperationQueryTest
                     Domain.Enums.UserRole.User,
                     Guid.Empty),
                 Guid.Empty,
+                new List<string>(),
                 new List<string>()),
             new Domain.Entities.CopilotOperation(
                 2,
@@ -68,6 +69,7 @@ public class GetCopilotOperationQueryTest
                     Domain.Enums.UserRole.User,
                     Guid.Empty),
                 Guid.Empty,
+                new List<string>(),
                 new List<string>())
         };
         _dbContext.CopilotOperations.AddRange(entities);

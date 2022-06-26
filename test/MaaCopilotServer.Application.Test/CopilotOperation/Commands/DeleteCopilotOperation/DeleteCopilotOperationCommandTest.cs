@@ -62,6 +62,7 @@ public class DeleteCopilotOperationCommandTest
             string.Empty,
             user,
             Guid.Empty,
+            new List<string>(),
             new List<string>());
         _dbContext.CopilotOperations.Add(entity);
         _dbContext.SaveChangesAsync(new CancellationToken()).Wait();
@@ -119,6 +120,7 @@ public class DeleteCopilotOperationCommandTest
             string.Empty,
             author,
             Guid.Empty,
+            new List<string>(),
             new List<string>());
         _dbContext.CopilotOperations.Add(entity);
         _dbContext.SaveChangesAsync(new CancellationToken()).Wait();

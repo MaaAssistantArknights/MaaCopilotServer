@@ -6,6 +6,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 
 using MaaCopilotServer.Application.Common.Interfaces;
+using MaaCopilotServer.Application.Common.Models;
 using MaaCopilotServer.Application.CopilotOperation.Commands.CreateCopilotOperation;
 using MaaCopilotServer.Infrastructure.Services;
 using MaaCopilotServer.Resources;
@@ -50,12 +51,12 @@ public class CreateCopilotOperationCommandTest
     [TestMethod]
     public void TestHandle_Full()
     {
-        var testJsonContent = new CreateCopilotOperationContent
+        var testJsonContent = new MaaCopilotOperation
         {
             StageName = "test_stage_name",
             MinimumRequired = "0.0.1",
-            Doc = new Doc { Title = "test_title", Details = "test_details" },
-            Operators = new Operator[]
+            Doc = new MaaCopilotOperationDoc { Title = "test_title", Details = "test_details" },
+            Operators = new MaaCopilotOperationOperator[]
             {
                 new() { Name = "test_oper_0_name", Skill = 0 },
                 new() { Name = "test_oper_1_name", Skill = 1 }
@@ -70,11 +71,11 @@ public class CreateCopilotOperationCommandTest
     [TestMethod]
     public void TestHandle_WithoutDoc()
     {
-        var testJsonContent = new CreateCopilotOperationContent
+        var testJsonContent = new MaaCopilotOperation
         {
             StageName = "test_stage_name",
             MinimumRequired = "0.0.1",
-            Operators = new Operator[]
+            Operators = new MaaCopilotOperationOperator[]
             {
                 new() { Name = "test_oper_0_name", Skill = 0 },
                 new() { Name = "test_oper_1_name", Skill = 1 }
@@ -89,11 +90,11 @@ public class CreateCopilotOperationCommandTest
     [TestMethod]
     public void TestHandle_WithoutDocUndefined()
     {
-        var testJsonContent = new CreateCopilotOperationContent
+        var testJsonContent = new MaaCopilotOperation
         {
             StageName = "test_stage_name",
             MinimumRequired = "0.0.1",
-            Operators = new Operator[]
+            Operators = new MaaCopilotOperationOperator[]
             {
                 new() { Name = "test_oper_0_name", Skill = 0 },
                 new() { Name = "test_oper_1_name", Skill = 1 }
@@ -108,11 +109,11 @@ public class CreateCopilotOperationCommandTest
     [TestMethod]
     public void TestHandle_MissingOperatorName()
     {
-        var testJsonContent = new CreateCopilotOperationContent
+        var testJsonContent = new MaaCopilotOperation
         {
             StageName = "test_stage_name",
             MinimumRequired = "0.0.1",
-            Operators = new Operator[]
+            Operators = new MaaCopilotOperationOperator[]
             {
                 new() { Skill = 0 },
                 new() { Name = "test_oper_1_name", Skill = 1 }
@@ -127,11 +128,11 @@ public class CreateCopilotOperationCommandTest
     [TestMethod]
     public void TestHandle_DuplicateOperators()
     {
-        var testJsonContent = new CreateCopilotOperationContent
+        var testJsonContent = new MaaCopilotOperation
         {
             StageName = "test_stage_name",
             MinimumRequired = "0.0.1",
-            Operators = new Operator[]
+            Operators = new MaaCopilotOperationOperator[]
             {
                 new() { Name = "test_oper_0_name", Skill = 0 },
                 new() { Name = "test_oper_0_name", Skill = 0 }
@@ -146,7 +147,7 @@ public class CreateCopilotOperationCommandTest
     /// <param name="testJsonContent">The test JSON content.</param>
     /// <param name="expectNon200Response"><c>true</c> if the result should not be 200, <c>false</c> otherwise.</param>
     /// <param name="removeNullFields">Whether null fields in JSON should be removed.</param>
-    private void TestHandle(CreateCopilotOperationContent testJsonContent, bool expectNon200Response = false,
+    private void TestHandle(MaaCopilotOperation testJsonContent, bool expectNon200Response = false,
         bool removeNullFields = false)
     {
         var testContent = JsonSerializer.Serialize(testJsonContent,
@@ -181,7 +182,7 @@ public class CreateCopilotOperationCommandTest
             entity.Title.Should().Be(testJsonContent.Doc?.Title ?? string.Empty);
             entity.Details.Should().Be(testJsonContent.Doc?.Details ?? string.Empty);
 
-            var entityOperators = (from @operator in testJsonContent.Operators ?? Array.Empty<Operator>()
+            var entityOperators = (from @operator in testJsonContent.Operators ?? Array.Empty<MaaCopilotOperationOperator>()
                                    select $"{@operator.Name}::{@operator.Skill?.ToString() ?? "1"}").Distinct().ToList();
             entity.Operators.Should().BeEquivalentTo(entityOperators);
         }

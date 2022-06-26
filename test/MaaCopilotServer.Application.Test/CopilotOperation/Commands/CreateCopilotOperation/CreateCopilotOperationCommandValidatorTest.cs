@@ -3,6 +3,7 @@
 // Licensed under the AGPL-3.0 license.
 
 using System.Text.Json;
+using MaaCopilotServer.Application.Common.Models;
 using MaaCopilotServer.Application.CopilotOperation.Commands.CreateCopilotOperation;
 
 namespace MaaCopilotServer.Application.Test.CopilotOperation.Commands.CreateCopilotOperation;
@@ -22,7 +23,7 @@ public class CreateCopilotOperationCommandValidatorTest
     public void Test_Valid()
     {
         var validator = new CreateCopilotOperationCommandValidator(_validationErrorMessage);
-        var data = new CreateCopilotOperationContent()
+        var data = new MaaCopilotOperation
         {
             StageName = "test_stage_name",
             MinimumRequired = "0.0.1",
@@ -64,7 +65,7 @@ public class CreateCopilotOperationCommandValidatorTest
     public void Test_MissingRequiredFields(string? stageName, string? minimumRequired)
     {
         var validator = new CreateCopilotOperationCommandValidator(_validationErrorMessage);
-        var data = new CreateCopilotOperationContent()
+        var data = new MaaCopilotOperation
         {
             StageName = stageName,
             MinimumRequired = minimumRequired,
