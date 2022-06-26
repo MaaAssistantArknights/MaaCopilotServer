@@ -29,5 +29,13 @@ public class CopilotOperationMap : IEntityTypeConfiguration<CopilotOperation>
                     (c1, c2) => c1!.SequenceEqual(c2!),
                     c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
                     c => c.ToList()));
+        builder.Property(x => x.Groups)
+            .HasConversion(
+                list => string.Join(";", list),
+                s => s.Split(";", StringSplitOptions.RemoveEmptyEntries).ToList(),
+                new ValueComparer<List<string>>(
+                    (c1, c2) => c1!.SequenceEqual(c2!),
+                    c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
+                    c => c.ToList()));
     }
 }

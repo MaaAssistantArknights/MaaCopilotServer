@@ -28,6 +28,7 @@ public class CopilotUserFavoriteMap : IEntityTypeConfiguration<CopilotUserFavori
             .UsingEntity<MapFavoriteOperation>(eb =>
             {
                 eb.ToTable("Map_Favorite_Operation");
+                eb.HasQueryFilter(x => !x.IsDeleted);
 
                 eb.HasOne(x => x.Operations)
                     .WithMany()

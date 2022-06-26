@@ -23,8 +23,9 @@ public sealed class CopilotOperation : EditableEntity
     /// <param name="author">The author of the operation.</param>
     /// <param name="createBy">The creator of the operation.</param>
     /// <param name="operators">The operators in the operation.</param>
+    /// <param name="groups">The groups in the operation.</param>
     public CopilotOperation(string content, string stageName, string minimumRequired, string title, string details,
-        CopilotUser author, Guid createBy, List<string> operators)
+        CopilotUser author, Guid createBy, IEnumerable<string> operators, IEnumerable<string> groups)
     {
         Content = content;
         StageName = stageName;
@@ -32,7 +33,8 @@ public sealed class CopilotOperation : EditableEntity
         Title = title;
         Details = details;
         Author = author;
-        Operators = operators;
+        Operators = operators.ToList();
+        Groups = groups.ToList();
         CreateBy = createBy;
         UpdateBy = createBy;
     }
@@ -52,6 +54,7 @@ public sealed class CopilotOperation : EditableEntity
     /// <param name="author">The author of the operation.</param>
     /// <param name="createBy">The creator of the operation.</param>
     /// <param name="operators">The operators in the operation.</param>
+    /// <param name="groups">The groups in the operation.</param>
     public CopilotOperation(long id,
         string content,
         string stageName,
@@ -60,8 +63,9 @@ public sealed class CopilotOperation : EditableEntity
         string details,
         CopilotUser author,
         Guid createBy,
-        List<string> operators)
-        : this(content, stageName, minimumRequired, title, details, author, createBy, operators)
+        IEnumerable<string> operators,
+        IEnumerable<string> groups)
+        : this(content, stageName, minimumRequired, title, details, author, createBy, operators, groups)
     {
         Id = id;
     }
@@ -121,6 +125,11 @@ public sealed class CopilotOperation : EditableEntity
     public List<string> Operators { get; private set; }
 
     /// <summary>
+    ///     The groups in the operation.
+    /// </summary>
+    public List<string> Groups { get; private set; }
+
+    /// <summary>
     ///     The detail of the operation.
     /// </summary>
     public string Details { get; private set; }
@@ -143,6 +152,32 @@ public sealed class CopilotOperation : EditableEntity
     {
         ViewCounts++;
         UpdateAt = DateTimeOffset.UtcNow;
+    }
+
+    /// <summary>
+    ///     Update this operation.
+    /// </summary>
+    /// <param name="content">The content.</param>
+    /// <param name="stageName">The stage name.</param>
+    /// <param name="minimumRequired">The minimum required version of MAA.</param>
+    /// <param name="title">The title of the operation.</param>
+    /// <param name="details">The detail of the operation.</param>
+    /// <param name="operators">The operators in the operation.</param>
+    /// <param name="groups">The groups in the operation.</param>
+    /// <param name="operator">The one who call this method.</param>
+    public void UpdateOperation(string content, string stageName, string minimumRequired, string title, string details,
+        IEnumerable<string> operators, IEnumerable<string> groups, Guid @operator)
+    {
+        Content = content;
+        StageName = stageName;
+        MinimumRequired = minimumRequired;
+        Title = title;
+        Details = details;
+        Operators = operators.ToList();
+        Groups = groups.ToList();
+
+        UpdateAt = DateTimeOffset.UtcNow;
+        UpdateBy = @operator;
     }
 
     /// <summary>
