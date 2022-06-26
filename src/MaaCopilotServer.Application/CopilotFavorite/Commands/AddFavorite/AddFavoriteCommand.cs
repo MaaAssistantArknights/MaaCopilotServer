@@ -39,7 +39,7 @@ public class AddFavoriteCommandHandler : IRequestHandler<AddFavoriteCommand, Maa
     {
         var listId = Guid.Parse(request.FavoriteListId!);
         var operationId = _copilotIdService.DecodeId(request.OperationId!);
-        var user = await _currentUserService.GetUser();
+        var user = (await _currentUserService.GetUser()).IsNotNull();
 
         var operation = await _dbContext.CopilotOperations
             .FirstOrDefaultAsync(x => x.Id == operationId, cancellationToken);
@@ -63,7 +63,8 @@ public class AddFavoriteCommandHandler : IRequestHandler<AddFavoriteCommand, Maa
             return MaaApiResponseHelper.Forbidden(_apiErrorMessage.PermissionDenied);
         }
 
-        list.AddFavoriteOperation(operation, user!.EntityId);
+        list.AddFavoriteOperation(operation, user.EntityId);
+        operation.AddFavorites(user.EntityId);
         await _dbContext.SaveChangesAsync(cancellationToken);
         return MaaApiResponseHelper.Ok();
     }
