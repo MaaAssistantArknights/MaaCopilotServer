@@ -42,30 +42,22 @@ public class CreateCopilotOperationCommandHandler : IRequestHandler<CreateCopilo
     /// </summary>
     private readonly IMaaCopilotDbContext _dbContext;
 
-    /// <summary>
-    ///     The service for user Identity.
-    /// </summary>
-    private readonly IIdentityService _identityService;
-
     private readonly ValidationErrorMessage _validationErrorMessage;
 
     /// <summary>
     ///     The constructor of <see cref="CreateCopilotOperationCommandHandler" />.
     /// </summary>
     /// <param name="dbContext">The DB context.</param>
-    /// <param name="identityService"> The service for user Identity.</param>
     /// <param name="currentUserService">The service for current user.</param>
     /// <param name="copilotIdService">The service for processing copilot ID.</param>
     /// <param name="validationErrorMessage">The resource of validation error messages.</param>
     public CreateCopilotOperationCommandHandler(
         IMaaCopilotDbContext dbContext,
-        IIdentityService identityService,
         ICurrentUserService currentUserService,
         ICopilotIdService copilotIdService,
         ValidationErrorMessage validationErrorMessage)
     {
         _dbContext = dbContext;
-        _identityService = identityService;
         _currentUserService = currentUserService;
         _copilotIdService = copilotIdService;
         _validationErrorMessage = validationErrorMessage;
@@ -100,7 +92,7 @@ public class CreateCopilotOperationCommandHandler : IRequestHandler<CreateCopilo
             .Distinct() // Remove duplicate operators.
             .ToList();
 
-        var user = await _identityService.GetUserAsync(_currentUserService.GetUserIdentity()!.Value);
+        var user = await _currentUserService.GetUser();
         var entity = new Domain.Entities.CopilotOperation(
             request.Content!, stageName!, minimumRequired!, docTitle, docDetails, user!, user!.EntityId, operators);
 

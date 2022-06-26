@@ -7,11 +7,10 @@ using System.Text.Json.Serialization;
 
 using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Application.CopilotOperation.Commands.CreateCopilotOperation;
-using MaaCopilotServer.Application.Test.TestHelpers;
 using MaaCopilotServer.Infrastructure.Services;
 using MaaCopilotServer.Resources;
+using MaaCopilotServer.Test.TestHelpers;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 
 namespace MaaCopilotServer.Application.Test.CopilotOperation.Commands.CreateCopilotOperation;
 
@@ -37,11 +36,6 @@ public class CreateCopilotOperationCommandTest
     private IMaaCopilotDbContext _dbContext;
 
     /// <summary>
-    ///     The service for user Identity.
-    /// </summary>
-    private IIdentityService _identityService;
-
-    /// <summary>
     /// The validation error message.
     /// </summary>
     private ValidationErrorMessage _validationErrorMessage;
@@ -56,17 +50,16 @@ public class CreateCopilotOperationCommandTest
 
         _currentUserService = Substitute.For<ICurrentUserService>();
         _currentUserService.GetUserIdentity().Returns(Guid.Empty);
-
-        _dbContext = new TestDbContext();
-
-        _identityService = Substitute.For<IIdentityService>();
-        _identityService.GetUserAsync(Arg.Any<Guid>())
-            .Returns(Task.FromResult(new Domain.Entities.CopilotUser(
+        _currentUserService.GetUser().Returns(
+            Task.FromResult(
+                new Domain.Entities.CopilotUser(
                 string.Empty,
                 string.Empty,
                 string.Empty,
                 Domain.Enums.UserRole.User,
                 Guid.Empty)));
+
+        _dbContext = new TestDbContext();
 
         _validationErrorMessage = new ValidationErrorMessage();
     }
@@ -177,7 +170,7 @@ public class CreateCopilotOperationCommandTest
                     removeNullFields ? JsonIgnoreCondition.Never : JsonIgnoreCondition.WhenWritingNull
             });
 
-        var handler = new CreateCopilotOperationCommandHandler(_dbContext, _identityService, _currentUserService,
+        var handler = new CreateCopilotOperationCommandHandler(_dbContext, _currentUserService,
             _copilotIdService, _validationErrorMessage);
         var action = async () =>
             await handler.Handle(new CreateCopilotOperationCommand { Content = testContent }, new CancellationToken());

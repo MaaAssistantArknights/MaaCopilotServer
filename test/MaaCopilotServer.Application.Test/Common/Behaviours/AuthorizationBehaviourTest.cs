@@ -32,11 +32,6 @@ public class AuthorizationBehaviourTest
     private ICurrentUserService _currentUserService;
 
     /// <summary>
-    ///     The service of identity.
-    /// </summary>
-    private IIdentityService _identityService;
-
-    /// <summary>
     ///     Initializes tests.
     /// </summary>
     [TestInitialize]
@@ -44,7 +39,6 @@ public class AuthorizationBehaviourTest
     {
         _currentUserService = Substitute.For<ICurrentUserService>();
         _apiErrorMessage = Substitute.For<ApiErrorMessage>();
-        _identityService = Substitute.For<IIdentityService>();
     }
 
     /// <summary>
@@ -82,11 +76,10 @@ public class AuthorizationBehaviourTest
             _ => throw new ArgumentOutOfRangeException(nameof(userRole))
         };
         _currentUserService.GetUserIdentity().Returns(Guid.NewGuid());
-        _identityService
-            .GetUserAsync(Arg.Any<Guid>())
+        _currentUserService.GetUser()
             .ReturnsForAnyArgs(new Domain.Entities.CopilotUser(default, default, default, userRole, default));
 
-        var behaviour = new AuthorizationBehaviour<IRequest<MaaApiResponse>, MaaApiResponse>(_identityService, _currentUserService, _apiErrorMessage);
+        var behaviour = new AuthorizationBehaviour<IRequest<MaaApiResponse>, MaaApiResponse>(_currentUserService, _apiErrorMessage);
         var action = async () =>
             await behaviour.Handle(testRequest, new CancellationToken(), () => Task.FromResult(MaaApiResponseHelper.Ok()));
         var response = await action();
@@ -105,7 +98,7 @@ public class AuthorizationBehaviourTest
     {
         IRequest<MaaApiResponse> testRequest = new TestNoRole();
 
-        var behaviour = new AuthorizationBehaviour<IRequest<MaaApiResponse>, MaaApiResponse>(_identityService, _currentUserService, _apiErrorMessage);
+        var behaviour = new AuthorizationBehaviour<IRequest<MaaApiResponse>, MaaApiResponse>(_currentUserService, _apiErrorMessage);
         var action = async () =>
             await behaviour.Handle(testRequest, new CancellationToken(), () => Task.FromResult(MaaApiResponseHelper.Ok()));
         var response = await action();
@@ -125,7 +118,7 @@ public class AuthorizationBehaviourTest
         IRequest<MaaApiResponse> testRequest = new TestUserRole();
         _currentUserService.GetUserIdentity().Returns((Guid?)null);
 
-        var behaviour = new AuthorizationBehaviour<IRequest<MaaApiResponse>, MaaApiResponse>(_identityService, _currentUserService, _apiErrorMessage);
+        var behaviour = new AuthorizationBehaviour<IRequest<MaaApiResponse>, MaaApiResponse>(_currentUserService, _apiErrorMessage);
         var action = async () =>
             await behaviour.Handle(testRequest, new CancellationToken(), () => Task.FromResult(MaaApiResponseHelper.Ok()));
         var response = await action();
@@ -144,11 +137,10 @@ public class AuthorizationBehaviourTest
     {
         IRequest<MaaApiResponse> testRequest = new TestUserRole();
         _currentUserService.GetUserIdentity().Returns(Guid.NewGuid());
-        _identityService
-            .GetUserAsync(Arg.Any<Guid>())
-            .ReturnsForAnyArgs((Domain.Entities.CopilotUser)null);
+        _currentUserService.GetUser()
+            .Returns(Task.FromResult<Domain.Entities.CopilotUser?>(null));
 
-        var behaviour = new AuthorizationBehaviour<IRequest<MaaApiResponse>, MaaApiResponse>(_identityService, _currentUserService, _apiErrorMessage);
+        var behaviour = new AuthorizationBehaviour<IRequest<MaaApiResponse>, MaaApiResponse>(_currentUserService, _apiErrorMessage);
         var action = async () =>
             await behaviour.Handle(testRequest, new CancellationToken(), () => Task.FromResult(MaaApiResponseHelper.Ok()));
         var response = await action();
@@ -167,11 +159,10 @@ public class AuthorizationBehaviourTest
     {
         IRequest<MaaApiResponse> testRequest = new TestUserRoleDeactivated();
         _currentUserService.GetUserIdentity().Returns(Guid.NewGuid());
-        _identityService
-            .GetUserAsync(Arg.Any<Guid>())
-            .ReturnsForAnyArgs(new Domain.Entities.CopilotUser(default, default, default, UserRole.User, default));
+        _currentUserService.GetUser()
+            .ReturnsForAnyArgs(new Domain.Entities.CopilotUser(default, default, default, default, default));
 
-        var behaviour = new AuthorizationBehaviour<IRequest<MaaApiResponse>, MaaApiResponse>(_identityService, _currentUserService, _apiErrorMessage);
+        var behaviour = new AuthorizationBehaviour<IRequest<MaaApiResponse>, MaaApiResponse>(_currentUserService, _apiErrorMessage);
         var action = async () =>
             await behaviour.Handle(testRequest, new CancellationToken(), () => Task.FromResult(MaaApiResponseHelper.Ok()));
         var response = await action();

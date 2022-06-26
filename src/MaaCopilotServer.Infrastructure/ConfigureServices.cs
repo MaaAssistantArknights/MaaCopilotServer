@@ -31,8 +31,6 @@ public static class ConfigureServices
 
         services.AddDbContext<IMaaCopilotDbContext, MaaCopilotDbContext>();
 
-        services.AddScoped<IIdentityService, IdentityService>();
-
         services.AddSingleton<ICopilotIdService, CopilotIdService>();
         services.AddSingleton<ISecretService, SecretService>();
 

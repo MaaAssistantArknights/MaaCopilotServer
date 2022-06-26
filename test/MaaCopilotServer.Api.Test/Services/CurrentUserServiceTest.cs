@@ -4,8 +4,9 @@
 
 using System.Globalization;
 using System.Security.Claims;
-using Elastic.Apm.Api;
 using MaaCopilotServer.Api.Services;
+using MaaCopilotServer.Application.Common.Interfaces;
+using MaaCopilotServer.Test.TestHelpers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using NSubstitute.ReturnsExtensions;
@@ -29,6 +30,11 @@ public class CurrentUserServiceTest
     private IHttpContextAccessor _httpContextAccessor;
 
     /// <summary>
+    /// The DB Context.
+    /// </summary>
+    private IMaaCopilotDbContext _maaCopilotDbContext;
+
+    /// <summary>
     ///     Initializes tests.
     /// </summary>
     [TestInitialize]
@@ -36,6 +42,7 @@ public class CurrentUserServiceTest
     {
         _httpContextAccessor = Substitute.For<IHttpContextAccessor>();
         _configuration = Substitute.For<IConfiguration>();
+        _maaCopilotDbContext = new TestDbContext();
     }
 
     /// <summary>
@@ -44,7 +51,7 @@ public class CurrentUserServiceTest
     [TestMethod]
     public void TestConstructor()
     {
-        new CurrentUserService(_httpContextAccessor, _configuration).Should().NotBeNull();
+        new CurrentUserService(_maaCopilotDbContext, _httpContextAccessor, _configuration).Should().NotBeNull();
     }
 
     /// <summary>
@@ -75,7 +82,7 @@ public class CurrentUserServiceTest
             });
             return httpContext;
         });
-        var currentUserService = new CurrentUserService(_httpContextAccessor, _configuration);
+        var currentUserService = new CurrentUserService(_maaCopilotDbContext, _httpContextAccessor, _configuration);
         var userIdentity = currentUserService.GetUserIdentity();
         if (expected != null)
         {
@@ -95,7 +102,7 @@ public class CurrentUserServiceTest
     public void TestGetUserIdentity_NullHttpContext()
     {
         _httpContextAccessor.HttpContext.ReturnsNull();
-        var currentUserService = new CurrentUserService(_httpContextAccessor, _configuration);
+        var currentUserService = new CurrentUserService(_maaCopilotDbContext, _httpContextAccessor, _configuration);
         var userIdentity = currentUserService.GetUserIdentity();
         userIdentity.Should().BeNull();
     }
@@ -146,8 +153,7 @@ public class CurrentUserServiceTest
             .AddInMemoryCollection(testConfiguration)
             .Build();
 
-        var currentUserService = new CurrentUserService(_httpContextAccessor,
-            _configuration);
+        var currentUserService = new CurrentUserService(_maaCopilotDbContext, _httpContextAccessor, _configuration);
         var trackingId = currentUserService.GetTrackingId();
         trackingId.Should().BeEquivalentTo(expected);
     }
@@ -178,8 +184,7 @@ public class CurrentUserServiceTest
             .AddInMemoryCollection(testConfiguration)
             .Build();
 
-        var currentUserService = new CurrentUserService(_httpContextAccessor,
-            _configuration);
+        var currentUserService = new CurrentUserService(_maaCopilotDbContext, _httpContextAccessor, _configuration);
         var trackingId = currentUserService.GetTrackingId();
         trackingId.Should().BeEquivalentTo("test_contextIdentifier");
     }
@@ -199,8 +204,7 @@ public class CurrentUserServiceTest
             .AddInMemoryCollection(testConfiguration)
             .Build();
 
-        var currentUserService = new CurrentUserService(_httpContextAccessor,
-            _configuration);
+        var currentUserService = new CurrentUserService(_maaCopilotDbContext, _httpContextAccessor, _configuration);
         var trackingId = currentUserService.GetTrackingId();
         trackingId.Should().BeEquivalentTo(string.Empty);
     }
@@ -270,7 +274,7 @@ public class CurrentUserServiceTest
             });
         }
 
-        var currentUserService = new CurrentUserService(_httpContextAccessor, _configuration);
+        var currentUserService = new CurrentUserService(_maaCopilotDbContext, _httpContextAccessor, _configuration);
         currentUserService.GetCulture().Should().BeEquivalentTo(new CultureInfo(expected));
     }
 }
