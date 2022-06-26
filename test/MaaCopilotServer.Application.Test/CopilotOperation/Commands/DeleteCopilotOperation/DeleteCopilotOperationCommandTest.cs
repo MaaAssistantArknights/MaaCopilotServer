@@ -47,7 +47,7 @@ public class DeleteCopilotOperationCommandTest
         _currentUserService = Substitute.For<ICurrentUserService>();
         _currentUserService.GetUserIdentity().Returns(Guid.Empty);
 
-        _dbContext = TestDatabaseHelper.GetTestDbContext();
+        _dbContext = new TestDbContext();
 
         _apiErrorMessage = new Resources.ApiErrorMessage();
     }
@@ -58,10 +58,21 @@ public class DeleteCopilotOperationCommandTest
     [TestMethod]
     public void TestHandle()
     {
-        _dbContext.CopilotOperations.Add(new Domain.Entities.CopilotOperation()
-        {
-            Id = 10000,
-        });
+        _dbContext.CopilotOperations.Add(new Domain.Entities.CopilotOperation(
+            10000,
+            string.Empty,
+            string.Empty,
+            string.Empty,
+            string.Empty,
+            string.Empty,
+            new Domain.Entities.CopilotUser(
+                string.Empty,
+                string.Empty,
+                string.Empty,
+                Domain.Enums.UserRole.User,
+                Guid.Empty),
+            Guid.Empty,
+            new List<string>()));
         _dbContext.SaveChangesAsync(new CancellationToken()).Wait();
 
         _copilotIdService.DecodeId(Arg.Any<string>()).ReturnsForAnyArgs(10000);
