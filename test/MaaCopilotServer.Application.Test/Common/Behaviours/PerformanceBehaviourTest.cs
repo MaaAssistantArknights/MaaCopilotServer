@@ -23,7 +23,6 @@ public class PerformanceBehaviourTest
     ///         cref="PerformanceBehaviour{TRequest, TResponse}.Handle(TRequest, CancellationToken, RequestHandlerDelegate{TResponse})" />
     ///     .
     /// </summary>
-    /// <returns>N/A</returns>
     [DataTestMethod]
     [DataRow(StatusCodes.Status200OK, LogLevel.Information)]
     [DataRow(StatusCodes.Status400BadRequest, LogLevel.Warning)]
@@ -31,7 +30,7 @@ public class PerformanceBehaviourTest
     [DataRow(StatusCodes.Status403Forbidden, LogLevel.Warning)]
     [DataRow(StatusCodes.Status404NotFound, LogLevel.Warning)]
     [DataRow(StatusCodes.Status500InternalServerError, LogLevel.Error)]
-    public async Task TestHandle(int statusCode, LogLevel expectedLogLevel)
+    public void TestHandle(int statusCode, LogLevel expectedLogLevel)
     {
         var testUserId = new Guid();
         var currentUserService = new Mock<ICurrentUserService>();
@@ -41,10 +40,10 @@ public class PerformanceBehaviourTest
         var behaviour =
             new PerformanceBehaviour<IRequest<MaaApiResponse>, MaaApiResponse>(
                 logger.Object, currentUserService.Object);
-        await behaviour.Handle(default!, new CancellationToken(), () => Task.FromResult(new MaaApiResponse()
+        behaviour.Handle(default!, new CancellationToken(), () => Task.FromResult(new MaaApiResponse()
         {
             StatusCode = statusCode,
-        }));
+        })).Wait();
 
         logger.Verify(x => x.Log(
             expectedLogLevel,

@@ -45,7 +45,6 @@ public class AuthorizationBehaviourTest
     /// <param name="userRole">The role of the user.</param>
     /// <param name="requiredRole">The role required to access the endpoint.</param>
     /// <param name="expectedErrorStatusCode">The expected status code, or <c>null</c> if no exception should be thrown</param>
-    /// <returns>N/A</returns>
     /// <exception cref="ArgumentOutOfRangeException">
     ///     Thrown when <paramref name="userRole" /> is not a valid value of <see cref="UserRole" />.
     /// </exception>
@@ -57,10 +56,7 @@ public class AuthorizationBehaviourTest
     [DataRow(UserRole.Uploader, UserRole.User, StatusCodes.Status200OK)]
     [DataRow(UserRole.Admin, UserRole.User, StatusCodes.Status200OK)]
     [DataRow(UserRole.SuperAdmin, UserRole.User, StatusCodes.Status200OK)]
-    public async Task TestHandle(
-        UserRole userRole,
-        UserRole requiredRole,
-        int expectedErrorStatusCode)
+    public void TestHandle(UserRole userRole, UserRole requiredRole, int expectedErrorStatusCode)
     {
         IRequest<MaaApiResponse> testRequest = requiredRole switch
         {
@@ -79,7 +75,7 @@ public class AuthorizationBehaviourTest
         var behaviour = new AuthorizationBehaviour<IRequest<MaaApiResponse>, MaaApiResponse>(identityService.Object, currentUserService.Object, _apiErrorMessage);
         var action = async () =>
             await behaviour.Handle(testRequest, new CancellationToken(), () => Task.FromResult(MaaApiResponseHelper.Ok()));
-        var response = await action();
+        var response = action().GetAwaiter().GetResult();
 
         response.StatusCode.Should().Be(expectedErrorStatusCode);
     }
@@ -90,9 +86,8 @@ public class AuthorizationBehaviourTest
     ///         cref="AuthorizationBehaviour{TRequest, TResponse}.Handle(TRequest, CancellationToken, RequestHandlerDelegate{TResponse})" />
     ///     without <see cref="AuthorizedAttribute"/>.
     /// </summary>
-    /// <returns>N/A</returns>
     [TestMethod]
-    public async Task TestHandle_NoAttribute()
+    public void TestHandle_NoAttribute()
     {
         IRequest<MaaApiResponse> testRequest = new TestNoRole();
 
@@ -100,7 +95,8 @@ public class AuthorizationBehaviourTest
             _identityService, _currentUserService, _apiErrorMessage);
         var action = async () =>
             await behaviour.Handle(testRequest, new CancellationToken(), () => Task.FromResult(MaaApiResponseHelper.Ok()));
-        var response = await action();
+
+        var response = action().GetAwaiter().GetResult();
         response.StatusCode.Should().Be(StatusCodes.Status200OK);
     }
 
@@ -110,9 +106,8 @@ public class AuthorizationBehaviourTest
     ///         cref="AuthorizationBehaviour{TRequest, TResponse}.Handle(TRequest, CancellationToken, RequestHandlerDelegate{TResponse})" />
     ///     with null user ID.
     /// </summary>
-    /// <returns>N/A</returns>
     [TestMethod]
-    public async Task TestHandle_NullUserId()
+    public void TestHandle_NullUserId()
     {
         IRequest<MaaApiResponse> testRequest = new TestUserRole();
         var currentUserService = new Mock<ICurrentUserService>();
@@ -122,8 +117,8 @@ public class AuthorizationBehaviourTest
             _identityService, currentUserService.Object, _apiErrorMessage); ;
         var action = async () =>
             await behaviour.Handle(testRequest, new CancellationToken(), () => Task.FromResult(MaaApiResponseHelper.Ok()));
-        var response = await action();
 
+        var response = action().GetAwaiter().GetResult();
         response.StatusCode.Should().Be(StatusCodes.Status401Unauthorized);
     }
 
@@ -133,9 +128,8 @@ public class AuthorizationBehaviourTest
     ///         cref="AuthorizationBehaviour{TRequest, TResponse}.Handle(TRequest, CancellationToken, RequestHandlerDelegate{TResponse})" />
     ///     with null user.
     /// </summary>
-    /// <returns>N/A</returns>
     [TestMethod]
-    public async Task TestHandle_NullUser()
+    public void TestHandle_NullUser()
     {
         IRequest<MaaApiResponse> testRequest = new TestUserRole();
         var currentUserService = new Mock<ICurrentUserService>();
@@ -148,8 +142,8 @@ public class AuthorizationBehaviourTest
             (identityService.Object, currentUserService.Object, _apiErrorMessage);
         var action = async () =>
             await behaviour.Handle(testRequest, new CancellationToken(), () => Task.FromResult(MaaApiResponseHelper.Ok()));
-        var response = await action();
 
+        var response = action().GetAwaiter().GetResult();
         response.StatusCode.Should().Be(StatusCodes.Status404NotFound);
     }
 
@@ -159,9 +153,8 @@ public class AuthorizationBehaviourTest
     ///         cref="AuthorizationBehaviour{TRequest, TResponse}.Handle(TRequest, CancellationToken, RequestHandlerDelegate{TResponse})" />
     ///     with deactivated user.
     /// </summary>
-    /// <returns>N/A</returns>
     [TestMethod]
-    public async Task TestHandle_DeactivatedUser()
+    public void TestHandle_DeactivatedUser()
     {
         IRequest<MaaApiResponse> testRequest = new TestUserRoleDeactivated();
         var currentUserService = new Mock<ICurrentUserService>();
@@ -174,8 +167,8 @@ public class AuthorizationBehaviourTest
             identityService.Object, currentUserService.Object, _apiErrorMessage);
         var action = async () =>
             await behaviour.Handle(testRequest, new CancellationToken(), () => Task.FromResult(MaaApiResponseHelper.Ok()));
-        var response = await action();
 
+        var response = action().GetAwaiter().GetResult();
         response.StatusCode.Should().Be(StatusCodes.Status403Forbidden);
     }
 

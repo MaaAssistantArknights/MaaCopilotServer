@@ -28,19 +28,18 @@ public class UnhandledExceptionBehaviourTest
     ///         cref="UnhandledExceptionBehaviour{TRequest}.Handle(TRequest, CancellationToken, MediatR.RequestHandlerDelegate{MaaApiResponse})" />
     ///     with <see cref="Exception" />.
     /// </summary>
-    /// <returns>N/A</returns>
     [TestMethod]
-    public async Task TestHandle_Exception()
+    public void TestHandle_Exception()
     {
         var logger = new Mock<ILogger<IRequest<MaaApiResponse>>>();
 
         var behaviour =
             new UnhandledExceptionBehaviour<IRequest<MaaApiResponse>, MaaApiResponse>(
                 logger.Object, _apiErrorMessage);
-        var response = await behaviour.Handle(default!, new CancellationToken(), () =>
+        var response = behaviour.Handle(default!, new CancellationToken(), () =>
         {
             throw new Exception();
-        });
+        }).GetAwaiter().GetResult();
 
         response.StatusCode.Should().Be(StatusCodes.Status500InternalServerError);
         logger.Verify(x => x.Log(
