@@ -108,6 +108,7 @@ public class CreateCopilotUserCommandHandler : IRequestHandler<CreateCopilotUser
         var hashedPassword = _secretService.HashPassword(request.Password!);
         var user = new Domain.Entities.CopilotUser(request.Email!, hashedPassword, request.UserName!,
             Enum.Parse<UserRole>(request.Role!), _currentUserService.GetUserIdentity()!.Value);
+        user.ActivateUser(_currentUserService.GetUserIdentity()!.Value);
         _dbContext.CopilotUsers.Add(user);
         await _dbContext.SaveChangesAsync(cancellationToken);
         return MaaApiResponseHelper.Ok();
