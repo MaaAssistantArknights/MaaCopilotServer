@@ -3,6 +3,8 @@
 // Licensed under the AGPL-3.0 license.
 
 using MaaCopilotServer.Application.Common.Helpers;
+using MaaCopilotServer.Domain.Entities;
+using MaaCopilotServer.Domain.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -119,6 +121,8 @@ public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOp
     public async Task<MaaApiResponse> Handle(
         QueryCopilotOperationsQuery request, CancellationToken cancellationToken)
     {
+        var user = await _currentUserService.GetUser();
+        var isLoggedIn = user is not null;
         var limit = request.Limit ?? 10;
         var page = request.Page ?? 1;
         Guid? uploaderId;
@@ -184,6 +188,15 @@ public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOp
         var result = queryable.ToList();
         var hasNext = limit * page >= totalCount;
 
+        // TODO: Find more elegant way to do this.
+        var rating = isLoggedIn
+            ? (await _dbContext.CopilotOperationRatings
+                .Where(x => x.UserId == user!.EntityId)
+                .ToListAsync(cancellationToken))
+                .Where(x => result.Any(y => y.EntityId == x.OperationId))
+                .ToList()
+            : new List<CopilotOperationRating>();
+
         var dtos = result.Select(x =>
                 new QueryCopilotOperationsQueryDto
                 {
@@ -197,7 +210,11 @@ public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOp
                     Groups = x.Groups.ToArray().DeserializeGroup(),
                     Operators = x.Operators,
                     UploadTime = x.UpdateAt.ToIsoString(),
-                    ViewCounts = x.ViewCounts
+                    ViewCounts = x.ViewCounts,
+                    RatingType = isLoggedIn
+                        ? rating.FirstOrDefault(y => y.OperationId == x.EntityId)?
+                              .RatingType ?? OperationRatingType.None
+                        : null
                 })
             .ToList();
         var paginationResult = new PaginationResult<QueryCopilotOperationsQueryDto>

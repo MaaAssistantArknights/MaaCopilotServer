@@ -4,6 +4,7 @@
 
 using System.Text.Json.Serialization;
 using MaaCopilotServer.Application.CopilotOperation.Queries.QueryCopilotOperations;
+using MaaCopilotServer.Domain.Enums;
 
 namespace MaaCopilotServer.Application.CopilotOperation.Queries.GetCopilotOperation;
 
@@ -27,6 +28,7 @@ public class GetCopilotOperationQueryDto : QueryCopilotOperationsQueryDto
     /// <param name="operators">The operators in the operation.</param>
     /// <param name="groups">The groups in the operation.</param>
     /// <param name="content">The JSON content of the operation.</param>
+    /// <param name="ratingType">The rating type by current user.</param>
     public GetCopilotOperationQueryDto(
         string id,
         string stageName,
@@ -39,8 +41,10 @@ public class GetCopilotOperationQueryDto : QueryCopilotOperationsQueryDto
         float ratingRatio,
         IEnumerable<string> operators,
         IEnumerable<MaaCopilotOperationGroupStore> groups,
-        string content)
-        : base(id, stageName, minimumRequired, uploadTime, uploader, title, detail, viewCounts, ratingRatio, operators, groups)
+        string content,
+        OperationRatingType? ratingType)
+        : base(id, stageName, minimumRequired, uploadTime, uploader,title,
+            detail, viewCounts, ratingRatio, operators, groups, ratingType)
     {
         Content = content;
     }

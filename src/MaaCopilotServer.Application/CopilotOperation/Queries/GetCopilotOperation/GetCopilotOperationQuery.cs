@@ -3,6 +3,7 @@
 // Licensed under the AGPL-3.0 license.
 
 using MaaCopilotServer.Application.Common.Helpers;
+using MaaCopilotServer.Domain.Enums;
 using MaaCopilotServer.Domain.Helper;
 using Microsoft.EntityFrameworkCore;
 
@@ -41,18 +42,23 @@ public class
     /// </summary>
     private readonly IMaaCopilotDbContext _dbContext;
 
+    private readonly ICurrentUserService _currentUserService;
+
     /// <summary>
     ///     The constructor of <see cref="GetCopilotOperationQueryHandler" />.
     /// </summary>
     /// <param name="dbContext">The DB context.</param>
+    /// <param name="currentUserService">The current user service.</param>
     /// <param name="copilotIdService">The service for processing copilot ID.</param>
     /// <param name="apiErrorMessage">The API error message.</param>
     public GetCopilotOperationQueryHandler(
         IMaaCopilotDbContext dbContext,
+        ICurrentUserService currentUserService,
         ICopilotIdService copilotIdService,
         ApiErrorMessage apiErrorMessage)
     {
         _dbContext = dbContext;
+        _currentUserService = currentUserService;
         _copilotIdService = copilotIdService;
         _apiErrorMessage = apiErrorMessage;
     }
@@ -69,6 +75,8 @@ public class
     public async Task<MaaApiResponse> Handle(GetCopilotOperationQuery request,
         CancellationToken cancellationToken)
     {
+        var user = await _currentUserService.GetUser();
+        var isLoggedIn = user is not null;
         var id = _copilotIdService.DecodeId(request.Id!);
         if (id is null)
         {
@@ -83,6 +91,13 @@ public class
             return MaaApiResponseHelper.NotFound(string.Format(_apiErrorMessage.CopilotOperationWithIdNotFound!, request.Id));
         }
 
+        OperationRatingType? rating = isLoggedIn
+            ? (await _dbContext.CopilotOperationRatings
+                .FirstOrDefaultAsync(x => x.UserId == user!.EntityId
+                                          && x.OperationId == entity.EntityId, cancellationToken))?
+                .RatingType ?? OperationRatingType.None
+            : null;
+
         var dto = new GetCopilotOperationQueryDto
         {
             Id = request.Id!,
@@ -96,7 +111,8 @@ public class
             UploadTime = entity.CreateAt.ToIsoString(),
             ViewCounts = entity.ViewCounts,
             RatingRatio = entity.RatingRatio,
-            Groups = entity.Groups.ToArray().DeserializeGroup()
+            Groups = entity.Groups.ToArray().DeserializeGroup(),
+            RatingType = rating
         };
 
         entity.AddViewCount();

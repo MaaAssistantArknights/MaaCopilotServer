@@ -3,6 +3,7 @@
 // Licensed under the AGPL-3.0 license.
 
 using System.Text.Json.Serialization;
+using MaaCopilotServer.Domain.Enums;
 
 namespace MaaCopilotServer.Application.CopilotOperation.Queries.QueryCopilotOperations;
 
@@ -25,9 +26,11 @@ public class QueryCopilotOperationsQueryDto
     /// <param name="ratingRatio">The like to all rating ratio.</param>
     /// <param name="operators">The operators in the operation.</param>
     /// <param name="groups">The groups in the operation.</param>
+    /// <param name="ratingType">The rating type by current user.</param>
     public QueryCopilotOperationsQueryDto(string id, string stageName, string minimumRequired, string uploadTime,
         string uploader, string title, string detail, int viewCounts, float ratingRatio,
-        IEnumerable<string> operators, IEnumerable<MaaCopilotOperationGroupStore> groups)
+        IEnumerable<string> operators, IEnumerable<MaaCopilotOperationGroupStore> groups,
+        OperationRatingType? ratingType = null)
     {
         Id = id;
         StageName = stageName;
@@ -40,6 +43,7 @@ public class QueryCopilotOperationsQueryDto
         Operators = operators;
         Groups = groups;
         RatingRatio = ratingRatio;
+        RatingType = ratingType;
     }
 
 #pragma warning disable CS8618
@@ -111,4 +115,11 @@ public class QueryCopilotOperationsQueryDto
     /// </summary>
     [JsonPropertyName("rating_ratio")]
     public float RatingRatio { get; set; }
+
+    /// <summary>
+    ///     The rating type for this operation by current user.
+    /// </summary>
+    [JsonPropertyName("rating_type")]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public OperationRatingType? RatingType { get; set; }
 }

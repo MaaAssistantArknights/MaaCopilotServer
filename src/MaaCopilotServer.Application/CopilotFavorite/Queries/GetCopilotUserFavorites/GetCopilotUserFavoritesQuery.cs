@@ -3,11 +3,13 @@
 // Licensed under the AGPL-3.0 license.
 
 using MaaCopilotServer.Application.Common.Helpers;
+using MaaCopilotServer.Domain.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace MaaCopilotServer.Application.CopilotFavorite.Queries.GetCopilotUserFavorites;
 
+[Authorized(UserRole.User)]
 public record GetCopilotUserFavoritesQuery : IRequest<MaaApiResponse>
 {
     [FromQuery(Name = "id")] public string? FavoriteListId { get; set; }
@@ -15,23 +17,27 @@ public record GetCopilotUserFavoritesQuery : IRequest<MaaApiResponse>
 
 public class GetCopilotUserFavoritesQueryHandler : IRequestHandler<GetCopilotUserFavoritesQuery, MaaApiResponse>
 {
-    private readonly IMaaCopilotDbContext _copilotDbContext;
+    private readonly IMaaCopilotDbContext _dbContext;
     private readonly ICopilotIdService _copilotIdService;
+    private readonly ICurrentUserService _currentUserService;
 
     public GetCopilotUserFavoritesQueryHandler(
         ICopilotIdService copilotIdService,
-        IMaaCopilotDbContext copilotDbContext)
+        ICurrentUserService currentUserService,
+        IMaaCopilotDbContext dbContext)
     {
         _copilotIdService = copilotIdService;
-        _copilotDbContext = copilotDbContext;
+        _currentUserService = currentUserService;
+        _dbContext = dbContext;
     }
 
     public async Task<MaaApiResponse> Handle(GetCopilotUserFavoritesQuery request,
         CancellationToken cancellationToken)
     {
+        var user = (await _currentUserService.GetUser()).IsNotNull();
         var favListId = Guid.Parse(request.FavoriteListId!);
 
-        var list = await _copilotDbContext.CopilotUserFavorites
+        var list = await _dbContext.CopilotUserFavorites
             .IgnoreQueryFilters()
             .Where(x => x.IsDeleted == false)
             .Include(x => x.Operations)
@@ -41,6 +47,13 @@ public class GetCopilotUserFavoritesQueryHandler : IRequestHandler<GetCopilotUse
         {
             return MaaApiResponseHelper.NotFound("");
         }
+
+        // TODO: Find more elegant way to do this.
+        var rating = (await _dbContext.CopilotOperationRatings
+                .Where(x => x.UserId == user.EntityId)
+                .ToListAsync(cancellationToken))
+            .Where(x => list.Operations.Any(y => y.EntityId == x.OperationId))
+            .ToList();
 
         var operationsDto = list.Operations
             .Where(x => x.IsDeleted == false)
@@ -56,7 +69,9 @@ public class GetCopilotUserFavoritesQueryHandler : IRequestHandler<GetCopilotUse
                 UploadTime = x.CreateAt.ToIsoString(),
                 ViewCounts = x.ViewCounts,
                 RatingRatio = x.RatingRatio,
-                Groups = x.Groups.ToArray().DeserializeGroup()
+                Groups = x.Groups.ToArray().DeserializeGroup(),
+                RatingType = rating.FirstOrDefault(y => y.OperationId == x.EntityId)?
+                    .RatingType ?? OperationRatingType.None
             }).ToList();
         var operationsDtoDeleted = list.Operations
             .Where(x => x.IsDeleted)

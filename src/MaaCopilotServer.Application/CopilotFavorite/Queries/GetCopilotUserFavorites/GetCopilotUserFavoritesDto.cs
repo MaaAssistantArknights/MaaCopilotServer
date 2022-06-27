@@ -4,6 +4,7 @@
 
 using System.Text.Json.Serialization;
 using MaaCopilotServer.Application.CopilotOperation.Queries.QueryCopilotOperations;
+using MaaCopilotServer.Domain.Enums;
 
 namespace MaaCopilotServer.Application.CopilotFavorite.Queries.GetCopilotUserFavorites;
 
@@ -50,6 +51,7 @@ public class FavoriteCopilotOperationsDto : QueryCopilotOperationsQueryDto
     /// <param name="operators">The operators in the operation.</param>
     /// <param name="groups">The groups in the operation.</param>
     /// <param name="deleted">Whether this operation has been deleted or not.</param>
+    /// <param name="ratingType">The rating type by current user.</param>
     public FavoriteCopilotOperationsDto(
         string id,
         string stageName,
@@ -62,8 +64,10 @@ public class FavoriteCopilotOperationsDto : QueryCopilotOperationsQueryDto
         float ratingRatio,
         IEnumerable<string> operators,
         IEnumerable<MaaCopilotOperationGroupStore> groups,
-        bool deleted = false)
-        : base(id, stageName, minimumRequired, uploadTime, uploader, title, detail, viewCounts, ratingRatio, operators, groups)
+        bool deleted = false,
+        OperationRatingType? ratingType = null)
+        : base(id, stageName, minimumRequired, uploadTime, uploader, title,
+            detail, viewCounts, ratingRatio, operators, groups, ratingType)
     {
         Deleted = deleted;
     }
