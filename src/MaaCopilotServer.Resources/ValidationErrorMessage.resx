@@ -68,4 +68,7 @@
   <data name="FavoriteListNameIsInvalid" xml:space="preserve">
     <value>收藏列表名称不合法，至少需要 1 位，最多 24 位</value>
   </data>
+  <data name="OperationRatingTypeIsInvalid" xml:space="preserve">
+    <value>作业评价类型不合法</value>
+  </data>
 </root>

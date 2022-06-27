@@ -22,11 +22,12 @@ public class QueryCopilotOperationsQueryDto
     /// <param name="title">The title of the operation.</param>
     /// <param name="detail">The detail of the operation.</param>
     /// <param name="viewCounts">The view counts of the operation.</param>
+    /// <param name="ratingRatio">The like to all rating ratio.</param>
     /// <param name="operators">The operators in the operation.</param>
     /// <param name="groups">The groups in the operation.</param>
     public QueryCopilotOperationsQueryDto(string id, string stageName, string minimumRequired, string uploadTime,
-        string uploader, string title, string detail, int viewCounts, IEnumerable<string> operators,
-        IEnumerable<MaaCopilotOperationGroupStore> groups)
+        string uploader, string title, string detail, int viewCounts, float ratingRatio,
+        IEnumerable<string> operators, IEnumerable<MaaCopilotOperationGroupStore> groups)
     {
         Id = id;
         StageName = stageName;
@@ -38,6 +39,7 @@ public class QueryCopilotOperationsQueryDto
         ViewCounts = viewCounts;
         Operators = operators;
         Groups = groups;
+        RatingRatio = ratingRatio;
     }
 
 #pragma warning disable CS8618
@@ -103,4 +105,10 @@ public class QueryCopilotOperationsQueryDto
     /// </summary>
     [JsonPropertyName("views")]
     public int ViewCounts { get; set; }
+
+    /// <summary>
+    ///     The rating ratio
+    /// </summary>
+    [JsonPropertyName("rating_ratio")]
+    public float RatingRatio { get; set; }
 }

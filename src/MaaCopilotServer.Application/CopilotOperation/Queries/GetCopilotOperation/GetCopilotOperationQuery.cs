@@ -94,6 +94,7 @@ public class
             Uploader = entity.Author.UserName,
             UploadTime = entity.CreateAt.ToIsoString(),
             ViewCounts = entity.ViewCounts,
+            RatingRatio = MathHelper.CalculateRatio(entity.LikeCount, entity.DislikeCount),
             Groups = entity.Groups.ToArray().DeserializeGroup()
         };
 

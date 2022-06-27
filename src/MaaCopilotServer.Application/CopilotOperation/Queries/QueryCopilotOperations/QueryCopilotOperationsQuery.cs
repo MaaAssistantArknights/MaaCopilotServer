@@ -182,11 +182,20 @@ public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOp
         var hasNext = limit * page >= totalCount;
 
         var dtos = result.Select(x =>
-                new QueryCopilotOperationsQueryDto(
-                _copilotIdService.EncodeId(x.Id), x.StageName, x.MinimumRequired,
-                x.CreateAt.ToString("o", _apiErrorMessage.CultureInfo),
-                x.Author.UserName, x.Title, x.Details, x.ViewCounts, x.Operators,
-                x.Groups.ToArray().DeserializeGroup()))
+                new QueryCopilotOperationsQueryDto
+                {
+                    Id = _copilotIdService.EncodeId(x.Id),
+                    Detail = x.Details,
+                    MinimumRequired = x.MinimumRequired,
+                    StageName = x.StageName,
+                    Title = x.Title,
+                    Uploader = x.Author.UserName,
+                    RatingRatio = MathHelper.CalculateRatio(x.LikeCount, x.DislikeCount),
+                    Groups = x.Groups.ToArray().DeserializeGroup(),
+                    Operators = x.Operators,
+                    UploadTime = x.UpdateAt.ToIsoString(),
+                    ViewCounts = x.ViewCounts
+                })
             .ToList();
         var paginationResult = new PaginationResult<QueryCopilotOperationsQueryDto>
         {

@@ -23,6 +23,7 @@ public class GetCopilotOperationQueryDto : QueryCopilotOperationsQueryDto
     /// <param name="title">The title of the operation.</param>
     /// <param name="detail">The detail of the operation.</param>
     /// <param name="viewCounts">The view counts of the operation.</param>
+    /// <param name="ratingRatio">The like to all rating ratio.</param>
     /// <param name="operators">The operators in the operation.</param>
     /// <param name="groups">The groups in the operation.</param>
     /// <param name="content">The JSON content of the operation.</param>
@@ -35,10 +36,11 @@ public class GetCopilotOperationQueryDto : QueryCopilotOperationsQueryDto
         string title,
         string detail,
         int viewCounts,
+        float ratingRatio,
         IEnumerable<string> operators,
         IEnumerable<MaaCopilotOperationGroupStore> groups,
         string content)
-        : base(id, stageName, minimumRequired, uploadTime, uploader, title, detail, viewCounts, operators, groups)
+        : base(id, stageName, minimumRequired, uploadTime, uploader, title, detail, viewCounts, ratingRatio, operators, groups)
     {
         Content = content;
     }

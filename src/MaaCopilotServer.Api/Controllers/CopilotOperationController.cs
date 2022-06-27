@@ -4,6 +4,7 @@
 
 using MaaCopilotServer.Application.CopilotOperation.Commands.CreateCopilotOperation;
 using MaaCopilotServer.Application.CopilotOperation.Commands.DeleteCopilotOperation;
+using MaaCopilotServer.Application.CopilotOperation.Commands.RatingCopilotOperation;
 using MaaCopilotServer.Application.CopilotOperation.Commands.UpdateCopilotOperation;
 using MaaCopilotServer.Application.CopilotOperation.Queries.GetCopilotOperation;
 using MaaCopilotServer.Application.CopilotOperation.Queries.QueryCopilotOperations;
@@ -77,6 +78,17 @@ public class CopilotOperationController : MaaControllerBase
     /// <returns>The response.</returns>
     [HttpPost("update")]
     public async Task<ActionResult> UpdateCopilotOperation([FromBody] UpdateCopilotOperationCommand command)
+    {
+        return await GetResponse(command);
+    }
+
+    /// <summary>
+    ///     The handler of <c>rating</c> endpoint to rate a copilot operation.
+    /// </summary>
+    /// <param name="command">The rating command.</param>
+    /// <returns></returns>
+    [HttpPost("rating")]
+    public async Task<ActionResult> RatingCopilotOperation([FromBody] RatingCopilotOperationCommand command)
     {
         return await GetResponse(command);
     }
