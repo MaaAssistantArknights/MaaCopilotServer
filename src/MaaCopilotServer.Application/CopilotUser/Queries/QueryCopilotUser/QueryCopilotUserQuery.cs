@@ -86,7 +86,7 @@ public class QueryCopilotUserQueryHandler : IRequestHandler<QueryCopilotUserQuer
             .Skip(skip).Take(limit);
 
         var result = queryable.ToList();
-        var hasNext = request.Limit * request.Page >= totalCount;
+        var hasNext = request.Limit * request.Page < totalCount;
 
         var dtos = result
             .Select(x => new QueryCopilotUserDto(x.EntityId, x.UserName, x.UserRole))
