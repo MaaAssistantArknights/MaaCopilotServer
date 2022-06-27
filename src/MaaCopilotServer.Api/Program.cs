@@ -9,6 +9,7 @@ using Elastic.Apm.Extensions.Hosting;
 using MaaCopilotServer.Api.Formatter;
 using MaaCopilotServer.Api.Helper;
 using MaaCopilotServer.Api.Middleware;
+using MaaCopilotServer.Api.Swagger;
 using MaaCopilotServer.Application;
 using MaaCopilotServer.Application.Common.Extensions;
 using MaaCopilotServer.Domain.Options;
@@ -60,10 +61,13 @@ public static class Program
         builder.Services.AddInfrastructureServices(configuration);
         builder.Services.AddApplicationServices();
         builder.Services.AddApiServices(configuration);
+        builder.Services.AddMaaSwagger();
 
         var app = builder.Build();
 
         InitializeHelper.InitializeDatabase(configuration);
+
+        app.UseMaaSwagger();
 
         // CORS settings.
         app.UseCors(options =>

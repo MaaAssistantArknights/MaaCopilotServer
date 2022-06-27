@@ -2,6 +2,8 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using MaaCopilotServer.Api.Swagger;
+using MaaCopilotServer.Application.Common.Models;
 using MaaCopilotServer.Application.CopilotUser.Commands.ActivateCopilotAccount;
 using MaaCopilotServer.Application.CopilotUser.Commands.ChangeCopilotUserInfo;
 using MaaCopilotServer.Application.CopilotUser.Commands.CreateCopilotUser;
@@ -20,10 +22,21 @@ using Microsoft.AspNetCore.Mvc;
 namespace MaaCopilotServer.Api.Controllers;
 
 /// <summary>
-///     The controller of user operations under <c>user</c> endpoint.
+///     The controller of copilot operations under "user" endpoint.
+/// Include operations related to copilot users.
 /// </summary>
+/// <response code="400">A bad request, most cases are invalid request parameters.</response>
+/// <response code="401">An unauthorized request, you need to login and set Authorization header at first.</response>
+/// <response code="403">A forbidden request, you do not have permission to perform the operation.</response>
+/// <response code="404">Some thing not found.</response>
+/// <response code="500">Some server errors happens.</response>
 [ApiController]
 [Route("user")]
+[ProducesResponseType(typeof(MaaApiResponseModel<EmptyObjectModel>), StatusCodes.Status400BadRequest)]
+[ProducesResponseType(typeof(MaaApiResponseModel<EmptyObjectModel>), StatusCodes.Status401Unauthorized)]
+[ProducesResponseType(typeof(MaaApiResponseModel<EmptyObjectModel>), StatusCodes.Status403Forbidden)]
+[ProducesResponseType(typeof(MaaApiResponseModel<EmptyObjectModel>), StatusCodes.Status404NotFound)]
+[ProducesResponseType(typeof(MaaApiResponseModel<EmptyObjectModel>), StatusCodes.Status500InternalServerError)]
 public class CopilotUserController : MaaControllerBase
 {
     /// <summary>
@@ -33,77 +46,87 @@ public class CopilotUserController : MaaControllerBase
     public CopilotUserController(IMediator mediator) : base(mediator) { }
 
     /// <summary>
-    ///     The handler of <c>change</c> endpoint to change user info.
+    ///     Change the user info.
     /// </summary>
     /// <param name="command">The request body.</param>
-    /// <returns>The response.</returns>
+    /// <response code="200">The changes has benn applied successfully.</response>
     [HttpPost("change")]
+    [ProducesResponseType(typeof(MaaApiResponseModel<EmptyObjectModel>), StatusCodes.Status200OK)]
     public async Task<ActionResult> ChangeCopilotUserInfo([FromBody] ChangeCopilotUserInfoCommand command)
     {
         return await GetResponse(command);
     }
 
     /// <summary>
-    ///     The handler of <c>create</c> endpoint to create a new copilot user.
+    ///     Create a new user.
     /// </summary>
     /// <param name="command">The request body.</param>
-    /// <returns>The response.</returns>
+    /// <response code="200">The copilot user has been created successfully.</response>
     [HttpPost("create")]
+    [ProducesResponseType(typeof(MaaApiResponseModel<EmptyObjectModel>), StatusCodes.Status200OK)]
     public async Task<ActionResult> CreateCopilotUser([FromBody] CreateCopilotUserCommand command)
     {
         return await GetResponse(command);
     }
 
     /// <summary>
-    ///     The handler of <c>delete</c> endpoint to delete a copilot user.
+    ///     Delete a user.
     /// </summary>
     /// <param name="command">The request body.</param>
-    /// <returns>The response.</returns>
+    /// <response code="200">The copilot user has been deleted successfully.</response>
     [HttpPost("delete")]
+    [ProducesResponseType(typeof(MaaApiResponseModel<EmptyObjectModel>), StatusCodes.Status200OK)]
     public async Task<ActionResult> DeleteCopilotUser([FromBody] DeleteCopilotUserCommand command)
     {
         return await GetResponse(command);
     }
 
     /// <summary>
-    ///     The handler of <c>login</c> endpoint to login.
+    ///     Login a user.
     /// </summary>
     /// <param name="command">The request body.</param>
-    /// <returns>The response.</returns>
+    /// <response code="200">Login successfully.</response>
     [HttpPost("login")]
+    [ProducesResponseType(typeof(MaaApiResponseModel<LoginCopilotUserDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult> LoginCopilotUser([FromBody] LoginCopilotUserCommand command)
     {
         return await GetResponse(command);
     }
 
     /// <summary>
-    ///     The handler of <c>update/info</c> endpoint to update copilot user info.
+    ///     Update the user info, password not included.
     /// </summary>
     /// <param name="command">The request body.</param>
-    /// <returns>The response.</returns>
+    /// <response code="200">
+    ///     The changes has benn applied successfully.
+    ///     If the email has been changed, a new activation code will be sent to the new email.
+    /// </response>
     [HttpPost("update/info")]
+    [ProducesResponseType(typeof(MaaApiResponseModel<EmptyObjectModel>), StatusCodes.Status200OK)]
     public async Task<ActionResult> UpdateCopilotUserInfo([FromBody] UpdateCopilotUserInfoCommand command)
     {
         return await GetResponse(command);
     }
 
     /// <summary>
-    ///     The handler of <c>update/password</c> endpoint to set new password.
+    ///     Update the user password.
     /// </summary>
     /// <param name="command">The request body.</param>
-    /// <returns>The response.</returns>
+    /// <response code="200">The changes has benn applied successfully.</response>
     [HttpPost("update/password")]
+    [ProducesResponseType(typeof(MaaApiResponseModel<EmptyObjectModel>), StatusCodes.Status200OK)]
     public async Task<ActionResult> UpdateCopilotUserPassword([FromBody] UpdateCopilotUserPasswordCommand command)
     {
         return await GetResponse(command);
     }
 
     /// <summary>
-    ///     The handler of <c>info/:id</c> endpoint to get copilot user info.
+    ///     Get the user info by id.
     /// </summary>
-    /// <param name="id">The path parameter <c>id</c>, which is the ID of the user.</param>
-    /// <returns>The response.</returns>
+    /// <param name="id">The user id, or placeholders like me.</param>
+    /// <response code="200">The user info in detail.</response>
     [HttpGet("info/{id}")]
+    [ProducesResponseType(typeof(MaaApiResponseModel<GetCopilotUserDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult> GetCopilotUser(string? id)
     {
         var command = new GetCopilotUserQuery { UserId = id };
@@ -111,55 +134,60 @@ public class CopilotUserController : MaaControllerBase
     }
 
     /// <summary>
-    ///     The handler of <c>query</c> endpoint to query copilot user info.
+    ///     Query users.
     /// </summary>
-    /// <param name="query">The query data.</param>
-    /// <returns>The response.</returns>
+    /// <param name="query">The request body.</param>
+    /// <response code="200">The brief user info list.</response>
     [HttpGet("query")]
+    [ProducesResponseType(typeof(MaaApiResponseModel<PaginationResult<QueryCopilotUserDto>>), StatusCodes.Status200OK)]
     public async Task<ActionResult> QueryCopilotUser([FromQuery] QueryCopilotUserQuery query)
     {
         return await GetResponse(query);
     }
 
     /// <summary>
-    ///     The handler of <c>register</c> endpoint to register a new copilot user account.
+    ///     Register a user.
     /// </summary>
     /// <param name="command">The request body.</param>
-    /// <returns>The response.</returns>
+    /// <response code="200">The copilot user has been created successfully and an activation code has been sent to the email address.</response>
     [HttpPost("register")]
+    [ProducesResponseType(typeof(MaaApiResponseModel<EmptyObjectModel>), StatusCodes.Status200OK)]
     public async Task<ActionResult> RegisterAccount([FromBody] RegisterCopilotAccountCommand command)
     {
         return await GetResponse(command);
     }
 
     /// <summary>
-    ///     The handler of <c>activate</c> endpoint to activate a copilot user account.
+    ///     Activate a user account.
     /// </summary>
     /// <param name="command">The request body.</param>
-    /// <returns>The response.</returns>
+    /// <response code="200">The account has been activated successfully.</response>
     [HttpPost("activate")]
+    [ProducesResponseType(typeof(MaaApiResponseModel<EmptyObjectModel>), StatusCodes.Status200OK)]
     public async Task<ActionResult> ActivateAccount([FromBody] ActivateCopilotAccountCommand command)
     {
         return await GetResponse(command);
     }
 
     /// <summary>
-    ///     The handler of <c>password/reset_request</c> endpoint to request password reset.
+    ///     Request a password reset.
     /// </summary>
     /// <param name="command">The request body.</param>
-    /// <returns>The response.</returns>
+    /// <response code="200">The password reset token has been sent to the email address.</response>
     [HttpPost("password/reset_request")]
+    [ProducesResponseType(typeof(MaaApiResponseModel<EmptyObjectModel>), StatusCodes.Status200OK)]
     public async Task<ActionResult> RequestPasswordChange([FromBody] RequestPasswordResetCommand command)
     {
         return await GetResponse(command);
     }
 
     /// <summary>
-    ///     The handler of <c>password/reset</c> endpoint to confirm password reset.
+    ///     Reset password.
     /// </summary>
     /// <param name="command">The request body.</param>
-    /// <returns>The response.</returns>
+    /// <response code="200">The password has been reset successfully.</response>
     [HttpPost("password/reset")]
+    [ProducesResponseType(typeof(MaaApiResponseModel<EmptyObjectModel>), StatusCodes.Status200OK)]
     public async Task<ActionResult> PasswordChange([FromBody] PasswordResetCommand command)
     {
         return await GetResponse(command);

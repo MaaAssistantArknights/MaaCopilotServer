@@ -2,6 +2,8 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using MaaCopilotServer.Api.Swagger;
+using MaaCopilotServer.Application.Common.Models;
 using MaaCopilotServer.Application.CopilotOperation.Commands.CreateCopilotOperation;
 using MaaCopilotServer.Application.CopilotOperation.Commands.DeleteCopilotOperation;
 using MaaCopilotServer.Application.CopilotOperation.Commands.RatingCopilotOperation;
@@ -14,10 +16,21 @@ using Microsoft.AspNetCore.Mvc;
 namespace MaaCopilotServer.Api.Controllers;
 
 /// <summary>
-///     The controller of copilot operations under <c>copilot</c> endpoint.
+///     The controller of copilot operations under "copilot" endpoint.
+/// Include operations related to copilot operations.
 /// </summary>
+/// <response code="400">A bad request, most cases are invalid request parameters.</response>
+/// <response code="401">An unauthorized request, you need to login and set Authorization header at first.</response>
+/// <response code="403">A forbidden request, you do not have permission to perform the operation.</response>
+/// <response code="404">Some thing not found.</response>
+/// <response code="500">Some server errors happens.</response>
 [ApiController]
 [Route("copilot")]
+[ProducesResponseType(typeof(MaaApiResponseModel<EmptyObjectModel>), StatusCodes.Status400BadRequest)]
+[ProducesResponseType(typeof(MaaApiResponseModel<EmptyObjectModel>), StatusCodes.Status401Unauthorized)]
+[ProducesResponseType(typeof(MaaApiResponseModel<EmptyObjectModel>), StatusCodes.Status403Forbidden)]
+[ProducesResponseType(typeof(MaaApiResponseModel<EmptyObjectModel>), StatusCodes.Status404NotFound)]
+[ProducesResponseType(typeof(MaaApiResponseModel<EmptyObjectModel>), StatusCodes.Status500InternalServerError)]
 public class CopilotOperationController : MaaControllerBase
 {
     /// <summary>
@@ -27,33 +40,36 @@ public class CopilotOperationController : MaaControllerBase
     public CopilotOperationController(IMediator mediator) : base(mediator) { }
 
     /// <summary>
-    ///     The handler of <c>upload</c> endpoint to create a copilot operation.
+    ///     Upload a copilot operation.
     /// </summary>
     /// <param name="command">The request body.</param>
-    /// <returns>The response.</returns>
+    /// <response code="200">The operation is successfully uploaded.</response>
     [HttpPost("upload")]
+    [ProducesResponseType(typeof(MaaApiResponseModel<CreateCopilotOperationDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult> CreateCopilotOperation([FromBody] CreateCopilotOperationCommand command)
     {
         return await GetResponse(command);
     }
 
     /// <summary>
-    ///     The handler of <c>delete</c> endpoint to delete a copilot operation.
+    ///     Delete a copilot operation.
     /// </summary>
     /// <param name="command">The request boy.</param>
-    /// <returns>The response.</returns>
+    /// <response code="200">The operation was successfully deleted.</response>
     [HttpPost("delete")]
+    [ProducesResponseType(typeof(MaaApiResponseModel<EmptyObjectModel>), StatusCodes.Status200OK)]
     public async Task<ActionResult> DeleteCopilotOperation([FromBody] DeleteCopilotOperationCommand command)
     {
         return await GetResponse(command);
     }
 
     /// <summary>
-    ///     The handler of <c>get/:id</c> endpoint to get a copilot operation.
+    ///     Get a copilot operation by its id.
     /// </summary>
-    /// <param name="id">The path parameter <c>id</c>, which is the operation ID.</param>
-    /// <returns>The response.</returns>
+    /// <param name="id">The operation id.</param>
+    /// <response code="200">The operation JSON and related metadata.</response>
     [HttpGet("get/{id}")]
+    [ProducesResponseType(typeof(MaaApiResponseModel<GetCopilotOperationQueryDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult> GetCopilotOperation(string id)
     {
         var request = new GetCopilotOperationQuery { Id = id };
@@ -61,33 +77,36 @@ public class CopilotOperationController : MaaControllerBase
     }
 
     /// <summary>
-    ///     The handler of <c>query</c> endpoint to query a copilot operation.
+    ///     Query copilot operations.
     /// </summary>
-    /// <param name="query">The query data.</param>
-    /// <returns>The response.</returns>
+    /// <param name="query">The request body.</param>
+    /// <response code="200">A list of query results with operation metadata.</response>
     [HttpGet("query")]
+    [ProducesResponseType(typeof(MaaApiResponseModel<PaginationResult<QueryCopilotOperationsQueryDto>>), StatusCodes.Status200OK)]
     public async Task<ActionResult> QueryCopilotOperation([FromQuery] QueryCopilotOperationsQuery query)
     {
         return await GetResponse(query);
     }
 
     /// <summary>
-    ///     The handler of <c>update</c> endpoint to update a copilot operation.
+    ///     Update a copilot operation.
     /// </summary>
-    /// <param name="command">The update command.</param>
-    /// <returns>The response.</returns>
+    /// <param name="command">The request body.</param>
+    /// <response code="200">The operation was successfully updated.</response>
     [HttpPost("update")]
+    [ProducesResponseType(typeof(MaaApiResponseModel<EmptyObjectModel>), StatusCodes.Status200OK)]
     public async Task<ActionResult> UpdateCopilotOperation([FromBody] UpdateCopilotOperationCommand command)
     {
         return await GetResponse(command);
     }
 
     /// <summary>
-    ///     The handler of <c>rating</c> endpoint to rate a copilot operation.
+    ///     Rate a copilot operation.
     /// </summary>
-    /// <param name="command">The rating command.</param>
-    /// <returns></returns>
+    /// <param name="command">The request body.</param>
+    /// <response code="200">The rating was successfully added to the operation.</response>
     [HttpPost("rating")]
+    [ProducesResponseType(typeof(MaaApiResponseModel<RatingCopilotOperationDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult> RatingCopilotOperation([FromBody] RatingCopilotOperationCommand command)
     {
         return await GetResponse(command);

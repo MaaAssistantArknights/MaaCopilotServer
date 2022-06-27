@@ -11,6 +11,10 @@
   <PropertyGroup Condition="$(Configuration) == Release">
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
+  
+  <PropertyGroup Condition="$(Configuration) == Debug">
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\MaaCopilotServer.Application\MaaCopilotServer.Application.csproj" />
@@ -30,6 +34,7 @@
     <PackageReference Include="Serilog.AspNetCore" Version="5.0.0" />
     <PackageReference Include="Serilog.Enrichers.Thread" Version="3.1.0" />
     <PackageReference Include="Serilog.Sinks.Elasticsearch" Version="9.0.0-beta7" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.1" />
   </ItemGroup>
 
 </Project>

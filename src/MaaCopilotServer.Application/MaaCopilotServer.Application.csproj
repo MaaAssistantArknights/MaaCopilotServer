@@ -12,6 +12,10 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
 
+  <PropertyGroup Condition="$(Configuration) == Debug">
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\MaaCopilotServer.Domain\MaaCopilotServer.Domain.csproj" />
     <ProjectReference Include="..\MaaCopilotServer.Resources\MaaCopilotServer.Resources.csproj" />
