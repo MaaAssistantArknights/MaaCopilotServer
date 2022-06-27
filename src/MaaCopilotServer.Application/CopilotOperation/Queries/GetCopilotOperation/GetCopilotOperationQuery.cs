@@ -3,6 +3,7 @@
 // Licensed under the AGPL-3.0 license.
 
 using MaaCopilotServer.Application.Common.Helpers;
+using MaaCopilotServer.Domain.Helper;
 using Microsoft.EntityFrameworkCore;
 
 namespace MaaCopilotServer.Application.CopilotOperation.Queries.GetCopilotOperation;
@@ -94,7 +95,7 @@ public class
             Uploader = entity.Author.UserName,
             UploadTime = entity.CreateAt.ToIsoString(),
             ViewCounts = entity.ViewCounts,
-            RatingRatio = MathHelper.CalculateRatio(entity.LikeCount, entity.DislikeCount),
+            RatingRatio = entity.RatingRatio,
             Groups = entity.Groups.ToArray().DeserializeGroup()
         };
 

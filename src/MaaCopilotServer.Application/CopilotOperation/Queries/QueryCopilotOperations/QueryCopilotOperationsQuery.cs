@@ -56,7 +56,7 @@ public record QueryCopilotOperationsQuery : IRequest<MaaApiResponse>
     public string? Desc { get; set; } = null;
 
     /// <summary>
-    ///     Orders result by a field. Only supports ordering by <c>downloads</c> and <c>id</c> (default).
+    ///     Orders result by a field. Only supports ordering by <c>views</c>, <c>rating</c> and <c>id</c> (default).
     /// </summary>
     [FromQuery(Name = "order_by")]
     public string? OrderBy { get; set; } = null;
@@ -171,6 +171,9 @@ public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOp
             "views" => string.IsNullOrEmpty(request.Desc)
                 ? queryable.OrderBy(x => x.ViewCounts)
                 : queryable.OrderByDescending(x => x.ViewCounts),
+            "rating" => string.IsNullOrEmpty(request.Desc)
+                ? queryable.OrderBy(x => x.RatingRatio)
+                : queryable.OrderByDescending(x => x.RatingRatio),
             _ => string.IsNullOrEmpty(request.Desc)
                 ? queryable.OrderBy(x => x.Id)
                 : queryable.OrderByDescending(x => x.Id)
@@ -190,7 +193,7 @@ public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOp
                     StageName = x.StageName,
                     Title = x.Title,
                     Uploader = x.Author.UserName,
-                    RatingRatio = MathHelper.CalculateRatio(x.LikeCount, x.DislikeCount),
+                    RatingRatio = x.RatingRatio,
                     Groups = x.Groups.ToArray().DeserializeGroup(),
                     Operators = x.Operators,
                     UploadTime = x.UpdateAt.ToIsoString(),

@@ -6,6 +6,7 @@ using System.Text.Json.Serialization;
 using MaaCopilotServer.Application.Common.Helpers;
 using MaaCopilotServer.Domain.Entities;
 using MaaCopilotServer.Domain.Enums;
+using MaaCopilotServer.Domain.Helper;
 using Microsoft.EntityFrameworkCore;
 
 namespace MaaCopilotServer.Application.CopilotOperation.Commands.RatingCopilotOperation;
@@ -105,7 +106,7 @@ public class RatingCopilotOperationCommandHandler : IRequestHandler<RatingCopilo
         {
             Id = request.Id!,
             RatingType = currentRating,
-            CurrentRatio = MathHelper.CalculateRatio(operation.LikeCount, operation.DislikeCount)
+            CurrentRatio = operation.RatingRatio
         });
     }
 }

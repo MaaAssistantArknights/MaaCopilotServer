@@ -3,6 +3,7 @@
 // Licensed under the AGPL-3.0 license.
 
 using MaaCopilotServer.Domain.Common;
+using MaaCopilotServer.Domain.Helper;
 
 namespace MaaCopilotServer.Domain.Entities;
 
@@ -154,6 +155,13 @@ public sealed class CopilotOperation : EditableEntity
     /// </summary>
     public List<CopilotUserFavorite> Favorites { get; private set; } = new();
 
+    // Auto calculated properties
+
+    /// <summary>
+    ///     The rating ratio of the operation.
+    /// </summary>
+    public float RatingRatio { get; private set; } = -1f;
+
     /// <summary>
     ///     Increases download count by 1, and updates last updated time.
     /// </summary>
@@ -216,6 +224,7 @@ public sealed class CopilotOperation : EditableEntity
     public void AddLike(Guid @operator)
     {
         LikeCount++;
+        RatingRatio = MathHelper.CalculateRatio(this.LikeCount, this.DislikeCount);
         Update(@operator);
     }
 
@@ -226,6 +235,7 @@ public sealed class CopilotOperation : EditableEntity
     public void AddDislike(Guid @operator)
     {
         DislikeCount++;
+        RatingRatio = MathHelper.CalculateRatio(this.LikeCount, this.DislikeCount);
         Update(@operator);
     }
 
@@ -236,6 +246,7 @@ public sealed class CopilotOperation : EditableEntity
     public void RemoveLike(Guid @operator)
     {
         LikeCount--;
+        RatingRatio = MathHelper.CalculateRatio(this.LikeCount, this.DislikeCount);
         Update(@operator);
     }
 
@@ -246,6 +257,7 @@ public sealed class CopilotOperation : EditableEntity
     public void RemoveDislike(Guid @operator)
     {
         DislikeCount--;
+        RatingRatio = MathHelper.CalculateRatio(this.LikeCount, this.DislikeCount);
         Update(@operator);
     }
 

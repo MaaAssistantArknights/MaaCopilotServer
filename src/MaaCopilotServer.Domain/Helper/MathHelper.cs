@@ -2,7 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
-namespace MaaCopilotServer.Application.Common.Helpers;
+namespace MaaCopilotServer.Domain.Helper;
 
 public static class MathHelper
 {
