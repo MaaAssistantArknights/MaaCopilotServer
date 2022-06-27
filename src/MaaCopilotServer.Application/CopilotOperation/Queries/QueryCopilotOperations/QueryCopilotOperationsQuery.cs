@@ -186,7 +186,7 @@ public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOp
         queryable = queryable.Skip(skip).Take(limit);
 
         var result = queryable.ToList();
-        var hasNext = limit * page >= totalCount;
+        var hasNext = limit * page < totalCount;
 
         // TODO: Find more elegant way to do this.
         var rating = isLoggedIn

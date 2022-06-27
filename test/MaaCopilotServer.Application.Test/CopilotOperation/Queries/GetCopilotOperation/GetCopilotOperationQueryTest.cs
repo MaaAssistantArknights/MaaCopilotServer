@@ -32,6 +32,12 @@ public class GetCopilotOperationQueryTest
     private readonly IMaaCopilotDbContext _dbContext = new TestDbContext();
 
     /// <summary>
+    ///     The current user service.
+    /// </summary>
+    private readonly ICurrentUserService _currentUserService = Mock.Of<ICurrentUserService>(
+        x => x.GetUser().Result == null);
+
+    /// <summary>
     /// Tests <see cref="GetCopilotOperationQueryHandler.Handle(GetCopilotOperationQuery, CancellationToken)"/>.
     /// </summary>
     [TestMethod]
@@ -75,7 +81,7 @@ public class GetCopilotOperationQueryTest
         _dbContext.CopilotOperations.AddRange(entities);
         _dbContext.SaveChangesAsync(new CancellationToken()).Wait();
 
-        var handler = new GetCopilotOperationQueryHandler(_dbContext, _copilotIdService, _apiErrorMessage);
+        var handler = new GetCopilotOperationQueryHandler(_dbContext, _currentUserService, _copilotIdService, _apiErrorMessage);
         var response = handler.Handle(new GetCopilotOperationQuery()
         {
             Id = _copilotIdService.EncodeId(entities[0].Id),
@@ -95,7 +101,7 @@ public class GetCopilotOperationQueryTest
     [TestMethod]
     public void TestHandle_InvalidId()
     {
-        var handler = new GetCopilotOperationQueryHandler(_dbContext, _copilotIdService, _apiErrorMessage);
+        var handler = new GetCopilotOperationQueryHandler(_dbContext, _currentUserService, _copilotIdService, _apiErrorMessage);
         var response = handler.Handle(new GetCopilotOperationQuery()
         {
             Id = null,
@@ -111,7 +117,7 @@ public class GetCopilotOperationQueryTest
     [TestMethod]
     public void TestHandle_EntityNotFound()
     {
-        var handler = new GetCopilotOperationQueryHandler(_dbContext, _copilotIdService, _apiErrorMessage);
+        var handler = new GetCopilotOperationQueryHandler(_dbContext, _currentUserService, _copilotIdService, _apiErrorMessage);
         var response = handler.Handle(new GetCopilotOperationQuery()
         {
             Id = _copilotIdService.EncodeId(0),
