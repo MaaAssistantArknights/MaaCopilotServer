@@ -40,6 +40,7 @@ public class MaaCopilotDbContext : DbContext, IMaaCopilotDbContext
 
     public DbSet<CopilotOperationComment> CopilotOperationComments { get; set; } = null!;
     public DbSet<CopilotUserFavorite> CopilotUserFavorites { get; set; } = null!;
+    public DbSet<CopilotOperationRating> CopilotOperationRatings { get; set; } = null!;
 
     /// <summary>
     ///     The DB set of users.

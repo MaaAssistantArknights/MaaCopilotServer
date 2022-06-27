@@ -25,6 +25,7 @@ public interface IMaaCopilotDbContext
     DbSet<CopilotToken> CopilotTokens { get; }
     DbSet<CopilotOperationComment> CopilotOperationComments { get; }
     DbSet<CopilotUserFavorite> CopilotUserFavorites { get; }
+    DbSet<CopilotOperationRating> CopilotOperationRatings { get; }
 
     /// <summary>
     ///     Saves changes to DB asynchronously.

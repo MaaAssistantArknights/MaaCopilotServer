@@ -102,6 +102,16 @@ public sealed class CopilotOperation : EditableEntity
     /// </summary>
     public int FavoriteCount { get; private set; }
 
+    /// <summary>
+    ///     Like counts.
+    /// </summary>
+    public int LikeCount { get; private set; }
+
+    /// <summary>
+    ///     Dislike counts.
+    /// </summary>
+    public int DislikeCount { get; private set; }
+
     // Extract from Content
 
     /// <summary>
@@ -176,26 +186,75 @@ public sealed class CopilotOperation : EditableEntity
         Operators = operators.ToList();
         Groups = groups.ToList();
 
-        UpdateAt = DateTimeOffset.UtcNow;
-        UpdateBy = @operator;
+        Update(@operator);
     }
 
     /// <summary>
     ///     Add a favorite count, and updates last updated time.
     /// </summary>
+    /// <param name="operator">The operator id.</param>
     public void AddFavorites(Guid @operator)
     {
         FavoriteCount++;
-        UpdateAt = DateTimeOffset.UtcNow;
-        UpdateBy = @operator;
+        Update(@operator);
     }
 
     /// <summary>
     ///     Remove a favorite count, and updates last updated time.
     /// </summary>
+    /// <param name="operator">The operator id.</param>
     public void RemoveFavorites(Guid @operator)
     {
         FavoriteCount--;
+        Update(@operator);
+    }
+
+    /// <summary>
+    ///     Add a like count, and updates last updated time.
+    /// </summary>
+    /// <param name="operator">The operator id.</param>
+    public void AddLike(Guid @operator)
+    {
+        LikeCount++;
+        Update(@operator);
+    }
+
+    /// <summary>
+    ///     Add a dislike count, and updates last updated time.
+    /// </summary>
+    /// <param name="operator">The operator id.</param>
+    public void AddDislike(Guid @operator)
+    {
+        DislikeCount++;
+        Update(@operator);
+    }
+
+    /// <summary>
+    ///     Remove a like count, and updates last updated time.
+    /// </summary>
+    /// <param name="operator">The operator id.</param>
+    public void RemoveLike(Guid @operator)
+    {
+        LikeCount--;
+        Update(@operator);
+    }
+
+    /// <summary>
+    ///     Remove a dislike count, and updates last updated time.
+    /// </summary>
+    /// <param name="operator">The operator id.</param>
+    public void RemoveDislike(Guid @operator)
+    {
+        DislikeCount--;
+        Update(@operator);
+    }
+
+    /// <summary>
+    ///     Update the last updated time and set operator.
+    /// </summary>
+    /// <param name="operator">The operator id.</param>
+    private void Update(Guid @operator)
+    {
         UpdateAt = DateTimeOffset.UtcNow;
         UpdateBy = @operator;
     }
