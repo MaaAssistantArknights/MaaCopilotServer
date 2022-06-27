@@ -10,5 +10,6 @@ namespace MaaCopilotServer.Domain.Enums;
 public enum OperationRatingType
 {
     Like,
-    Dislike
+    Dislike,
+    None
 }

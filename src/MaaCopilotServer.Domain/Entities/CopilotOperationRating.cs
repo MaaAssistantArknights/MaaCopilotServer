@@ -11,13 +11,15 @@ namespace MaaCopilotServer.Domain.Entities;
 /// <summary>
 ///     The entity to store user ratings.
 /// </summary>
-public class CopilotOperationRating : RelationEntity
+public class CopilotOperationRating : BaseEntity
 {
     public CopilotOperationRating(Guid operationId, Guid userId, OperationRatingType ratingType)
     {
         OperationId = operationId;
         UserId = userId;
         RatingType = ratingType;
+
+        CreateBy = userId;
     }
 
 #pragma warning disable CS8618
@@ -45,4 +47,13 @@ public class CopilotOperationRating : RelationEntity
     ///     The rating.
     /// </summary>
     public OperationRatingType RatingType { get; private set; }
+
+    /// <summary>
+    ///     Change the rating value.
+    /// </summary>
+    /// <param name="ratingType">Rating type.</param>
+    public void ChangeRating(OperationRatingType ratingType)
+    {
+        RatingType = ratingType;
+    }
 }
