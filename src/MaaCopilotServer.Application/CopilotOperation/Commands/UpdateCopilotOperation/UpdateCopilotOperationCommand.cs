@@ -70,7 +70,7 @@ public class UpdateCopilotOperationCommandHandler : IRequestHandler<UpdateCopilo
         }
 
         // Check if the user has the permission to update the operation
-        if (user.IsAllowAccess(operation.Author))
+        if (user.IsAllowAccess(operation.Author) is false)
         {
             return MaaApiResponseHelper.Forbidden(_apiErrorMessage.PermissionDenied!);
         }
