@@ -58,35 +58,36 @@ public class UpdateCopilotUserInfoCommandHandler : IRequestHandler<UpdateCopilot
 
     public async Task<MaaApiResponse> Handle(UpdateCopilotUserInfoCommand request, CancellationToken cancellationToken)
     {
-        var user = await _dbContext.CopilotUsers
-            .FirstOrDefaultAsync(x => x.EntityId == _currentUserService.GetUserIdentity(), cancellationToken);
+        // Get current infos.
+        var user = (await _currentUserService.GetUser()).IsNotNull();
 
-        if (user is null)
-        {
-            return MaaApiResponseHelper.InternalError(_apiErrorMessage.InternalException);
-        }
-
+        // Id email change is requested
         if (string.IsNullOrEmpty(request.Email) is false)
         {
+            // Check if the new email has already been used by someone
             var exist = _dbContext.CopilotUsers.Any(x => x.Email == request.Email);
             if (exist)
             {
                 return MaaApiResponseHelper.BadRequest(_apiErrorMessage.EmailAlreadyInUse);
             }
 
+            // Generate a activation token
             var (token, time) = _secretService.GenerateToken(user.EntityId, TimeSpan.FromMinutes(
                 _tokenOption.Value.ChangeEmailToken.ExpireTime));
+            // Send email
             var result = await _mailService.SendEmailAsync(
                 new EmailChangeAddress(user.UserName, token, time.ToUtc8String(),
                     _tokenOption.Value.AccountActivationToken.HasCallback),
                 request.Email);
 
+            // If email failed to send, return an internal error response
             if (result is false)
             {
                 return MaaApiResponseHelper.InternalError(_apiErrorMessage.EmailSendFailed);
             }
         }
 
+        // Update user info, default to Role = null, Force = false
         user.UpdateUserInfo(user.EntityId, request.Email, request.UserName);
         _dbContext.CopilotUsers.Update(user);
         await _dbContext.SaveChangesAsync(cancellationToken);

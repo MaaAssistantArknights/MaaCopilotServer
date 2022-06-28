@@ -39,41 +39,46 @@ public class GetCopilotUserQueryHandler : IRequestHandler<GetCopilotUserQuery, M
     public async Task<MaaApiResponse> Handle(GetCopilotUserQuery request,
         CancellationToken cancellationToken)
     {
+        // Get user id
         Guid userId;
         if (request.UserId == "me")
         {
+            // If user id is set to me, then get current user id
             var id = _currentUserService.GetUserIdentity();
             if (id is null)
             {
-                return MaaApiResponseHelper.BadRequest(
-                    _apiErrorMessage.MeNotFound);
+                return MaaApiResponseHelper.BadRequest(_apiErrorMessage.MeNotFound);
             }
 
             userId = id.Value;
         }
         else
         {
+            // Else, set the value to the given id
             userId = Guid.Parse(request.UserId!);
         }
 
+        // Find user entity
         var user = await _dbContext.CopilotUsers
             .Include(x => x.UserFavorites)
             .FirstOrDefaultAsync(x => x.EntityId == userId, cancellationToken);
-
         if (user is null)
         {
             return MaaApiResponseHelper.NotFound(
                 string.Format(_apiErrorMessage.UserWithIdNotFound!, request.UserId));
         }
 
+        // Calculate the upload count
         var uploadCount = await _dbContext.CopilotOperations
             .Include(x => x.Author)
             .Where(x => x.Author.EntityId == userId)
             .CountAsync(cancellationToken);
 
+        // Build fav list DTO
         var favList = user.UserFavorites
             .ToDictionary(fav => fav.EntityId.ToString(), fav => fav.FavoriteName);
 
+        // Build DTO
         var dto = new GetCopilotUserDto(userId, user.UserName, user.UserRole, uploadCount, user.UserActivated, favList);
         return MaaApiResponseHelper.Ok(dto);
     }

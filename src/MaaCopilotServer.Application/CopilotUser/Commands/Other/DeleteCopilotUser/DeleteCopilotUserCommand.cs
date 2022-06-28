@@ -40,9 +40,9 @@ public class DeleteCopilotUserCommandHandler : IRequestHandler<DeleteCopilotUser
         _apiErrorMessage = apiErrorMessage;
     }
 
-    public async Task<MaaApiResponse> Handle(DeleteCopilotUserCommand request,
-        CancellationToken cancellationToken)
+    public async Task<MaaApiResponse> Handle(DeleteCopilotUserCommand request, CancellationToken cancellationToken)
     {
+        // Get requested user data
         var userId = Guid.Parse(request.UserId!);
         var user = await _dbContext.CopilotUsers.FirstOrDefaultAsync(x => x.EntityId == userId, cancellationToken);
         if (user == null)
@@ -51,21 +51,21 @@ public class DeleteCopilotUserCommandHandler : IRequestHandler<DeleteCopilotUser
                 string.Format(_apiErrorMessage.UserWithIdNotFound!, userId));
         }
 
-        var @operator = await _dbContext.CopilotUsers.FirstOrDefaultAsync(
-            x => x.EntityId == _currentUserService.GetUserIdentity(), cancellationToken);
-        if (@operator is null)
-        {
-            return MaaApiResponseHelper.InternalError(
-                _apiErrorMessage.InternalException);
-        }
+        // Get operator
+        var @operator = (await _currentUserService.GetUser()).IsNotNull();
 
+        // The operator's role is Above or Equal to Admin
+        // He can not delete any user who have the role Above or Equal to himself.
+        // So an Admin could not delete an Admin account include himself and SuperAdmin account.
+        // Only SuperAdmin could delete Admin accounts.
+        // But this also means, SuperAdmin account could not be deleted.
         if (@operator.UserRole <= user.UserRole)
         {
-            return MaaApiResponseHelper.Forbidden(
-                _apiErrorMessage.PermissionDenied);
+            return MaaApiResponseHelper.Forbidden(_apiErrorMessage.PermissionDenied);
         }
 
-        user.Delete(_currentUserService.GetUserIdentity()!.Value);
+        // Delete user
+        user.Delete(@operator.EntityId);
         _dbContext.CopilotUsers.Remove(user);
         await _dbContext.SaveChangesAsync(cancellationToken);
         return MaaApiResponseHelper.Ok();

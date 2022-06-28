@@ -106,8 +106,10 @@ public class CopilotUser : EditableEntity
     /// <param name="email">The email of the user.</param>
     /// <param name="userName">The username.</param>
     /// <param name="userRole">The role of the user.</param>
-    public void UpdateUserInfo(Guid @operator, string? email = null, string? userName = null, UserRole? userRole = null)
+    /// <param name="force">Force change info.</param>
+    public void UpdateUserInfo(Guid @operator, string? email = null, string? userName = null, UserRole? userRole = null, bool force = false)
     {
+        // If everything is empty or null, nothing changes, just return.
         if (string.IsNullOrEmpty(email) &&
             string.IsNullOrEmpty(userName) &&
             userRole is null)
@@ -115,22 +117,30 @@ public class CopilotUser : EditableEntity
             return;
         }
 
+        // If email is not null or empty, set it.
         if (string.IsNullOrEmpty(email) is false)
         {
             Email = email;
-            UserActivated = false;
+            // If this is not a force change, change the activation status.
+            if (force is false)
+            {
+                UserActivated = false;
+            }
         }
 
+        // If the username is not null or empty, set it.
         if (string.IsNullOrEmpty(userName) is false)
         {
             UserName = userName;
         }
 
+        // If the role is not null, set it.
         if (userRole is not null)
         {
             UserRole = userRole.Value;
         }
 
+        // Set update time and operator
         UpdateAt = DateTimeOffset.UtcNow;
         UpdateBy = @operator;
     }

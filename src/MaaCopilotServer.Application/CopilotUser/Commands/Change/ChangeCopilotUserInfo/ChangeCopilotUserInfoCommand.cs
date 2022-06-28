@@ -72,44 +72,52 @@ public class ChangeCopilotUserInfoCommandHandler : IRequestHandler<ChangeCopilot
     public async Task<MaaApiResponse> Handle(ChangeCopilotUserInfoCommand request,
         CancellationToken cancellationToken)
     {
+        // Get user whose info is pending to be changed
         var userId = Guid.Parse(request.UserId!);
         var user = await _dbContext.CopilotUsers
             .FirstOrDefaultAsync(x => x.EntityId == userId, cancellationToken);
-
         if (user is null)
         {
             return MaaApiResponseHelper.NotFound(string.Format(_apiErrorMessage.UserWithIdNotFound!, request.UserId));
         }
 
-        var @operator = await _dbContext.CopilotUsers.FirstOrDefaultAsync(
-            x => x.EntityId == _currentUserService.GetUserIdentity(), cancellationToken);
-        if (@operator is null)
-        {
-            return MaaApiResponseHelper.InternalError(_apiErrorMessage.InternalException);
-        }
+        // Get the operator who is changing the user info
+        var @operator = (await _currentUserService.GetUser()).IsNotNull();
 
+        // If the operator is Admin, and target have the role Above or Equal to Admin, then the operator could not change the role.
+        // Only SuperAdmin could change any user's info, include himself.
         if (@operator.UserRole is UserRole.Admin && user.UserRole >= UserRole.Admin)
         {
             return MaaApiResponseHelper.Forbidden(_apiErrorMessage.PermissionDenied);
         }
 
-        if (request.Password is not null)
+        // If the Password in request is set, then change it.
+        if (string.IsNullOrEmpty(request.Password) is false)
         {
             var hash = _secretService.HashPassword(request.Password);
             user.UpdatePassword(@operator.EntityId, hash);
         }
 
+        // If the Email in request is set, then check if the email has been used by other user.
         if (string.IsNullOrEmpty(request.Email) is false)
         {
             var exist = _dbContext.CopilotUsers.Any(x => x.Email == request.Email);
             if (exist)
             {
+                // If the email has been used by other user, then return bad request error.
                 return MaaApiResponseHelper.BadRequest(_apiErrorMessage.EmailAlreadyInUse);
             }
         }
 
-        user.UpdateUserInfo(@operator.EntityId, request.Email, request.UserName, Enum.Parse<UserRole>(request.Role!));
+        // If the Role in request is set, then parse it to UserRole enum.
+        // If not, set it to null.
+        UserRole? role = request.Role is null ? null : Enum.Parse<UserRole>(request.Role!);
 
+        // Update the user info
+        // Empty or Null check is built into the domain entity method.
+        user.UpdateUserInfo(@operator.EntityId, request.Email, request.UserName, role, true);
+
+        // Update database
         _dbContext.CopilotUsers.Update(user);
         await _dbContext.SaveChangesAsync(cancellationToken);
 

@@ -53,10 +53,12 @@ public class RatingCopilotOperationCommandHandler : IRequestHandler<RatingCopilo
 
     public async Task<MaaApiResponse> Handle(RatingCopilotOperationCommand request, CancellationToken cancellationToken)
     {
+        // Get current infos
         var user = (await _currentUserService.GetUser()).IsNotNull();
         var ratingType = Enum.Parse<OperationRatingType>(request.RatingType!);
-        var operationId = _copilotIdService.DecodeId(request.Id!);
 
+        // Get operations
+        var operationId = _copilotIdService.DecodeId(request.Id!);
         var operation = await _dbContext.CopilotOperations
             .FirstOrDefaultAsync(x => x.Id == operationId, cancellationToken);
         if (operation is null)
@@ -67,26 +69,35 @@ public class RatingCopilotOperationCommandHandler : IRequestHandler<RatingCopilo
 
         var operationEntityId = operation.EntityId;
 
+        // Get rating
         var rating = await _dbContext.CopilotOperationRatings
             .FirstOrDefaultAsync(x =>
                 x.UserId == user.EntityId &&
                 x.OperationId == operationEntityId, cancellationToken);
 
+        // Set current rating and prev rating value
         var prevRating = OperationRatingType.None;
         OperationRatingType currentRating;
         if (rating is null)
         {
+            // If rating in DB is null, then set prev as None, current as requested
             _dbContext.CopilotOperationRatings.Add(new CopilotOperationRating(
                 operationEntityId, user.EntityId, ratingType));
             currentRating = ratingType;
         }
         else
         {
+            // If rating in DB founded, set prev as what in db
             prevRating = rating.RatingType;
+
+            // If prev is the same as requested, then set current to None
+            // Else set current to what requested
             currentRating = rating.RatingType == ratingType ? OperationRatingType.None : ratingType;
             rating.ChangeRating(currentRating);
             _dbContext.CopilotOperationRatings.Update(rating);
         }
+
+        // Check if need to do something with the operation Like and Dislike counter
 
         // ReSharper disable once ConvertIfStatementToSwitchStatement
         // LIKE -> STH. ELSE => Remove Like Count
@@ -110,9 +121,11 @@ public class RatingCopilotOperationCommandHandler : IRequestHandler<RatingCopilo
             operation.AddDislike(user.EntityId);
         }
 
+        // Update database
         _dbContext.CopilotOperations.Update(operation);
         await _dbContext.SaveChangesAsync(cancellationToken);
 
+        // Return response
         return MaaApiResponseHelper.Ok(new RatingCopilotOperationDto
         {
             Id = request.Id!,

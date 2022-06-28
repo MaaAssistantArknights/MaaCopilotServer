@@ -45,22 +45,23 @@ public class
     public async Task<MaaApiResponse> Handle(GetCopilotOperationQuery request,
         CancellationToken cancellationToken)
     {
+        // Get current infos
         var user = await _currentUserService.GetUser();
         var isLoggedIn = user is not null;
-        var id = _copilotIdService.DecodeId(request.Id!);
-        if (id is null)
-        {
-            return MaaApiResponseHelper.NotFound(string.Format(_apiErrorMessage.CopilotOperationWithIdNotFound!, request.Id));
-        }
 
+        // Get operation
+        var id = _copilotIdService.DecodeId(request.Id!);
         var entity = await _dbContext.CopilotOperations
             .Include(x => x.Author)
-            .FirstOrDefaultAsync(x => x.Id == id.Value, cancellationToken);
+            .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
         if (entity is null)
         {
             return MaaApiResponseHelper.NotFound(string.Format(_apiErrorMessage.CopilotOperationWithIdNotFound!, request.Id));
         }
 
+        // If the user is not logged in, the operation rating type in response will be set to null
+        // If the user is logged in, the operation rating type in response will be set to the user's rating type
+        // and query the database to get the user's rating for the operation
         OperationRatingType? rating = isLoggedIn
             ? (await _dbContext.CopilotOperationRatings
                 .FirstOrDefaultAsync(x => x.UserId == user!.EntityId
@@ -68,6 +69,7 @@ public class
                 .RatingType ?? OperationRatingType.None
             : null;
 
+        // Build dto
         var dto = new GetCopilotOperationQueryDto
         {
             Id = request.Id!,
@@ -85,6 +87,7 @@ public class
             RatingType = rating
         };
 
+        // Add an view count to the operation and update it in the database
         entity.AddViewCount();
         _dbContext.CopilotOperations.Update(entity);
         await _dbContext.SaveChangesAsync(cancellationToken);

@@ -55,21 +55,17 @@ public class UpdateCopilotUserPasswordCommandHandler : IRequestHandler<UpdateCop
 
     public async Task<MaaApiResponse> Handle(UpdateCopilotUserPasswordCommand request, CancellationToken cancellationToken)
     {
-        var user = await _dbContext.CopilotUsers
-            .FirstOrDefaultAsync(x => x.EntityId == _currentUserService.GetUserIdentity()!.Value, cancellationToken);
+        // Get current infos.
+        var user = (await _currentUserService.GetUser()).IsNotNull();
 
-        if (user is null)
-        {
-            return MaaApiResponseHelper.InternalError(_apiErrorMessage.InternalException);
-        }
-
+        // Check if original password is valid or not
         var ok = _secretService.VerifyPassword(user!.Password, request.OriginalPassword!);
-
         if (ok is false)
         {
             return MaaApiResponseHelper.BadRequest(_apiErrorMessage.PasswordInvalid);
         }
 
+        // Set new password
         var hash = _secretService.HashPassword(request.NewPassword!);
         user.UpdatePassword(user.EntityId, hash);
         _dbContext.CopilotUsers.Update(user);

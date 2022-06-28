@@ -68,33 +68,37 @@ public class RegisterCopilotAccountCommandHandler : IRequestHandler<RegisterCopi
         _apiErrorMessage = apiErrorMessage;
     }
 
-    public async Task<MaaApiResponse> Handle(RegisterCopilotAccountCommand request,
-        CancellationToken cancellationToken)
+    public async Task<MaaApiResponse> Handle(RegisterCopilotAccountCommand request, CancellationToken cancellationToken)
     {
-        var emailExist = await _dbContext.CopilotUsers.AnyAsync(x => x.Email == request.Email, cancellationToken);
-        if (emailExist)
+        // Check if the email has already been used or not
+        var emailColliding = await _dbContext.CopilotUsers.AnyAsync(x => x.Email == request.Email, cancellationToken);
+        if (emailColliding)
         {
-            return MaaApiResponseHelper.BadRequest(
-                _apiErrorMessage.EmailAlreadyInUse);
+            return MaaApiResponseHelper.BadRequest(_apiErrorMessage.EmailAlreadyInUse);
         }
 
+        // Build new user entity and add to database
         var user = new Domain.Entities.CopilotUser(request.Email!, _secretService.HashPassword(request.Password!),
             request.UserName!, UserRole.User, null);
         _dbContext.CopilotUsers.Add(user);
 
+        // Generate new token for AccountActivation
         var (token, time) = _secretService.GenerateToken(user.EntityId,
             TimeSpan.FromMinutes(_tokenOption.Value.AccountActivationToken.ExpireTime));
+        // Send email
         var result = await _mailService.SendEmailAsync(
             new EmailUserActivation(user.UserName, token, time.ToUtc8String(),
                 _tokenOption.Value.AccountActivationToken.HasCallback),
             user.Email);
 
+        // If email failed to send, return an internal error response
+        // In this situation, the user entity would not be added to database
         if (result is false)
         {
-            return MaaApiResponseHelper.InternalError(
-                _apiErrorMessage.EmailSendFailed);
+            return MaaApiResponseHelper.InternalError(_apiErrorMessage.EmailSendFailed);
         }
 
+        // Add token to database
         var tokenEntity = new CopilotToken(user.EntityId, TokenType.UserActivation, token, time);
         _dbContext.CopilotTokens.Add(tokenEntity);
         await _dbContext.SaveChangesAsync(cancellationToken);

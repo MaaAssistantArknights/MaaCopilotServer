@@ -44,16 +44,13 @@ public class DeleteCopilotOperationCommandHandler : IRequestHandler<DeleteCopilo
         _apiErrorMessage = apiErrorMessage;
     }
 
-    public async Task<MaaApiResponse> Handle(DeleteCopilotOperationCommand request,
-        CancellationToken cancellationToken)
+    public async Task<MaaApiResponse> Handle(DeleteCopilotOperationCommand request, CancellationToken cancellationToken)
     {
-        var user = await _currentUserService.GetUser();
-        var id = _copilotIdService.DecodeId(request.Id!);
-        if (id is null)
-        {
-            return MaaApiResponseHelper.NotFound(string.Format(_apiErrorMessage.CopilotOperationWithIdNotFound!, request.Id));
-        }
+        // Get current infos
+        var user = (await _currentUserService.GetUser()).IsNotNull();
 
+        // Get operation
+        var id = _copilotIdService.DecodeId(request.Id!);
         var entity = await _dbContext.CopilotOperations
             .Include(x => x.Author)
             .FirstOrDefaultAsync(x => x.Id == id.Value, cancellationToken);
@@ -62,12 +59,14 @@ public class DeleteCopilotOperationCommandHandler : IRequestHandler<DeleteCopilo
             return MaaApiResponseHelper.NotFound(string.Format(_apiErrorMessage.CopilotOperationWithIdNotFound!, request.Id));
         }
 
-        if (user!.IsAllowAccess(entity.Author) is false)
+        // Check if the user has the permission to delete the operation
+        if (user.IsAllowAccess(entity.Author) is false)
         {
             return MaaApiResponseHelper.Forbidden(_apiErrorMessage.PermissionDenied);
         }
 
-        entity.Delete(user!.EntityId);
+        // Delete operation
+        entity.Delete(user.EntityId);
         _dbContext.CopilotOperations.Remove(entity);
         await _dbContext.SaveChangesAsync(cancellationToken);
         return MaaApiResponseHelper.Ok();

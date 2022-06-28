@@ -42,14 +42,11 @@ public class DeleteFavoriteListCommandHandler : IRequestHandler<DeleteFavoriteLi
 
     public async Task<MaaApiResponse> Handle(DeleteFavoriteListCommand request, CancellationToken cancellationToken)
     {
+        // Get current info
         var listId = Guid.Parse(request.FavoriteListId!);
-        var userId = _currentUserService.GetUserIdentity()!.Value;
-        var user = await _dbContext.CopilotUsers.FirstOrDefaultAsync(x => x.EntityId == userId, cancellationToken);
-        if (user is null)
-        {
-            return MaaApiResponseHelper.InternalError();
-        }
+        var user = (await _currentUserService.GetUser()).IsNotNull();
 
+        // Get fav list
         var list = await _dbContext.CopilotUserFavorites
             .Include(x => x.User)
             .Include(x => x.Operations)
@@ -60,12 +57,14 @@ public class DeleteFavoriteListCommandHandler : IRequestHandler<DeleteFavoriteLi
                 string.Format(_apiErrorMessage.FavListWithIdNotFound!, listId));
         }
 
+        // Check if user is allowed to delete the list
         if (user.IsAllowAccess(list.User) is false)
         {
             return MaaApiResponseHelper.Forbidden(_apiErrorMessage.PermissionDenied);
         }
 
-        list.Operations.ForEach(x => x.RemoveFavorites(userId));
+        // Delete list
+        list.Operations.ForEach(x => x.RemoveFavorites(user.EntityId));
         _dbContext.CopilotUserFavorites.Remove(list);
         await _dbContext.SaveChangesAsync(cancellationToken);
         return MaaApiResponseHelper.Ok();

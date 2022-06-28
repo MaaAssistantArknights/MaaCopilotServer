@@ -87,13 +87,22 @@ public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOp
     public async Task<MaaApiResponse> Handle(
         QueryCopilotOperationsQuery request, CancellationToken cancellationToken)
     {
+        // Get current infos
         var user = await _currentUserService.GetUser();
         var isLoggedIn = user is not null;
+
+        // Set pagination params
+        // limit and page are optional in request, so we need to check if they are set
+        // if not, set the default values
         var limit = request.Limit ?? 10;
         var page = request.Page ?? 1;
+
+        // Get uploader id
         Guid? uploaderId;
         if (request.UploaderId == "me")
         {
+            // if uploader id is set to me, try to get current user id
+            // if user is not logged in, return a bad request error
             var id = _currentUserService.GetUserIdentity();
             if (id is null)
             {
@@ -104,57 +113,75 @@ public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOp
         }
         else if (string.IsNullOrEmpty(request.UploaderId))
         {
+            // if uploader id is not set, set the value to null
             uploaderId = null;
         }
         else
         {
+            // if the uploader if is set, set the value to the given id
             uploaderId = Guid.Parse(request.UploaderId);
         }
 
+        // Build queryable
         var queryable = _dbContext.CopilotOperations.Include(x => x.Author).AsQueryable();
         if (string.IsNullOrEmpty(request.StageName) is false)
         {
+            // if stage name is set, filter by it
             queryable = queryable.Where(x => x.StageName.Contains(request.StageName));
         }
-
         if (string.IsNullOrEmpty(request.Content) is false)
         {
+            // if content is set, filter by it
             queryable = queryable.Where(x => x.Content.Contains(request.Content));
         }
-
         if (string.IsNullOrEmpty(request.Uploader) is false)
         {
+            // if uploader is set, filter by it
             queryable = queryable.Where(x => x.Author.UserName.Contains(request.Uploader));
         }
 
         if (uploaderId is not null)
         {
+            // if uploader id is set, filter by it
             queryable = queryable.Where(x => x.Author.EntityId == uploaderId);
         }
 
+        // Count total amount of items
         var totalCount = await queryable.CountAsync(cancellationToken);
 
+        // Pagination value, skip some items to get the page we want
         var skip = (page - 1) * limit;
 
+        // Order by
         queryable = request.OrderBy?.ToLower() switch
         {
+            // if views is set, order by views
             "views" => string.IsNullOrEmpty(request.Desc)
                 ? queryable.OrderBy(x => x.ViewCounts)
                 : queryable.OrderByDescending(x => x.ViewCounts),
+            // if rating is set, order by rating
             "rating" => string.IsNullOrEmpty(request.Desc)
                 ? queryable.OrderBy(x => x.RatingRatio)
                 : queryable.OrderByDescending(x => x.RatingRatio),
+            // if no order is set, order by id
             _ => string.IsNullOrEmpty(request.Desc)
                 ? queryable.OrderBy(x => x.Id)
                 : queryable.OrderByDescending(x => x.Id)
         };
 
+        // Build full query
         queryable = queryable.Skip(skip).Take(limit);
 
+        // Get all items
         var result = queryable.ToList();
+        // Check if there are any more pages
+        // current selected items = limit * page
+        // if it is less then total count, there are more pages
         var hasNext = limit * page < totalCount;
 
         // TODO: Find more elegant way to do this.
+        // If user is logged in, get the rating for each operation
+        // If not, set the rating to an empty list
         var rating = isLoggedIn
             ? (await _dbContext.CopilotOperationRatings
                 .Where(x => x.UserId == user!.EntityId)
@@ -177,12 +204,15 @@ public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOp
                     Operators = x.Operators,
                     UploadTime = x.UpdateAt.ToIsoString(),
                     ViewCounts = x.ViewCounts,
+                    // If the user is logged in, get the rating for the operation, default value is None
+                    // If not, set to null
                     RatingType = isLoggedIn
                         ? rating.FirstOrDefault(y => y.OperationId == x.EntityId)?
                               .RatingType ?? OperationRatingType.None
                         : null
                 })
             .ToList();
+        // Build pagination response
         var paginationResult = new PaginationResult<QueryCopilotOperationsQueryDto>
         {
             HasNext = hasNext,
