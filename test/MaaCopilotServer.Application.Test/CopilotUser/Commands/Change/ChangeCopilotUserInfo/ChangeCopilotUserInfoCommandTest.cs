@@ -52,30 +52,10 @@ public class ChangeCopilotUserInfoCommandTest
     }
 
     /// <summary>
-    /// Tests <see cref="ChangeCopilotUserInfoCommandHandler.Handle(ChangeCopilotUserInfoCommand, CancellationToken)"/> with non-existing operator.
-    /// </summary>
-    [TestMethod]
-    public void TestHandle_OperatorNotFound()
-    {
-        var user = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, Domain.Enums.UserRole.User, null);
-        _dbContext.CopilotUsers.Add(user);
-        _dbContext.SaveChangesAsync(new CancellationToken()).Wait();
-        var currentUserService = new Mock<ICurrentUserService>();
-        currentUserService.Setup(x => x.GetUserIdentity()).Returns(Guid.Empty);
-
-        var request = new ChangeCopilotUserInfoCommand()
-        {
-            UserId = user.EntityId.ToString(),
-        };
-        var handler = new ChangeCopilotUserInfoCommandHandler(_dbContext, currentUserService.Object, _secretService, _apiErrorMessage);
-        var resposne = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult();
-
-        resposne.StatusCode.Should().Be(StatusCodes.Status500InternalServerError);
-    }
-
-    /// <summary>
     /// Tests <see cref="ChangeCopilotUserInfoCommandHandler.Handle(ChangeCopilotUserInfoCommand, CancellationToken)"/> with insufficient operator permission.
     /// </summary>
+    /// <param name="userRole">The test user role.</param>
+    /// <param name="operatorRole">The test operator role.</param>
     [DataTestMethod]
     [DataRow(Domain.Enums.UserRole.Admin, Domain.Enums.UserRole.Admin)]
     [DataRow(Domain.Enums.UserRole.SuperAdmin, Domain.Enums.UserRole.Admin)]
@@ -87,11 +67,36 @@ public class ChangeCopilotUserInfoCommandTest
         _dbContext.CopilotUsers.Add(@operator);
         _dbContext.SaveChangesAsync(new CancellationToken()).Wait();
         var currentUserService = new Mock<ICurrentUserService>();
-        currentUserService.Setup(x => x.GetUserIdentity()).Returns(@operator.EntityId);
+        currentUserService.Setup(x => x.GetUser().Result).Returns(@operator);
 
         var request = new ChangeCopilotUserInfoCommand()
         {
             UserId = user.EntityId.ToString(),
+        };
+        var handler = new ChangeCopilotUserInfoCommandHandler(_dbContext, currentUserService.Object, _secretService, _apiErrorMessage);
+        var resposne = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult();
+
+        resposne.StatusCode.Should().Be(StatusCodes.Status403Forbidden);
+    }
+
+    /// <summary>
+    /// Tests <see cref="ChangeCopilotUserInfoCommandHandler.Handle(ChangeCopilotUserInfoCommand, CancellationToken)"/> with super admin role changes.
+    /// </summary>
+    [TestMethod]
+    public void TestHandle_SuperAdminRoleChanges()
+    {
+        var user = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, Domain.Enums.UserRole.SuperAdmin, null);
+        _dbContext.CopilotUsers.Add(user);
+        var @operator = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, Domain.Enums.UserRole.SuperAdmin, null);
+        _dbContext.CopilotUsers.Add(@operator);
+        _dbContext.SaveChangesAsync(new CancellationToken()).Wait();
+        var currentUserService = new Mock<ICurrentUserService>();
+        currentUserService.Setup(x => x.GetUser().Result).Returns(@operator);
+
+        var request = new ChangeCopilotUserInfoCommand()
+        {
+            UserId = user.EntityId.ToString(),
+            Role = Domain.Enums.UserRole.Admin.ToString(),
         };
         var handler = new ChangeCopilotUserInfoCommandHandler(_dbContext, currentUserService.Object, _secretService, _apiErrorMessage);
         var resposne = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult();
@@ -111,7 +116,7 @@ public class ChangeCopilotUserInfoCommandTest
         _dbContext.CopilotUsers.Add(@operator);
         _dbContext.SaveChangesAsync(new CancellationToken()).Wait();
         var currentUserService = new Mock<ICurrentUserService>();
-        currentUserService.Setup(x => x.GetUserIdentity()).Returns(@operator.EntityId);
+        currentUserService.Setup(x => x.GetUser().Result).Returns(@operator);
 
         var request = new ChangeCopilotUserInfoCommand()
         {
@@ -137,7 +142,7 @@ public class ChangeCopilotUserInfoCommandTest
         _dbContext.CopilotUsers.Add(@operator);
         _dbContext.SaveChangesAsync(new CancellationToken()).Wait();
         var currentUserService = new Mock<ICurrentUserService>();
-        currentUserService.Setup(x => x.GetUserIdentity()).Returns(@operator.EntityId);
+        currentUserService.Setup(x => x.GetUser().Result).Returns(@operator);
         var secretService = new Mock<ISecretService>();
         secretService.Setup(x => x.HashPassword("new_password")).Returns("hashed_password");
 
@@ -153,7 +158,7 @@ public class ChangeCopilotUserInfoCommandTest
         var resposne = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult();
 
         resposne.StatusCode.Should().Be(StatusCodes.Status200OK);
-        user.UserActivated.Should().Be(false);
+        user.UserActivated.Should().BeTrue();
         user.Email.Should().Be("user@example.com");
         user.UserName.Should().Be("test_username");
         user.Password.Should().Be("hashed_password");
