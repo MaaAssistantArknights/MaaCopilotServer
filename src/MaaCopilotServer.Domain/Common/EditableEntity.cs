@@ -5,17 +5,17 @@
 namespace MaaCopilotServer.Domain.Common;
 
 /// <summary>
-///     可更改实体
+///     Editable entity base class.
 /// </summary>
 public abstract class EditableEntity : BaseEntity
 {
     /// <summary>
-    ///     更新时间
+    ///     Update time.
     /// </summary>
     public DateTimeOffset UpdateAt { get; protected set; } = DateTimeOffset.UtcNow;
 
     /// <summary>
-    ///     更新者
+    ///     Updater operator GUID.
     /// </summary>
     public Guid UpdateBy { get; protected set; }
 }

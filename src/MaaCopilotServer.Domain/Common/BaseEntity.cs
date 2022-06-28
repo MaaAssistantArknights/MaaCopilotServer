@@ -8,33 +8,33 @@ namespace MaaCopilotServer.Domain.Common;
 
 // ReSharper disable once ConvertIfStatementToReturnStatement
 /// <summary>
-///     只读实体基类
+///     ReadOnly domain entity base class.
 /// </summary>
 public abstract class BaseEntity
 {
     /// <summary>
-    ///     资源 ID
+    ///     The unique entity id
     /// </summary>
     [Key]
     public Guid EntityId { get; } = Guid.NewGuid();
 
     /// <summary>
-    ///     创建者
+    ///     Creator GUID
     /// </summary>
     public Guid CreateBy { get; protected set; }
 
     /// <summary>
-    ///     创建时间
+    ///     Create time
     /// </summary>
     public DateTimeOffset CreateAt { get; } = DateTimeOffset.UtcNow;
 
     /// <summary>
-    ///     是否为已删除
+    ///     Soft delete flag
     /// </summary>
     public bool IsDeleted { get; set; }
 
     /// <summary>
-    ///     删除者
+    ///     Soft delete operator GUID
     /// </summary>
     public Guid? DeleteBy { get; protected set; }
 
@@ -46,7 +46,7 @@ public abstract class BaseEntity
     {
         DeleteBy = @operator;
     }
-
+    
     public override bool Equals(object? obj)
     {
         if (obj is not BaseEntity compareTo)

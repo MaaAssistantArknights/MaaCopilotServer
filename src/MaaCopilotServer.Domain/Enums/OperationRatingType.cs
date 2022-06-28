@@ -9,7 +9,18 @@ namespace MaaCopilotServer.Domain.Enums;
 /// </summary>
 public enum OperationRatingType
 {
+    /// <summary>
+    ///     Like
+    /// </summary>
     Like,
+
+    /// <summary>
+    ///     Dislike
+    /// </summary>
     Dislike,
+
+    /// <summary>
+    ///     No rating
+    /// </summary>
     None
 }

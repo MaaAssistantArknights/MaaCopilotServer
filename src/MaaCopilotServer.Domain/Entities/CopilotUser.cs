@@ -80,6 +80,10 @@ public class CopilotUser : EditableEntity
     /// </summary>
     public List<CopilotUserFavorite> UserFavorites { get; private set; } = new();
 
+    /// <summary>
+    ///     Activate the user.
+    /// </summary>
+    /// <param name="operator">The operator.</param>
     public void ActivateUser(Guid @operator)
     {
         UpdateAt = DateTimeOffset.UtcNow;

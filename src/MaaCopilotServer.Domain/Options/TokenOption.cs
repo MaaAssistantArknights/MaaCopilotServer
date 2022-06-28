@@ -32,6 +32,9 @@ public class TokenOption
     public TokenConfiguration ChangeEmailToken { get; set; } = null!;
 }
 
+/// <summary>
+///     The <c>TokenConfiguration</c> Option
+/// </summary>
 public class TokenConfiguration
 {
     /// <summary>

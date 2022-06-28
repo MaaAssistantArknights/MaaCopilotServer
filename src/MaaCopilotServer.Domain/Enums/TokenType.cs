@@ -4,9 +4,18 @@
 
 namespace MaaCopilotServer.Domain.Enums;
 
+/// <summary>
+///     Enumeration of the possible types of the Token.
+/// </summary>
 public enum TokenType
 {
+    /// <summary>
+    ///     User account activation token.
+    /// </summary>
     UserActivation = 0,
-    UserPasswordReset = 1,
-    UserEmailChange = 2
+
+    /// <summary>
+    ///     User password reset token.
+    /// </summary>
+    UserPasswordReset = 1
 }

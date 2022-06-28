@@ -4,6 +4,9 @@
 
 namespace MaaCopilotServer.Domain.Helper;
 
+/// <summary>
+///     Helper class for handling mathematical operations.
+/// </summary>
 public static class MathHelper
 {
     /// <summary>
