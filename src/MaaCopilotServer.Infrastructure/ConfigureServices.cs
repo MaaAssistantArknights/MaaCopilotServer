@@ -2,8 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
-using System.Net;
-using System.Net.Mail;
+using FluentEmail.MailKitSmtp;
 using MaaCopilotServer.Application.Common.Extensions;
 using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Domain.Options;
@@ -34,23 +33,20 @@ public static class ConfigureServices
         services.AddSingleton<ICopilotIdService, CopilotIdService>();
         services.AddSingleton<ISecretService, SecretService>();
 
-        var smtpClient = new SmtpClient
+        var smtpClientOptions = new SmtpClientOptions
         {
-            Host = emailOption.Smtp.Host,
+            Server = emailOption.Smtp.Host,
             Port = emailOption.Smtp.Port,
-            EnableSsl = emailOption.Smtp.UseSsl,
-            Credentials =
-                emailOption.Smtp.UseAuthentication
-                    ? new NetworkCredential(emailOption.Smtp.Account, emailOption.Smtp.Password)
-                    : null,
-            DeliveryMethod = SmtpDeliveryMethod.Network,
-            UseDefaultCredentials = false,
-            Timeout = emailOption.Smtp.TimeoutMs
+            User = emailOption.Smtp.Account,
+            Password = emailOption.Smtp.Password,
+            RequiresAuthentication = emailOption.Smtp.UseAuthentication,
+            UseSsl = emailOption.Smtp.UseSsl,
+            UsePickupDirectory = false
         };
 
         services
             .AddFluentEmail(emailOption.Sender.Address, emailOption.Sender.Name)
-            .AddSmtpSender(smtpClient)
+            .AddMailKitSender(smtpClientOptions)
             .AddLiquidRenderer();
 
         services.AddTransient<IMailService, MailService>();
