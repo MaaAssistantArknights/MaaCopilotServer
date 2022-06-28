@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <root>
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root"
+              xmlns="">
     <xsd:element name="root" msdata:IsDataSet="true">
-      
+
     </xsd:element>
   </xsd:schema>
   <resheader name="resmimetype">
@@ -13,10 +14,14 @@
     <value>1.3</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral,
+      PublicKeyToken=b77a5c561934e089
+    </value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral,
+      PublicKeyToken=b77a5c561934e089
+    </value>
   </resheader>
   <data name="PermissionDenied" xml:space="preserve">
     <value>权限不足</value>
@@ -44,5 +49,20 @@
   </data>
   <data name="InternalException" xml:space="preserve">
     <value>出现内部错误</value>
+  </data>
+  <data name="EmailSendFailed" xml:space="preserve">
+    <value>邮件发送失败</value>
+  </data>
+  <data name="TokenInvalid" xml:space="preserve">
+    <value>Token 不存在或已过期</value>
+  </data>
+  <data name="UserInactivated" xml:space="preserve">
+    <value>用户账号未激活</value>
+  </data>
+  <data name="EmailNotRegister" xml:space="preserve">
+    <value>邮箱未注册</value>
+  </data>
+  <data name="FavListWithIdNotFound" xml:space="preserve">
+    <value>找不到 ID 为 {0} 的收藏列表</value>
   </data>
 </root>

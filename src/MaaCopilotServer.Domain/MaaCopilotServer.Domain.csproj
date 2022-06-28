@@ -1,19 +1,51 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
-        <RootNamespace>MaaCopilotServer.Domain</RootNamespace>
-        <AssemblyName>MaaCopilotServer.Domain</AssemblyName>
-        <Nullable>enable</Nullable>
-        <ImplicitUsings>enable</ImplicitUsings>
-    </PropertyGroup>
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <RootNamespace>MaaCopilotServer.Domain</RootNamespace>
+    <AssemblyName>MaaCopilotServer.Domain</AssemblyName>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
 
-    <PropertyGroup Condition="$(Configuration) == Release">
-      <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    </PropertyGroup>
-  
-    <ItemGroup>
-      <PackageReference Include="MediatR" Version="10.0.1" />
-    </ItemGroup>
+  <PropertyGroup Condition="$(Configuration) == Release">
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="$(Configuration) == Debug">
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>CS1591</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MediatR" Version="10.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Email\Templates\EmailChangeAddress.liquid">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <TargetPath>templates\EmailChangeAddress.liquid</TargetPath>
+    </None>
+    <None Update="Email\Templates\EmailPasswordReset.liquid">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <TargetPath>templates\EmailPasswordReset.liquid</TargetPath>
+    </None>
+    <None Update="Email\Templates\EmailUserActivation.liquid">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <TargetPath>templates\EmailUserActivation.liquid</TargetPath>
+    </None>
+    <None Update="Email\Templates\EmailChangeAddress-en.liquid">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <TargetPath>templates\EmailChangeAddress-en.liquid</TargetPath>
+    </None>
+    <None Update="Email\Templates\EmailPasswordReset-en.liquid">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <TargetPath>templates\EmailPasswordReset-en.liquid</TargetPath>
+    </None>
+    <None Update="Email\Templates\EmailUserActivation-en.liquid">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <TargetPath>templates\EmailUserActivation-en.liquid</TargetPath>
+    </None>
+  </ItemGroup>
 
 </Project>

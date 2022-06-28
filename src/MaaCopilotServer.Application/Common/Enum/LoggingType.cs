@@ -2,23 +2,53 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace MaaCopilotServer.Application.Common.Enum;
 
-public struct LoggingType
+/// <summary>
+///     The type of log.
+/// </summary>
+[ExcludeFromCodeCoverage]
+public readonly struct LoggingType
 {
+    /// <summary>
+    ///     The value.
+    /// </summary>
     private readonly string _value;
 
+    /// <summary>
+    ///     The constructor of <see cref="LoggingType" />.
+    /// </summary>
+    /// <param name="value">The value.</param>
     private LoggingType(string value)
     {
         _value = value;
     }
 
+    /// <summary>
+    ///     The request log.
+    /// </summary>
     public static LoggingType Request => new("Request");
+
+    /// <summary>
+    ///     The failed request log.
+    /// </summary>
     public static LoggingType FailedRequest => new("Failed Request");
+
+    /// <summary>
+    ///     The exception.
+    /// </summary>
     public static LoggingType Exception => new("Exception");
 
-    public static implicit operator string(LoggingType loggingType)
+    /// <summary>
+    ///     Exceptions thrown before reaching the mediator
+    /// </summary>
+    public static LoggingType MiddlewareException => new("Middleware Exception");
+
+    /// <inheritdoc/>
+    public override string ToString()
     {
-        return loggingType._value;
+        return _value;
     }
 }

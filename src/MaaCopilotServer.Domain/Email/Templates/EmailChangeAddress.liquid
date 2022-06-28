@@ -1,0 +1,69 @@
+<html lang="zh">
+<style>
+    .title {
+        font-size: 56px;
+        font-weight: bold;
+        color: black;
+        text-align: center;
+    }
+
+    .content {
+        font-size: x-large;
+    }
+
+    .token {
+        background-color: lightgray;
+        border-radius: 12px;
+        padding: 8px;
+    }
+
+    .token p {
+        text-align: center;
+        font-size: xx-large;
+        font-family: monospace;
+    }
+
+    .footer {
+        font-size: medium;
+    }
+</style>
+
+<h1 class="title">Maa Copilot</h1>
+
+<div class="content">
+    <p>Dr.{{ UserName }}</p>
+    <p>您正在重置 Maa Copilot 账号的电子邮箱地址，这是您新的电子邮箱激活码，请查收！</p>
+</div>
+
+<div class="token">
+    <p>{{ Token }}</p>
+</div>
+
+<br/>
+
+<div class="content">请在账户验证页面输入此激活码，该激活码在 {{ ValidBefore }} 前有效。</div>
+
+<br/>
+
+{% if HasCallbackUrl == true %}
+
+    <div class="content">
+        <p>
+            您也可以点击
+            <a href="https://www.prts.plus/user/activate?token={{ Token }}">
+                这个链接
+            </a>
+            进行激活，或者将下面的链接复制到浏览器中打开。
+        </p>
+        <p>https://www.prts.plus/user/activate?token={{ Token }}</p>
+    </div>
+
+    <br/>
+
+{% endif %}
+
+<div class="footer">
+    <p>如果您没有申请 Maa Copilot 账号的电子邮箱地址重置，请检查您的账户安全性，我们建议您更新您的账户密码。</p>
+    <p>此邮件为系统自动发送，请勿回复。</p>
+</div>
+</html>

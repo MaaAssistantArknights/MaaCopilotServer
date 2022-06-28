@@ -12,21 +12,33 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: "Check out"
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: "Set up QEMU"
-        uses: docker/setup-qemu-action@v1
+        uses: docker/setup-qemu-action@v2
 
       - name: "Set up Docker BuildX"
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v2
 
       - name: "Setup .NET SDK"
-        uses: actions/setup-dotnet@v1
+        uses: actions/setup-dotnet@v2
         with:
           dotnet-version: "6.0.x"
           
       - name: "Echo current version number"
         run: echo "Current version is ${{ github.event.release.tag_name }}"
+        
+      - name: "Restore packages"
+        run: dotnet restore
+
+      - name: "Build .NET application"
+        run: dotnet build -c Release --no-restore
+        
+      - name: "Run test"
+        run: dotnet test -c Release --no-build --verbosity normal
+        
+      - name: "Clean environment"
+        run: dotnet clean -c Release
 
       - name: "Publish .NET application"
         run: dotnet publish -c Release -o ./publish ./src/MaaCopilotServer.Api
@@ -38,7 +50,7 @@ jobs:
         run: ./build-docker.sh ${{ github.event.release.tag_name }}
 
       - name: "Login to Docker Hub"
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}

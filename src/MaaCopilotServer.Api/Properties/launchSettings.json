@@ -4,8 +4,9 @@
     "MaaCopilotServer.Api": {
       "commandName": "Project",
       "dotnetRunMessages": true,
-      "launchBrowser": false,
-      "applicationUrl": "https://localhost:7278;http://localhost:5259",
+      "launchBrowser": true,
+      "launchUrl": "http://localhost:5259/swagger",
+      "applicationUrl": "http://localhost:5259",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

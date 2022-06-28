@@ -8,41 +8,45 @@ namespace MaaCopilotServer.Domain.Common;
 
 // ReSharper disable once ConvertIfStatementToReturnStatement
 /// <summary>
-/// 只读实体基类
+///     ReadOnly domain entity base class.
 /// </summary>
 public abstract class BaseEntity
 {
     /// <summary>
-    /// 资源 ID
+    ///     The unique entity id
     /// </summary>
     [Key]
     public Guid EntityId { get; } = Guid.NewGuid();
 
     /// <summary>
-    /// 创建者
+    ///     Creator GUID
     /// </summary>
     public Guid CreateBy { get; protected set; }
 
     /// <summary>
-    /// 创建时间
+    ///     Create time
     /// </summary>
     public DateTimeOffset CreateAt { get; } = DateTimeOffset.UtcNow;
 
     /// <summary>
-    /// 是否为已删除
+    ///     Soft delete flag
     /// </summary>
     public bool IsDeleted { get; set; }
 
     /// <summary>
-    /// 删除者
+    ///     Soft delete operator GUID
     /// </summary>
-    public Guid? DeleteBy { get; protected set; } = null;
+    public Guid? DeleteBy { get; protected set; }
 
+    /// <summary>
+    ///     Deletes an entity by a user.
+    /// </summary>
+    /// <param name="operator">The user</param>
     public void Delete(Guid @operator)
     {
         DeleteBy = @operator;
     }
-
+    
     public override bool Equals(object? obj)
     {
         if (obj is not BaseEntity compareTo)
@@ -60,7 +64,7 @@ public abstract class BaseEntity
 
     public override int GetHashCode()
     {
-        return (GetType().GetHashCode() * 907) + EntityId.GetHashCode();
+        return GetType().GetHashCode() * 907 + EntityId.GetHashCode();
     }
 
     public override string ToString()
@@ -71,10 +75,14 @@ public abstract class BaseEntity
     public static bool operator ==(BaseEntity? a, BaseEntity? b)
     {
         if (a is null && b is null)
+        {
             return true;
+        }
 
         if (a is null || b is null)
+        {
             return false;
+        }
 
         return a.Equals(b);
     }

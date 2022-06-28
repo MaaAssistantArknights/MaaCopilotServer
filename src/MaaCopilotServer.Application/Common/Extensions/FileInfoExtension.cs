@@ -2,10 +2,14 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
 namespace MaaCopilotServer.Application.Common.Extensions;
 
+/// <summary>
+///     The extension of <see cref="FileInfo" />.
+/// </summary>
 public static class FileInfoExtension
 {
     /// <summary>

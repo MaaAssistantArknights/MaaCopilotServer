@@ -2,48 +2,43 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
-using System.Reflection;
+using MaaCopilotServer.Api.Constants;
 using MaaCopilotServer.Application.Common.Extensions;
 
 namespace MaaCopilotServer.Api.Helper;
 
+/// <summary>
+///     The helper class of the configurations of the application.
+/// </summary>
 public static class ConfigurationHelper
 {
     /// <summary>
-    /// 构建 <see cref="IConfiguration"/>
+    ///     Ensures settings files are created correctly.
     /// </summary>
-    /// <remarks>不适用于 Azure Functions 等云服务</remarks>
-    /// <returns><see cref="IConfiguration"/> 实例 (<see cref="ConfigurationRoot"/> 对象)</returns>
-    public static IConfiguration BuildConfiguration()
+    private static void EnsureSettingsFileCreated()
     {
-        var dataDirectoryEnv = Environment.GetEnvironmentVariable("MAA_DATA_DIRECTORY");
-        var isInDocker = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") ?? "false";
-
-        var assemblyDirectory = new FileInfo(Assembly.GetExecutingAssembly().Location).Directory.IsNotNull();
-        var dataDirectory = string.IsNullOrEmpty(dataDirectoryEnv)
-            ? new DirectoryInfo(assemblyDirectory.FullName.CombinePath("data")).EnsureCreated()
-            : new DirectoryInfo(dataDirectoryEnv).EnsureCreated();
-
-        var currentEnvironment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production";
-
-        var appsettingsFile = new FileInfo(dataDirectory.FullName.CombinePath("appsettings.json"));
-        var appsettingsEnvFile = new FileInfo(dataDirectory.FullName.CombinePath($"appsettings.{currentEnvironment}.json"));
-        var originalAppsettingsFile = new FileInfo(assemblyDirectory.FullName.CombinePath("appsettings.json")).AssertExist();
-        var originalAppsettingsEnvFile = new FileInfo(assemblyDirectory.FullName.CombinePath($"appsettings.{currentEnvironment}.json"));
+        // Get settings file locations.
+        var appsettingsFile = new FileInfo(GlobalConstants.AppSettings);
+        var appsettingsEnvFile = new FileInfo(GlobalConstants.AppSettingsEnv);
+        var originalAppsettingsFile = new FileInfo(GlobalConstants.OriginalAppSettings).AssertExist();
+        var originalAppsettingsEnvFile = new FileInfo(GlobalConstants.OriginalAppSettingsEnv);
 
         if (appsettingsFile.Exists is false)
         {
+            // Settings file does not exist. Create a new one.
             appsettingsFile.EnsureDeleted();
 
             var text = File.ReadAllText(originalAppsettingsFile.FullName);
-            text = text.Replace("{{ DATA DIRECTORY }}", dataDirectory.FullName);
+            text = text.Replace("{{ DATA DIRECTORY }}", GlobalConstants.DataDirectory);
             File.WriteAllText(appsettingsFile.FullName, text);
 
-            if (currentEnvironment == "Production")
+            if (GlobalConstants.IsProductionEnvironment)
             {
                 Environment.Exit(0);
             }
         }
+
+        // Check settings file per environment.
         if (originalAppsettingsEnvFile.Exists)
         {
             originalAppsettingsEnvFile.CopyTo(appsettingsEnvFile.FullName, true);
@@ -52,20 +47,30 @@ public static class ConfigurationHelper
         {
             appsettingsEnvFile.EnsureDeleted();
         }
+    }
 
+    /// <summary>
+    ///     Construct <see cref="IConfiguration" />.
+    /// </summary>
+    /// <returns><see cref="IConfiguration" /> (<see cref="ConfigurationRoot"/>) instance.</returns>
+    public static IConfiguration BuildConfiguration()
+    {
+        EnsureSettingsFileCreated();
+
+        // Build configurations.
         var configurationBuilder = new ConfigurationBuilder();
 
-        configurationBuilder.AddJsonFile(appsettingsFile.FullName, optional: false, reloadOnChange: true);
-        configurationBuilder.AddJsonFile(appsettingsEnvFile.FullName, optional: true, reloadOnChange: true);
+        configurationBuilder.AddJsonFile(GlobalConstants.AppSettings, false, true);
+        configurationBuilder.AddJsonFile(GlobalConstants.AppSettingsEnv, true, true);
 
         configurationBuilder.AddEnvironmentVariables("MAA_");
 
-        var appVersion = Environment.GetEnvironmentVariable("MAACOPILOT_APP_VERSION") ?? "0.0.0";
+        var appVersion = GlobalConstants.AppVersion;
 
         configurationBuilder.AddInMemoryCollection(new List<KeyValuePair<string, string>>
         {
-            new("Application:AssemblyPath", assemblyDirectory.FullName),
-            new("Application:DataDirectory", dataDirectory.FullName),
+            new("Application:AssemblyPath", GlobalConstants.AssemblyDirectory),
+            new("Application:DataDirectory", GlobalConstants.DataDirectory),
             new("Application:Version", appVersion),
             new("ElasticApm:ServiceVersion", appVersion)
         });

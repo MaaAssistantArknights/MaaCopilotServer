@@ -2,24 +2,48 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Globalization;
 using System.Security.Claims;
 using MaaCopilotServer.Application.Common.Interfaces;
+using MaaCopilotServer.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace MaaCopilotServer.Api.Services;
 
+/// <summary>
+///     The service for parsing information of the current user.
+/// </summary>
 public class CurrentUserService : ICurrentUserService
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
+    /// <summary>
+    ///     The configuration.
+    /// </summary>
     private readonly IConfiguration _configuration;
 
+    private readonly IMaaCopilotDbContext _dbContext;
+
+    /// <summary>
+    ///     The HTTP context accessor.
+    /// </summary>
+    private readonly IHttpContextAccessor _httpContextAccessor;
+
+    /// <summary>
+    ///     The constructor of <see cref="CurrentUserService" />.
+    /// </summary>
+    /// <param name="dbContext">The db context.</param>
+    /// <param name="httpContextAccessor">The HTTP context accessor.</param>
+    /// <param name="configuration">The configuration.</param>
     public CurrentUserService(
+        IMaaCopilotDbContext dbContext,
         IHttpContextAccessor httpContextAccessor,
         IConfiguration configuration)
     {
+        _dbContext = dbContext;
         _httpContextAccessor = httpContextAccessor;
         _configuration = configuration;
     }
 
+    /// <inheritdoc />
     public Guid? GetUserIdentity()
     {
         var id = _httpContextAccessor.HttpContext?.User.FindFirstValue("id");
@@ -32,6 +56,20 @@ public class CurrentUserService : ICurrentUserService
         return null;
     }
 
+    /// <inheritdoc />
+    public async Task<CopilotUser?> GetUser()
+    {
+        var identity = this.GetUserIdentity();
+        if (identity is null)
+        {
+            return null;
+        }
+
+        var user = await _dbContext.CopilotUsers.FirstOrDefaultAsync(x => x.EntityId == identity.Value);
+        return user;
+    }
+
+    /// <inheritdoc />
     public string GetTrackingId()
     {
         if (_configuration.GetValue<bool>("Switches:Apm") is false)
@@ -39,11 +77,36 @@ public class CurrentUserService : ICurrentUserService
             return _httpContextAccessor.HttpContext?.TraceIdentifier ?? string.Empty;
         }
 
-        var t = Elastic.Apm.Agent.Tracer.CurrentTransaction;
-        if (t is not null)
+        var traceIdExist = _httpContextAccessor.HttpContext?.Items.ContainsKey("ApmTraceId");
+        if (traceIdExist is not true)
         {
-            return t.TraceId;
+            return _httpContextAccessor.HttpContext?.TraceIdentifier ?? string.Empty;
         }
+
+        var traceId = _httpContextAccessor.HttpContext?.Items["ApmTraceId"];
+        if (traceId is not null)
+        {
+            return traceId.ToString()!;
+        }
+
         return _httpContextAccessor.HttpContext?.TraceIdentifier ?? string.Empty;
+    }
+
+    /// <inheritdoc />
+    public CultureInfo GetCulture()
+    {
+        var context = _httpContextAccessor.HttpContext;
+        if (context is null)
+        {
+            return new CultureInfo("zh-cn");
+        }
+
+        var hasValue = context.Items.TryGetValue("culture", out var cultureInfo);
+        if (hasValue is false || cultureInfo is null || cultureInfo.GetType().Name != "CultureInfo")
+        {
+            return new CultureInfo("zh-cn");
+        }
+
+        return (CultureInfo)cultureInfo;
     }
 }

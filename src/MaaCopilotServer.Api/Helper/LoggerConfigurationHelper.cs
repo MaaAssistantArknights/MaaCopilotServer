@@ -5,49 +5,59 @@
 using Destructurama;
 using Elastic.Apm.SerilogEnricher;
 using Elastic.CommonSchema.Serilog;
+using MaaCopilotServer.Application.Common.Extensions;
+using MaaCopilotServer.Domain.Options;
 using Serilog;
 using Serilog.Sinks.Elasticsearch;
 
 namespace MaaCopilotServer.Api.Helper;
 
+/// <summary>
+///     The helper class of logger.
+/// </summary>
 public static class LoggerConfigurationHelper
 {
+    /// <summary>
+    ///     Constructs a <see cref="LoggerConfiguration" /> instance based on the configuration.
+    /// </summary>
+    /// <param name="configuration">The configuration.</param>
+    /// <returns>The <see cref="LoggerConfiguration" /> instance.</returns>
     public static LoggerConfiguration GetLoggerConfiguration(this IConfiguration configuration)
     {
+        var switchesOption = configuration.GetOption<SwitchesOption>();
         var loggerConfiguration = new LoggerConfiguration()
             .ReadFrom.Configuration(configuration)
             .Destructure.UsingAttributes();
 
-        if (configuration.GetValue<bool>("Switches:ElasticSearch") is false)
+        if (switchesOption.ElasticSearch is false)
         {
             return loggerConfiguration;
         }
 
-        var elasticUris = configuration.GetValue<string>("ElasticLogSink:Uris")
-            .Split(";").Select(x => new Uri(x)).ToArray();
-        var elasticPeriod = configuration.GetValue<int>("ElasticLogSink:Period");
-        var elasticAuthMethod = configuration.GetValue<string>("ElasticLogSink:Authentication:Method");
-        var elasticId = configuration.GetValue<string>("ElasticLogSink:Authentication:Secret:Id");
-        var elasticKey = configuration.GetValue<string>("ElasticLogSink:Authentication:Secret:Key");
-        var elasticApplicationName = configuration.GetValue<string>("ElasticLogSink:ApplicationName");
+        // Elastic search options.
+        var elasticOptions = configuration.GetOption<ElasticLogSinkOption>();
+        var elasticUris = elasticOptions.Uris.Split(";").Select(x => new Uri(x)).ToArray();
         loggerConfiguration.WriteTo.Elasticsearch(new ElasticsearchSinkOptions(elasticUris)
         {
-            Period = TimeSpan.FromSeconds(elasticPeriod),
+            Period = TimeSpan.FromSeconds(elasticOptions.Period),
             AutoRegisterTemplate = true,
-            IndexFormat = $"{elasticApplicationName}-{DateTimeOffset.UtcNow.AddHours(8):yyyy.MM}",
+            IndexFormat = $"{elasticOptions.ApplicationName}-{DateTimeOffset.UtcNow.AddHours(8):yyyy.MM}",
             CustomFormatter = new EcsTextFormatter(),
             TypeName = null,
             ModifyConnectionSettings = c =>
             {
-                switch (elasticAuthMethod)
+                switch (elasticOptions.Authentication.Method)
                 {
                     case "Basic":
-                        c.BasicAuthentication(elasticId, elasticKey);
+                        c.BasicAuthentication(elasticOptions.Authentication.Secret.Id,
+                            elasticOptions.Authentication.Secret.Key);
                         break;
                     case "ApiKey":
-                        c.ApiKeyAuthentication(elasticId, elasticKey);
+                        c.ApiKeyAuthentication(elasticOptions.Authentication.Secret.Id,
+                            elasticOptions.Authentication.Secret.Key);
                         break;
                 }
+
                 return c;
             }
         });

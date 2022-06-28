@@ -2,62 +2,89 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
-using Elastic.Apm.AspNetCore;
-using Elastic.Apm.AspNetCore.DiagnosticListener;
-using Elastic.Apm.DiagnosticSource;
+using System.Diagnostics.CodeAnalysis;
 using Elastic.Apm.Elasticsearch;
 using Elastic.Apm.EntityFrameworkCore;
-using MaaCopilotServer.Api;
+using Elastic.Apm.Extensions.Hosting;
+using MaaCopilotServer.Api.Formatter;
 using MaaCopilotServer.Api.Helper;
 using MaaCopilotServer.Api.Middleware;
+using MaaCopilotServer.Api.Swagger;
 using MaaCopilotServer.Application;
+using MaaCopilotServer.Application.Common.Extensions;
+using MaaCopilotServer.Domain.Options;
 using MaaCopilotServer.Infrastructure;
 using MaaCopilotServer.Resources;
 using Serilog;
 using Serilog.Debugging;
 
-var configuration = ConfigurationHelper.BuildConfiguration();
+namespace MaaCopilotServer.Api;
 
-Log.Logger = configuration.GetLoggerConfiguration().CreateLogger();
-SelfLog.Enable(Console.Error);
-
-var builder = WebApplication.CreateBuilder();
-
-builder.Host.UseSerilog();
-
-builder.Configuration.AddConfiguration(configuration);
-
-builder.Services.AddCors();
-builder.Services.AddControllers();
-builder.Services.AddResources();
-builder.Services.AddInfrastructureServices();
-builder.Services.AddApplicationServices();
-builder.Services.AddApiServices(configuration);
-
-var app = builder.Build();
-
-DatabaseHelper.DatabaseInitialize(configuration);
-
-if (configuration.GetValue<bool>("Switches:Apm"))
+/// <summary>
+///     The program entry point.
+/// </summary>
+[ExcludeFromCodeCoverage]
+public static class Program
 {
-    app.UseElasticApm(configuration,
-        new EfCoreDiagnosticsSubscriber(),
-        new ElasticsearchDiagnosticsSubscriber(),
-        new HttpDiagnosticsSubscriber(),
-        new AspNetCoreDiagnosticSubscriber(),
-        new AspNetCoreErrorDiagnosticsSubscriber());
+    /// <summary>
+    ///     The entry point.
+    /// </summary>
+    public static void Main()
+    {
+        // Get global configuration.
+        var configuration = ConfigurationHelper.BuildConfiguration();
+
+        // Create logger.
+        Log.Logger = configuration.GetLoggerConfiguration().CreateLogger();
+        SelfLog.Enable(Console.Error); // Direct log output to standard error stream.
+
+        InitializeHelper.InitializeEmailTemplates();
+
+        var builder = WebApplication.CreateBuilder();
+
+        builder.Configuration.AddConfiguration(configuration);
+
+        builder.Host.UseSerilog();
+
+        var switchesOption = configuration.GetOption<SwitchesOption>();
+        if (switchesOption.Apm)
+        {
+            builder.Host.UseElasticApm(
+                new EfCoreDiagnosticsSubscriber(),
+                new ElasticsearchDiagnosticsSubscriber());
+        }
+
+        builder.Services.AddCors();
+        builder.Services.AddControllers(options =>
+            options.OutputFormatters.Insert(0, new MaaResponseFormatter()));
+        builder.Services.AddResources();
+        builder.Services.AddInfrastructureServices(configuration);
+        builder.Services.AddApplicationServices();
+        builder.Services.AddApiServices(configuration);
+        builder.Services.AddMaaSwagger();
+
+        var app = builder.Build();
+
+        InitializeHelper.InitializeDatabase(configuration);
+
+        app.UseMaaSwagger();
+
+        // CORS settings.
+        app.UseCors(options =>
+        {
+            options.SetIsOriginAllowed(_ => true)
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials();
+        });
+
+        app.UseApmTransaction();
+
+        app.UseRequestCulture();
+        app.UseAuthentication();
+        app.MapControllers();
+
+        // Start application.
+        app.Run();
+    }
 }
-
-app.UseCors(options =>
-{
-    options.SetIsOriginAllowed(_ => true)
-        .AllowAnyMethod()
-        .AllowAnyHeader()
-        .AllowCredentials();
-});
-
-app.UseRequestCulture();
-app.UseAuthentication();
-app.MapControllers();
-
-app.Run();

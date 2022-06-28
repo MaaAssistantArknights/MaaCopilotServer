@@ -1,0 +1,111 @@
+// This file is a part of MaaCopilotServer project.
+// MaaCopilotServer belongs to the MAA organization.
+// Licensed under the AGPL-3.0 license.
+
+using System.Text;
+using MaaCopilotServer.Api.Constants;
+using MaaCopilotServer.Application.Common.Extensions;
+using MaaCopilotServer.Domain.Entities;
+using MaaCopilotServer.Domain.Enums;
+using MaaCopilotServer.Domain.Options;
+using MaaCopilotServer.Infrastructure.Database;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Serilog;
+
+namespace MaaCopilotServer.Api.Helper;
+
+/// <summary>
+///     The helper class of database connection.
+/// </summary>
+public static class InitializeHelper
+{
+    /// <summary>
+    /// Initializes email templates.
+    /// </summary>
+    public static void InitializeEmailTemplates()
+    {
+        var originalTemplatesDirectory = new DirectoryInfo(GlobalConstants.OriginalTemplatesDirectory);
+        var targetTemplatesDirectory = new DirectoryInfo(GlobalConstants.TargetTemplatesDirectory);
+
+        if (targetTemplatesDirectory.Exists is false)
+        {
+            targetTemplatesDirectory.Create();
+        }
+
+        var originalTemplates = originalTemplatesDirectory.GetFiles();
+        var targetTemplates = targetTemplatesDirectory.GetFiles();
+
+        foreach (var originalTemplate in originalTemplates)
+        {
+            if (targetTemplates.Any(x => x.Name == originalTemplate.Name) == false)
+            {
+                originalTemplate.CopyTo(targetTemplatesDirectory.FullName.CombinePath(originalTemplate.Name));
+            }
+        }
+    }
+
+    /// <summary>
+    /// Initializes the database.
+    /// </summary>
+    /// <param name="configuration">The configuration.</param>
+    public static void InitializeDatabase(IConfiguration configuration)
+    {
+        // Establish database connection.
+        var dbOptions = configuration.GetOption<DatabaseOption>();
+        var db = new MaaCopilotDbContext(new OptionsWrapper<DatabaseOption>(dbOptions));
+        var pendingMigrations = db.Database.GetPendingMigrations().Count();
+        if (pendingMigrations > 0)
+        {
+            db.Database.Migrate();
+            Log.Logger.Information("Database migration completed, applied {PendingMigrations} migrations",
+                pendingMigrations);
+        }
+
+        // Check if there are users in the database.
+        var haveUser = db.CopilotUsers.Any();
+        if (haveUser is false)
+        {
+            // New DB without any existing users. Initialize default user.
+            var defaultUserEmail = GlobalConstants.DefaultUserEmail;
+            var defaultUserPassword = GlobalConstants.DefaultUserPassword;
+            if (defaultUserPassword == "")
+            {
+                defaultUserPassword = GeneratePassword();
+            }
+
+            var defaultUserName = GlobalConstants.DefaultUsername;
+
+            if (GlobalConstants.IsDefaultUserEmailEmpty || GlobalConstants.IsDefaultUserPasswordEmpty)
+            {
+                Log.Logger.Information("Creating default user with email {DefaultEmail} and password {DefaultPassword}",
+                    defaultUserEmail, defaultUserPassword);
+            }
+
+            var hash = BCrypt.Net.BCrypt.HashPassword(defaultUserPassword);
+            var user = new CopilotUser(defaultUserEmail, hash, defaultUserName, UserRole.SuperAdmin, Guid.Empty);
+            user.ActivateUser(Guid.Empty);
+            db.CopilotUsers.Add(user);
+            db.SaveChanges();
+        }
+
+        db.Dispose();
+    }
+
+    /// <summary>
+    ///     Generates a new password. The generated password matches regexp like <c>^[A-Z]{16}$</c>.
+    /// </summary>
+    /// <returns>The new password.</returns>
+    public static string GeneratePassword()
+    {
+        var builder = new StringBuilder();
+        var random = new Random();
+        for (var i = 0; i < 16; i++)
+        {
+            var ch = Convert.ToChar(Convert.ToInt32(Math.Floor(26 * random.NextDouble() + 65)));
+            builder.Append(ch);
+        }
+
+        return builder.ToString();
+    }
+}

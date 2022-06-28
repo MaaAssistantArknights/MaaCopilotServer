@@ -1,0 +1,73 @@
+<html lang="zh">
+<style>
+    .title {
+        font-size: 56px;
+        font-weight: bold;
+        color: black;
+        text-align: center;
+    }
+
+    .content {
+        font-size: x-large;
+    }
+
+    .token {
+        background-color: lightgray;
+        border-radius: 12px;
+        padding: 8px;
+    }
+
+    .token p {
+        text-align: center;
+        font-size: xx-large;
+        font-family: monospace;
+    }
+
+    .footer {
+        font-size: medium;
+    }
+</style>
+
+<h1 class="title">Maa Copilot</h1>
+
+<div class="content">
+    <p>Dr.{{ UserName }}</p>
+    <p>You are resetting the email address of your Maa Copilot account, here is your new email activation code, please
+        check it!</p>
+</div>
+
+<div class="token">
+    <p>{{ Token }}</p>
+</div>
+
+<br/>
+
+<div class="content">Please enter this activation code, which is valid until {{ ValidBefore }}, on the account
+    verification page.
+</div>
+
+<br/>
+
+{% if HasCallbackUrl == true %}
+
+    <div class="content">
+        <p>
+            Or you can click
+            <a href="https://www.prts.plus/user/activate?token={{ Token }}">
+                This Link
+            </a>
+            to activate your account. Or copy and paste the following URL into your browser:
+        </p>
+        <p>https://www.prts.plus/user/activate?token={{ Token }}</p>
+    </div>
+
+    <br/>
+
+{% endif %}
+
+<div class="footer">
+    <p>If you have not requested an email address reset for your Maa Copilot account, please check your account security
+        and we recommend that you update your account password.</p>
+    <p>This email is automatically sent by the system, please do not reply.</p>
+</div>
+</html>

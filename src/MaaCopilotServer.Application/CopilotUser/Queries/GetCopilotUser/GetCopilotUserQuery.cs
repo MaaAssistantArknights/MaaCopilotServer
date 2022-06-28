@@ -2,19 +2,28 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.ComponentModel.DataAnnotations;
+using MaaCopilotServer.Application.Common.Helpers;
 using Microsoft.EntityFrameworkCore;
 
 namespace MaaCopilotServer.Application.CopilotUser.Queries.GetCopilotUser;
 
-public record GetCopilotUserQuery : IRequest<MaaActionResult<GetCopilotUserDto>>
+/// <summary>
+///     The DTO for the GetCopilotUser query.
+/// </summary>
+public record GetCopilotUserQuery : IRequest<MaaApiResponse>
 {
+    /// <summary>
+    ///     The user id.
+    /// </summary>
+    [Required]
     public string? UserId { get; set; }
 }
 
-public class GetCopilotUserQueryHandler : IRequestHandler<GetCopilotUserQuery, MaaActionResult<GetCopilotUserDto>>
+public class GetCopilotUserQueryHandler : IRequestHandler<GetCopilotUserQuery, MaaApiResponse>
 {
-    private readonly ICurrentUserService _currentUserService;
     private readonly ApiErrorMessage _apiErrorMessage;
+    private readonly ICurrentUserService _currentUserService;
     private readonly IMaaCopilotDbContext _dbContext;
 
     public GetCopilotUserQueryHandler(
@@ -27,40 +36,50 @@ public class GetCopilotUserQueryHandler : IRequestHandler<GetCopilotUserQuery, M
         _apiErrorMessage = apiErrorMessage;
     }
 
-    public async Task<MaaActionResult<GetCopilotUserDto>> Handle(GetCopilotUserQuery request,
+    public async Task<MaaApiResponse> Handle(GetCopilotUserQuery request,
         CancellationToken cancellationToken)
     {
+        // Get user id
         Guid userId;
         if (request.UserId == "me")
         {
+            // If user id is set to me, then get current user id
             var id = _currentUserService.GetUserIdentity();
             if (id is null)
             {
-                throw new PipelineException(MaaApiResponse.BadRequest(_currentUserService.GetTrackingId(),
-                    _apiErrorMessage.MeNotFound));
+                return MaaApiResponseHelper.BadRequest(_apiErrorMessage.MeNotFound);
             }
 
             userId = id.Value;
         }
         else
         {
+            // Else, set the value to the given id
             userId = Guid.Parse(request.UserId!);
         }
 
-        var user = await _dbContext.CopilotUsers.FirstOrDefaultAsync(x => x.EntityId == userId, cancellationToken);
-
+        // Find user entity
+        var user = await _dbContext.CopilotUsers
+            .Include(x => x.UserFavorites)
+            .FirstOrDefaultAsync(x => x.EntityId == userId, cancellationToken);
         if (user is null)
         {
-            throw new PipelineException(MaaApiResponse.NotFound(_currentUserService.GetTrackingId(),
-                string.Format(_apiErrorMessage.UserWithIdNotFound!, request.UserId)));
+            return MaaApiResponseHelper.NotFound(
+                string.Format(_apiErrorMessage.UserWithIdNotFound!, request.UserId));
         }
 
+        // Calculate the upload count
         var uploadCount = await _dbContext.CopilotOperations
             .Include(x => x.Author)
             .Where(x => x.Author.EntityId == userId)
             .CountAsync(cancellationToken);
 
-        var dto = new GetCopilotUserDto(userId, user.UserName, user.UserRole, uploadCount);
-        return MaaApiResponse.Ok(dto, _currentUserService.GetTrackingId());
+        // Build fav list DTO
+        var favList = user.UserFavorites
+            .ToDictionary(fav => fav.EntityId.ToString(), fav => fav.FavoriteName);
+
+        // Build DTO
+        var dto = new GetCopilotUserDto(userId, user.UserName, user.UserRole, uploadCount, user.UserActivated, favList);
+        return MaaApiResponseHelper.Ok(dto);
     }
 }

@@ -7,29 +7,54 @@ using MaaCopilotServer.Application.Common.Extensions;
 using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Domain.Common;
 using MaaCopilotServer.Domain.Entities;
+using MaaCopilotServer.Domain.Options;
 using MaaCopilotServer.Infrastructure.Database.Maps;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace MaaCopilotServer.Infrastructure.Database;
 
+/// <summary>
+///     The DB context.
+/// </summary>
 public class MaaCopilotDbContext : DbContext, IMaaCopilotDbContext
 {
-    public DbSet<CopilotOperation> CopilotOperations { get; set; } = null!;
-    public DbSet<CopilotUser> CopilotUsers { get; set; } = null!;
-
+    /// <summary>
+    ///     The connection string.
+    /// </summary>
     private readonly string? _connectionString;
 
-    public MaaCopilotDbContext(IConfiguration configuration)
+    /// <summary>
+    ///     The constructor with <see cref="IOptions{TOptions}"/>.
+    /// </summary>
+    /// <param name="dbOptions">The database options.</param>
+    public MaaCopilotDbContext(IOptions<DatabaseOption> dbOptions)
     {
-        _connectionString = configuration.GetValue<string>("Database:ConnectionString");
+        _connectionString = dbOptions.Value.ConnectionString;
     }
 
+    /// <summary>
+    ///     The DB set of operations.
+    /// </summary>
+    public DbSet<CopilotOperation> CopilotOperations { get; set; } = null!;
+
+    public DbSet<CopilotOperationComment> CopilotOperationComments { get; set; } = null!;
+    public DbSet<CopilotUserFavorite> CopilotUserFavorites { get; set; } = null!;
+    public DbSet<CopilotOperationRating> CopilotOperationRatings { get; set; } = null!;
+
+    /// <summary>
+    ///     The DB set of users.
+    /// </summary>
+    public DbSet<CopilotUser> CopilotUsers { get; set; } = null!;
+
+    public DbSet<CopilotToken> CopilotTokens { get; set; } = null!;
+
+    /// <inheritdoc/>
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        var conn = _connectionString.IsNotNull();
-        optionsBuilder.UseNpgsql(conn);
-        base.OnConfiguring(optionsBuilder);
+        // Create Postgres database for development and production.
+        optionsBuilder.UseNpgsql(_connectionString.IsNotNull());
+            base.OnConfiguring(optionsBuilder);
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -51,9 +76,13 @@ public class MaaCopilotDbContext : DbContext, IMaaCopilotDbContext
         return await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
     }
 
+    /// <summary>
+    ///     Preparations before saving changes to DB.
+    /// </summary>
     private void OnBeforeSaving()
     {
         var entities = ChangeTracker.Entries()
+            .Where(x => x.Entity is not RelationEntity)
             .Where(x => x.State is EntityState.Added or EntityState.Deleted)
             .ToList();
         foreach (var entry in entities)

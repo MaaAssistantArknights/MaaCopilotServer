@@ -2,24 +2,34 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+using MaaCopilotServer.Application.Common.Helpers;
 using MaaCopilotServer.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace MaaCopilotServer.Application.CopilotOperation.Commands.DeleteCopilotOperation;
 
-[Authorized(UserRole.Admin)]
-public record DeleteCopilotOperationCommand : IRequest<MaaActionResult<EmptyObject>>
+/// <summary>
+///     The DTO for the DeleteCopilotOperation command.
+/// </summary>
+[Authorized(UserRole.Uploader)]
+public record DeleteCopilotOperationCommand : IRequest<MaaApiResponse>
 {
-    [JsonPropertyName("id")] public string? Id { get; set; }
+    /// <summary>
+    ///     The operation ID.
+    /// </summary>
+    [Required]
+    [JsonPropertyName("id")]
+    public string? Id { get; set; }
 }
 
 public class DeleteCopilotOperationCommandHandler : IRequestHandler<DeleteCopilotOperationCommand,
-    MaaActionResult<EmptyObject>>
+    MaaApiResponse>
 {
+    private readonly ApiErrorMessage _apiErrorMessage;
     private readonly ICopilotIdService _copilotIdService;
     private readonly ICurrentUserService _currentUserService;
-    private readonly ApiErrorMessage _apiErrorMessage;
     private readonly IMaaCopilotDbContext _dbContext;
 
     public DeleteCopilotOperationCommandHandler(
@@ -34,26 +44,31 @@ public class DeleteCopilotOperationCommandHandler : IRequestHandler<DeleteCopilo
         _apiErrorMessage = apiErrorMessage;
     }
 
-    public async Task<MaaActionResult<EmptyObject>> Handle(DeleteCopilotOperationCommand request,
-        CancellationToken cancellationToken)
+    public async Task<MaaApiResponse> Handle(DeleteCopilotOperationCommand request, CancellationToken cancellationToken)
     {
-        var id = _copilotIdService.DecodeId(request.Id!);
-        if (id is null)
-        {
-            throw new PipelineException(MaaApiResponse.NotFound(_currentUserService.GetTrackingId(),
-                string.Format(_apiErrorMessage.CopilotOperationWithIdNotFound!, request.Id)));
-        }
+        // Get current infos
+        var user = (await _currentUserService.GetUser()).IsNotNull();
 
-        var entity = await _dbContext.CopilotOperations.FirstOrDefaultAsync(x => x.Id == id.Value, cancellationToken);
+        // Get operation
+        var id = _copilotIdService.DecodeId(request.Id!);
+        var entity = await _dbContext.CopilotOperations
+            .Include(x => x.Author)
+            .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
         if (entity is null)
         {
-            throw new PipelineException(MaaApiResponse.NotFound(_currentUserService.GetTrackingId(),
-                string.Format(_apiErrorMessage.CopilotOperationWithIdNotFound!, request.Id)));
+            return MaaApiResponseHelper.NotFound(string.Format(_apiErrorMessage.CopilotOperationWithIdNotFound!, request.Id));
         }
 
-        entity.Delete(_currentUserService.GetUserIdentity()!.Value);
+        // Check if the user has the permission to delete the operation
+        if (user.IsAllowAccess(entity.Author) is false)
+        {
+            return MaaApiResponseHelper.Forbidden(_apiErrorMessage.PermissionDenied);
+        }
+
+        // Delete operation
+        entity.Delete(user.EntityId);
         _dbContext.CopilotOperations.Remove(entity);
         await _dbContext.SaveChangesAsync(cancellationToken);
-        return MaaApiResponse.Ok(null, _currentUserService.GetTrackingId());
+        return MaaApiResponseHelper.Ok();
     }
 }

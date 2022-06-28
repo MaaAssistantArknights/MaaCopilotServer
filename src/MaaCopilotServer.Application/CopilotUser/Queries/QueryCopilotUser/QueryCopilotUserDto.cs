@@ -2,13 +2,23 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using MaaCopilotServer.Domain.Enums;
 
 namespace MaaCopilotServer.Application.CopilotUser.Queries.QueryCopilotUser;
 
+/// <summary>
+///     The response to the <see cref="QueryCopilotUserQuery"/>.
+/// </summary>
 public class QueryCopilotUserDto
 {
+    /// <summary>
+    ///     The constructor of <see cref="QueryCopilotUserDto" />.
+    /// </summary>
+    /// <param name="id">The user ID.</param>
+    /// <param name="userName">The username.</param>
+    /// <param name="userRole">The role of the user.</param>
     public QueryCopilotUserDto(Guid id, string userName, UserRole userRole)
     {
         Id = id;
@@ -16,9 +26,29 @@ public class QueryCopilotUserDto
         UserRole = userRole;
     }
 
-    [JsonPropertyName("id")] public Guid Id { get; set; }
+#pragma warning disable CS8618
+    public QueryCopilotUserDto() { }
+#pragma warning restore CS8618
 
-    [JsonPropertyName("user_name")] public string UserName { get; set; }
+    /// <summary>
+    ///     The user id.
+    /// </summary>
+    [Required]
+    [JsonPropertyName("id")]
+    public Guid Id { get; set; }
 
-    [JsonPropertyName("role")] [JsonConverter(typeof(JsonStringEnumConverter))] public UserRole UserRole { get; set; }
+    /// <summary>
+    ///     The username.
+    /// </summary>
+    [Required]
+    [JsonPropertyName("user_name")]
+    public string UserName { get; set; }
+
+    /// <summary>
+    ///     The role of the user.
+    /// </summary>
+    [Required]
+    [JsonPropertyName("role")]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public UserRole UserRole { get; set; }
 }
