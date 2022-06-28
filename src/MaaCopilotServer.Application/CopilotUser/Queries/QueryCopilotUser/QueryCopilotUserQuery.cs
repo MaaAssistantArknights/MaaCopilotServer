@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.ComponentModel.DataAnnotations;
 using MaaCopilotServer.Application.Common.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,19 +10,21 @@ using Microsoft.EntityFrameworkCore;
 namespace MaaCopilotServer.Application.CopilotUser.Queries.QueryCopilotUser;
 
 /// <summary>
-///     The record of querying multiple users.
+///     The DTO for the copilot user query.
 /// </summary>
 public record QueryCopilotUserQuery : IRequest<MaaApiResponse>
 {
     /// <summary>
-    ///     The page number to query.
+    ///     The page number to query. Default is 1.
     /// </summary>
+    [Required]
     [FromQuery(Name = "page")]
     public int? Page { get; set; } = null;
 
     /// <summary>
-    ///     The limitation of number of items in a page.
+    ///     The max amount of items in a page. Default is 10.
     /// </summary>
+    [Required]
     [FromQuery(Name = "limit")]
     public int? Limit { get; set; } = null;
 
@@ -32,27 +35,11 @@ public record QueryCopilotUserQuery : IRequest<MaaApiResponse>
     public string? UserName { get; set; } = null;
 }
 
-/// <summary>
-///     The handler of querying multiple users.
-/// </summary>
-public class QueryCopilotUserQueryHandler : IRequestHandler<QueryCopilotUserQuery,
-    MaaApiResponse>
+public class QueryCopilotUserQueryHandler : IRequestHandler<QueryCopilotUserQuery, MaaApiResponse>
 {
-    /// <summary>
-    ///     The service for current user.
-    /// </summary>
     private readonly ICurrentUserService _currentUserService;
-
-    /// <summary>
-    ///     The DB context.
-    /// </summary>
     private readonly IMaaCopilotDbContext _dbContext;
 
-    /// <summary>
-    ///     The constructor of <see cref="QueryCopilotUserQueryHandler" />.
-    /// </summary>
-    /// <param name="dbContext">The DB context.</param>
-    /// <param name="currentUserService">The service for current user.</param>
     public QueryCopilotUserQueryHandler(
         IMaaCopilotDbContext dbContext,
         ICurrentUserService currentUserService)
@@ -61,12 +48,6 @@ public class QueryCopilotUserQueryHandler : IRequestHandler<QueryCopilotUserQuer
         _currentUserService = currentUserService;
     }
 
-    /// <summary>
-    ///     Handles a request of querying multiple users.
-    /// </summary>
-    /// <param name="request">The request.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns>A task with an array of multiple users, excluding <c>upload_count</c>.</returns>
     public async Task<MaaApiResponse> Handle(QueryCopilotUserQuery request,
         CancellationToken cancellationToken)
     {

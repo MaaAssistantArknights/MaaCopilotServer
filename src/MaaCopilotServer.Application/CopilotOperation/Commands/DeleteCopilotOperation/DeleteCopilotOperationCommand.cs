@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using MaaCopilotServer.Application.Common.Helpers;
 using MaaCopilotServer.Domain.Enums;
@@ -10,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 namespace MaaCopilotServer.Application.CopilotOperation.Commands.DeleteCopilotOperation;
 
 /// <summary>
-///     The record of deleting operation.
+///     The DTO for the DeleteCopilotOperation command.
 /// </summary>
 [Authorized(UserRole.Uploader)]
 public record DeleteCopilotOperationCommand : IRequest<MaaApiResponse>
@@ -18,43 +19,19 @@ public record DeleteCopilotOperationCommand : IRequest<MaaApiResponse>
     /// <summary>
     ///     The operation ID.
     /// </summary>
+    [Required]
     [JsonPropertyName("id")]
     public string? Id { get; set; }
 }
 
-/// <summary>
-///     The handler of deleting operation.
-/// </summary>
 public class DeleteCopilotOperationCommandHandler : IRequestHandler<DeleteCopilotOperationCommand,
     MaaApiResponse>
 {
-    /// <summary>
-    ///     The API error message.
-    /// </summary>
     private readonly ApiErrorMessage _apiErrorMessage;
-
-    /// <summary>
-    ///     The service for processing copilot ID.
-    /// </summary>
     private readonly ICopilotIdService _copilotIdService;
-
-    /// <summary>
-    ///     The service for current user.
-    /// </summary>
     private readonly ICurrentUserService _currentUserService;
-
-    /// <summary>
-    ///     The DB context.
-    /// </summary>
     private readonly IMaaCopilotDbContext _dbContext;
 
-    /// <summary>
-    ///     The constructor of <see cref="DeleteCopilotOperationCommandHandler" />.
-    /// </summary>
-    /// <param name="dbContext">The DB context.</param>
-    /// <param name="copilotIdService">The service for processing copilot ID.</param>
-    /// <param name="currentUserService">The service for current user.</param>
-    /// <param name="apiErrorMessage">The API error message.</param>
     public DeleteCopilotOperationCommandHandler(
         IMaaCopilotDbContext dbContext,
         ICopilotIdService copilotIdService,
@@ -67,15 +44,6 @@ public class DeleteCopilotOperationCommandHandler : IRequestHandler<DeleteCopilo
         _apiErrorMessage = apiErrorMessage;
     }
 
-    /// <summary>
-    ///     Handles a request of deleting operation.
-    /// </summary>
-    /// <param name="request">The request.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns>
-    ///     <para>A task with the response.</para>
-    ///     <para>404 when the operation ID is invalid, or the operation does not exist.</para>
-    /// </returns>
     public async Task<MaaApiResponse> Handle(DeleteCopilotOperationCommand request,
         CancellationToken cancellationToken)
     {

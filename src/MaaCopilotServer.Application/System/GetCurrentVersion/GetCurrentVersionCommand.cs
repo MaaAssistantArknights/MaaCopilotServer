@@ -8,6 +8,9 @@ using Microsoft.Extensions.Options;
 
 namespace MaaCopilotServer.Application.System.GetCurrentVersion;
 
+/// <summary>
+///     The DTO for the GetCurrentVersion command.
+/// </summary>
 public record GetCurrentVersionCommand : IRequest<MaaApiResponse>;
 
 public class GetCurrentVersionCommandHandler : IRequestHandler<GetCurrentVersionCommand, MaaApiResponse>

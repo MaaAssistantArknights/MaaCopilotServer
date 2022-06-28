@@ -2,12 +2,16 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using MaaCopilotServer.Application.CopilotOperation.Queries.QueryCopilotOperations;
 using MaaCopilotServer.Domain.Enums;
 
 namespace MaaCopilotServer.Application.CopilotFavorite.Queries.GetCopilotUserFavorites;
 
+/// <summary>
+///     The response to the <see cref="GetCopilotUserFavoritesQuery" />.
+/// </summary>
 public class GetCopilotUserFavoritesDto
 {
     public GetCopilotUserFavoritesDto(
@@ -79,6 +83,7 @@ public class FavoriteCopilotOperationsDto : QueryCopilotOperationsQueryDto
     /// <summary>
     ///     Whether this operation has been deleted or not.
     /// </summary>
+    [Required]
     [JsonPropertyName("deleted")]
     public bool Deleted { get; set; }
 }

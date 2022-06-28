@@ -7,7 +7,7 @@ using System.Text.Json.Serialization;
 namespace MaaCopilotServer.Application.Common.Models;
 
 /// <summary>
-///     The JSON request content of creating copilot operation.
+///     The JSON content of Maa Copilot Operation.
 /// </summary>
 public record MaaCopilotOperation
 {
@@ -97,8 +97,16 @@ public record MaaCopilotOperationGroup
     public MaaCopilotOperationOperator[]? Operators { get; set; }
 }
 
+/// <summary>
+///     A DTO style class for <see cref="MaaCopilotOperationGroup"/>.
+/// </summary>
 public record MaaCopilotOperationGroupStore
 {
+    /// <summary>
+    ///     The constructor of <see cref="MaaCopilotOperationGroupStore"/>.
+    /// </summary>
+    /// <param name="name">The group name.</param>
+    /// <param name="operators">The operators list in domain level string format.</param>
     public MaaCopilotOperationGroupStore(string name, List<string> operators)
     {
         Name = name;
@@ -106,6 +114,10 @@ public record MaaCopilotOperationGroupStore
     }
 
 #pragma warning disable CS8618
+    /// <summary>
+    ///     The constructor of <see cref="MaaCopilotOperationGroupStore"/>.
+    /// </summary>
+    // ReSharper disable once UnusedMember.Global
     public MaaCopilotOperationGroupStore() { }
 #pragma warning restore CS8618
 

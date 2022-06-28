@@ -12,7 +12,7 @@ namespace MaaCopilotServer.Application.Common.Behaviours;
 /// </summary>
 /// <typeparam name="TRequest">The type of the request.</typeparam>
 /// <typeparam name="TResponse">The type of the response, it will always be <see cref="MaaApiResponse"/>.</typeparam>
-/// <remarks>You can not remove the unused <see cref="TResponse"/>, or the service can not be injected to DI container.</remarks>
+/// <remarks>You can not remove the unused <typeparamref name="TResponse"/>, or the service can not be injected to DI container.</remarks>
 // ReSharper disable once UnusedTypeParameter
 public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, MaaApiResponse>
     where TRequest : IRequest<MaaApiResponse> where TResponse : MaaApiResponse
@@ -30,7 +30,6 @@ public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRe
     /// <summary>
     ///     The constructor.
     /// </summary>
-    /// <param name="identityService">The service of identity.</param>
     /// <param name="currentUserService">The service of current user.</param>
     /// <param name="apiErrorMessage">The API error message.</param>
     public AuthorizationBehaviour(

@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using MaaCopilotServer.Application.Common.Helpers;
 using MaaCopilotServer.Domain.Enums;
@@ -9,17 +10,20 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MaaCopilotServer.Application.CopilotUser.Commands.ActivateCopilotAccount;
 
+/// <summary>
+///     The DTO for the ActivateCopilotAccount command.
+/// </summary>
 public record ActivateCopilotAccountCommand : IRequest<MaaApiResponse>
 {
     /// <summary>
     ///     Account activation token.
     /// </summary>
+    [Required]
     [JsonPropertyName("token")]
     public string? Token { get; set; }
 }
 
-public class
-    ActivateCopilotAccountCommandHandler : IRequestHandler<ActivateCopilotAccountCommand, MaaApiResponse>
+public class ActivateCopilotAccountCommandHandler : IRequestHandler<ActivateCopilotAccountCommand, MaaApiResponse>
 {
     private readonly ApiErrorMessage _apiErrorMessage;
     private readonly ICurrentUserService _currentUserService;

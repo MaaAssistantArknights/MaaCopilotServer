@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using MaaCopilotServer.Application.CopilotOperation.Queries.QueryCopilotOperations;
 using MaaCopilotServer.Domain.Enums;
@@ -9,7 +10,7 @@ using MaaCopilotServer.Domain.Enums;
 namespace MaaCopilotServer.Application.CopilotOperation.Queries.GetCopilotOperation;
 
 /// <summary>
-///     The DTO of querying operation.
+///     The response of the <see cref="GetCopilotOperationQuery"/>.
 /// </summary>
 public class GetCopilotOperationQueryDto : QueryCopilotOperationsQueryDto
 {
@@ -54,8 +55,9 @@ public class GetCopilotOperationQueryDto : QueryCopilotOperationsQueryDto
 #pragma warning restore CS8618
 
     /// <summary>
-    ///     The content.
+    ///     The operation JSON content.
     /// </summary>
+    [Required]
     [JsonPropertyName("content")]
     public string Content { get; set; }
 }

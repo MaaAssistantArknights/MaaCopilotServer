@@ -2,13 +2,14 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using MaaCopilotServer.Domain.Enums;
 
 namespace MaaCopilotServer.Application.CopilotUser.Queries.QueryCopilotUser;
 
 /// <summary>
-///     The DTO of querying multiple users.
+///     The response to the <see cref="QueryCopilotUserQuery"/>.
 /// </summary>
 public class QueryCopilotUserDto
 {
@@ -30,20 +31,23 @@ public class QueryCopilotUserDto
 #pragma warning restore CS8618
 
     /// <summary>
-    ///     The user ID.
+    ///     The user id.
     /// </summary>
+    [Required]
     [JsonPropertyName("id")]
     public Guid Id { get; set; }
 
     /// <summary>
     ///     The username.
     /// </summary>
+    [Required]
     [JsonPropertyName("user_name")]
     public string UserName { get; set; }
 
     /// <summary>
     ///     The role of the user.
     /// </summary>
+    [Required]
     [JsonPropertyName("role")]
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public UserRole UserRole { get; set; }

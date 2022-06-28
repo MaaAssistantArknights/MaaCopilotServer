@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.ComponentModel.DataAnnotations;
 using MaaCopilotServer.Application.Common.Helpers;
 using MaaCopilotServer.Domain.Enums;
 using Microsoft.AspNetCore.Mvc;
@@ -9,10 +10,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MaaCopilotServer.Application.CopilotFavorite.Queries.GetCopilotUserFavorites;
 
+/// <summary>
+///     The DTO for the GetCopilotUserFavorites query.
+/// </summary>
 [Authorized(UserRole.User)]
 public record GetCopilotUserFavoritesQuery : IRequest<MaaApiResponse>
 {
-    [FromQuery(Name = "id")] public string? FavoriteListId { get; set; }
+    /// <summary>
+    ///     The favorite list id to get.
+    /// </summary>
+    [Required]
+    [FromQuery(Name = "id")]
+    public string? FavoriteListId { get; set; }
 }
 
 public class GetCopilotUserFavoritesQueryHandler : IRequestHandler<GetCopilotUserFavoritesQuery, MaaApiResponse>

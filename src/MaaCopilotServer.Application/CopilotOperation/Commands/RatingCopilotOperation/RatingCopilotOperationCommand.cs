@@ -2,21 +2,32 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using MaaCopilotServer.Application.Common.Helpers;
 using MaaCopilotServer.Domain.Entities;
 using MaaCopilotServer.Domain.Enums;
-using MaaCopilotServer.Domain.Helper;
 using Microsoft.EntityFrameworkCore;
 
 namespace MaaCopilotServer.Application.CopilotOperation.Commands.RatingCopilotOperation;
 
+/// <summary>
+///     The DTO for the RatingCopilotOperation command.
+/// </summary>
 [Authorized(UserRole.User)]
 public record RatingCopilotOperationCommand : IRequest<MaaApiResponse>
 {
+    /// <summary>
+    ///     The id of the operation.
+    /// </summary>
+    [Required]
     [JsonPropertyName("id")]
     public string? Id { get; set; }
 
+    /// <summary>
+    ///     The rating type of the operation. Could be Like, Dislike or None.
+    /// </summary>
+    [Required]
     [JsonPropertyName("rating")]
     public string? RatingType { get; set; }
 }

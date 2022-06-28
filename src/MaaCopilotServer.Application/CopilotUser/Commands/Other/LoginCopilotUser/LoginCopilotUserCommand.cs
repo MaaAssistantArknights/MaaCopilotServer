@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using Destructurama.Attributed;
 using MaaCopilotServer.Application.Common.Helpers;
@@ -11,13 +12,14 @@ using Microsoft.EntityFrameworkCore;
 namespace MaaCopilotServer.Application.CopilotUser.Commands.LoginCopilotUser;
 
 /// <summary>
-///     The record of user login.
+///     The DTO for the login command.
 /// </summary>
 public record LoginCopilotUserCommand : IRequest<MaaApiResponse>
 {
     /// <summary>
     ///     The user email.
     /// </summary>
+    [Required]
     [JsonPropertyName("email")]
     public string? Email { get; set; }
 
@@ -26,6 +28,7 @@ public record LoginCopilotUserCommand : IRequest<MaaApiResponse>
     /// </summary>
     [JsonPropertyName("password")]
     [LogMasked]
+    [Required]
     public string? Password { get; set; }
 }
 

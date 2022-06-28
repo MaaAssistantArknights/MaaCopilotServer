@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using MaaCopilotServer.Application.Common.Helpers;
 using MaaCopilotServer.Domain.Email.Models;
@@ -13,13 +14,20 @@ using Microsoft.Extensions.Options;
 
 namespace MaaCopilotServer.Application.CopilotUser.Commands.RequestPasswordReset;
 
+/// <summary>
+///     The DTO for the request password reset command.
+/// </summary>
 public record RequestPasswordResetCommand : IRequest<MaaApiResponse>
 {
-    [JsonPropertyName("email")] public string? Email { get; set; }
+    /// <summary>
+    ///     The email address of the user.
+    /// </summary>
+    [Required]
+    [JsonPropertyName("email")]
+    public string? Email { get; set; }
 }
 
-public class RequestPasswordResetCommandHandler :
-    IRequestHandler<RequestPasswordResetCommand, MaaApiResponse>
+public class RequestPasswordResetCommandHandler : IRequestHandler<RequestPasswordResetCommand, MaaApiResponse>
 {
     private readonly ApiErrorMessage _apiErrorMessage;
     private readonly IMaaCopilotDbContext _dbContext;

@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using Destructurama.Attributed;
 using MaaCopilotServer.Application.Common.Helpers;
@@ -11,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 namespace MaaCopilotServer.Application.CopilotUser.Commands.CreateCopilotUser;
 
 /// <summary>
-///     The record of creating user.
+///     The DTO for the CreateCopilotUser command.
 /// </summary>
 [Authorized(UserRole.Admin)]
 public record CreateCopilotUserCommand : IRequest<MaaApiResponse>
@@ -19,6 +20,7 @@ public record CreateCopilotUserCommand : IRequest<MaaApiResponse>
     /// <summary>
     ///     The user email.
     /// </summary>
+    [Required]
     [JsonPropertyName("email")]
     public string? Email { get; set; }
 
@@ -27,17 +29,20 @@ public record CreateCopilotUserCommand : IRequest<MaaApiResponse>
     /// </summary>
     [JsonPropertyName("password")]
     [LogMasked]
+    [Required]
     public string? Password { get; set; }
 
     /// <summary>
     ///     The username.
     /// </summary>
+    [Required]
     [JsonPropertyName("user_name")]
     public string? UserName { get; set; }
 
     /// <summary>
-    ///     The role of the user.
+    ///     The role of the user. Valid values are: Admin, Uploader, User.
     /// </summary>
+    [Required]
     [JsonPropertyName("role")]
     public string? Role { get; set; }
 }

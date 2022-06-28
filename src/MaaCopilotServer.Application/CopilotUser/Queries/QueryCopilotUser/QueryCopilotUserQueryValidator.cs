@@ -4,15 +4,8 @@
 
 namespace MaaCopilotServer.Application.CopilotUser.Queries.QueryCopilotUser;
 
-/// <summary>
-///     The validator of querying multiple users.
-/// </summary>
 public class QueryCopilotUserQueryValidator : AbstractValidator<QueryCopilotUserQuery>
 {
-    /// <summary>
-    ///     The constructor of <see cref="QueryCopilotUserQueryValidator" />.
-    /// </summary>
-    /// <param name="errorMessage">The error message.</param>
     public QueryCopilotUserQueryValidator(ValidationErrorMessage errorMessage)
     {
         RuleFor(x => x.Page)

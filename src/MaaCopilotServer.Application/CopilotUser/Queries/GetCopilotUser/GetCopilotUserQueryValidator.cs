@@ -4,15 +4,8 @@
 
 namespace MaaCopilotServer.Application.CopilotUser.Queries.GetCopilotUser;
 
-/// <summary>
-///     The validator of getting user.
-/// </summary>
 public class GetCopilotUserQueryValidator : AbstractValidator<GetCopilotUserQuery>
 {
-    /// <summary>
-    ///     The constructor of <see cref="GetCopilotUserQueryValidator" />.
-    /// </summary>
-    /// <param name="errorMessage">The error message.</param>
     public GetCopilotUserQueryValidator(ValidationErrorMessage errorMessage)
     {
         RuleFor(x => x.UserId)

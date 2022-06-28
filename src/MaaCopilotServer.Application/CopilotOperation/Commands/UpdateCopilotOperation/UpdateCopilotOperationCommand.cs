@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using MaaCopilotServer.Application.Common.Helpers;
 using MaaCopilotServer.Domain.Enums;
@@ -10,20 +11,22 @@ using Microsoft.EntityFrameworkCore;
 namespace MaaCopilotServer.Application.CopilotOperation.Commands.UpdateCopilotOperation;
 
 /// <summary>
-///     The record of updating a copilot operation.
+///     The DTO for the UpdateCopilotOperation command.
 /// </summary>
 [Authorized(UserRole.Uploader)]
 public record UpdateCopilotOperationCommand : IRequest<MaaApiResponse>
 {
     /// <summary>
-    ///     The operation content.
+    ///     The operation JSON content.
     /// </summary>
+    [Required]
     [JsonPropertyName("content")]
     public string? Content { get; set; }
 
     /// <summary>
-    ///     The operation id.
+    ///     The operation id which is pending to change.
     /// </summary>
+    [Required]
     [JsonPropertyName("id")]
     public string? Id { get; set; }
 }

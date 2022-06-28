@@ -2,55 +2,34 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.ComponentModel.DataAnnotations;
 using MaaCopilotServer.Application.Common.Helpers;
 using MaaCopilotServer.Domain.Enums;
-using MaaCopilotServer.Domain.Helper;
 using Microsoft.EntityFrameworkCore;
 
 namespace MaaCopilotServer.Application.CopilotOperation.Queries.GetCopilotOperation;
 
 /// <summary>
-///     The record of querying operation.
+///     The DTO for the GetCopilotOperation query.
 /// </summary>
 public record GetCopilotOperationQuery : IRequest<MaaApiResponse>
 {
     /// <summary>
-    ///     The operation ID.
+    ///     The operation id.
     /// </summary>
+    [Required]
     public string? Id { get; set; }
 }
 
-/// <summary>
-///     The handler of querying operation.
-/// </summary>
 public class
     GetCopilotOperationQueryHandler : IRequestHandler<GetCopilotOperationQuery,
         MaaApiResponse>
 {
-    /// <summary>
-    ///     The API error message.
-    /// </summary>
     private readonly ApiErrorMessage _apiErrorMessage;
-
-    /// <summary>
-    ///     The service for processing copilot ID.
-    /// </summary>
     private readonly ICopilotIdService _copilotIdService;
-
-    /// <summary>
-    ///     The DB context.
-    /// </summary>
     private readonly IMaaCopilotDbContext _dbContext;
-
     private readonly ICurrentUserService _currentUserService;
 
-    /// <summary>
-    ///     The constructor of <see cref="GetCopilotOperationQueryHandler" />.
-    /// </summary>
-    /// <param name="dbContext">The DB context.</param>
-    /// <param name="currentUserService">The current user service.</param>
-    /// <param name="copilotIdService">The service for processing copilot ID.</param>
-    /// <param name="apiErrorMessage">The API error message.</param>
     public GetCopilotOperationQueryHandler(
         IMaaCopilotDbContext dbContext,
         ICurrentUserService currentUserService,
@@ -63,15 +42,6 @@ public class
         _apiErrorMessage = apiErrorMessage;
     }
 
-    /// <summary>
-    ///     Handles a request of querying operation.
-    /// </summary>
-    /// <param name="request">The request.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns>
-    ///     <para>A task with a single operation and info.</para>
-    ///     <para>404 when the operation ID is invalid or not found.</para>
-    /// </returns>
     public async Task<MaaApiResponse> Handle(GetCopilotOperationQuery request,
         CancellationToken cancellationToken)
     {

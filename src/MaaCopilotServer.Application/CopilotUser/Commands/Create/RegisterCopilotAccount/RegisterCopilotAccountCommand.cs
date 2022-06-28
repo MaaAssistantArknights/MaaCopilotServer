@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using Destructurama.Attributed;
 using MaaCopilotServer.Application.Common.Helpers;
@@ -15,19 +16,21 @@ using Microsoft.Extensions.Options;
 namespace MaaCopilotServer.Application.CopilotUser.Commands.RegisterCopilotAccount;
 
 /// <summary>
-///     Request dto for registering a new copilot account.
+///     The DTO for the RegisterCopilotAccount command.
 /// </summary>
 public record RegisterCopilotAccountCommand : IRequest<MaaApiResponse>
 {
     /// <summary>
     ///     The user email.
     /// </summary>
+    [Required]
     [JsonPropertyName("email")]
     public string? Email { get; set; }
 
     /// <summary>
     ///     The username.
     /// </summary>
+    [Required]
     [JsonPropertyName("user_name")]
     public string? UserName { get; set; }
 
@@ -36,11 +39,11 @@ public record RegisterCopilotAccountCommand : IRequest<MaaApiResponse>
     /// </summary>
     [JsonPropertyName("password")]
     [LogMasked]
+    [Required]
     public string? Password { get; set; }
 }
 
-public class RegisterCopilotAccountCommandHandler :
-    IRequestHandler<RegisterCopilotAccountCommand, MaaApiResponse>
+public class RegisterCopilotAccountCommandHandler : IRequestHandler<RegisterCopilotAccountCommand, MaaApiResponse>
 {
     private readonly ApiErrorMessage _apiErrorMessage;
     private readonly ICurrentUserService _currentUserService;

@@ -6,10 +6,6 @@ namespace MaaCopilotServer.Application.CopilotUser.Commands.RegisterCopilotAccou
 
 public class RegisterCopilotAccountCommandValidator : AbstractValidator<RegisterCopilotAccountCommand>
 {
-    /// <summary>
-    ///     The constructor of <see cref="RegisterCopilotAccountCommandValidator" />.
-    /// </summary>
-    /// <param name="errorMessage">The error message.</param>
     public RegisterCopilotAccountCommandValidator(ValidationErrorMessage errorMessage)
     {
         RuleFor(x => x.Email)

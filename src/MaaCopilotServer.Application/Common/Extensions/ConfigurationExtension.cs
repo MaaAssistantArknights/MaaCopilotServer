@@ -8,15 +8,18 @@ using Microsoft.Extensions.Configuration;
 
 namespace MaaCopilotServer.Application.Common.Extensions;
 
+/// <summary>
+///     Extension methods for <see cref="IConfiguration"/>.
+/// </summary>
 public static class ConfigurationExtension
 {
     /// <summary>
-    ///     获取配置项实例
+    ///     Get an option instance.
     /// </summary>
-    /// <param name="configuration">IConfiguration 实现</param>
-    /// <typeparam name="T">Options 类</typeparam>
-    /// <returns><typeparamref name="T" /> 的实例</returns>
-    /// <exception cref="ArgumentNullException"><typeparamref name="T" /> 无 <see cref="OptionNameAttribute" /> 修饰</exception>
+    /// <param name="configuration">The <see cref="IConfiguration"/> instance.</param>
+    /// <typeparam name="T">The option class.</typeparam>
+    /// <returns>An instance of type <typeparamref name="T" />.</returns>
+    /// <exception cref="ArgumentNullException">The <typeparamref name="T" /> does not have <see cref="OptionNameAttribute" /> attribute.</exception>
     public static T GetOption<T>(this IConfiguration configuration) where T : class, new()
     {
         var option = new T();

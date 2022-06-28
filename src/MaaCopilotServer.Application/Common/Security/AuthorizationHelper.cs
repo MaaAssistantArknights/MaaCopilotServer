@@ -6,6 +6,9 @@ using MaaCopilotServer.Domain.Enums;
 
 namespace MaaCopilotServer.Application.Common.Security;
 
+/// <summary>
+///     Helper class for authorization.
+/// </summary>
 public static class AuthorizationHelper
 {
     /// <summary>

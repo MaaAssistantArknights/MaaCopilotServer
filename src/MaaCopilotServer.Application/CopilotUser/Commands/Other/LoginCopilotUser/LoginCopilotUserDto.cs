@@ -2,13 +2,14 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using MaaCopilotServer.Application.CopilotUser.Queries.GetCopilotUser;
 
 namespace MaaCopilotServer.Application.CopilotUser.Commands.LoginCopilotUser;
 
 /// <summary>
-///     The DTO of user login.
+///     The response of the <see cref="LoginCopilotUserCommand"/>.
 /// </summary>
 public class LoginCopilotUserDto
 {
@@ -30,20 +31,23 @@ public class LoginCopilotUserDto
 #pragma warning restore CS8618
 
     /// <summary>
-    ///     The token expiration time.
+    ///     The JWT token.
     /// </summary>
+    [Required]
     [JsonPropertyName("token")]
     public string Token { get; set; }
 
     /// <summary>
-    ///     The username.
+    ///     The token expiration time.
     /// </summary>
+    [Required]
     [JsonPropertyName("valid_before")]
     public string ValidBefore { get; set; }
 
     /// <summary>
-    ///     The user information.
+    ///     The user information. Same as <see cref="GetCopilotUserDto"/>.
     /// </summary>
+    [Required]
     [JsonPropertyName("user_info")]
     public GetCopilotUserDto UserInfo { get; set; }
 }

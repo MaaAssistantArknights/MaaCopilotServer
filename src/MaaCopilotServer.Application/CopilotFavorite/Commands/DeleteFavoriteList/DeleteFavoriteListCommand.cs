@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using MaaCopilotServer.Application.Common.Helpers;
 using MaaCopilotServer.Domain.Enums;
@@ -9,10 +10,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MaaCopilotServer.Application.CopilotFavorite.Commands.DeleteFavoriteList;
 
+/// <summary>
+///     The DTO for the DeleteFavoriteList command.
+/// </summary>
 [Authorized(UserRole.User)]
 public record DeleteFavoriteListCommand : IRequest<MaaApiResponse>
 {
-    [JsonPropertyName("favorite_list_id")] public string? FavoriteListId { get; set; }
+    /// <summary>
+    ///     The ID of the favorite list to delete.
+    /// </summary>
+    [Required]
+    [JsonPropertyName("favorite_list_id")]
+    public string? FavoriteListId { get; set; }
 }
 
 public class DeleteFavoriteListCommandHandler : IRequestHandler<DeleteFavoriteListCommand, MaaApiResponse>

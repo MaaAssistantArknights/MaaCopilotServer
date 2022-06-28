@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using Destructurama.Attributed;
 using MaaCopilotServer.Application.Common.Helpers;
@@ -10,12 +11,24 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MaaCopilotServer.Application.CopilotUser.Commands.PasswordReset;
 
+/// <summary>
+///     The DTO for the PasswordReset command.
+/// </summary>
 public record PasswordResetCommand : IRequest<MaaApiResponse>
 {
-    [JsonPropertyName("token")] public string? Token { get; set; }
+    /// <summary>
+    ///     The token to validate this request.
+    /// </summary>
+    [Required]
+    [JsonPropertyName("token")]
+    public string? Token { get; set; }
 
+    /// <summary>
+    ///     The new password.
+    /// </summary>
     [JsonPropertyName("password")]
     [LogMasked]
+    [Required]
     public string? Password { get; set; }
 }
 

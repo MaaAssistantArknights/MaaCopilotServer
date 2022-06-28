@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using MaaCopilotServer.Application.Common.Helpers;
 using MaaCopilotServer.Domain.Entities;
@@ -10,10 +11,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MaaCopilotServer.Application.CopilotFavorite.Commands.CreateFavoriteList;
 
+/// <summary>
+///     The DTO for the CreateFavoriteList command.
+/// </summary>
 [Authorized(UserRole.User)]
 public record CreateFavoriteListCommand : IRequest<MaaApiResponse>
 {
-    [JsonPropertyName("favorite_list_name")] public string? Name { get; set; }
+    /// <summary>
+    ///     The favorite list name, could be duplicated.
+    /// </summary>
+    [Required]
+    [JsonPropertyName("favorite_list_name")]
+    public string? Name { get; set; }
 }
 
 public class CreateFavoriteListCommandHandler : IRequestHandler<CreateFavoriteListCommand, MaaApiResponse>
