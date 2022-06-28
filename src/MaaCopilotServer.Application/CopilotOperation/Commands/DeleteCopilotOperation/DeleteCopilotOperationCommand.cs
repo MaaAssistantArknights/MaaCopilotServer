@@ -53,7 +53,7 @@ public class DeleteCopilotOperationCommandHandler : IRequestHandler<DeleteCopilo
         var id = _copilotIdService.DecodeId(request.Id!);
         var entity = await _dbContext.CopilotOperations
             .Include(x => x.Author)
-            .FirstOrDefaultAsync(x => x.Id == id.Value, cancellationToken);
+            .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
         if (entity is null)
         {
             return MaaApiResponseHelper.NotFound(string.Format(_apiErrorMessage.CopilotOperationWithIdNotFound!, request.Id));
