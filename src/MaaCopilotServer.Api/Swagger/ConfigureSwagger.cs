@@ -51,16 +51,8 @@ public static class ConfigureSwagger
                 In = ParameterLocation.Header,
                 Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\""
             });
-            options.AddSecurityRequirement(new OpenApiSecurityRequirement
-            {
-                {
-                    new OpenApiSecurityScheme
-                    {
-                        Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "bearerAuth" }
-                    },
-                    Array.Empty<string>()
-                }
-            });
+
+            options.OperationFilter<AuthorizedFilter>();
 
             var apiDoc = Path.Combine(AppContext.BaseDirectory, "MaaCopilotServer.Api.xml");
             var applicationDoc = Path.Combine(AppContext.BaseDirectory, "MaaCopilotServer.Application.xml");
