@@ -49,25 +49,34 @@ public class PasswordResetCommandHandler :
         _apiErrorMessage = apiErrorMessage;
     }
 
-    public async Task<MaaApiResponse> Handle(PasswordResetCommand request,
-        CancellationToken cancellationToken)
+    public async Task<MaaApiResponse> Handle(PasswordResetCommand request, CancellationToken cancellationToken)
     {
+        // Get token entity
         var token = await _dbContext.CopilotTokens.FirstOrDefaultAsync(x => x.Token == request.Token,
             cancellationToken);
+
+        // If token is null OR token is not valid now OR token is not the correct type, return a bad request.
         if (token is null || token.ValidBefore < DateTimeOffset.UtcNow || token.Type != TokenType.UserPasswordReset)
         {
             return MaaApiResponseHelper.BadRequest(_apiErrorMessage.TokenInvalid);
         }
 
+        // Find the user defined by the token entity
         var user = _dbContext.CopilotUsers.FirstOrDefault(x => x.EntityId == token.ResourceId);
         if (user is null)
         {
             return MaaApiResponseHelper.InternalError(string.Format(_apiErrorMessage.UserWithIdNotFound!, token.ResourceId.ToString()));
         }
 
+        // Update the user password
         user.UpdatePassword(user.EntityId, _secretService.HashPassword(request.Password!));
-
         _dbContext.CopilotUsers.Update(user);
+
+        // Delete token
+        token.Delete(user.EntityId);
+        _dbContext.CopilotTokens.Remove(token);
+
+        // Save changes
         await _dbContext.SaveChangesAsync(cancellationToken);
         return MaaApiResponseHelper.Ok();
     }

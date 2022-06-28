@@ -26,6 +26,7 @@ public record RemoveFavoriteCommand : IRequest<MaaApiResponse>
     /// <summary>
     ///     The id of the operation to remove.
     /// </summary>
+    [Required]
     [JsonPropertyName("operation_id")]
     public string? OperationId { get; set; }
 }
@@ -51,10 +52,12 @@ public class RemoveFavoriteCommandHandler : IRequestHandler<RemoveFavoriteComman
 
     public async Task<MaaApiResponse> Handle(RemoveFavoriteCommand request, CancellationToken cancellationToken)
     {
+        // Get current infos
         var listId = Guid.Parse(request.FavoriteListId!);
         var operationId = _copilotIdService.DecodeId(request.OperationId!);
-        var user = await _currentUserService.GetUser();
+        var user = (await _currentUserService.GetUser()).IsNotNull();
 
+        // Get operation
         var operation = await _dbContext.CopilotOperations
             .IgnoreQueryFilters()
             .FirstOrDefaultAsync(x => x.Id == operationId, cancellationToken);
@@ -64,6 +67,7 @@ public class RemoveFavoriteCommandHandler : IRequestHandler<RemoveFavoriteComman
                 string.Format(_apiErrorMessage.CopilotOperationWithIdNotFound!, request.OperationId!));
         }
 
+        // Get fav list
         var list = await _dbContext.CopilotUserFavorites
             .Include(x => x.User)
             .Include(x => x.Operations)
@@ -74,12 +78,14 @@ public class RemoveFavoriteCommandHandler : IRequestHandler<RemoveFavoriteComman
                 string.Format(_apiErrorMessage.FavListWithIdNotFound!, listId));
         }
 
-        if (user!.IsAllowAccess(list.User) is false)
+        // Check if user is allowed to remove operation from list
+        if (user.IsAllowAccess(list.User) is false)
         {
             return MaaApiResponseHelper.Forbidden(_apiErrorMessage.PermissionDenied);
         }
 
-        list.RemoveFavoriteOperation(operation, user!.EntityId);
+        // Remove operation from list
+        list.RemoveFavoriteOperation(operation, user.EntityId);
         await _dbContext.SaveChangesAsync(cancellationToken);
         return MaaApiResponseHelper.Ok();
     }

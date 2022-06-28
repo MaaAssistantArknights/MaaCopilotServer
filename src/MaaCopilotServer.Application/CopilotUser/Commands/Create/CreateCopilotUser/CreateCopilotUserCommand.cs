@@ -47,38 +47,13 @@ public record CreateCopilotUserCommand : IRequest<MaaApiResponse>
     public string? Role { get; set; }
 }
 
-/// <summary>
-///     The handler of creating user.
-/// </summary>
 public class CreateCopilotUserCommandHandler : IRequestHandler<CreateCopilotUserCommand, MaaApiResponse>
 {
-    /// <summary>
-    ///     The API error message.
-    /// </summary>
     private readonly ApiErrorMessage _apiErrorMessage;
-
-    /// <summary>
-    ///     The service for current user.
-    /// </summary>
     private readonly ICurrentUserService _currentUserService;
-
-    /// <summary>
-    ///     The DB context.
-    /// </summary>
     private readonly IMaaCopilotDbContext _dbContext;
-
-    /// <summary>
-    ///     The service for processing passwords and tokens.
-    /// </summary>
     private readonly ISecretService _secretService;
 
-    /// <summary>
-    ///     The constructor of <see cref="CreateCopilotUserCommandHandler" />.
-    /// </summary>
-    /// <param name="dbContext">The DB context.</param>
-    /// <param name="secretService">The service for processing passwords and tokens.</param>
-    /// <param name="currentUserService">The service for current user.</param>
-    /// <param name="apiErrorMessage">The API error message.</param>
     public CreateCopilotUserCommandHandler(
         IMaaCopilotDbContext dbContext,
         ISecretService secretService,
@@ -91,29 +66,24 @@ public class CreateCopilotUserCommandHandler : IRequestHandler<CreateCopilotUser
         _apiErrorMessage = apiErrorMessage;
     }
 
-    /// <summary>
-    ///     Handles the request of creating user.
-    /// </summary>
-    /// <param name="request">The request.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns>
-    ///     <para>A task with no contents if the request completes successfully.</para>
-    ///     <para>400 when the email is already in use.</para>
-    /// </returns>
-    public async Task<MaaApiResponse> Handle(CreateCopilotUserCommand request,
-        CancellationToken cancellationToken)
+    public async Task<MaaApiResponse> Handle(CreateCopilotUserCommand request, CancellationToken cancellationToken)
     {
+        // Check if the email has already been used or not
         var emailColliding = await _dbContext.CopilotUsers.AnyAsync(x => x.Email == request.Email, cancellationToken);
         if (emailColliding)
         {
-            return MaaApiResponseHelper.BadRequest(
-                _apiErrorMessage.EmailAlreadyInUse);
+            return MaaApiResponseHelper.BadRequest(_apiErrorMessage.EmailAlreadyInUse);
         }
 
+        // Hash password and build entity
         var hashedPassword = _secretService.HashPassword(request.Password!);
         var user = new Domain.Entities.CopilotUser(request.Email!, hashedPassword, request.UserName!,
             Enum.Parse<UserRole>(request.Role!), _currentUserService.GetUserIdentity()!.Value);
+
+        // User account created by the Admin will be activated by default
         user.ActivateUser(_currentUserService.GetUserIdentity()!.Value);
+
+        // Add user
         _dbContext.CopilotUsers.Add(user);
         await _dbContext.SaveChangesAsync(cancellationToken);
         return MaaApiResponseHelper.Ok();

@@ -52,10 +52,12 @@ public class AddFavoriteCommandHandler : IRequestHandler<AddFavoriteCommand, Maa
 
     public async Task<MaaApiResponse> Handle(AddFavoriteCommand request, CancellationToken cancellationToken)
     {
+        // Get basic infos
         var listId = Guid.Parse(request.FavoriteListId!);
         var operationId = _copilotIdService.DecodeId(request.OperationId!);
         var user = (await _currentUserService.GetUser()).IsNotNull();
 
+        // Get operation
         var operation = await _dbContext.CopilotOperations
             .FirstOrDefaultAsync(x => x.Id == operationId, cancellationToken);
         if (operation is null)
@@ -64,6 +66,7 @@ public class AddFavoriteCommandHandler : IRequestHandler<AddFavoriteCommand, Maa
                 string.Format(_apiErrorMessage.CopilotOperationWithIdNotFound!, request.OperationId!));
         }
 
+        // Get fav list
         var list = await _dbContext.CopilotUserFavorites
             .Include(x => x.User)
             .Include(x => x.Operations)
@@ -73,11 +76,14 @@ public class AddFavoriteCommandHandler : IRequestHandler<AddFavoriteCommand, Maa
             return MaaApiResponseHelper.NotFound(
                 string.Format(_apiErrorMessage.FavListWithIdNotFound!, listId));
         }
+
+        // Check if the user could access the resource
         if (user!.IsAllowAccess(list.User) is false)
         {
             return MaaApiResponseHelper.Forbidden(_apiErrorMessage.PermissionDenied);
         }
 
+        // Add fav item to list
         list.AddFavoriteOperation(operation, user.EntityId);
         operation.AddFavorites(user.EntityId);
         await _dbContext.SaveChangesAsync(cancellationToken);

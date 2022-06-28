@@ -52,31 +52,38 @@ public class RequestPasswordResetCommandHandler : IRequestHandler<RequestPasswor
     public async Task<MaaApiResponse> Handle(RequestPasswordResetCommand request,
         CancellationToken cancellationToken)
     {
+        // Find user by email address
         var user = await _dbContext.CopilotUsers.FirstOrDefaultAsync(x => x.Email == request.Email, cancellationToken);
         if (user is null)
         {
             return MaaApiResponseHelper.NotFound(_apiErrorMessage.EmailNotRegister);
         }
 
+        // Check if this user already have a PasswordReset token
         var alreadyHaveToken = await _dbContext.CopilotTokens.FirstOrDefaultAsync(
             x => x.ResourceId == user.EntityId && x.Type == TokenType.UserPasswordReset, cancellationToken);
+        // If yes, then delete it.
         if (alreadyHaveToken is not null)
         {
             alreadyHaveToken.Delete(user.EntityId);
             _dbContext.CopilotTokens.Remove(alreadyHaveToken);
         }
 
+        // Generate a new token
         var (token, time) = _secretService.GenerateToken(user.EntityId,
             TimeSpan.FromMinutes(_tokenOption.Value.PasswordResetToken.ExpireTime));
+        // Send email
         var success = await _mailService.SendEmailAsync(
             new EmailPasswordReset(user.UserName, token, time.ToUtc8String(),
                 _tokenOption.Value.PasswordResetToken.HasCallback), user.Email);
 
+        // If email failed to send, return an internal error response
         if (success is false)
         {
             return MaaApiResponseHelper.InternalError(_apiErrorMessage.EmailSendFailed);
         }
 
+        // Add the token to database
         _dbContext.CopilotTokens.Add(new CopilotToken(user.EntityId, TokenType.UserPasswordReset, token, time));
         await _dbContext.SaveChangesAsync(cancellationToken);
         return MaaApiResponseHelper.Ok();

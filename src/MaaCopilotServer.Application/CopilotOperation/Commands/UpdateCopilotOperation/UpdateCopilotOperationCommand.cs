@@ -55,23 +55,27 @@ public class UpdateCopilotOperationCommandHandler : IRequestHandler<UpdateCopilo
 
     public async Task<MaaApiResponse> Handle(UpdateCopilotOperationCommand request, CancellationToken cancellationToken)
     {
-        var operationId = _copilotIdService.DecodeId(request.Id!);
+        // Get current infos
         var user = (await _currentUserService.GetUser()).IsNotNull();
+
+        // Get operation
+        var operationId = _copilotIdService.DecodeId(request.Id!);
         var operation = await _dbContext.CopilotOperations
             .Include(x => x.Author)
             .FirstOrDefaultAsync(x => x.Id == operationId, cancellationToken);
-
         if (operation is null)
         {
             return MaaApiResponseHelper.NotFound(
                 string.Format(_apiErrorMessage.CopilotOperationWithIdNotFound!, request.Id!));
         }
 
+        // Check if the user has the permission to update the operation
         if (user.IsAllowAccess(operation.Author))
         {
             return MaaApiResponseHelper.Forbidden(_apiErrorMessage.PermissionDenied!);
         }
 
+        // Deserialize the operation JSON content
         var content = MaaCopilotOperationHelper.DeserializeMaaCopilotOperation(request.Content!).IsNotNull();
 
         // Parse stage_name and version.
@@ -82,15 +86,18 @@ public class UpdateCopilotOperationCommandHandler : IRequestHandler<UpdateCopilo
         var docTitle = content.GetDocTitle();
         var docDetails = content.GetDocDetails();
 
+        // Check if the operator field is valid
         var operatorArray = content.Operators ?? Array.Empty<MaaCopilotOperationOperator>();
         if (operatorArray.Any(item => item.Name is null))
         {
             return MaaApiResponseHelper.BadRequest(_validationErrorMessage.CopilotOperationJsonIsInvalid);
         }
 
+        // Parse groups and operators
         var groups = content.SerializeGroup();
         var operators = content.SerializeOperator();
 
+        // Update the operation
         operation.UpdateOperation(request.Content!, stageName, minimumRequired, docTitle, docDetails, operators, groups, user.EntityId);
         _dbContext.CopilotOperations.Update(operation);
         await _dbContext.SaveChangesAsync(cancellationToken);

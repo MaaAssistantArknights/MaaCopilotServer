@@ -40,15 +40,10 @@ public class CreateFavoriteListCommandHandler : IRequestHandler<CreateFavoriteLi
 
     public async Task<MaaApiResponse> Handle(CreateFavoriteListCommand request, CancellationToken cancellationToken)
     {
-        var userId = _currentUserService.GetUserIdentity()!.Value;
-        var user = await _dbContext.CopilotUsers
-            .FirstOrDefaultAsync(x => x.EntityId == userId, cancellationToken);
+        // Get current infos
+        var user = (await _currentUserService.GetUser()).IsNotNull();
 
-        if (user is null)
-        {
-            return MaaApiResponseHelper.InternalError();
-        }
-
+        // Create fav list
         var list = new CopilotUserFavorite(user, request.Name!);
         _dbContext.CopilotUserFavorites.Add(list);
         await _dbContext.SaveChangesAsync(cancellationToken);

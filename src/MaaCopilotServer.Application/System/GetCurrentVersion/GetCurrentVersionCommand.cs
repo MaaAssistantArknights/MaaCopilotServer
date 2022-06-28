@@ -24,6 +24,7 @@ public class GetCurrentVersionCommandHandler : IRequestHandler<GetCurrentVersion
 
     public async Task<MaaApiResponse> Handle(GetCurrentVersionCommand request, CancellationToken cancellationToken)
     {
+        // Read version string from IOptions<ApplicationOption>
         var dto = new GetCurrentVersionDto(_applicationOptions.Value.Version, DateTimeOffset.UtcNow.ToIsoString());
         return await Task.FromResult(MaaApiResponseHelper.Ok(dto));
     }

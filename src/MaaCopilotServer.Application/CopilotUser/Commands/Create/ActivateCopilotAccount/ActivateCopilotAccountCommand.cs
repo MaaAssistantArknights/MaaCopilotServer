@@ -42,14 +42,18 @@ public class ActivateCopilotAccountCommandHandler : IRequestHandler<ActivateCopi
     public async Task<MaaApiResponse> Handle(ActivateCopilotAccountCommand request,
         CancellationToken cancellationToken)
     {
+        // Get token entity
         var token = await _dbContext.CopilotTokens.FirstOrDefaultAsync(x => x.Token == request.Token,
             cancellationToken);
+
+        // If token is null OR token is not valid now OR token is not for UserActivation, return a bad request response.
         if (token is null || token.ValidBefore < DateTimeOffset.UtcNow || token.Type != TokenType.UserActivation)
         {
             return MaaApiResponseHelper.BadRequest(
                 _apiErrorMessage.TokenInvalid);
         }
 
+        // Find user defined in token entity
         var user = _dbContext.CopilotUsers.FirstOrDefault(x => x.EntityId == token.ResourceId);
         if (user is null)
         {
@@ -57,6 +61,7 @@ public class ActivateCopilotAccountCommandHandler : IRequestHandler<ActivateCopi
                 string.Format(_apiErrorMessage.UserWithIdNotFound!, token.ResourceId.ToString()));
         }
 
+        // Activate user and delete the token
         user.ActivateUser(user.EntityId);
         token.Delete(user.EntityId);
         _dbContext.CopilotUsers.Update(user);

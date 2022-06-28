@@ -42,6 +42,7 @@ public class CreateCopilotOperationCommandHandler : IRequestHandler<CreateCopilo
 
     public async Task<MaaApiResponse> Handle(CreateCopilotOperationCommand request, CancellationToken cancellationToken)
     {
+        // Deserialize the operation JSON content.
         var content = MaaCopilotOperationHelper.DeserializeMaaCopilotOperation(request.Content!).IsNotNull();
 
         // Parse stage_name and version.
@@ -52,22 +53,29 @@ public class CreateCopilotOperationCommandHandler : IRequestHandler<CreateCopilo
         var docTitle = content.GetDocTitle();
         var docDetails = content.GetDocDetails();
 
+        // Check operators
         var operatorArray = content.Operators ?? Array.Empty<MaaCopilotOperationOperator>();
         if (operatorArray.Any(item => item.Name is null))
         {
             return MaaApiResponseHelper.BadRequest(_validationErrorMessage.CopilotOperationJsonIsInvalid);
         }
 
+        // Get groups and operators
         var groups = content.SerializeGroup();
         var operators = content.SerializeOperator();
 
-        var user = await _currentUserService.GetUser();
-        var entity = new Domain.Entities.CopilotOperation(
-            request.Content!, stageName!, minimumRequired!, docTitle, docDetails, user!, user!.EntityId, operators, groups);
+        // Get user
+        var user = (await _currentUserService.GetUser()).IsNotNull();
 
+        // Build entity
+        var entity = new Domain.Entities.CopilotOperation(
+            request.Content!, stageName, minimumRequired, docTitle, docDetails, user, user.EntityId, operators, groups);
+
+        // Add entity to database.
         _dbContext.CopilotOperations.Add(entity);
         await _dbContext.SaveChangesAsync(cancellationToken);
 
+        // Build response.
         var id = _copilotIdService.EncodeId(entity.Id);
         return MaaApiResponseHelper.Ok(new CreateCopilotOperationDto()
         {

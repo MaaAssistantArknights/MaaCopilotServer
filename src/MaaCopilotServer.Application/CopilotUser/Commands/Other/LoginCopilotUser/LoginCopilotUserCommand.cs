@@ -32,39 +32,13 @@ public record LoginCopilotUserCommand : IRequest<MaaApiResponse>
     public string? Password { get; set; }
 }
 
-/// <summary>
-///     The handler of user login.
-/// </summary>
-public class
-    LoginCopilotUserCommandHandler : IRequestHandler<LoginCopilotUserCommand, MaaApiResponse>
+public class LoginCopilotUserCommandHandler : IRequestHandler<LoginCopilotUserCommand, MaaApiResponse>
 {
-    /// <summary>
-    ///     The API error message.
-    /// </summary>
     private readonly ApiErrorMessage _apiErrorMessage;
-
-    /// <summary>
-    ///     The service for current user.
-    /// </summary>
     private readonly ICurrentUserService _currentUserService;
-
-    /// <summary>
-    ///     The DB context.
-    /// </summary>
     private readonly IMaaCopilotDbContext _dbContext;
-
-    /// <summary>
-    ///     The service for processing passwords and tokens.
-    /// </summary>
     private readonly ISecretService _secretService;
 
-    /// <summary>
-    ///     The constructor of <see cref="LoginCopilotUserCommandHandler" />.
-    /// </summary>
-    /// <param name="dbContext">The DB context.</param>
-    /// <param name="secretService">The service for processing passwords and tokens.</param>
-    /// <param name="currentUserService">The service for current user.</param>
-    /// <param name="apiErrorMessage">The API error message.</param>
     public LoginCopilotUserCommandHandler(
         IMaaCopilotDbContext dbContext,
         ISecretService secretService,
@@ -77,42 +51,38 @@ public class
         _apiErrorMessage = apiErrorMessage;
     }
 
-    /// <summary>
-    ///     Handles the request of user login.
-    /// </summary>
-    /// <param name="request">The request.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns>
-    ///     <para>A task with username, user token and token expiration time.</para>
-    ///     <para>400 when the email does not exist, or the password is incorrect.</para>
-    /// </returns>
-    public async Task<MaaApiResponse> Handle(LoginCopilotUserCommand request,
-        CancellationToken cancellationToken)
+    public async Task<MaaApiResponse> Handle(LoginCopilotUserCommand request, CancellationToken cancellationToken)
     {
+        // Find the user by email address
         var user = await _dbContext.CopilotUsers
             .Include(x => x.UserFavorites)
             .FirstOrDefaultAsync(x => x.Email == request.Email, cancellationToken);
         if (user is null)
         {
-            return MaaApiResponseHelper.BadRequest(
-                _apiErrorMessage.LoginFailed);
+            return MaaApiResponseHelper.BadRequest(_apiErrorMessage.LoginFailed);
         }
 
+        // Verify user password
         var ok = _secretService.VerifyPassword(user.Password, request.Password!);
         if (ok is false)
         {
-            return MaaApiResponseHelper.BadRequest(
-                _apiErrorMessage.LoginFailed);
+            return MaaApiResponseHelper.BadRequest(_apiErrorMessage.LoginFailed);
         }
 
+        // Calculate the upload count of the user
         var uploadCount = await _dbContext.CopilotOperations
             .Include(x => x.Author)
             .Where(x => x.Author.EntityId == user.EntityId)
             .CountAsync(cancellationToken);
 
+        // Generate JWT token
         var (token, expire) = _secretService.GenerateJwtToken(user.EntityId);
+
+        // Build fav list DTO
         var favList = user.UserFavorites
             .ToDictionary(fav => fav.EntityId.ToString(), fav => fav.FavoriteName);
+
+        // Build DTO
         var dto = new LoginCopilotUserDto(token, expire.ToIsoString(),
             new GetCopilotUserDto(user.EntityId, user.UserName, user.UserRole, uploadCount, user.UserActivated,
                 favList));
