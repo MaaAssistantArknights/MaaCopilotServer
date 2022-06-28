@@ -37,7 +37,7 @@ jobs:
         run: dotnet build -c ${{ matrix.configuration }} --no-restore
 
       - name: "Test"
-        run: dotnet test -c ${{ matrix.configuration }} --no-restore --verbosity normal
+        run: dotnet test -c ${{ matrix.configuration }} --no-build --verbosity normal
 
       - name: "Publish .NET application"
         if: ${{ matrix.configuration == 'Release' }}
