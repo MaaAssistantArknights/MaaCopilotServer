@@ -4,7 +4,9 @@ MAA 作业服务器
 
 ## API 定义
 
-[API FOX 接口文档](https://www.apifox.cn/apidoc/shared-e9acdf71-e5e6-4198-aaa7-5417e1304335)
+[OpenAPI 3.0 文档](./api-spec.json)
+
+或者，在 `Debug` 模式下运行 `MaaCopilotServer.Api`，然后访问 `http://localhost:${YOUR PORT}/swagger`
 
 ## 编译与打包
 
@@ -13,6 +15,10 @@ MAA 作业服务器
 编译：
 ```shell
 dotnet build -c Release ./src/MaaCopilotServer.Api/MaaCopilotServer.Api.csproj
+```
+测试：
+```shell
+dotnet test --verbosity normal
 ```
 
 发布：

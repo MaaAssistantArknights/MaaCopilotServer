@@ -1,0 +1,4814 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Maa Copilot Server",
+    "description": "Maa Copilot Server API Documentation",
+    "contact": {
+      "name": "Maa Team",
+      "url": "https://www.maa.plus/"
+    },
+    "license": {
+      "name": "AGPL-3.0",
+      "url": "https://github.com/MaaAssistantArknights/MaaCopilotServer/blob/main/LICENSE"
+    },
+    "version": "v1"
+  },
+  "paths": {
+    "/favorites/create": {
+      "post": {
+        "tags": [
+          "CopilotFavorite"
+        ],
+        "summary": "Creates a new favorite list.",
+        "description": " [AUTH REQUIRED: User]",
+        "requestBody": {
+          "description": "The request body.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateFavoriteListCommand"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateFavoriteListCommand"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateFavoriteListCommand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "A bad request, most cases are invalid request parameters.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "An unauthorized request, you need to login and set Authorization header at first.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "A forbidden request, you do not have permission to perform the operation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Some thing not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Some server errors happens.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "The favorite list was created successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateFavoriteListDtoMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateFavoriteListDtoMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateFavoriteListDtoMaaApiResponseModel"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
+      }
+    },
+    "/favorites/delete": {
+      "post": {
+        "tags": [
+          "CopilotFavorite"
+        ],
+        "summary": "Deletes a favorite list.",
+        "description": " [AUTH REQUIRED: User]",
+        "requestBody": {
+          "description": "The request body.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteFavoriteListCommand"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteFavoriteListCommand"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteFavoriteListCommand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "A bad request, most cases are invalid request parameters.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "An unauthorized request, you need to login and set Authorization header at first.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "A forbidden request, you do not have permission to perform the operation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Some thing not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Some server errors happens.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "The favorite list was deleted successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
+      }
+    },
+    "/favorites/add": {
+      "post": {
+        "tags": [
+          "CopilotFavorite"
+        ],
+        "summary": "Adds a new favorite to a favorite list.",
+        "description": " [AUTH REQUIRED: User]",
+        "requestBody": {
+          "description": "The request body.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddFavoriteCommand"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddFavoriteCommand"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddFavoriteCommand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "A bad request, most cases are invalid request parameters.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "An unauthorized request, you need to login and set Authorization header at first.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "A forbidden request, you do not have permission to perform the operation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Some thing not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Some server errors happens.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "The favorite was added successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
+      }
+    },
+    "/favorites/remove": {
+      "post": {
+        "tags": [
+          "CopilotFavorite"
+        ],
+        "summary": "Removes a favorite from a favorite list.",
+        "description": " [AUTH REQUIRED: User]",
+        "requestBody": {
+          "description": "The request body.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RemoveFavoriteCommand"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RemoveFavoriteCommand"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/RemoveFavoriteCommand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "A bad request, most cases are invalid request parameters.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "An unauthorized request, you need to login and set Authorization header at first.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "A forbidden request, you do not have permission to perform the operation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Some thing not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Some server errors happens.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "The favorite was removed successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
+      }
+    },
+    "/favorites/get/{id}": {
+      "get": {
+        "tags": [
+          "CopilotFavorite"
+        ],
+        "summary": "Get the user favorites by a specific favorite list id.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The favorite list id.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "A bad request, most cases are invalid request parameters.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "An unauthorized request, you need to login and set Authorization header at first.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "A forbidden request, you do not have permission to perform the operation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Some thing not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Some server errors happens.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "The user favorites in a favorite list.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetCopilotUserFavoritesDtoMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetCopilotUserFavoritesDtoMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetCopilotUserFavoritesDtoMaaApiResponseModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/copilot/upload": {
+      "post": {
+        "tags": [
+          "CopilotOperation"
+        ],
+        "summary": "Upload a copilot operation.",
+        "description": " [AUTH REQUIRED: Uploader]",
+        "requestBody": {
+          "description": "The request body.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCopilotOperationCommand"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCopilotOperationCommand"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCopilotOperationCommand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "A bad request, most cases are invalid request parameters.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "An unauthorized request, you need to login and set Authorization header at first.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "A forbidden request, you do not have permission to perform the operation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Some thing not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Some server errors happens.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "The operation is successfully uploaded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateCopilotOperationDtoMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateCopilotOperationDtoMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateCopilotOperationDtoMaaApiResponseModel"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
+      }
+    },
+    "/copilot/delete": {
+      "post": {
+        "tags": [
+          "CopilotOperation"
+        ],
+        "summary": "Delete a copilot operation.",
+        "description": " [AUTH REQUIRED: Uploader]",
+        "requestBody": {
+          "description": "The request boy.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteCopilotOperationCommand"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteCopilotOperationCommand"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteCopilotOperationCommand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "A bad request, most cases are invalid request parameters.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "An unauthorized request, you need to login and set Authorization header at first.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "A forbidden request, you do not have permission to perform the operation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Some thing not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Some server errors happens.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "The operation was successfully deleted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
+      }
+    },
+    "/copilot/get/{id}": {
+      "get": {
+        "tags": [
+          "CopilotOperation"
+        ],
+        "summary": "Get a copilot operation by its id.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The operation id.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "A bad request, most cases are invalid request parameters.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "An unauthorized request, you need to login and set Authorization header at first.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "A forbidden request, you do not have permission to perform the operation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Some thing not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Some server errors happens.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "The operation JSON and related metadata.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetCopilotOperationQueryDtoMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetCopilotOperationQueryDtoMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetCopilotOperationQueryDtoMaaApiResponseModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/copilot/query": {
+      "get": {
+        "tags": [
+          "CopilotOperation"
+        ],
+        "summary": "Query copilot operations.",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "The page number to query. Default is 1.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "The max amount of items in a page. Default is 10.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "stage_name",
+            "in": "query",
+            "description": "The stage name to query.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "content",
+            "in": "query",
+            "description": "The content to query.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "uploader",
+            "in": "query",
+            "description": "The name of the uploader.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "uploader_id",
+            "in": "query",
+            "description": "The ID of the uploader",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "desc",
+            "in": "query",
+            "description": "The description to query.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "description": "Orders result by a field. Only supports ordering by \"views\", \"rating\" and \"id\" (default).",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "A bad request, most cases are invalid request parameters.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "An unauthorized request, you need to login and set Authorization header at first.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "A forbidden request, you do not have permission to perform the operation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Some thing not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Some server errors happens.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "A list of query results with operation metadata.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QueryCopilotOperationsQueryDtoPaginationResultMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/QueryCopilotOperationsQueryDtoPaginationResultMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QueryCopilotOperationsQueryDtoPaginationResultMaaApiResponseModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/copilot/update": {
+      "post": {
+        "tags": [
+          "CopilotOperation"
+        ],
+        "summary": "Update a copilot operation.",
+        "description": " [AUTH REQUIRED: Uploader]",
+        "requestBody": {
+          "description": "The request body.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCopilotOperationCommand"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCopilotOperationCommand"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCopilotOperationCommand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "A bad request, most cases are invalid request parameters.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "An unauthorized request, you need to login and set Authorization header at first.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "A forbidden request, you do not have permission to perform the operation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Some thing not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Some server errors happens.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "The operation was successfully updated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
+      }
+    },
+    "/copilot/rating": {
+      "post": {
+        "tags": [
+          "CopilotOperation"
+        ],
+        "summary": "Rate a copilot operation.",
+        "description": " [AUTH REQUIRED: User]",
+        "requestBody": {
+          "description": "The request body.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RatingCopilotOperationCommand"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RatingCopilotOperationCommand"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/RatingCopilotOperationCommand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "A bad request, most cases are invalid request parameters.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "An unauthorized request, you need to login and set Authorization header at first.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "A forbidden request, you do not have permission to perform the operation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Some thing not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Some server errors happens.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "The rating was successfully added to the operation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RatingCopilotOperationDtoMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/RatingCopilotOperationDtoMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RatingCopilotOperationDtoMaaApiResponseModel"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
+      }
+    },
+    "/user/change": {
+      "post": {
+        "tags": [
+          "CopilotUser"
+        ],
+        "summary": "Change the user info.",
+        "description": " [AUTH REQUIRED: Admin]",
+        "requestBody": {
+          "description": "The request body.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangeCopilotUserInfoCommand"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangeCopilotUserInfoCommand"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangeCopilotUserInfoCommand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "A bad request, most cases are invalid request parameters.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "An unauthorized request, you need to login and set Authorization header at first.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "A forbidden request, you do not have permission to perform the operation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Some thing not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Some server errors happens.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "The changes has benn applied successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
+      }
+    },
+    "/user/create": {
+      "post": {
+        "tags": [
+          "CopilotUser"
+        ],
+        "summary": "Create a new user.",
+        "description": " [AUTH REQUIRED: Admin]",
+        "requestBody": {
+          "description": "The request body.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCopilotUserCommand"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCopilotUserCommand"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCopilotUserCommand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "A bad request, most cases are invalid request parameters.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "An unauthorized request, you need to login and set Authorization header at first.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "A forbidden request, you do not have permission to perform the operation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Some thing not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Some server errors happens.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "The copilot user has been created successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
+      }
+    },
+    "/user/delete": {
+      "post": {
+        "tags": [
+          "CopilotUser"
+        ],
+        "summary": "Delete a user.",
+        "description": " [AUTH REQUIRED: Admin]",
+        "requestBody": {
+          "description": "The request body.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteCopilotUserCommand"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteCopilotUserCommand"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteCopilotUserCommand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "A bad request, most cases are invalid request parameters.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "An unauthorized request, you need to login and set Authorization header at first.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "A forbidden request, you do not have permission to perform the operation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Some thing not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Some server errors happens.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "The copilot user has been deleted successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
+      }
+    },
+    "/user/login": {
+      "post": {
+        "tags": [
+          "CopilotUser"
+        ],
+        "summary": "Login a user.",
+        "requestBody": {
+          "description": "The request body.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginCopilotUserCommand"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginCopilotUserCommand"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginCopilotUserCommand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "A bad request, most cases are invalid request parameters.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "An unauthorized request, you need to login and set Authorization header at first.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "A forbidden request, you do not have permission to perform the operation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Some thing not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Some server errors happens.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Login successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginCopilotUserDtoMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginCopilotUserDtoMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginCopilotUserDtoMaaApiResponseModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/update/info": {
+      "post": {
+        "tags": [
+          "CopilotUser"
+        ],
+        "summary": "Update the user info, password not included.",
+        "description": " [AUTH REQUIRED: User]",
+        "requestBody": {
+          "description": "The request body.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCopilotUserInfoCommand"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCopilotUserInfoCommand"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCopilotUserInfoCommand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "A bad request, most cases are invalid request parameters.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "An unauthorized request, you need to login and set Authorization header at first.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "A forbidden request, you do not have permission to perform the operation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Some thing not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Some server errors happens.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "The changes has benn applied successfully.\r\nIf the email has been changed, a new activation code will be sent to the new email.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
+      }
+    },
+    "/user/update/password": {
+      "post": {
+        "tags": [
+          "CopilotUser"
+        ],
+        "summary": "Update the user password.",
+        "description": " [AUTH REQUIRED: User]",
+        "requestBody": {
+          "description": "The request body.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCopilotUserPasswordCommand"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCopilotUserPasswordCommand"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCopilotUserPasswordCommand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "A bad request, most cases are invalid request parameters.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "An unauthorized request, you need to login and set Authorization header at first.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "A forbidden request, you do not have permission to perform the operation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Some thing not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Some server errors happens.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "The changes has benn applied successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
+      }
+    },
+    "/user/info/{id}": {
+      "get": {
+        "tags": [
+          "CopilotUser"
+        ],
+        "summary": "Get the user info by id.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The user id, or placeholders like me.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "A bad request, most cases are invalid request parameters.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "An unauthorized request, you need to login and set Authorization header at first.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "A forbidden request, you do not have permission to perform the operation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Some thing not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Some server errors happens.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "The user info in detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetCopilotUserDtoMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetCopilotUserDtoMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetCopilotUserDtoMaaApiResponseModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/query": {
+      "get": {
+        "tags": [
+          "CopilotUser"
+        ],
+        "summary": "Query users.",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "The page number to query. Default is 1.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "The max amount of items in a page. Default is 10.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "user_name",
+            "in": "query",
+            "description": "The username to query.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "A bad request, most cases are invalid request parameters.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "An unauthorized request, you need to login and set Authorization header at first.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "A forbidden request, you do not have permission to perform the operation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Some thing not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Some server errors happens.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "The brief user info list.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QueryCopilotUserDtoPaginationResultMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/QueryCopilotUserDtoPaginationResultMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QueryCopilotUserDtoPaginationResultMaaApiResponseModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/register": {
+      "post": {
+        "tags": [
+          "CopilotUser"
+        ],
+        "summary": "Register a user.",
+        "requestBody": {
+          "description": "The request body.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterCopilotAccountCommand"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterCopilotAccountCommand"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterCopilotAccountCommand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "A bad request, most cases are invalid request parameters.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "An unauthorized request, you need to login and set Authorization header at first.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "A forbidden request, you do not have permission to perform the operation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Some thing not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Some server errors happens.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "The copilot user has been created successfully and an activation code has been sent to the email address.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/activate": {
+      "post": {
+        "tags": [
+          "CopilotUser"
+        ],
+        "summary": "Activate a user account.",
+        "requestBody": {
+          "description": "The request body.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ActivateCopilotAccountCommand"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ActivateCopilotAccountCommand"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ActivateCopilotAccountCommand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "A bad request, most cases are invalid request parameters.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "An unauthorized request, you need to login and set Authorization header at first.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "A forbidden request, you do not have permission to perform the operation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Some thing not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Some server errors happens.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "The account has been activated successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/password/reset_request": {
+      "post": {
+        "tags": [
+          "CopilotUser"
+        ],
+        "summary": "Request a password reset.",
+        "requestBody": {
+          "description": "The request body.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestPasswordResetCommand"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestPasswordResetCommand"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestPasswordResetCommand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "A bad request, most cases are invalid request parameters.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "An unauthorized request, you need to login and set Authorization header at first.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "A forbidden request, you do not have permission to perform the operation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Some thing not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Some server errors happens.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "The password reset token has been sent to the email address.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/password/reset": {
+      "post": {
+        "tags": [
+          "CopilotUser"
+        ],
+        "summary": "Reset password.",
+        "requestBody": {
+          "description": "The request body.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PasswordResetCommand"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PasswordResetCommand"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/PasswordResetCommand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "A bad request, most cases are invalid request parameters.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "An unauthorized request, you need to login and set Authorization header at first.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "A forbidden request, you do not have permission to perform the operation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Some thing not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Some server errors happens.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "The password has been reset successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/version": {
+      "get": {
+        "tags": [
+          "System"
+        ],
+        "summary": "Get the current version of the server.",
+        "responses": {
+          "500": {
+            "description": "Some server errors happens.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "The current version of the server.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetCurrentVersionDtoMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetCurrentVersionDtoMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetCurrentVersionDtoMaaApiResponseModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ActivateCopilotAccountCommand": {
+        "required": [
+          "token"
+        ],
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "description": "Account activation token."
+          }
+        },
+        "additionalProperties": false,
+        "description": "The DTO for the ActivateCopilotAccount command."
+      },
+      "AddFavoriteCommand": {
+        "required": [
+          "favorite_list_id",
+          "operation_id"
+        ],
+        "type": "object",
+        "properties": {
+          "favorite_list_id": {
+            "type": "string",
+            "description": "The id of the favorite list."
+          },
+          "operation_id": {
+            "type": "string",
+            "description": "The operation id."
+          }
+        },
+        "additionalProperties": false,
+        "description": "The DTO for the AddFavorite command."
+      },
+      "ChangeCopilotUserInfoCommand": {
+        "required": [
+          "user_id"
+        ],
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "description": "The user id."
+          },
+          "email": {
+            "type": "string",
+            "description": "The user email. Set this value to change the email.",
+            "nullable": true
+          },
+          "user_name": {
+            "type": "string",
+            "description": "The username. Set this value to change the username.",
+            "nullable": true
+          },
+          "password": {
+            "type": "string",
+            "description": "The password. Set this value to change the password.",
+            "nullable": true
+          },
+          "role": {
+            "type": "string",
+            "description": "The role of the user. Set this value to change the role.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "The DTO for the change copilot user info command."
+      },
+      "CreateCopilotOperationCommand": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "The operation JSON content.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "The DTO for the CreateCopilotOperation command."
+      },
+      "CreateCopilotOperationDto": {
+        "required": [
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The operation ID."
+          }
+        },
+        "additionalProperties": false,
+        "description": "The response to a MaaCopilotServer.Application.CopilotOperation.Commands.CreateCopilotOperation.CreateCopilotOperationCommand."
+      },
+      "CreateCopilotOperationDtoMaaApiResponseModel": {
+        "required": [
+          "data",
+          "message",
+          "status_code",
+          "trace_id"
+        ],
+        "type": "object",
+        "properties": {
+          "status_code": {
+            "type": "integer",
+            "description": "The status code.",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string",
+            "description": "The message."
+          },
+          "trace_id": {
+            "type": "string",
+            "description": "The tracking ID."
+          },
+          "data": {
+            "$ref": "#/components/schemas/CreateCopilotOperationDto"
+          }
+        },
+        "additionalProperties": false,
+        "description": "The maa server api response model."
+      },
+      "CreateCopilotUserCommand": {
+        "required": [
+          "email",
+          "password",
+          "role",
+          "user_name"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "The user email."
+          },
+          "password": {
+            "type": "string",
+            "description": "The user password."
+          },
+          "user_name": {
+            "type": "string",
+            "description": "The username."
+          },
+          "role": {
+            "type": "string",
+            "description": "The role of the user. Valid values are: Admin, Uploader, User."
+          }
+        },
+        "additionalProperties": false,
+        "description": "The DTO for the CreateCopilotUser command."
+      },
+      "CreateFavoriteListCommand": {
+        "required": [
+          "favorite_list_name"
+        ],
+        "type": "object",
+        "properties": {
+          "favorite_list_name": {
+            "type": "string",
+            "description": "The favorite list name, could be duplicated."
+          }
+        },
+        "additionalProperties": false,
+        "description": "The DTO for the CreateFavoriteList command."
+      },
+      "CreateFavoriteListDto": {
+        "required": [
+          "favorite_list_id",
+          "favorite_list_name"
+        ],
+        "type": "object",
+        "properties": {
+          "favorite_list_name": {
+            "type": "string",
+            "description": "The name of the favorite list."
+          },
+          "favorite_list_id": {
+            "type": "string",
+            "description": "The id of the favorite list. GUID format."
+          }
+        },
+        "additionalProperties": false,
+        "description": "The response to the MaaCopilotServer.Application.CopilotFavorite.Commands.CreateFavoriteList.CreateFavoriteListCommand."
+      },
+      "CreateFavoriteListDtoMaaApiResponseModel": {
+        "required": [
+          "data",
+          "message",
+          "status_code",
+          "trace_id"
+        ],
+        "type": "object",
+        "properties": {
+          "status_code": {
+            "type": "integer",
+            "description": "The status code.",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string",
+            "description": "The message."
+          },
+          "trace_id": {
+            "type": "string",
+            "description": "The tracking ID."
+          },
+          "data": {
+            "$ref": "#/components/schemas/CreateFavoriteListDto"
+          }
+        },
+        "additionalProperties": false,
+        "description": "The maa server api response model."
+      },
+      "DeleteCopilotOperationCommand": {
+        "required": [
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The operation ID."
+          }
+        },
+        "additionalProperties": false,
+        "description": "The DTO for the DeleteCopilotOperation command."
+      },
+      "DeleteCopilotUserCommand": {
+        "required": [
+          "user_id"
+        ],
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "description": "The id of the user that pending to delete."
+          }
+        },
+        "additionalProperties": false,
+        "description": "The DTO for the DeleteCopilotUser command."
+      },
+      "DeleteFavoriteListCommand": {
+        "required": [
+          "favorite_list_id"
+        ],
+        "type": "object",
+        "properties": {
+          "favorite_list_id": {
+            "type": "string",
+            "description": "The ID of the favorite list to delete."
+          }
+        },
+        "additionalProperties": false,
+        "description": "The DTO for the DeleteFavoriteList command."
+      },
+      "EmptyObjectModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "description": "This is a placeholder empty object, means null in real response body."
+      },
+      "EmptyObjectModelMaaApiResponseModel": {
+        "required": [
+          "data",
+          "message",
+          "status_code",
+          "trace_id"
+        ],
+        "type": "object",
+        "properties": {
+          "status_code": {
+            "type": "integer",
+            "description": "The status code.",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string",
+            "description": "The message."
+          },
+          "trace_id": {
+            "type": "string",
+            "description": "The tracking ID."
+          },
+          "data": {
+            "$ref": "#/components/schemas/EmptyObjectModel"
+          }
+        },
+        "additionalProperties": false,
+        "description": "The maa server api response model."
+      },
+      "FavoriteCopilotOperationsDto": {
+        "required": [
+          "deleted",
+          "detail",
+          "groups",
+          "id",
+          "minimum_required",
+          "operators",
+          "rating_ratio",
+          "stage_name",
+          "title",
+          "upload_time",
+          "uploader",
+          "views"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The operation id."
+          },
+          "stage_name": {
+            "type": "string",
+            "description": "The stage name."
+          },
+          "minimum_required": {
+            "type": "string",
+            "description": "The minimum required version of MAA."
+          },
+          "upload_time": {
+            "type": "string",
+            "description": "The time when the operation was uploaded."
+          },
+          "title": {
+            "type": "string",
+            "description": "The name of the uploader."
+          },
+          "detail": {
+            "type": "string",
+            "description": "The title of the operation."
+          },
+          "uploader": {
+            "type": "string",
+            "description": "The detail of the operation."
+          },
+          "operators": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Operators used."
+          },
+          "groups": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MaaCopilotOperationGroupStore"
+            },
+            "description": "Groups used."
+          },
+          "views": {
+            "type": "integer",
+            "description": "The number of times of views.",
+            "format": "int32"
+          },
+          "rating_ratio": {
+            "type": "number",
+            "description": "The rating ratio.",
+            "format": "float"
+          },
+          "rating_type": {
+            "$ref": "#/components/schemas/OperationRatingType"
+          },
+          "deleted": {
+            "type": "boolean",
+            "description": "Whether this operation has been deleted or not."
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetCopilotOperationQueryDto": {
+        "required": [
+          "content",
+          "detail",
+          "groups",
+          "id",
+          "minimum_required",
+          "operators",
+          "rating_ratio",
+          "stage_name",
+          "title",
+          "upload_time",
+          "uploader",
+          "views"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The operation id."
+          },
+          "stage_name": {
+            "type": "string",
+            "description": "The stage name."
+          },
+          "minimum_required": {
+            "type": "string",
+            "description": "The minimum required version of MAA."
+          },
+          "upload_time": {
+            "type": "string",
+            "description": "The time when the operation was uploaded."
+          },
+          "title": {
+            "type": "string",
+            "description": "The name of the uploader."
+          },
+          "detail": {
+            "type": "string",
+            "description": "The title of the operation."
+          },
+          "uploader": {
+            "type": "string",
+            "description": "The detail of the operation."
+          },
+          "operators": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Operators used."
+          },
+          "groups": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MaaCopilotOperationGroupStore"
+            },
+            "description": "Groups used."
+          },
+          "views": {
+            "type": "integer",
+            "description": "The number of times of views.",
+            "format": "int32"
+          },
+          "rating_ratio": {
+            "type": "number",
+            "description": "The rating ratio.",
+            "format": "float"
+          },
+          "rating_type": {
+            "$ref": "#/components/schemas/OperationRatingType"
+          },
+          "content": {
+            "type": "string",
+            "description": "The operation JSON content."
+          }
+        },
+        "additionalProperties": false,
+        "description": "The response of the MaaCopilotServer.Application.CopilotOperation.Queries.GetCopilotOperation.GetCopilotOperationQuery."
+      },
+      "GetCopilotOperationQueryDtoMaaApiResponseModel": {
+        "required": [
+          "data",
+          "message",
+          "status_code",
+          "trace_id"
+        ],
+        "type": "object",
+        "properties": {
+          "status_code": {
+            "type": "integer",
+            "description": "The status code.",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string",
+            "description": "The message."
+          },
+          "trace_id": {
+            "type": "string",
+            "description": "The tracking ID."
+          },
+          "data": {
+            "$ref": "#/components/schemas/GetCopilotOperationQueryDto"
+          }
+        },
+        "additionalProperties": false,
+        "description": "The maa server api response model."
+      },
+      "GetCopilotUserDto": {
+        "required": [
+          "activated",
+          "favorite_lists",
+          "id",
+          "role",
+          "upload_count",
+          "user_name"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The user id.",
+            "format": "uuid"
+          },
+          "user_name": {
+            "type": "string",
+            "description": "The username."
+          },
+          "role": {
+            "$ref": "#/components/schemas/UserRole"
+          },
+          "activated": {
+            "type": "boolean",
+            "description": "Account activation status."
+          },
+          "favorite_lists": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "User favorite lists."
+          },
+          "upload_count": {
+            "type": "integer",
+            "description": "The number of uploads.",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false,
+        "description": "The response to the MaaCopilotServer.Application.CopilotUser.Queries.GetCopilotUser.GetCopilotUserQuery."
+      },
+      "GetCopilotUserDtoMaaApiResponseModel": {
+        "required": [
+          "data",
+          "message",
+          "status_code",
+          "trace_id"
+        ],
+        "type": "object",
+        "properties": {
+          "status_code": {
+            "type": "integer",
+            "description": "The status code.",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string",
+            "description": "The message."
+          },
+          "trace_id": {
+            "type": "string",
+            "description": "The tracking ID."
+          },
+          "data": {
+            "$ref": "#/components/schemas/GetCopilotUserDto"
+          }
+        },
+        "additionalProperties": false,
+        "description": "The maa server api response model."
+      },
+      "GetCopilotUserFavoritesDto": {
+        "type": "object",
+        "properties": {
+          "favorite_list_id": {
+            "type": "string",
+            "nullable": true
+          },
+          "favorite_list_name": {
+            "type": "string",
+            "nullable": true
+          },
+          "favorite_items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FavoriteCopilotOperationsDto"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "The response to the MaaCopilotServer.Application.CopilotFavorite.Queries.GetCopilotUserFavorites.GetCopilotUserFavoritesQuery."
+      },
+      "GetCopilotUserFavoritesDtoMaaApiResponseModel": {
+        "required": [
+          "data",
+          "message",
+          "status_code",
+          "trace_id"
+        ],
+        "type": "object",
+        "properties": {
+          "status_code": {
+            "type": "integer",
+            "description": "The status code.",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string",
+            "description": "The message."
+          },
+          "trace_id": {
+            "type": "string",
+            "description": "The tracking ID."
+          },
+          "data": {
+            "$ref": "#/components/schemas/GetCopilotUserFavoritesDto"
+          }
+        },
+        "additionalProperties": false,
+        "description": "The maa server api response model."
+      },
+      "GetCurrentVersionDto": {
+        "required": [
+          "time",
+          "version"
+        ],
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "string",
+            "description": "The version of the server."
+          },
+          "time": {
+            "type": "string",
+            "description": "The current time of the server."
+          }
+        },
+        "additionalProperties": false,
+        "description": "The response to the MaaCopilotServer.Application.System.GetCurrentVersion.GetCurrentVersionCommand."
+      },
+      "GetCurrentVersionDtoMaaApiResponseModel": {
+        "required": [
+          "data",
+          "message",
+          "status_code",
+          "trace_id"
+        ],
+        "type": "object",
+        "properties": {
+          "status_code": {
+            "type": "integer",
+            "description": "The status code.",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string",
+            "description": "The message."
+          },
+          "trace_id": {
+            "type": "string",
+            "description": "The tracking ID."
+          },
+          "data": {
+            "$ref": "#/components/schemas/GetCurrentVersionDto"
+          }
+        },
+        "additionalProperties": false,
+        "description": "The maa server api response model."
+      },
+      "LoginCopilotUserCommand": {
+        "required": [
+          "email",
+          "password"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "The user email."
+          },
+          "password": {
+            "type": "string",
+            "description": "The password."
+          }
+        },
+        "additionalProperties": false,
+        "description": "The DTO for the login command."
+      },
+      "LoginCopilotUserDto": {
+        "required": [
+          "token",
+          "user_info",
+          "valid_before"
+        ],
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "description": "The JWT token."
+          },
+          "valid_before": {
+            "type": "string",
+            "description": "The token expiration time."
+          },
+          "user_info": {
+            "$ref": "#/components/schemas/GetCopilotUserDto"
+          }
+        },
+        "additionalProperties": false,
+        "description": "The response of the MaaCopilotServer.Application.CopilotUser.Commands.LoginCopilotUser.LoginCopilotUserCommand."
+      },
+      "LoginCopilotUserDtoMaaApiResponseModel": {
+        "required": [
+          "data",
+          "message",
+          "status_code",
+          "trace_id"
+        ],
+        "type": "object",
+        "properties": {
+          "status_code": {
+            "type": "integer",
+            "description": "The status code.",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string",
+            "description": "The message."
+          },
+          "trace_id": {
+            "type": "string",
+            "description": "The tracking ID."
+          },
+          "data": {
+            "$ref": "#/components/schemas/LoginCopilotUserDto"
+          }
+        },
+        "additionalProperties": false,
+        "description": "The maa server api response model."
+      },
+      "MaaCopilotOperationGroupStore": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The `name` field.",
+            "nullable": true
+          },
+          "operators": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The `operators` field but in formatted string mode.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "A DTO style class for MaaCopilotServer.Application.Common.Models.MaaCopilotOperationGroup."
+      },
+      "OperationRatingType": {
+        "enum": [
+          0,
+          1,
+          2
+        ],
+        "type": "integer",
+        "format": "int32"
+      },
+      "PasswordResetCommand": {
+        "required": [
+          "password",
+          "token"
+        ],
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "description": "The token to validate this request."
+          },
+          "password": {
+            "type": "string",
+            "description": "The new password."
+          }
+        },
+        "additionalProperties": false,
+        "description": "The DTO for the PasswordReset command."
+      },
+      "QueryCopilotOperationsQueryDto": {
+        "required": [
+          "detail",
+          "groups",
+          "id",
+          "minimum_required",
+          "operators",
+          "rating_ratio",
+          "stage_name",
+          "title",
+          "upload_time",
+          "uploader",
+          "views"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The operation id."
+          },
+          "stage_name": {
+            "type": "string",
+            "description": "The stage name."
+          },
+          "minimum_required": {
+            "type": "string",
+            "description": "The minimum required version of MAA."
+          },
+          "upload_time": {
+            "type": "string",
+            "description": "The time when the operation was uploaded."
+          },
+          "title": {
+            "type": "string",
+            "description": "The name of the uploader."
+          },
+          "detail": {
+            "type": "string",
+            "description": "The title of the operation."
+          },
+          "uploader": {
+            "type": "string",
+            "description": "The detail of the operation."
+          },
+          "operators": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Operators used."
+          },
+          "groups": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MaaCopilotOperationGroupStore"
+            },
+            "description": "Groups used."
+          },
+          "views": {
+            "type": "integer",
+            "description": "The number of times of views.",
+            "format": "int32"
+          },
+          "rating_ratio": {
+            "type": "number",
+            "description": "The rating ratio.",
+            "format": "float"
+          },
+          "rating_type": {
+            "$ref": "#/components/schemas/OperationRatingType"
+          }
+        },
+        "additionalProperties": false,
+        "description": "The response to the MaaCopilotServer.Application.CopilotOperation.Queries.QueryCopilotOperations.QueryCopilotOperationsQuery."
+      },
+      "QueryCopilotOperationsQueryDtoPaginationResult": {
+        "type": "object",
+        "properties": {
+          "has_next": {
+            "type": "boolean",
+            "description": "Indicates whether there are more pages."
+          },
+          "page": {
+            "type": "integer",
+            "description": "The page number.",
+            "format": "int32"
+          },
+          "total": {
+            "type": "integer",
+            "description": "The number of pages in total.",
+            "format": "int32"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/QueryCopilotOperationsQueryDto"
+            },
+            "description": "The response body.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "The model of pagination."
+      },
+      "QueryCopilotOperationsQueryDtoPaginationResultMaaApiResponseModel": {
+        "required": [
+          "data",
+          "message",
+          "status_code",
+          "trace_id"
+        ],
+        "type": "object",
+        "properties": {
+          "status_code": {
+            "type": "integer",
+            "description": "The status code.",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string",
+            "description": "The message."
+          },
+          "trace_id": {
+            "type": "string",
+            "description": "The tracking ID."
+          },
+          "data": {
+            "$ref": "#/components/schemas/QueryCopilotOperationsQueryDtoPaginationResult"
+          }
+        },
+        "additionalProperties": false,
+        "description": "The maa server api response model."
+      },
+      "QueryCopilotUserDto": {
+        "required": [
+          "id",
+          "role",
+          "user_name"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The user id.",
+            "format": "uuid"
+          },
+          "user_name": {
+            "type": "string",
+            "description": "The username."
+          },
+          "role": {
+            "$ref": "#/components/schemas/UserRole"
+          }
+        },
+        "additionalProperties": false,
+        "description": "The response to the MaaCopilotServer.Application.CopilotUser.Queries.QueryCopilotUser.QueryCopilotUserQuery."
+      },
+      "QueryCopilotUserDtoPaginationResult": {
+        "type": "object",
+        "properties": {
+          "has_next": {
+            "type": "boolean",
+            "description": "Indicates whether there are more pages."
+          },
+          "page": {
+            "type": "integer",
+            "description": "The page number.",
+            "format": "int32"
+          },
+          "total": {
+            "type": "integer",
+            "description": "The number of pages in total.",
+            "format": "int32"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/QueryCopilotUserDto"
+            },
+            "description": "The response body.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "The model of pagination."
+      },
+      "QueryCopilotUserDtoPaginationResultMaaApiResponseModel": {
+        "required": [
+          "data",
+          "message",
+          "status_code",
+          "trace_id"
+        ],
+        "type": "object",
+        "properties": {
+          "status_code": {
+            "type": "integer",
+            "description": "The status code.",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string",
+            "description": "The message."
+          },
+          "trace_id": {
+            "type": "string",
+            "description": "The tracking ID."
+          },
+          "data": {
+            "$ref": "#/components/schemas/QueryCopilotUserDtoPaginationResult"
+          }
+        },
+        "additionalProperties": false,
+        "description": "The maa server api response model."
+      },
+      "RatingCopilotOperationCommand": {
+        "required": [
+          "id",
+          "rating"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The id of the operation."
+          },
+          "rating": {
+            "type": "string",
+            "description": "The rating type of the operation. Could be Like, Dislike or None."
+          }
+        },
+        "additionalProperties": false,
+        "description": "The DTO for the RatingCopilotOperation command."
+      },
+      "RatingCopilotOperationDto": {
+        "required": [
+          "id",
+          "rating",
+          "rating_ratio"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The id of the operation."
+          },
+          "rating": {
+            "$ref": "#/components/schemas/OperationRatingType"
+          },
+          "rating_ratio": {
+            "type": "number",
+            "description": "The current ratio of the operation. If the operation is not rated, the value is -1. Only 4 digits at max will be kept.",
+            "format": "float"
+          }
+        },
+        "additionalProperties": false,
+        "description": "The response to a MaaCopilotServer.Application.CopilotOperation.Commands.RatingCopilotOperation.RatingCopilotOperationCommand."
+      },
+      "RatingCopilotOperationDtoMaaApiResponseModel": {
+        "required": [
+          "data",
+          "message",
+          "status_code",
+          "trace_id"
+        ],
+        "type": "object",
+        "properties": {
+          "status_code": {
+            "type": "integer",
+            "description": "The status code.",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string",
+            "description": "The message."
+          },
+          "trace_id": {
+            "type": "string",
+            "description": "The tracking ID."
+          },
+          "data": {
+            "$ref": "#/components/schemas/RatingCopilotOperationDto"
+          }
+        },
+        "additionalProperties": false,
+        "description": "The maa server api response model."
+      },
+      "RegisterCopilotAccountCommand": {
+        "required": [
+          "email",
+          "password",
+          "user_name"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "The user email."
+          },
+          "user_name": {
+            "type": "string",
+            "description": "The username."
+          },
+          "password": {
+            "type": "string",
+            "description": "The password."
+          }
+        },
+        "additionalProperties": false,
+        "description": "The DTO for the RegisterCopilotAccount command."
+      },
+      "RemoveFavoriteCommand": {
+        "required": [
+          "favorite_list_id",
+          "operation_id"
+        ],
+        "type": "object",
+        "properties": {
+          "favorite_list_id": {
+            "type": "string",
+            "description": "The id of the favorite list."
+          },
+          "operation_id": {
+            "type": "string",
+            "description": "The id of the operation to remove."
+          }
+        },
+        "additionalProperties": false,
+        "description": "The DTO for the RemoveFavorite command."
+      },
+      "RequestPasswordResetCommand": {
+        "required": [
+          "email"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "The email address of the user."
+          }
+        },
+        "additionalProperties": false,
+        "description": "The DTO for the request password reset command."
+      },
+      "UpdateCopilotOperationCommand": {
+        "required": [
+          "content",
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "The operation JSON content."
+          },
+          "id": {
+            "type": "string",
+            "description": "The operation id which is pending to change."
+          }
+        },
+        "additionalProperties": false,
+        "description": "The DTO for the UpdateCopilotOperation command."
+      },
+      "UpdateCopilotUserInfoCommand": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "The user email. Set this value to update the email.",
+            "nullable": true
+          },
+          "user_name": {
+            "type": "string",
+            "description": "The username. Set this value to update the username.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "The DTO for the UpdateCopilotUserInfo command."
+      },
+      "UpdateCopilotUserPasswordCommand": {
+        "required": [
+          "new_password",
+          "original_password"
+        ],
+        "type": "object",
+        "properties": {
+          "original_password": {
+            "type": "string",
+            "description": "The original password."
+          },
+          "new_password": {
+            "type": "string",
+            "description": "The new password."
+          }
+        },
+        "additionalProperties": false,
+        "description": "The DTO for the UpdateCopilotUserPassword command."
+      },
+      "UserRole": {
+        "enum": [
+          0,
+          10,
+          100,
+          2147483647,
+          -2147483648
+        ],
+        "type": "integer",
+        "format": "int32"
+      }
+    },
+    "securitySchemes": {
+      "Bearer": {
+        "type": "apiKey",
+        "description": "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+        "name": "Authorization",
+        "in": "header"
+      }
+    }
+  }
+}

@@ -31,6 +31,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Dockerfile = Dockerfile
 		LICENSE = LICENSE
 		README.md = README.md
+		api-spec.json = api-spec.json
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Github Actions", "Github Actions", "{5F4AA980-88F9-4FB8-9AB0-8CC2740BF139}"
