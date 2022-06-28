@@ -9,14 +9,35 @@ using Microsoft.AspNetCore.Http;
 
 namespace MaaCopilotServer.Application.Test.CopilotUser.Commands.Change.ChangeCopilotUserInfo;
 
+/// <summary>
+/// Tests for <see cref="ChangeCopilotUserInfoCommandHandler"/>.
+/// </summary>
 [TestClass]
 public class ChangeCopilotUserInfoCommandTest
 {
+    /// <summary>
+    /// The API error message.
+    /// </summary>
     private readonly Resources.ApiErrorMessage _apiErrorMessage = new();
+
+    /// <summary>
+    /// The current user service.
+    /// </summary>
     private readonly ICurrentUserService _currentUserService = Mock.Of<ICurrentUserService>();
+
+    /// <summary>
+    /// The DB context.
+    /// </summary>
     private readonly IMaaCopilotDbContext _dbContext = new TestDbContext();
+
+    /// <summary>
+    /// The secret service.
+    /// </summary>
     private readonly ISecretService _secretService = Mock.Of<ISecretService>();
 
+    /// <summary>
+    /// Tests <see cref="ChangeCopilotUserInfoCommandHandler.Handle(ChangeCopilotUserInfoCommand, CancellationToken)"/> with non-existing user.
+    /// </summary>
     [TestMethod]
     public void TestHandle_UserNotFound()
     {
@@ -30,6 +51,9 @@ public class ChangeCopilotUserInfoCommandTest
         resposne.StatusCode.Should().Be(StatusCodes.Status404NotFound);
     }
 
+    /// <summary>
+    /// Tests <see cref="ChangeCopilotUserInfoCommandHandler.Handle(ChangeCopilotUserInfoCommand, CancellationToken)"/> with non-existing operator.
+    /// </summary>
     [TestMethod]
     public void TestHandle_OperatorNotFound()
     {
@@ -49,6 +73,9 @@ public class ChangeCopilotUserInfoCommandTest
         resposne.StatusCode.Should().Be(StatusCodes.Status500InternalServerError);
     }
 
+    /// <summary>
+    /// Tests <see cref="ChangeCopilotUserInfoCommandHandler.Handle(ChangeCopilotUserInfoCommand, CancellationToken)"/> with insufficient operator permission.
+    /// </summary>
     [DataTestMethod]
     [DataRow(Domain.Enums.UserRole.Admin, Domain.Enums.UserRole.Admin)]
     [DataRow(Domain.Enums.UserRole.SuperAdmin, Domain.Enums.UserRole.Admin)]
@@ -72,6 +99,9 @@ public class ChangeCopilotUserInfoCommandTest
         resposne.StatusCode.Should().Be(StatusCodes.Status403Forbidden);
     }
 
+    /// <summary>
+    /// Tests <see cref="ChangeCopilotUserInfoCommandHandler.Handle(ChangeCopilotUserInfoCommand, CancellationToken)"/> with email address in use.
+    /// </summary>
     [TestMethod]
     public void TestHandle_EmailInUse()
     {
@@ -94,6 +124,9 @@ public class ChangeCopilotUserInfoCommandTest
         resposne.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
     }
 
+    /// <summary>
+    /// Tests <see cref="ChangeCopilotUserInfoCommandHandler.Handle(ChangeCopilotUserInfoCommand, CancellationToken)"/> with valid request.
+    /// </summary>
     [TestMethod]
     public void TestHandle_Valid()
     {
