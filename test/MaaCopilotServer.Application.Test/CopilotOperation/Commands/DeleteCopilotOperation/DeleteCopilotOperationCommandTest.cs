@@ -148,30 +148,16 @@ public class DeleteCopilotOperationCommandTest
 
     /// <summary>
     /// Tests <see cref="DeleteCopilotOperationCommandHandler.Handle(DeleteCopilotOperationCommand, CancellationToken)"/>
-    /// with invalid ID.
-    /// </summary>
-    [TestMethod]
-    public void TestHandle_InvalidId()
-    {
-        var handler = new DeleteCopilotOperationCommandHandler(
-            _dbContext, _copilotIdService, _currentUserService, _apiErrorMessage);
-        var result = handler.Handle(new DeleteCopilotOperationCommand()
-        {
-            Id = null
-        }, new CancellationToken()).GetAwaiter().GetResult();
-
-        result.StatusCode.Should().Be(StatusCodes.Status404NotFound);
-    }
-
-    /// <summary>
-    /// Tests <see cref="DeleteCopilotOperationCommandHandler.Handle(DeleteCopilotOperationCommand, CancellationToken)"/>
     /// with non-existing ID.
     /// </summary>
     [TestMethod]
-    public void TestHandle_IdNotFound()
+    public void TestHandle_OperationNotFound()
     {
+        var currentUserService = new Mock<ICurrentUserService>();
+        currentUserService.Setup(x => x.GetUser().Result).Returns(new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, UserRole.User, null));
+
         var handler = new DeleteCopilotOperationCommandHandler(
-            _dbContext, _copilotIdService, _currentUserService, _apiErrorMessage);
+            _dbContext, _copilotIdService, currentUserService.Object, _apiErrorMessage);
         var result = handler.Handle(new DeleteCopilotOperationCommand()
         {
             Id = _copilotIdService.EncodeId(1)
