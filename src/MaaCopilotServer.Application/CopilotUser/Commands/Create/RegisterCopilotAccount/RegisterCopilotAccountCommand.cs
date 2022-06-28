@@ -49,6 +49,7 @@ public class RegisterCopilotAccountCommandHandler : IRequestHandler<RegisterCopi
     private readonly ICurrentUserService _currentUserService;
     private readonly IMaaCopilotDbContext _dbContext;
     private readonly IMailService _mailService;
+    private readonly IOptions<CopilotServerOption> _copilotServerOption;
     private readonly ISecretService _secretService;
     private readonly IOptions<TokenOption> _tokenOption;
 
@@ -58,6 +59,7 @@ public class RegisterCopilotAccountCommandHandler : IRequestHandler<RegisterCopi
         IMaaCopilotDbContext dbContext,
         ISecretService secretService,
         IMailService mailService,
+        IOptions<CopilotServerOption> copilotServerOption,
         ApiErrorMessage apiErrorMessage)
     {
         _tokenOption = tokenOption;
@@ -65,6 +67,7 @@ public class RegisterCopilotAccountCommandHandler : IRequestHandler<RegisterCopi
         _dbContext = dbContext;
         _secretService = secretService;
         _mailService = mailService;
+        _copilotServerOption = copilotServerOption;
         _apiErrorMessage = apiErrorMessage;
     }
 
@@ -77,9 +80,14 @@ public class RegisterCopilotAccountCommandHandler : IRequestHandler<RegisterCopi
             return MaaApiResponseHelper.BadRequest(_apiErrorMessage.EmailAlreadyInUse);
         }
 
-        // Build new user entity and add to database
+        // Get default user role
+        var defaultRole = _copilotServerOption.Value.RegisterUserDefaultRole > UserRole.Uploader
+            ? UserRole.Uploader
+            : _copilotServerOption.Value.RegisterUserDefaultRole;
+
+            // Build new user entity and add to database
         var user = new Domain.Entities.CopilotUser(request.Email!, _secretService.HashPassword(request.Password!),
-            request.UserName!, UserRole.User, null);
+            request.UserName!, defaultRole, null);
         _dbContext.CopilotUsers.Add(user);
 
         // Generate new token for AccountActivation

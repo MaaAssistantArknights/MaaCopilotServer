@@ -5,6 +5,8 @@
 using System.Text.Json.Serialization;
 using MaaCopilotServer.Application.Common.Helpers;
 using MaaCopilotServer.Domain.Enums;
+using MaaCopilotServer.Domain.Options;
+using Microsoft.Extensions.Options;
 
 namespace MaaCopilotServer.Application.CopilotOperation.Commands.CreateCopilotOperation;
 
@@ -24,6 +26,7 @@ public record CreateCopilotOperationCommand : IRequest<MaaApiResponse>
 public class CreateCopilotOperationCommandHandler : IRequestHandler<CreateCopilotOperationCommand, MaaApiResponse>
 {
     private readonly ICopilotIdService _copilotIdService;
+    private readonly IOptions<CopilotServerOption> _copilotServerOption;
     private readonly ICurrentUserService _currentUserService;
     private readonly IMaaCopilotDbContext _dbContext;
     private readonly ValidationErrorMessage _validationErrorMessage;
@@ -32,11 +35,13 @@ public class CreateCopilotOperationCommandHandler : IRequestHandler<CreateCopilo
         IMaaCopilotDbContext dbContext,
         ICurrentUserService currentUserService,
         ICopilotIdService copilotIdService,
+        IOptions<CopilotServerOption> copilotServerOption,
         ValidationErrorMessage validationErrorMessage)
     {
         _dbContext = dbContext;
         _currentUserService = currentUserService;
         _copilotIdService = copilotIdService;
+        _copilotServerOption = copilotServerOption;
         _validationErrorMessage = validationErrorMessage;
     }
 
@@ -52,6 +57,16 @@ public class CreateCopilotOperationCommandHandler : IRequestHandler<CreateCopilo
         // Parse doc.
         var docTitle = content.GetDocTitle();
         var docDetails = content.GetDocDetails();
+
+        // Check configuration if title and details are required.
+        if (_copilotServerOption.Value.RequireTitleInOperation && string.IsNullOrEmpty(docTitle))
+        {
+            return MaaApiResponseHelper.BadRequest(_validationErrorMessage.CopilotOperationJsonIsInvalid);
+        }
+        if (_copilotServerOption.Value.RequireDetailsInOperation && string.IsNullOrEmpty(docDetails))
+        {
+            return MaaApiResponseHelper.BadRequest(_validationErrorMessage.CopilotOperationJsonIsInvalid);
+        }
 
         // Check operators
         var operatorArray = content.Operators ?? Array.Empty<MaaCopilotOperationOperator>();
