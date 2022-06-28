@@ -60,10 +60,6 @@ public class EmailSmtpOption
     /// </summary>
     [JsonPropertyName("Password")] public string Password { get; set; } = null!;
     /// <summary>
-    ///     The SMTP server connection timeout ins MS.
-    /// </summary>
-    [JsonPropertyName("TimeoutMs")] public int TimeoutMs { get; set; }
-    /// <summary>
     ///     Whether to use SSL.
     /// </summary>
     [JsonPropertyName("UseSsl")] public bool UseSsl { get; set; }
