@@ -46,6 +46,10 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <TargetPath>templates\EmailUserActivation-en.liquid</TargetPath>
     </None>
+    <None Update="Email\Templates\EmailSendTest.liquid">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <TargetPath>templates\EmailSendTest.liquid</TargetPath>
+    </None>
   </ItemGroup>
 
 </Project>
