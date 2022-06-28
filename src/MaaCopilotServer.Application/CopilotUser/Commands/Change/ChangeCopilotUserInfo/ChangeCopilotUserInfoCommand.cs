@@ -99,7 +99,7 @@ public class ChangeCopilotUserInfoCommandHandler : IRequestHandler<ChangeCopilot
             user.UpdatePassword(@operator.EntityId, hash);
         }
 
-        if (string.IsNullOrEmpty(request.Email))
+        if (string.IsNullOrEmpty(request.Email) is false)
         {
             var exist = _dbContext.CopilotUsers.Any(x => x.Email == request.Email);
             if (exist)

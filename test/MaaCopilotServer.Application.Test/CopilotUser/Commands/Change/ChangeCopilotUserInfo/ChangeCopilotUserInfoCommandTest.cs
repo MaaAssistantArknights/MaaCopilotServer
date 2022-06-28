@@ -1,0 +1,129 @@
+// This file is a part of MaaCopilotServer project.
+// MaaCopilotServer belongs to the MAA organization.
+// Licensed under the AGPL-3.0 license.
+
+using MaaCopilotServer.Application.Common.Interfaces;
+using MaaCopilotServer.Application.CopilotUser.Commands.ChangeCopilotUserInfo;
+using MaaCopilotServer.Test.TestHelpers;
+using Microsoft.AspNetCore.Http;
+
+namespace MaaCopilotServer.Application.Test.CopilotUser.Commands.Change.ChangeCopilotUserInfo;
+
+[TestClass]
+public class ChangeCopilotUserInfoCommandTest
+{
+    private readonly Resources.ApiErrorMessage _apiErrorMessage = new();
+    private readonly ICurrentUserService _currentUserService = Mock.Of<ICurrentUserService>();
+    private readonly IMaaCopilotDbContext _dbContext = new TestDbContext();
+    private readonly ISecretService _secretService = Mock.Of<ISecretService>();
+
+    [TestMethod]
+    public void TestHandle_UserNotFound()
+    {
+        var request = new ChangeCopilotUserInfoCommand()
+        {
+            UserId = Guid.Empty.ToString(),
+        };
+        var handler = new ChangeCopilotUserInfoCommandHandler(_dbContext, _currentUserService, _secretService, _apiErrorMessage);
+        var resposne = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult();
+
+        resposne.StatusCode.Should().Be(StatusCodes.Status404NotFound);
+    }
+
+    [TestMethod]
+    public void TestHandle_OperatorNotFound()
+    {
+        var user = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, Domain.Enums.UserRole.User, null);
+        _dbContext.CopilotUsers.Add(user);
+        _dbContext.SaveChangesAsync(new CancellationToken()).Wait();
+        var currentUserService = new Mock<ICurrentUserService>();
+        currentUserService.Setup(x => x.GetUserIdentity()).Returns(Guid.Empty);
+
+        var request = new ChangeCopilotUserInfoCommand()
+        {
+            UserId = user.EntityId.ToString(),
+        };
+        var handler = new ChangeCopilotUserInfoCommandHandler(_dbContext, currentUserService.Object, _secretService, _apiErrorMessage);
+        var resposne = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult();
+
+        resposne.StatusCode.Should().Be(StatusCodes.Status500InternalServerError);
+    }
+
+    [DataTestMethod]
+    [DataRow(Domain.Enums.UserRole.Admin, Domain.Enums.UserRole.Admin)]
+    [DataRow(Domain.Enums.UserRole.SuperAdmin, Domain.Enums.UserRole.Admin)]
+    public void TestHandle_OperatorPermissionDenied(Domain.Enums.UserRole userRole, Domain.Enums.UserRole operatorRole)
+    {
+        var user = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, userRole, null);
+        _dbContext.CopilotUsers.Add(user);
+        var @operator = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, operatorRole, null);
+        _dbContext.CopilotUsers.Add(@operator);
+        _dbContext.SaveChangesAsync(new CancellationToken()).Wait();
+        var currentUserService = new Mock<ICurrentUserService>();
+        currentUserService.Setup(x => x.GetUserIdentity()).Returns(@operator.EntityId);
+
+        var request = new ChangeCopilotUserInfoCommand()
+        {
+            UserId = user.EntityId.ToString(),
+        };
+        var handler = new ChangeCopilotUserInfoCommandHandler(_dbContext, currentUserService.Object, _secretService, _apiErrorMessage);
+        var resposne = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult();
+
+        resposne.StatusCode.Should().Be(StatusCodes.Status403Forbidden);
+    }
+
+    [TestMethod]
+    public void TestHandle_EmailInUse()
+    {
+        var user = new Domain.Entities.CopilotUser("user@example.com", string.Empty, string.Empty, Domain.Enums.UserRole.User, null);
+        _dbContext.CopilotUsers.Add(user);
+        var @operator = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, Domain.Enums.UserRole.Admin, null);
+        _dbContext.CopilotUsers.Add(@operator);
+        _dbContext.SaveChangesAsync(new CancellationToken()).Wait();
+        var currentUserService = new Mock<ICurrentUserService>();
+        currentUserService.Setup(x => x.GetUserIdentity()).Returns(@operator.EntityId);
+
+        var request = new ChangeCopilotUserInfoCommand()
+        {
+            UserId = user.EntityId.ToString(),
+            Email = "user@example.com",
+        };
+        var handler = new ChangeCopilotUserInfoCommandHandler(_dbContext, currentUserService.Object, _secretService, _apiErrorMessage);
+        var resposne = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult();
+
+        resposne.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
+    }
+
+    [TestMethod]
+    public void TestHandle_Valid()
+    {
+        var user = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, Domain.Enums.UserRole.User, null);
+        user.ActivateUser(Guid.Empty);
+        _dbContext.CopilotUsers.Add(user);
+        var @operator = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, Domain.Enums.UserRole.SuperAdmin, null);
+        _dbContext.CopilotUsers.Add(@operator);
+        _dbContext.SaveChangesAsync(new CancellationToken()).Wait();
+        var currentUserService = new Mock<ICurrentUserService>();
+        currentUserService.Setup(x => x.GetUserIdentity()).Returns(@operator.EntityId);
+        var secretService = new Mock<ISecretService>();
+        secretService.Setup(x => x.HashPassword("new_password")).Returns("hashed_password");
+
+        var request = new ChangeCopilotUserInfoCommand()
+        {
+            UserId = user.EntityId.ToString(),
+            Email = "user@example.com",
+            UserName = "test_username",
+            Password = "new_password",
+            Role = Domain.Enums.UserRole.Uploader.ToString(),
+        };
+        var handler = new ChangeCopilotUserInfoCommandHandler(_dbContext, currentUserService.Object, secretService.Object, _apiErrorMessage);
+        var resposne = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult();
+
+        resposne.StatusCode.Should().Be(StatusCodes.Status200OK);
+        user.UserActivated.Should().Be(false);
+        user.Email.Should().Be("user@example.com");
+        user.UserName.Should().Be("test_username");
+        user.Password.Should().Be("hashed_password");
+        user.UserRole.Should().Be(Domain.Enums.UserRole.Uploader);
+    }
+}
