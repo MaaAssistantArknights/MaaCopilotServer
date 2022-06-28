@@ -4,6 +4,7 @@
 
 namespace MaaCopilotServer.Domain.Email.Models;
 
-public interface IEmailModel
-{
-}
+/// <summary>
+///     To mark a class as an email model.
+/// </summary>
+public interface IEmailModel { }

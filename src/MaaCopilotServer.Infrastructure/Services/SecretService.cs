@@ -18,9 +18,6 @@ namespace MaaCopilotServer.Infrastructure.Services;
 /// </summary>
 public class SecretService : ISecretService
 {
-    /// <summary>
-    ///     Jwt options.
-    /// </summary>
     private readonly IOptions<JwtOption> _jwtOption;
 
 

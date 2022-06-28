@@ -20,13 +20,13 @@ public class ElasticLogSinkOption
     public string ApplicationName { get; set; } = null!;
 
     /// <summary>
-    ///     The URI.
+    ///     The ElasticSearch URI.
     /// </summary>
     [JsonPropertyName("Uris")]
     public string Uris { get; set; } = null!;
 
     /// <summary>
-    ///     The period.
+    ///     The message commit period.
     /// </summary>
     [JsonPropertyName("Period")]
     public int Period { get; set; }
@@ -44,7 +44,7 @@ public class ElasticLogSinkOption
 public class ElasticLogSinkAuthenticationOption
 {
     /// <summary>
-    ///     The authentication method.
+    ///     The authentication method, could be Basic or ApiKey.
     /// </summary>
     [JsonPropertyName("Method")]
     public string Method { get; set; } = null!;
@@ -62,13 +62,13 @@ public class ElasticLogSinkAuthenticationOption
 public class ElasticLogSinkAuthenticationSecretOption
 {
     /// <summary>
-    ///     The secret ID.
+    ///     The API Key ID or Username.
     /// </summary>
     [JsonPropertyName("Id")]
     public string Id { get; set; } = null!;
 
     /// <summary>
-    ///     The secret key.
+    ///     The API Key secret or Password.
     /// </summary>
     [JsonPropertyName("Key")]
     public string Key { get; set; } = null!;

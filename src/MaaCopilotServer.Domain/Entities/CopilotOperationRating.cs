@@ -13,6 +13,12 @@ namespace MaaCopilotServer.Domain.Entities;
 /// </summary>
 public class CopilotOperationRating : BaseEntity
 {
+    /// <summary>
+    ///     The constructor of <see cref="CopilotOperationRating"/>.
+    /// </summary>
+    /// <param name="operationId">The operation id.</param>
+    /// <param name="userId">The user id.</param>
+    /// <param name="ratingType">The rating type.</param>
     public CopilotOperationRating(Guid operationId, Guid userId, OperationRatingType ratingType)
     {
         OperationId = operationId;

@@ -13,12 +13,21 @@ using Microsoft.Extensions.Options;
 
 namespace MaaCopilotServer.Infrastructure.Services;
 
+/// <summary>
+///     The email service.
+/// </summary>
 public class MailService : IMailService
 {
     private readonly IOptions<ApplicationOption> _applicationOption;
     private readonly ICurrentUserService _currentUserService;
     private readonly IFluentEmail _fluentEmail;
 
+    /// <summary>
+    ///     The constructor of <see cref="MailService"/>.
+    /// </summary>
+    /// <param name="fluentEmail"></param>
+    /// <param name="applicationOption"></param>
+    /// <param name="currentUserService"></param>
     public MailService(IFluentEmail fluentEmail, IOptions<ApplicationOption> applicationOption,
         ICurrentUserService currentUserService)
     {
@@ -27,6 +36,7 @@ public class MailService : IMailService
         _currentUserService = currentUserService;
     }
 
+    /// <inheritdoc />
     public async Task<bool> SendEmailAsync<T>(T model, string targetAddress) where T : class, IEmailModel
     {
         var attr = typeof(T).ReadAttribute<EmailTemplateAttribute>();
@@ -44,6 +54,12 @@ public class MailService : IMailService
         return sendResponse.Successful;
     }
 
+    /// <summary>
+    ///     Get the email template file path.
+    /// </summary>
+    /// <param name="cultureInfo">The culture info.</param>
+    /// <param name="baseName">The template base name.</param>
+    /// <returns></returns>
     private static string GetTemplateFilePath(CultureInfo cultureInfo, string baseName)
     {
         var name = cultureInfo.Name.ToLower();

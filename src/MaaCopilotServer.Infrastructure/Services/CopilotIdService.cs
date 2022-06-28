@@ -19,21 +19,13 @@ public class CopilotIdService : ICopilotIdService
     // この値は変更しないでください!
     private const long MinimumId = 10000;
 
-    /// <summary>
-    ///     Encodes an ID.
-    /// </summary>
-    /// <param name="plainId">The ID of <see cref="long" /> type.</param>
-    /// <returns>The ID of <see cref="string" /> type</returns>
+    /// <inheritdoc />
     public string EncodeId(long plainId)
     {
         return (plainId + MinimumId).ToString();
     }
 
-    /// <summary>
-    ///     Decodes an ID.
-    /// </summary>
-    /// <param name="encodedId">The ID of <see cref="string" /> type.</param>
-    /// <returns>The ID of <see cref="long" /> type if it is valid, otherwise <c>null</c>.</returns>
+    /// <inheritdoc />
     public long? DecodeId(string encodedId)
     {
         var parsable = long.TryParse(encodedId, out var value);
