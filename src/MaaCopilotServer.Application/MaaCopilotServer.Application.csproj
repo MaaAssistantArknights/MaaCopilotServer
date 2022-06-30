@@ -33,9 +33,4 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.6" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="CopilotUser\Commands\Create" />
-    <Folder Include="CopilotUser\Commands\Other" />
-  </ItemGroup>
-
 </Project>

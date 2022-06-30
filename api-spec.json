@@ -3571,6 +3571,162 @@
         }
       }
     },
+    "/user/activate/request": {
+      "post": {
+        "tags": [
+          "CopilotUser"
+        ],
+        "summary": "Request a new activation code.",
+        "description": " [AUTH REQUIRED: User]",
+        "requestBody": {
+          "description": "The request body. Could be empty.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestActivationTokenCommand"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestActivationTokenCommand"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestActivationTokenCommand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "A bad request, most cases are invalid request parameters.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "An unauthorized request, you need to login and set Authorization header at first.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "A forbidden request, you do not have permission to perform the operation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Some thing not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Some server errors happens.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "The activation code has been sent to the email address.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
+      }
+    },
     "/version": {
       "get": {
         "tags": [
@@ -4789,6 +4945,11 @@
         },
         "additionalProperties": false,
         "description": "The DTO for the RemoveFavorite command."
+      },
+      "RequestActivationTokenCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "description": "The DTO for the request activation token command. The request body is empty."
       },
       "RequestPasswordResetCommand": {
         "required": [
