@@ -57,4 +57,10 @@
   <data name="FavListWithIdNotFound" xml:space="preserve">
     <value>Can not find favorite list with id {0}</value>
   </data>
+  <data name="UserAlreadyActivated" xml:space="preserve">
+    <value>User account already activated</value>
+  </data>
+  <data name="TokenAlreadyExist" xml:space="preserve">
+    <value>Valid token exist</value>
+  </data>
 </root>

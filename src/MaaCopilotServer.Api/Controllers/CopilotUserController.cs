@@ -11,6 +11,7 @@ using MaaCopilotServer.Application.CopilotUser.Commands.DeleteCopilotUser;
 using MaaCopilotServer.Application.CopilotUser.Commands.LoginCopilotUser;
 using MaaCopilotServer.Application.CopilotUser.Commands.PasswordReset;
 using MaaCopilotServer.Application.CopilotUser.Commands.RegisterCopilotAccount;
+using MaaCopilotServer.Application.CopilotUser.Commands.RequestActivationToken;
 using MaaCopilotServer.Application.CopilotUser.Commands.RequestPasswordReset;
 using MaaCopilotServer.Application.CopilotUser.Commands.UpdateCopilotUserInfo;
 using MaaCopilotServer.Application.CopilotUser.Commands.UpdateCopilotUserPassword;
@@ -191,5 +192,17 @@ public class CopilotUserController : MaaControllerBase
     public async Task<ActionResult> PasswordChange([FromBody] PasswordResetCommand command)
     {
         return await GetResponse(command);
+    }
+
+    /// <summary>
+    ///     Request a new activation code.
+    /// </summary>
+    /// <param name="command">The request body. Could be empty.</param>
+    /// <response code="200">The activation code has been sent to the email address.</response>
+    [HttpPost("activate/request")]
+    [ProducesResponseType(typeof(MaaApiResponseModel<EmptyObjectModel>), StatusCodes.Status200OK)]
+    public async Task<ActionResult> RequestActivationCode(RequestActivationTokenCommand? command = null)
+    {
+        return await GetResponse(command ?? new RequestActivationTokenCommand());
     }
 }
