@@ -2,13 +2,10 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
-using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Application.CopilotUser.Commands.RegisterCopilotAccount;
+using MaaCopilotServer.Application.Test.TestHelpers;
 using MaaCopilotServer.Domain.Email.Models;
-using MaaCopilotServer.Domain.Options;
-using MaaCopilotServer.Test.TestHelpers;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Options;
 
 namespace MaaCopilotServer.Application.Test.CopilotUser.Commands.Create.RegisterCopilotAccount;
 
@@ -16,25 +13,8 @@ namespace MaaCopilotServer.Application.Test.CopilotUser.Commands.Create.Register
 /// Tests of <see cref="RegisterCopilotAccountCommandHandler"/>.
 /// </summary>
 [TestClass]
-public class RegisterCopilotAccountCommandTest
+public class RegisterCopilotAccountCommandHandlerTest
 {
-    private readonly Resources.ApiErrorMessage _apiErrorMessage = new();
-    private readonly IMaaCopilotDbContext _dbContext = new TestDbContext();
-    private readonly IMailService _mailService = Mock.Of<IMailService>();
-    private readonly IOptions<CopilotServerOption> _copilotServerOption = Options.Create(new CopilotServerOption()
-    {
-        RegisterUserDefaultRole = Domain.Enums.UserRole.User,
-    });
-    private readonly ISecretService _secretService = Mock.Of<ISecretService>();
-    private readonly IOptions<TokenOption> _tokenOption = Options.Create(new TokenOption()
-    {
-        AccountActivationToken = new TokenConfiguration()
-        {
-            ExpireTime = default,
-            HasCallback = default,
-        },
-    });
-
     /// <summary>
     /// Tests <see cref="RegisterCopilotAccountCommandHandler.Handle(RegisterCopilotAccountCommand, CancellationToken)"/>
     /// with email in use.
@@ -42,16 +22,19 @@ public class RegisterCopilotAccountCommandTest
     [TestMethod]
     public void TestHandle_EmailInUse()
     {
-        var user = new Domain.Entities.CopilotUser("user@example.com", string.Empty, string.Empty, Domain.Enums.UserRole.User, null);
-        _dbContext.CopilotUsers.Add(user);
-        _dbContext.SaveChangesAsync(new CancellationToken()).Wait();
+        var user = new Domain.Entities.CopilotUser(
+            HandlerTest.TestEmail,
+            string.Empty,
+            string.Empty,
+            Domain.Enums.UserRole.User,
+            null);
 
-        var request = new RegisterCopilotAccountCommand()
-        {
-            Email = "user@example.com",
-        };
-        var handler = new RegisterCopilotAccountCommandHandler(_tokenOption, default!, _dbContext, _secretService, _mailService, _copilotServerOption, _apiErrorMessage);
-        var response = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult();
+        var response = new HandlerTest()
+            .SetupDatabase(db => db.CopilotUsers.Add(user))
+            .TestRegisterCopilotAccount(new()
+            {
+                Email = HandlerTest.TestEmail,
+            });
 
         response.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
     }
@@ -63,24 +46,19 @@ public class RegisterCopilotAccountCommandTest
     [TestMethod]
     public void TestHandle_EmailFailedToSend()
     {
-        var secretService = new Mock<ISecretService>();
-        secretService.Setup(x => x.HashPassword("password")).Returns("hashed_password");
-        secretService.Setup(x => x.GenerateToken(It.IsAny<Guid>(), It.IsAny<TimeSpan>())).Returns(("token", new DateTimeOffset(2020, 1, 1, 0, 0, 0, default)));
-
-        var mailService = new Mock<IMailService>();
-        mailService.Setup(x => x.SendEmailAsync(It.IsAny<EmailUserActivation>(), "user@example.com").Result).Returns(false);
-
-        var request = new RegisterCopilotAccountCommand()
+        var test = new HandlerTest()
+            .SetupHashPassword()
+            .SetupGenerateToken()
+            .SetupSendMailAsync(false);
+        var response = test.TestRegisterCopilotAccount(new()
         {
-            Email = "user@example.com",
-            UserName = "test_username",
-            Password = "password",
-        };
-        var handler = new RegisterCopilotAccountCommandHandler(_tokenOption, default!, _dbContext, secretService.Object, mailService.Object, _copilotServerOption, _apiErrorMessage);
-        var response = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult();
+            Email = HandlerTest.TestEmail,
+            UserName = HandlerTest.TestUsername,
+            Password = HandlerTest.TestPassword,
+        });
 
         response.StatusCode.Should().Be(StatusCodes.Status500InternalServerError);
-        _dbContext.CopilotUsers.Should().BeEmpty();
+        test.DbContext.CopilotUsers.Should().BeEmpty();
     }
 
     /// <summary>
@@ -89,34 +67,31 @@ public class RegisterCopilotAccountCommandTest
     [TestMethod]
     public void TestHandle()
     {
-        var secretService = new Mock<ISecretService>();
-        secretService.Setup(x => x.HashPassword("password")).Returns("hashed_password");
-        secretService.Setup(x => x.GenerateToken(It.IsAny<Guid>(), It.IsAny<TimeSpan>())).Returns(("token", new DateTimeOffset(2020, 1, 1, 0, 0, 0, default)));
-
-        var mailService = new Mock<IMailService>();
-        mailService.Setup(x => x.SendEmailAsync(It.IsAny<EmailUserActivation>(), "user@example.com").Result).Returns(true);
-
-        var request = new RegisterCopilotAccountCommand()
+        var test = new HandlerTest()
+            .SetupHashPassword()
+            .SetupGenerateToken()
+            .SetupSendMailAsync(true);
+        var response = test.TestRegisterCopilotAccount(new()
         {
-            Email = "user@example.com",
-            UserName = "test_username",
-            Password = "password",
-        };
-        var handler = new RegisterCopilotAccountCommandHandler(_tokenOption, default!, _dbContext, secretService.Object, mailService.Object, _copilotServerOption, _apiErrorMessage);
-        var response = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult();
+            Email = HandlerTest.TestEmail,
+            UserName = HandlerTest.TestUsername,
+            Password = HandlerTest.TestPassword,
+        });
 
         response.StatusCode.Should().Be(StatusCodes.Status200OK);
-        var token = _dbContext.CopilotTokens.FirstOrDefault();
+
+        var token = test.DbContext.CopilotTokens.FirstOrDefault();
         token.Should().NotBeNull();
         token!.Type.Should().Be(Domain.Enums.TokenType.UserActivation);
-        token.Token.Should().Be("token");
+        token.Token.Should().Be(HandlerTest.TestToken);
+
         var userEntity = token.ResourceId;
-        var user = _dbContext.CopilotUsers.FirstOrDefault();
+        var user = test.DbContext.CopilotUsers.FirstOrDefault();
         user.Should().NotBeNull();
         user!.EntityId.Should().Be(userEntity);
-        user.Email.Should().Be(request.Email);
-        user.UserName.Should().Be(request.UserName);
-        user.Password.Should().Be("hashed_password");
+        user.Email.Should().Be(HandlerTest.TestEmail);
+        user.UserName.Should().Be(HandlerTest.TestUsername);
+        user.Password.Should().Be(HandlerTest.TestHashedPassword);
         user.UserRole.Should().Be(Domain.Enums.UserRole.User);
         user.UserActivated.Should().BeFalse();
     }
@@ -128,40 +103,73 @@ public class RegisterCopilotAccountCommandTest
     [TestMethod]
     public void TestHandle_DefaultRoleTooHigh()
     {
-        var copilotServerOption = Options.Create(new CopilotServerOption()
+        var test = new HandlerTest()
+            .SetupHashPassword()
+            .SetupGenerateToken()
+            .SetupSendMailAsync(true)
+            .SetupCopilotServerOption(new()
+            {
+                RegisterUserDefaultRole = Domain.Enums.UserRole.Admin,
+            });
+        var response = test.TestRegisterCopilotAccount(new()
         {
-            RegisterUserDefaultRole = Domain.Enums.UserRole.Admin,
+            Email = HandlerTest.TestEmail,
+            UserName = HandlerTest.TestUsername,
+            Password = HandlerTest.TestPassword,
         });
 
-        var secretService = new Mock<ISecretService>();
-        secretService.Setup(x => x.HashPassword("password")).Returns("hashed_password");
-        secretService.Setup(x => x.GenerateToken(It.IsAny<Guid>(), It.IsAny<TimeSpan>())).Returns(("token", new DateTimeOffset(2020, 1, 1, 0, 0, 0, default)));
-
-        var mailService = new Mock<IMailService>();
-        mailService.Setup(x => x.SendEmailAsync(It.IsAny<EmailUserActivation>(), "user@example.com").Result).Returns(true);
-
-        var request = new RegisterCopilotAccountCommand()
-        {
-            Email = "user@example.com",
-            UserName = "test_username",
-            Password = "password",
-        };
-        var handler = new RegisterCopilotAccountCommandHandler(_tokenOption, default!, _dbContext, secretService.Object, mailService.Object, copilotServerOption, _apiErrorMessage);
-        var response = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult();
-
         response.StatusCode.Should().Be(StatusCodes.Status200OK);
-        var token = _dbContext.CopilotTokens.FirstOrDefault();
+
+        var token = test.DbContext.CopilotTokens.FirstOrDefault();
         token.Should().NotBeNull();
         token!.Type.Should().Be(Domain.Enums.TokenType.UserActivation);
-        token.Token.Should().Be("token");
+        token.Token.Should().Be(HandlerTest.TestToken);
+
         var userEntity = token.ResourceId;
-        var user = _dbContext.CopilotUsers.FirstOrDefault();
+        var user = test.DbContext.CopilotUsers.FirstOrDefault();
         user.Should().NotBeNull();
         user!.EntityId.Should().Be(userEntity);
-        user.Email.Should().Be(request.Email);
-        user.UserName.Should().Be(request.UserName);
-        user.Password.Should().Be("hashed_password");
+        user.Email.Should().Be(HandlerTest.TestEmail);
+        user.UserName.Should().Be(HandlerTest.TestUsername);
+        user.Password.Should().Be(HandlerTest.TestHashedPassword);
         user.UserRole.Should().Be(Domain.Enums.UserRole.Uploader);
         user.UserActivated.Should().BeFalse();
+    }
+}
+
+/// <summary>
+/// The extension methods of <see cref="RegisterCopilotAccountCommandHandlerTest"/>
+/// </summary>
+static class RegisterCopilotAccountCommandHandlerTestExtension
+{
+    /// <summary>
+    /// Setups <see cref="Application.Common.Interfaces.ISecretService.HashPassword(string)"/>.
+    /// </summary>
+    /// <param name="test">The <see cref="HandlerTest"/> instance.</param>
+    /// <returns>The <see cref="HandlerTest"/> instance.</returns>
+    public static HandlerTest SetupHashPassword(this HandlerTest test)
+    {
+        return test.SetupSecretService(mock => mock.Setup(x => x.HashPassword(HandlerTest.TestPassword)).Returns(HandlerTest.TestHashedPassword));
+    }
+
+    /// <summary>
+    /// Setups <see cref="Application.Common.Interfaces.ISecretService.GenerateToken(Guid, TimeSpan)"/>.
+    /// </summary>
+    /// <param name="test">The <see cref="HandlerTest"/> instance.</param>
+    /// <returns>The <see cref="HandlerTest"/> instance.</returns>
+    public static HandlerTest SetupGenerateToken(this HandlerTest test)
+    {
+        return test.SetupSecretService(mock => mock.Setup(x => x.GenerateToken(It.IsAny<Guid>(), It.IsAny<TimeSpan>())).Returns((HandlerTest.TestToken, HandlerTest.TestTokenExpirationTime)));
+    }
+
+    /// <summary>
+    /// Setups <see cref="Application.Common.Interfaces.IMailService.SendEmailAsync{T}(T, string)"/>.
+    /// </summary>
+    /// <param name="test">The <see cref="HandlerTest"/> instance.</param>
+    /// <param name="success">Whether the mail sending is successful.</param>
+    /// <returns>The <see cref="HandlerTest"/> instance.</returns>
+    public static HandlerTest SetupSendMailAsync(this HandlerTest test, bool success)
+    {
+        return test.SetupMailService(mock => mock.Setup(x => x.SendEmailAsync(It.IsAny<EmailUserActivation>(), HandlerTest.TestEmail).Result).Returns(success));
     }
 }

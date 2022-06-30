@@ -25,6 +25,35 @@ namespace MaaCopilotServer.Application.Test.TestHelpers;
 [ExcludeFromCodeCoverage]
 public class HandlerTest
 {
+    #region Test Constants
+    /// <summary>
+    /// The test username.
+    /// </summary>
+    public const string TestUsername = "test_username";
+
+    /// <summary>
+    /// The test password.
+    /// </summary>
+    public const string TestPassword = "test_password";
+
+    /// <summary>
+    /// The test hashed password.
+    /// </summary>
+    public const string TestHashedPassword = "hashed_password";
+
+    /// <summary>
+    /// The test email.
+    /// </summary>
+    public const string TestEmail = "user@example.com";
+
+    /// <summary>
+    /// The test token.
+    /// </summary>
+    public const string TestToken = "token";
+
+    public static readonly DateTimeOffset TestTokenExpirationTime = new(2020, 1, 1, 0, 0, 0, default);
+    #endregion
+
     #region Mocks
     /// <summary>
     /// The API error message.
