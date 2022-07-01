@@ -2,9 +2,10 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
-using MaaCopilotServer.Application.Common.Interfaces;
-using MaaCopilotServer.Test.TestHelpers;
 using MaaCopilotServer.Application.CopilotUser.Commands.ActivateCopilotAccount;
+using MaaCopilotServer.Application.Test.TestHelpers;
+using MaaCopilotServer.Domain.Entities;
+using MaaCopilotServer.Domain.Enums;
 using Microsoft.AspNetCore.Http;
 
 namespace MaaCopilotServer.Application.Test.CopilotUser.Commands.Create.ActivateCopilotAccount;
@@ -16,28 +17,18 @@ namespace MaaCopilotServer.Application.Test.CopilotUser.Commands.Create.Activate
 public class ActivateCopilotAccountCommandTest
 {
     /// <summary>
-    /// The API error message.
-    /// </summary>
-    private readonly Resources.ApiErrorMessage _apiErrorMessage = new();
-
-    /// <summary>
-    /// The DB context.
-    /// </summary>
-    private readonly IMaaCopilotDbContext _dbContext = new TestDbContext();
-
-    /// <summary>
     /// Tests <see cref="ActivateCopilotAccountCommandHandler.Handle(ActivateCopilotAccountCommand, CancellationToken)"/>
     /// with not existing token.
     /// </summary>
     [TestMethod]
     public void TestHandle_NotExistingToken()
     {
-        var handler = new ActivateCopilotAccountCommandHandler(default!, _dbContext, _apiErrorMessage);
-        var request = new ActivateCopilotAccountCommand()
-        {
-            Token = "not_existing_token",
-        };
-        var response = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult();
+        var response = new HandlerTest()
+            .TestActivateCopilotAccount(new()
+            {
+                Token = HandlerTest.TestToken,
+            })
+            .Response;
 
         response.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
     }
@@ -49,16 +40,14 @@ public class ActivateCopilotAccountCommandTest
     [TestMethod]
     public void TestHandle_ExpiredToken()
     {
-        var token = new Domain.Entities.CopilotToken(Guid.Empty, Domain.Enums.TokenType.UserActivation, "token", new DateTimeOffset(1900, 1, 1, 0, 0, 0, default));
-        _dbContext.CopilotTokens.Add(token);
-        _dbContext.SaveChangesAsync(new CancellationToken()).Wait();
-
-        var handler = new ActivateCopilotAccountCommandHandler(default!, _dbContext, _apiErrorMessage);
-        var request = new ActivateCopilotAccountCommand()
-        {
-            Token = "token",
-        };
-        var response = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult();
+        var token = new CopilotToken(Guid.Empty, TokenType.UserActivation, HandlerTest.TestToken, HandlerTest.TestTokenTimePast);
+        var response = new HandlerTest()
+            .SetupDatabase(db => db.CopilotTokens.Add(token))
+            .TestActivateCopilotAccount(new()
+            {
+                Token = HandlerTest.TestToken
+            })
+            .Response;
 
         response.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
     }
@@ -70,16 +59,14 @@ public class ActivateCopilotAccountCommandTest
     [TestMethod]
     public void TestHandle_WrongTypeToken()
     {
-        var token = new Domain.Entities.CopilotToken(Guid.Empty, Domain.Enums.TokenType.UserPasswordReset, "token", new DateTimeOffset(9999, 12, 31, 23, 59, 59, default));
-        _dbContext.CopilotTokens.Add(token);
-        _dbContext.SaveChangesAsync(new CancellationToken()).Wait();
-
-        var handler = new ActivateCopilotAccountCommandHandler(default!, _dbContext, _apiErrorMessage);
-        var request = new ActivateCopilotAccountCommand()
-        {
-            Token = "token",
-        };
-        var response = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult();
+        var token = new CopilotToken(Guid.Empty, TokenType.UserPasswordReset, HandlerTest.TestToken, HandlerTest.TestTokenTimeFuture);
+        var response = new HandlerTest()
+            .SetupDatabase(db => db.CopilotTokens.Add(token))
+            .TestActivateCopilotAccount(new()
+            {
+                Token = HandlerTest.TestToken
+            })
+            .Response;
 
         response.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
     }
@@ -91,16 +78,14 @@ public class ActivateCopilotAccountCommandTest
     [TestMethod]
     public void TestHandle_UserNotFound()
     {
-        var token = new Domain.Entities.CopilotToken(Guid.Empty, Domain.Enums.TokenType.UserActivation, "token", new DateTimeOffset(9999, 12, 31, 23, 59, 59, default));
-        _dbContext.CopilotTokens.Add(token);
-        _dbContext.SaveChangesAsync(new CancellationToken()).Wait();
-
-        var handler = new ActivateCopilotAccountCommandHandler(default!, _dbContext, _apiErrorMessage);
-        var request = new ActivateCopilotAccountCommand()
-        {
-            Token = "token",
-        };
-        var response = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult();
+        var token = new CopilotToken(Guid.Empty, TokenType.UserActivation, HandlerTest.TestToken, HandlerTest.TestTokenTimeFuture);
+        var response = new HandlerTest()
+            .SetupDatabase(db => db.CopilotTokens.Add(token))
+            .TestActivateCopilotAccount(new()
+            {
+                Token = HandlerTest.TestToken
+            })
+            .Response;
 
         response.StatusCode.Should().Be(StatusCodes.Status500InternalServerError);
     }
@@ -111,22 +96,18 @@ public class ActivateCopilotAccountCommandTest
     [TestMethod]
     public void TestHandle()
     {
-        var user = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, Domain.Enums.UserRole.User, null);
-        _dbContext.CopilotUsers.Add(user);
-        _dbContext.SaveChangesAsync(new CancellationToken()).Wait();
-        var token = new Domain.Entities.CopilotToken(user.EntityId, Domain.Enums.TokenType.UserActivation, "token", new DateTimeOffset(9999, 12, 31, 23, 59, 59, default));
-        _dbContext.CopilotTokens.Add(token);
-        _dbContext.SaveChangesAsync(new CancellationToken()).Wait();
+        var user = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, UserRole.User, null);
 
-        var handler = new ActivateCopilotAccountCommandHandler(default!, _dbContext, _apiErrorMessage);
-        var request = new ActivateCopilotAccountCommand()
-        {
-            Token = "token",
-        };
-        var response = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult();
+        var result = new HandlerTest()
+            .SetupDatabase(db => db.CopilotUsers.Add(user))
+            .SetupDatabase(db => db.CopilotTokens.Add(new(user.EntityId, TokenType.UserActivation, HandlerTest.TestToken, HandlerTest.TestTokenTimeFuture)))
+            .TestActivateCopilotAccount(new()
+            {
+                Token = HandlerTest.TestToken,
+            });
 
-        response.StatusCode.Should().Be(StatusCodes.Status200OK);
+        result.Response.StatusCode.Should().Be(StatusCodes.Status200OK);
         user.UserActivated.Should().BeTrue();
-        _dbContext.CopilotTokens.FirstOrDefault(x => x.Token == "token").Should().BeNull();
+        result.DbContext.CopilotTokens.FirstOrDefault(x => x.Token == HandlerTest.TestToken).Should().BeNull();
     }
 }

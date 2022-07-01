@@ -3,6 +3,7 @@
 // Licensed under the AGPL-3.0 license.
 
 using MaaCopilotServer.Application.CopilotUser.Commands.ActivateCopilotAccount;
+using MaaCopilotServer.Application.Test.TestHelpers;
 
 namespace MaaCopilotServer.Application.Test.CopilotUser.Commands.Create.ActivateCopilotAccount;
 
@@ -13,11 +14,6 @@ namespace MaaCopilotServer.Application.Test.CopilotUser.Commands.Create.Activate
 public class ActivateCopilotAccountCommandValidatorTest
 {
     /// <summary>
-    /// The validation error message.
-    /// </summary>
-    private readonly Resources.ValidationErrorMessage _validationErrorMessage = new();
-
-    /// <summary>
     /// Tests <see cref="ActivateCopilotAccountCommandValidator"/>.
     /// </summary>
     /// <param name="token">The test token.</param>
@@ -27,13 +23,10 @@ public class ActivateCopilotAccountCommandValidatorTest
     [DataRow(null, false)]
     public void Test(string? token, bool expected)
     {
-        var validator = new ActivateCopilotAccountCommandValidator(_validationErrorMessage);
-        var data = new ActivateCopilotAccountCommand()
-        {
-            Token = token,
-        };
-
-        var result = validator.Validate(data);
-        result.IsValid.Should().Be(expected);
+        ValidatorTestHelper.Test<ActivateCopilotAccountCommandValidator, ActivateCopilotAccountCommand>(
+            new()
+            {
+                Token = token,
+            }, expected);
     }
 }

@@ -3,6 +3,7 @@
 // Licensed under the AGPL-3.0 license.
 
 using MaaCopilotServer.Application.CopilotUser.Commands.ChangeCopilotUserInfo;
+using MaaCopilotServer.Application.Test.TestHelpers;
 
 namespace MaaCopilotServer.Application.Test.CopilotUser.Commands.Change.ChangeCopilotUserInfo;
 
@@ -12,11 +13,6 @@ namespace MaaCopilotServer.Application.Test.CopilotUser.Commands.Change.ChangeCo
 [TestClass]
 public class ChangeCopilotUserInfoCommandValidatorTest
 {
-    /// <summary>
-    /// The validation error message.
-    /// </summary>
-    private readonly Resources.ValidationErrorMessage _validationErrorMessage = new();
-
     /// <summary>
     /// Tests <see cref="ChangeCopilotUserInfoCommandValidator"/>.
     /// </summary>
@@ -39,18 +35,14 @@ public class ChangeCopilotUserInfoCommandValidatorTest
     [DataRow("382c74c3-721d-4f34-80e5-57657b6cbc27", "user@example.com", "password", "user", "SuperAdmin", false)]
     public void Test(string? userId, string? email, string? password, string? username, string? role, bool expected)
     {
-        var validator = new ChangeCopilotUserInfoCommandValidator(_validationErrorMessage);
-        var data = new ChangeCopilotUserInfoCommand()
-        {
-            UserId = userId,
-            Email = email,
-            Password = password,
-            UserName = username,
-            Role = role,
-        };
-
-        var result = validator.Validate(data);
-
-        result.IsValid.Should().Be(expected);
+        ValidatorTestHelper.Test<ChangeCopilotUserInfoCommandValidator, ChangeCopilotUserInfoCommand>(
+            new()
+            {
+                UserId = userId,
+                Email = email,
+                Password = password,
+                UserName = username,
+                Role = role,
+            }, expected);
     }
 }

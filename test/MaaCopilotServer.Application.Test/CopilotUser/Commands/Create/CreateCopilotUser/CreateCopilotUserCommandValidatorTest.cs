@@ -3,6 +3,7 @@
 // Licensed under the AGPL-3.0 license.
 
 using MaaCopilotServer.Application.CopilotUser.Commands.CreateCopilotUser;
+using MaaCopilotServer.Application.Test.TestHelpers;
 
 namespace MaaCopilotServer.Application.Test.CopilotUser.Commands.Create.CreateCopilotUser;
 
@@ -12,11 +13,6 @@ namespace MaaCopilotServer.Application.Test.CopilotUser.Commands.Create.CreateCo
 [TestClass]
 public class CreateCopilotUserCommandValidatorTest
 {
-    /// <summary>
-    /// The validation error message.
-    /// </summary>
-    private readonly Resources.ValidationErrorMessage _validationErrorMessage = new();
-
     /// <summary>
     /// Tests <see cref="CreateCopilotUserCommandValidator"/>.
     /// </summary>
@@ -40,16 +36,13 @@ public class CreateCopilotUserCommandValidatorTest
     [DataRow("user@example.com", "password", "username", "SuperAdmin", false)]
     public void Test(string? email, string? password, string? username, string? role, bool expected)
     {
-        var validator = new CreateCopilotUserCommandValidator(_validationErrorMessage);
-        var data = new CreateCopilotUserCommand()
-        {
-            Email = email,
-            Password = password,
-            UserName = username,
-            Role = role,
-        };
-
-        var result = validator.Validate(data);
-        result.IsValid.Should().Be(expected);
+        ValidatorTestHelper.Test<CreateCopilotUserCommandValidator, CreateCopilotUserCommand>(
+            new()
+            {
+                Email = email,
+                Password = password,
+                UserName = username,
+                Role = role,
+            }, expected);
     }
 }

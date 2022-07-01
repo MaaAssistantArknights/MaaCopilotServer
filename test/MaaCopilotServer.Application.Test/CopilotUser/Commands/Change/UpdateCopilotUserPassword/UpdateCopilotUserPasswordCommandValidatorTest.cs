@@ -3,6 +3,7 @@
 // Licensed under the AGPL-3.0 license.
 
 using MaaCopilotServer.Application.CopilotUser.Commands.UpdateCopilotUserPassword;
+using MaaCopilotServer.Application.Test.TestHelpers;
 
 namespace MaaCopilotServer.Application.Test.CopilotUser.Commands.Change.UpdateCopilotUserInfo;
 
@@ -28,13 +29,11 @@ public class UpdateCopilotUserPasswordCommandValidatorTest
     [DataRow("password", "0123456789012345678901234567890123456789", false)]
     public void Test(string? originalPassword, string? newPassword, bool expected)
     {
-        var validator = new UpdateCopilotUserPasswordCommandValidator(new Resources.ValidationErrorMessage());
-        var data = new UpdateCopilotUserPasswordCommand()
-        {
-            OriginalPassword = originalPassword,
-            NewPassword = newPassword,
-        };
-        var result = validator.Validate(data);
-        result.IsValid.Should().Be(expected);
+        ValidatorTestHelper.Test<UpdateCopilotUserPasswordCommandValidator, UpdateCopilotUserPasswordCommand>(
+            new()
+            {
+                OriginalPassword = originalPassword,
+                NewPassword = newPassword,
+            }, expected);
     }
 }
