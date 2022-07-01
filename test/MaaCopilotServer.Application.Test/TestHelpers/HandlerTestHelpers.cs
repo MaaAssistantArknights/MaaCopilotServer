@@ -17,11 +17,14 @@ using MaaCopilotServer.Application.CopilotUser.Commands.RegisterCopilotAccount;
 using MaaCopilotServer.Application.CopilotUser.Commands.RequestPasswordReset;
 using MaaCopilotServer.Application.CopilotUser.Commands.UpdateCopilotUserInfo;
 using MaaCopilotServer.Application.CopilotUser.Commands.UpdateCopilotUserPassword;
+using MaaCopilotServer.Application.CopilotUser.Commands.DeleteCopilotUser;
 using MaaCopilotServer.Domain.Email.Models;
 using MaaCopilotServer.Domain.Options;
 using MaaCopilotServer.Infrastructure.Services;
 using MaaCopilotServer.Test.TestHelpers;
 using Microsoft.Extensions.Options;
+using MaaCopilotServer.Application.CopilotUser.Commands.LoginCopilotUser;
+using MaaCopilotServer.Application.CopilotUser.Commands.RequestActivationToken;
 
 namespace MaaCopilotServer.Application.Test.TestHelpers;
 
@@ -373,12 +376,46 @@ public class HandlerTest
         var handler = new RegisterCopilotAccountCommandHandler(TokenOption, CurrentUserService.Object, DbContext, SecretService.Object, MailService.Object, CopilotServerOption, ApiErrorMessage);
         return new HandlerTestResult { Response = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult(), DbContext = DbContext };
     }
+
+    /// <summary>
+    /// Tests <see cref="DeleteCopilotUserCommandHandler"/>.
+    /// </summary>
+    /// <param name="request">The test request.</param>
+    /// <returns>The result.</returns>
+    public HandlerTestResult TestDeleteCopilotUser(DeleteCopilotUserCommand request)
+    {
+        var handler = new DeleteCopilotUserCommandHandler(DbContext, CurrentUserService.Object, ApiErrorMessage);
+        return new HandlerTestResult { Response = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult(), DbContext = DbContext };
+    }
+
+    /// <summary>
+    /// Tests <see cref="LoginCopilotUserCommandHandler"/>.
+    /// </summary>
+    /// <param name="request">The test request.</param>
+    /// <returns>The result.</returns>
+    public HandlerTestResult TestLoginCopilotUser(LoginCopilotUserCommand request)
+    {
+        var handler = new LoginCopilotUserCommandHandler(DbContext, SecretService.Object, CurrentUserService.Object, ApiErrorMessage);
+        return new HandlerTestResult { Response = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult(), DbContext = DbContext };
+    }
+
+    /// <summary>
+    /// Tests <see cref="RequestActivationTokenCommandHandler"/>.
+    /// </summary>
+    /// <param name="request">The test request.</param>
+    /// <returns>The result.</returns>
+    public HandlerTestResult TestRequestActivationToken(RequestActivationTokenCommand request)
+    {
+        var handler = new RequestActivationTokenCommandHandler(TokenOption, DbContext, MailService.Object, SecretService.Object, CurrentUserService.Object, ApiErrorMessage);
+        return new HandlerTestResult { Response = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult(), DbContext = DbContext };
+    }
     #endregion
 }
 
 /// <summary>
 /// The handler test result.
 /// </summary>
+[ExcludeFromCodeCoverage]
 public record HandlerTestResult
 {
     /// <summary>
@@ -395,6 +432,7 @@ public record HandlerTestResult
 /// <summary>
 /// The extension class for <see cref="HandlerTest"/>.
 /// </summary>
+[ExcludeFromCodeCoverage]
 public static class HandlerTestExtension
 {
     #region Current User Service
@@ -456,6 +494,18 @@ public static class HandlerTestExtension
     public static HandlerTest SetupGenerateToken(this HandlerTest test, string returnedToken = HandlerTest.TestToken)
     {
         return test.SetupSecretService(mock => mock.Setup(x => x.GenerateToken(It.IsAny<Guid>(), It.IsAny<TimeSpan>())).Returns((returnedToken, HandlerTest.TestTokenTime)));
+    }
+
+    /// <summary>
+    /// Setups <see cref="ISecretService.GenerateJwtToken(Guid)"/>.
+    /// </summary>
+    /// <param name="test">The <see cref="HandlerTest"/> instance.</param>
+    /// <param name="userEntity">The test user entity.</param>
+    /// <param name="returnedToken">The returned token.</param>
+    /// <returns>The <see cref="HandlerTest"/> instance.</returns>
+    public static HandlerTest SetupGenerateJwtToken(this HandlerTest test, Guid userEntity, string returnedToken = HandlerTest.TestToken)
+    {
+        return test.SetupSecretService(mock => mock.Setup(x => x.GenerateJwtToken(userEntity)).Returns((returnedToken, HandlerTest.TestTokenTime)));
     }
     #endregion
 
