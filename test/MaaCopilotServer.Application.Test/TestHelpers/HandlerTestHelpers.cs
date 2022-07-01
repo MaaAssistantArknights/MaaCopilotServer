@@ -13,6 +13,7 @@ using MaaCopilotServer.Application.CopilotUser.Commands.RegisterCopilotAccount;
 using MaaCopilotServer.Application.CopilotUser.Commands.RequestPasswordReset;
 using MaaCopilotServer.Application.CopilotUser.Commands.UpdateCopilotUserInfo;
 using MaaCopilotServer.Application.CopilotUser.Commands.UpdateCopilotUserPassword;
+using MaaCopilotServer.Domain.Email.Models;
 using MaaCopilotServer.Domain.Options;
 using MaaCopilotServer.Test.TestHelpers;
 using Microsoft.Extensions.Options;
@@ -51,7 +52,20 @@ public class HandlerTest
     /// </summary>
     public const string TestToken = "token";
 
-    public static readonly DateTimeOffset TestTokenExpirationTime = new(2020, 1, 1, 0, 0, 0, default);
+    /// <summary>
+    /// The test token expiration time.
+    /// </summary>
+    public static readonly DateTimeOffset TestTokenTime = new(2020, 1, 1, 0, 0, 0, default);
+
+    /// <summary>
+    /// The test token expiration time, which has expired.
+    /// </summary>
+    public static readonly DateTimeOffset TestTokenTimePast = new(1900, 1, 1, 0, 0, 0, default);
+
+    /// <summary>
+    /// The test token expiration time, which has not yet arrived.
+    /// </summary>
+    public static readonly DateTimeOffset TestTokenTimeFuture = new(9999, 12, 31, 23, 59, 59, default);
     #endregion
 
     #region Mocks
@@ -182,7 +196,7 @@ public class HandlerTest
     /// </summary>
     /// <param name="action">The setup action.</param>
     /// <returns>The current instance for method chaining.</returns>
-    public HandlerTest SetupMailService(Action<Mock<IMailService>> action)
+    public HandlerTest SetupEmailService(Action<Mock<IMailService>> action)
     {
         action.Invoke(MailService);
         return this;
@@ -193,7 +207,7 @@ public class HandlerTest
     /// </summary>
     /// <param name="mock">The new mock.</param>
     /// <returns>The current instance for method chaining.</returns>
-    public HandlerTest SetupMailService(Mock<IMailService> mock)
+    public HandlerTest SetupEmailService(Mock<IMailService> mock)
     {
         MailService = mock;
         return this;
@@ -310,6 +324,88 @@ public class HandlerTest
     {
         var handler = new RegisterCopilotAccountCommandHandler(TokenOption, CurrentUserService.Object, DbContext, SecretService.Object, MailService.Object, CopilotServerOption, ApiErrorMessage);
         return handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult();
+    }
+    #endregion
+}
+
+/// <summary>
+/// The extension class for <see cref="HandlerTest"/>.
+/// </summary>
+public static class HandlerTestExtension
+{
+    #region Current User Service
+    /// <summary>
+    /// Setups <see cref="ICurrentUserService.GetUserIdentity"/>
+    /// </summary>
+    /// <param name="test">The <see cref="HandlerTest"/> instance.</param>
+    /// <param name="returns">The returned value.</param>
+    /// <returns>The <see cref="HandlerTest"/> instance.</returns>
+    public static HandlerTest SetupGetUserIdentity(this HandlerTest test, Guid? returns)
+    {
+        return test.SetupCurrentUserService(mock => mock.Setup(x => x.GetUserIdentity()).Returns(returns));
+    }
+
+    /// <summary>
+    /// Setups <see cref="ICurrentUserService.GetUser"/>
+    /// </summary>
+    /// <param name="test">The <see cref="HandlerTest"/> instance.</param>
+    /// <param name="returns">The returned value.</param>
+    /// <returns>The <see cref="HandlerTest"/> instance.</returns>
+    public static HandlerTest SetupGetUser(this HandlerTest test, Domain.Entities.CopilotUser returns)
+    {
+        return test.SetupCurrentUserService(mock => mock.Setup(x => x.GetUser().Result).Returns(returns));
+    }
+    #endregion
+
+    #region Secret Service
+    /// <summary>
+    /// Setups <see cref="ISecretService.HashPassword(string)"/>.
+    /// </summary>
+    /// <param name="test">The <see cref="HandlerTest"/> instance.</param>
+    /// <param name="password">The test password.</param>
+    /// <param name="returns">The returned value.</param>
+    /// <returns>The <see cref="HandlerTest"/> instance.</returns>
+    public static HandlerTest SetupHashPassword(this HandlerTest test, string password = HandlerTest.TestPassword, string returns = HandlerTest.TestHashedPassword)
+    {
+        return test.SetupSecretService(mock => mock.Setup(x => x.HashPassword(password)).Returns(returns));
+    }
+
+    /// <summary>
+    /// Setups <see cref="ISecretService.VerifyPassword(string, string)"/>.
+    /// </summary>
+    /// <param name="test">The <see cref="HandlerTest"/> instance.</param>
+    /// <param name="hash">The test hash.</param>
+    /// <param name="password">The test password.</param>
+    /// <param name="result">The returned value.</param>
+    /// <returns>The <see cref="HandlerTest"/> instance.</returns>
+    public static HandlerTest SetupVerifyPassword(this HandlerTest test, string hash, string password, bool result)
+    {
+        return test.SetupSecretService(mock => mock.Setup(x => x.VerifyPassword(hash, password)).Returns(result));
+    }
+
+    /// <summary>
+    /// Setups <see cref="ISecretService.GenerateToken(Guid, TimeSpan)"/>.
+    /// </summary>
+    /// <param name="test">The <see cref="HandlerTest"/> instance.</param>
+    /// <param name="returnedToken">The returned token.</param>
+    /// <returns>The <see cref="HandlerTest"/> instance.</returns>
+    public static HandlerTest SetupGenerateToken(this HandlerTest test, string returnedToken = HandlerTest.TestToken)
+    {
+        return test.SetupSecretService(mock => mock.Setup(x => x.GenerateToken(It.IsAny<Guid>(), It.IsAny<TimeSpan>())).Returns((returnedToken, HandlerTest.TestTokenTime)));
+    }
+    #endregion
+
+    #region Mail Service
+    /// <summary>
+    /// Setups <see cref="IMailService.SendEmailAsync{T}(T, string)"/>.
+    /// </summary>
+    /// <param name="test">The <see cref="HandlerTest"/> instance.</param>
+    /// <param name="success">Whether the email sending is successful.</param>
+    /// <param name="targetAddress">The test target address.</param>
+    /// <returns>The <see cref="HandlerTest"/> instance.</returns>
+    public static HandlerTest SetupSendEmailAsync(this HandlerTest test, bool success, string targetAddress = HandlerTest.TestEmail)
+    {
+        return test.SetupEmailService(mock => mock.Setup(x => x.SendEmailAsync(It.IsAny<IEmailModel>(), targetAddress).Result).Returns(success));
     }
     #endregion
 }

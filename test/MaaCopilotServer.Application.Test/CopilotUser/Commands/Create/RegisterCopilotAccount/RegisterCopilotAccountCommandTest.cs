@@ -4,7 +4,6 @@
 
 using MaaCopilotServer.Application.CopilotUser.Commands.RegisterCopilotAccount;
 using MaaCopilotServer.Application.Test.TestHelpers;
-using MaaCopilotServer.Domain.Email.Models;
 using Microsoft.AspNetCore.Http;
 
 namespace MaaCopilotServer.Application.Test.CopilotUser.Commands.Create.RegisterCopilotAccount;
@@ -22,12 +21,7 @@ public class RegisterCopilotAccountCommandHandlerTest
     [TestMethod]
     public void TestHandle_EmailInUse()
     {
-        var user = new Domain.Entities.CopilotUser(
-            HandlerTest.TestEmail,
-            string.Empty,
-            string.Empty,
-            Domain.Enums.UserRole.User,
-            null);
+        var user = new Domain.Entities.CopilotUser(HandlerTest.TestEmail, string.Empty, string.Empty, Domain.Enums.UserRole.User, null);
 
         var response = new HandlerTest()
             .SetupDatabase(db => db.CopilotUsers.Add(user))
@@ -49,7 +43,7 @@ public class RegisterCopilotAccountCommandHandlerTest
         var test = new HandlerTest()
             .SetupHashPassword()
             .SetupGenerateToken()
-            .SetupSendMailAsync(false);
+            .SetupSendEmailAsync(false);
         var response = test.TestRegisterCopilotAccount(new()
         {
             Email = HandlerTest.TestEmail,
@@ -70,7 +64,7 @@ public class RegisterCopilotAccountCommandHandlerTest
         var test = new HandlerTest()
             .SetupHashPassword()
             .SetupGenerateToken()
-            .SetupSendMailAsync(true);
+            .SetupSendEmailAsync(true);
         var response = test.TestRegisterCopilotAccount(new()
         {
             Email = HandlerTest.TestEmail,
@@ -106,7 +100,7 @@ public class RegisterCopilotAccountCommandHandlerTest
         var test = new HandlerTest()
             .SetupHashPassword()
             .SetupGenerateToken()
-            .SetupSendMailAsync(true)
+            .SetupSendEmailAsync(true)
             .SetupCopilotServerOption(new()
             {
                 RegisterUserDefaultRole = Domain.Enums.UserRole.Admin,
@@ -134,42 +128,5 @@ public class RegisterCopilotAccountCommandHandlerTest
         user.Password.Should().Be(HandlerTest.TestHashedPassword);
         user.UserRole.Should().Be(Domain.Enums.UserRole.Uploader);
         user.UserActivated.Should().BeFalse();
-    }
-}
-
-/// <summary>
-/// The extension methods of <see cref="RegisterCopilotAccountCommandHandlerTest"/>
-/// </summary>
-static class RegisterCopilotAccountCommandHandlerTestExtension
-{
-    /// <summary>
-    /// Setups <see cref="Application.Common.Interfaces.ISecretService.HashPassword(string)"/>.
-    /// </summary>
-    /// <param name="test">The <see cref="HandlerTest"/> instance.</param>
-    /// <returns>The <see cref="HandlerTest"/> instance.</returns>
-    public static HandlerTest SetupHashPassword(this HandlerTest test)
-    {
-        return test.SetupSecretService(mock => mock.Setup(x => x.HashPassword(HandlerTest.TestPassword)).Returns(HandlerTest.TestHashedPassword));
-    }
-
-    /// <summary>
-    /// Setups <see cref="Application.Common.Interfaces.ISecretService.GenerateToken(Guid, TimeSpan)"/>.
-    /// </summary>
-    /// <param name="test">The <see cref="HandlerTest"/> instance.</param>
-    /// <returns>The <see cref="HandlerTest"/> instance.</returns>
-    public static HandlerTest SetupGenerateToken(this HandlerTest test)
-    {
-        return test.SetupSecretService(mock => mock.Setup(x => x.GenerateToken(It.IsAny<Guid>(), It.IsAny<TimeSpan>())).Returns((HandlerTest.TestToken, HandlerTest.TestTokenExpirationTime)));
-    }
-
-    /// <summary>
-    /// Setups <see cref="Application.Common.Interfaces.IMailService.SendEmailAsync{T}(T, string)"/>.
-    /// </summary>
-    /// <param name="test">The <see cref="HandlerTest"/> instance.</param>
-    /// <param name="success">Whether the mail sending is successful.</param>
-    /// <returns>The <see cref="HandlerTest"/> instance.</returns>
-    public static HandlerTest SetupSendMailAsync(this HandlerTest test, bool success)
-    {
-        return test.SetupMailService(mock => mock.Setup(x => x.SendEmailAsync(It.IsAny<EmailUserActivation>(), HandlerTest.TestEmail).Result).Returns(success));
     }
 }
