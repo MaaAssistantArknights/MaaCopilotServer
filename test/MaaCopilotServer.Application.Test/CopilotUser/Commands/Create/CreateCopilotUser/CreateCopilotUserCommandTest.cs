@@ -26,7 +26,8 @@ public class CreateCopilotUserCommandHandlerTest
             .TestCreateCopilotUser(new()
             {
                 Email = HandlerTest.TestEmail,
-            });
+            })
+            .Response;
 
         response.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
     }
@@ -39,19 +40,19 @@ public class CreateCopilotUserCommandHandlerTest
     {
         var adminUserEntity = Guid.NewGuid();
 
-        var test = new HandlerTest()
-                    .SetupHashPassword()
-                    .SetupGetUserIdentity(adminUserEntity);
-        var response = test.TestCreateCopilotUser(new()
-        {
-            Email = HandlerTest.TestEmail,
-            Password = HandlerTest.TestPassword,
-            UserName = HandlerTest.TestUsername,
-            Role = "User",
-        });
+        var result = new HandlerTest()
+            .SetupHashPassword()
+            .SetupGetUserIdentity(adminUserEntity)
+            .TestCreateCopilotUser(new()
+            {
+                Email = HandlerTest.TestEmail,
+                Password = HandlerTest.TestPassword,
+                UserName = HandlerTest.TestUsername,
+                Role = "User",
+            });
 
-        response.StatusCode.Should().Be(StatusCodes.Status200OK);
-        var user = test.DbContext.CopilotUsers.FirstOrDefault(x => x.Email == HandlerTest.TestEmail);
+        result.Response.StatusCode.Should().Be(StatusCodes.Status200OK);
+        var user = result.DbContext.CopilotUsers.FirstOrDefault(x => x.Email == HandlerTest.TestEmail);
         user.Should().NotBeNull();
         user!.Password.Should().Be(HandlerTest.TestHashedPassword);
         user.UserName.Should().Be(HandlerTest.TestUsername);

@@ -83,7 +83,8 @@ public class QueryCopilotOperationsQueryHandlerTest
             .TestQueryCopilotOperations(new()
             {
                 Desc = descending ? "desc" : null,
-            });
+            })
+            .Response;
 
         response.Data.Should().NotBeNull();
         var responseData = (PaginationResult<QueryCopilotOperationsQueryDto>)response.Data!;
@@ -110,7 +111,8 @@ public class QueryCopilotOperationsQueryHandlerTest
             .TestQueryCopilotOperations(new()
             {
                 UploaderId = "me",
-            });
+            })
+            .Response;
 
         response.Data.Should().NotBeNull();
         var responseData = (PaginationResult<QueryCopilotOperationsQueryDto>)response.Data!;
@@ -138,7 +140,8 @@ public class QueryCopilotOperationsQueryHandlerTest
             .TestQueryCopilotOperations(new()
             {
                 UploaderId = users[0].EntityId.ToString(),
-            });
+            })
+            .Response;
 
         response.Data.Should().NotBeNull();
         var responseData = (PaginationResult<QueryCopilotOperationsQueryDto>)response.Data!;
@@ -166,7 +169,8 @@ public class QueryCopilotOperationsQueryHandlerTest
             .TestQueryCopilotOperations(new()
             {
                 UploaderId = "me",
-            });
+            })
+            .Response;
 
         response.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
     }
@@ -183,7 +187,8 @@ public class QueryCopilotOperationsQueryHandlerTest
             .TestQueryCopilotOperations(new()
             {
                 StageName = "stage0",
-            });
+            })
+            .Response;
 
         response.Data.Should().NotBeNull();
         var responseData = (PaginationResult<QueryCopilotOperationsQueryDto>)response.Data!;
@@ -208,7 +213,8 @@ public class QueryCopilotOperationsQueryHandlerTest
             .TestQueryCopilotOperations(new()
             {
                 Content = "content0",
-            });
+            })
+            .Response;
 
         response.Data.Should().NotBeNull();
         var responseData = (PaginationResult<QueryCopilotOperationsQueryDto>)response.Data!;
@@ -232,7 +238,8 @@ public class QueryCopilotOperationsQueryHandlerTest
             .TestQueryCopilotOperations(new()
             {
                 Uploader = users[0].UserName,
-            });
+            })
+            .Response;
 
         response.Data.Should().NotBeNull();
         var responseData = (PaginationResult<QueryCopilotOperationsQueryDto>)response.Data!;
@@ -267,7 +274,8 @@ public class QueryCopilotOperationsQueryHandlerTest
             {
                 OrderBy = orderBy,
                 Desc = descending ? "desc" : null,
-            });
+            })
+            .Response;
 
         response.Data.Should().NotBeNull();
         var responseData = (PaginationResult<QueryCopilotOperationsQueryDto>)response.Data!;

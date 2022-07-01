@@ -32,17 +32,16 @@ public class DeleteCopilotOperationCommandTest
         var user = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, UserRole.User, Guid.Empty);
         var entity = new Domain.Entities.CopilotOperation(1, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, user, Guid.Empty, new List<string>(), new List<string>());
 
-        var test = new HandlerTest()
+        var result = new HandlerTest()
             .SetupDatabase(db => db.CopilotUsers.Add(user))
             .SetupDatabase(db => db.CopilotOperations.Add(entity))
-            .SetupGetUser(user);
-        var response = test.TestDeleteCopilotOperation(new()
-        {
-            Id = _copilotIdService.EncodeId(entity.Id)
-        });
+            .SetupGetUser(user).TestDeleteCopilotOperation(new()
+            {
+                Id = _copilotIdService.EncodeId(entity.Id)
+            });
 
-        response.StatusCode.Should().Be(StatusCodes.Status200OK);
-        test.DbContext.CopilotOperations.Any().Should().BeFalse();
+        result.Response.StatusCode.Should().Be(StatusCodes.Status200OK);
+        result.DbContext.CopilotOperations.Any().Should().BeFalse();
     }
 
     /// <summary>
@@ -65,25 +64,24 @@ public class DeleteCopilotOperationCommandTest
         var author = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, authorRole, Guid.Empty);
         var entity = new Domain.Entities.CopilotOperation(1, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, author, Guid.Empty, new List<string>(), new List<string>());
 
-        var test = new HandlerTest()
+        var result = new HandlerTest()
             .SetupDatabase(db => db.CopilotUsers.Add(user))
             .SetupDatabase(db => db.CopilotUsers.Add(author))
             .SetupDatabase(db => db.CopilotOperations.Add(entity))
-            .SetupGetUser(user);
-        var response = test.TestDeleteCopilotOperation(new()
-        {
-            Id = _copilotIdService.EncodeId(entity.Id)
-        });
+            .SetupGetUser(user).TestDeleteCopilotOperation(new()
+            {
+                Id = _copilotIdService.EncodeId(entity.Id)
+            });
 
         if (expectedToSucceed)
         {
-            response.StatusCode.Should().Be(StatusCodes.Status200OK);
-            test.DbContext.CopilotOperations.Any().Should().BeFalse();
+            result.Response.StatusCode.Should().Be(StatusCodes.Status200OK);
+            result.DbContext.CopilotOperations.Any().Should().BeFalse();
         }
         else
         {
-            response.StatusCode.Should().Be(StatusCodes.Status403Forbidden);
-            test.DbContext.CopilotOperations.Any().Should().BeTrue();
+            result.Response.StatusCode.Should().Be(StatusCodes.Status403Forbidden);
+            result.DbContext.CopilotOperations.Any().Should().BeTrue();
         }
     }
 
@@ -94,13 +92,13 @@ public class DeleteCopilotOperationCommandTest
     [TestMethod]
     public void TestHandle_OperationNotFound()
     {
-        var test = new HandlerTest()
-            .SetupGetUser(new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, UserRole.User, null));
-        var response = test.TestDeleteCopilotOperation(new()
-        {
-            Id = _copilotIdService.EncodeId(1),
-        });
+        var result = new HandlerTest()
+            .SetupGetUser(new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, UserRole.User, null))
+            .TestDeleteCopilotOperation(new()
+            {
+                Id = _copilotIdService.EncodeId(1),
+            });
 
-        response.StatusCode.Should().Be(StatusCodes.Status404NotFound);
+        result.Response.StatusCode.Should().Be(StatusCodes.Status404NotFound);
     }
 }

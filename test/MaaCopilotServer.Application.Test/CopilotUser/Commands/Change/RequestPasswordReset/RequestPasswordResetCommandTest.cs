@@ -24,7 +24,8 @@ public class RequestPasswordResetCommandTest
             .TestRequestPasswordReset(new()
             {
                 Email = HandlerTest.TestEmail,
-            });
+            })
+            .Response;
 
         response.StatusCode.Should().Be(StatusCodes.Status404NotFound);
     }
@@ -43,7 +44,8 @@ public class RequestPasswordResetCommandTest
             .TestRequestPasswordReset(new()
             {
                 Email = HandlerTest.TestEmail,
-            });
+            })
+            .Response;
 
         response.StatusCode.Should().Be(StatusCodes.Status500InternalServerError);
     }
@@ -57,7 +59,7 @@ public class RequestPasswordResetCommandTest
     public void TestHandle_Successful(bool alreadyHaveToken)
     {
         var user = new Domain.Entities.CopilotUser(HandlerTest.TestEmail, string.Empty, string.Empty, Domain.Enums.UserRole.User, null);
-        var test = new HandlerTest()
+        var result = new HandlerTest()
             .SetupDatabase(db => db.CopilotUsers.Add(user))
             .SetupDatabase(db =>
             {
@@ -68,14 +70,13 @@ public class RequestPasswordResetCommandTest
                 }
             })
             .SetupGenerateToken()
-            .SetupSendEmailAsync(true);
-        var response = test.TestRequestPasswordReset(new()
-        {
-            Email = HandlerTest.TestEmail,
-        });
+            .SetupSendEmailAsync(true).TestRequestPasswordReset(new()
+            {
+                Email = HandlerTest.TestEmail,
+            });
 
-        response.StatusCode.Should().Be(StatusCodes.Status200OK);
-        var token = test.DbContext.CopilotTokens.FirstOrDefault(
+        result.Response.StatusCode.Should().Be(StatusCodes.Status200OK);
+        var token = result.DbContext.CopilotTokens.FirstOrDefault(
             x => x.ResourceId == user.EntityId && x.Type == Domain.Enums.TokenType.UserPasswordReset);
         token.Should().NotBeNull();
         token!.Token.Should().Be(HandlerTest.TestToken);

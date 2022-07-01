@@ -246,134 +246,150 @@ public class HandlerTest
     /// Tests <see cref="CreateCopilotOperationCommandHandler"/>.
     /// </summary>
     /// <param name="request">The test request.</param>
-    /// <returns>The response.</returns>
-    public MaaApiResponse TestCreateCopilotOperation(CreateCopilotOperationCommand request)
+    /// <returns>The result.</returns>
+    public HandlerTestResult TestCreateCopilotOperation(CreateCopilotOperationCommand request)
     {
         var handler = new CreateCopilotOperationCommandHandler(DbContext, CurrentUserService.Object, new CopilotIdService(), CopilotServerOption, ValidationErrorMessage);
-        return handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult();
+        return new HandlerTestResult { Response = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult(), DbContext = DbContext };
     }
 
     /// <summary>
     /// Tests <see cref="DeleteCopilotOperationCommandHandler"/>.
     /// </summary>
     /// <param name="request">The test request.</param>
-    /// <returns>The response.</returns>
-    public MaaApiResponse TestDeleteCopilotOperation(DeleteCopilotOperationCommand request)
+    /// <returns>The result.</returns>
+    public HandlerTestResult TestDeleteCopilotOperation(DeleteCopilotOperationCommand request)
     {
         var handler = new DeleteCopilotOperationCommandHandler(DbContext, new CopilotIdService(), CurrentUserService.Object, ApiErrorMessage);
-        return handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult();
+        return new HandlerTestResult { Response = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult(), DbContext = DbContext };
     }
 
     /// <summary>
     /// Tests <see cref="GetCopilotOperationQueryHandler"/>.
     /// </summary>
     /// <param name="request">The test request.</param>
-    /// <returns>The response.</returns>
-    public MaaApiResponse TestGetCopilotOperation(GetCopilotOperationQuery request)
+    /// <returns>The result.</returns>
+    public HandlerTestResult TestGetCopilotOperation(GetCopilotOperationQuery request)
     {
         var handler = new GetCopilotOperationQueryHandler(DbContext, CurrentUserService.Object, new CopilotIdService(), ApiErrorMessage);
-        return handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult();
+        return new HandlerTestResult { Response = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult(), DbContext = DbContext };
     }
 
     /// <summary>
     /// Tests <see cref="QueryCopilotOperationsQueryHandler"/>.
     /// </summary>
     /// <param name="request">The test request.</param>
-    /// <returns>The response.</returns>
-    public MaaApiResponse TestQueryCopilotOperations(QueryCopilotOperationsQuery request)
+    /// <returns>The result.</returns>
+    public HandlerTestResult TestQueryCopilotOperations(QueryCopilotOperationsQuery request)
     {
         var handler = new QueryCopilotOperationsQueryHandler(DbContext, new CopilotIdService(), CurrentUserService.Object, ApiErrorMessage);
-        return handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult();
+        return new HandlerTestResult { Response = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult(), DbContext = DbContext };
     }
 
     /// <summary>
     /// Tests <see cref="ChangeCopilotUserInfoCommandHandler"/>.
     /// </summary>
     /// <param name="request">The test request.</param>
-    /// <returns>The response.</returns>
-    public MaaApiResponse TestChangeCopilotUserInfo(ChangeCopilotUserInfoCommand request)
+    /// <returns>The result.</returns>
+    public HandlerTestResult TestChangeCopilotUserInfo(ChangeCopilotUserInfoCommand request)
     {
         var handler = new ChangeCopilotUserInfoCommandHandler(DbContext, CurrentUserService.Object, SecretService.Object, ApiErrorMessage);
-        return handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult();
+        return new HandlerTestResult { Response = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult(), DbContext = DbContext };
     }
 
     /// <summary>
     /// Tests <see cref="PasswordResetCommandHandler"/>.
     /// </summary>
     /// <param name="request">The test request.</param>
-    /// <returns>The response.</returns>
-    public MaaApiResponse TestPasswordReset(PasswordResetCommand request)
+    /// <returns>The result.</returns>
+    public HandlerTestResult TestPasswordReset(PasswordResetCommand request)
     {
         var handler = new PasswordResetCommandHandler(SecretService.Object, DbContext, ApiErrorMessage);
-        return handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult();
+        return new HandlerTestResult { Response = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult(), DbContext = DbContext };
     }
 
     /// <summary>
     /// Tests <see cref="RequestPasswordResetCommandHandler"/>.
     /// </summary>
     /// <param name="request">The test request.</param>
-    /// <returns>The response.</returns>
-    public MaaApiResponse TestRequestPasswordReset(RequestPasswordResetCommand request)
+    /// <returns>The result.</returns>
+    public HandlerTestResult TestRequestPasswordReset(RequestPasswordResetCommand request)
     {
         var handler = new RequestPasswordResetCommandHandler(TokenOption, DbContext, SecretService.Object, MailService.Object, ApiErrorMessage);
-        return handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult();
+        return new HandlerTestResult { Response = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult(), DbContext = DbContext };
     }
 
     /// <summary>
     /// Tests <see cref="UpdateCopilotUserInfoCommandHandler"/>.
     /// </summary>
     /// <param name="request">The test request.</param>
-    /// <returns>The response.</returns>
-    public MaaApiResponse TestUpdateCopilotUserInfo(UpdateCopilotUserInfoCommand request)
+    /// <returns>The result.</returns>
+    public HandlerTestResult TestUpdateCopilotUserInfo(UpdateCopilotUserInfoCommand request)
     {
         var handler = new UpdateCopilotUserInfoCommandHandler(TokenOption, DbContext, MailService.Object, SecretService.Object, CurrentUserService.Object, ApiErrorMessage);
-        return handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult();
+        return new HandlerTestResult { Response = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult(), DbContext = DbContext };
     }
 
     /// <summary>
     /// Tests <see cref="UpdateCopilotUserPasswordCommandHandler"/>.
     /// </summary>
     /// <param name="request">The test request.</param>
-    /// <returns>The response.</returns>
-    public MaaApiResponse TestUpdateCopilotUserPassword(UpdateCopilotUserPasswordCommand request)
+    /// <returns>The result.</returns>
+    public HandlerTestResult TestUpdateCopilotUserPassword(UpdateCopilotUserPasswordCommand request)
     {
         var handler = new UpdateCopilotUserPasswordCommandHandler(DbContext, SecretService.Object, CurrentUserService.Object, ApiErrorMessage);
-        return handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult();
+        return new HandlerTestResult { Response = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult(), DbContext = DbContext };
     }
 
     /// <summary>
     /// Tests <see cref="ActivateCopilotAccountCommandHandler"/>.
     /// </summary>
     /// <param name="request">The test request.</param>
-    /// <returns>The response.</returns>
-    public MaaApiResponse TestActivateCopilotAccount(ActivateCopilotAccountCommand request)
+    /// <returns>The result.</returns>
+    public HandlerTestResult TestActivateCopilotAccount(ActivateCopilotAccountCommand request)
     {
         var handler = new ActivateCopilotAccountCommandHandler(CurrentUserService.Object, DbContext, ApiErrorMessage);
-        return handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult();
+        return new HandlerTestResult { Response = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult(), DbContext = DbContext };
     }
 
     /// <summary>
     /// Tests <see cref="CreateCopilotUserCommandHandler"/>.
     /// </summary>
     /// <param name="request">The test request.</param>
-    /// <returns>The response.</returns>
-    public MaaApiResponse TestCreateCopilotUser(CreateCopilotUserCommand request)
+    /// <returns>The result.</returns>
+    public HandlerTestResult TestCreateCopilotUser(CreateCopilotUserCommand request)
     {
         var handler = new CreateCopilotUserCommandHandler(DbContext, SecretService.Object, CurrentUserService.Object, ApiErrorMessage);
-        return handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult();
+        return new HandlerTestResult { Response = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult(), DbContext = DbContext };
     }
 
     /// <summary>
     /// Tests <see cref="RegisterCopilotAccountCommandHandler"/>.
     /// </summary>
     /// <param name="request">The test request.</param>
-    /// <returns>The response.</returns>
-    public MaaApiResponse TestRegisterCopilotAccount(RegisterCopilotAccountCommand request)
+    /// <returns>The result.</returns>
+    public HandlerTestResult TestRegisterCopilotAccount(RegisterCopilotAccountCommand request)
     {
         var handler = new RegisterCopilotAccountCommandHandler(TokenOption, CurrentUserService.Object, DbContext, SecretService.Object, MailService.Object, CopilotServerOption, ApiErrorMessage);
-        return handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult();
+        return new HandlerTestResult { Response = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult(), DbContext = DbContext };
     }
     #endregion
+}
+
+/// <summary>
+/// The handler test result.
+/// </summary>
+public record HandlerTestResult
+{
+    /// <summary>
+    /// The response.
+    /// </summary>
+    public MaaApiResponse Response { get; init; } = default!;
+
+    /// <summary>
+    /// The DB context.
+    /// </summary>
+    public IMaaCopilotDbContext DbContext { get; init; } = default!;
 }
 
 /// <summary>

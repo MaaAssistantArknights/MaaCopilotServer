@@ -24,7 +24,8 @@ public class ChangeCopilotUserInfoCommandTest
             .TestChangeCopilotUserInfo(new()
             {
                 UserId = Guid.Empty.ToString(),
-            });
+            })
+            .Response;
 
         response.StatusCode.Should().Be(StatusCodes.Status404NotFound);
     }
@@ -49,7 +50,8 @@ public class ChangeCopilotUserInfoCommandTest
             .TestChangeCopilotUserInfo(new()
             {
                 UserId = user.EntityId.ToString(),
-            });
+            })
+            .Response;
 
         response.StatusCode.Should().Be(StatusCodes.Status403Forbidden);
     }
@@ -70,7 +72,8 @@ public class ChangeCopilotUserInfoCommandTest
             {
                 UserId = user.EntityId.ToString(),
                 Role = Domain.Enums.UserRole.Admin.ToString(),
-            });
+            })
+            .Response;
 
         response.StatusCode.Should().Be(StatusCodes.Status403Forbidden);
     }
@@ -92,7 +95,8 @@ public class ChangeCopilotUserInfoCommandTest
             {
                 UserId = user.EntityId.ToString(),
                 Email = HandlerTest.TestEmail,
-            });
+            })
+            .Response;
 
         response.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
     }
@@ -119,7 +123,8 @@ public class ChangeCopilotUserInfoCommandTest
                 UserName = HandlerTest.TestUsername,
                 Password = HandlerTest.TestPassword,
                 Role = Domain.Enums.UserRole.Uploader.ToString(),
-            });
+            })
+            .Response;
 
         response.StatusCode.Should().Be(StatusCodes.Status200OK);
         user.UserActivated.Should().BeTrue();

@@ -27,7 +27,8 @@ public class ActivateCopilotAccountCommandTest
             .TestActivateCopilotAccount(new()
             {
                 Token = HandlerTest.TestToken,
-            });
+            })
+            .Response;
 
         response.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
     }
@@ -45,7 +46,8 @@ public class ActivateCopilotAccountCommandTest
             .TestActivateCopilotAccount(new()
             {
                 Token = HandlerTest.TestToken
-            });
+            })
+            .Response;
 
         response.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
     }
@@ -63,7 +65,8 @@ public class ActivateCopilotAccountCommandTest
             .TestActivateCopilotAccount(new()
             {
                 Token = HandlerTest.TestToken
-            });
+            })
+            .Response;
 
         response.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
     }
@@ -81,7 +84,8 @@ public class ActivateCopilotAccountCommandTest
             .TestActivateCopilotAccount(new()
             {
                 Token = HandlerTest.TestToken
-            });
+            })
+            .Response;
 
         response.StatusCode.Should().Be(StatusCodes.Status500InternalServerError);
     }
@@ -94,16 +98,16 @@ public class ActivateCopilotAccountCommandTest
     {
         var user = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, UserRole.User, null);
 
-        var test = new HandlerTest()
-                    .SetupDatabase(db => db.CopilotUsers.Add(user))
-                    .SetupDatabase(db => db.CopilotTokens.Add(new(user.EntityId, TokenType.UserActivation, HandlerTest.TestToken, HandlerTest.TestTokenTimeFuture)));
-        var response = test.TestActivateCopilotAccount(new()
-        {
-            Token = HandlerTest.TestToken,
-        });
+        var result = new HandlerTest()
+            .SetupDatabase(db => db.CopilotUsers.Add(user))
+            .SetupDatabase(db => db.CopilotTokens.Add(new(user.EntityId, TokenType.UserActivation, HandlerTest.TestToken, HandlerTest.TestTokenTimeFuture)))
+            .TestActivateCopilotAccount(new()
+            {
+                Token = HandlerTest.TestToken,
+            });
 
-        response.StatusCode.Should().Be(StatusCodes.Status200OK);
+        result.Response.StatusCode.Should().Be(StatusCodes.Status200OK);
         user.UserActivated.Should().BeTrue();
-        test.DbContext.CopilotTokens.FirstOrDefault(x => x.Token == HandlerTest.TestToken).Should().BeNull();
+        result.DbContext.CopilotTokens.FirstOrDefault(x => x.Token == HandlerTest.TestToken).Should().BeNull();
     }
 }

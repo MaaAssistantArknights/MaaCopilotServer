@@ -25,7 +25,8 @@ public class PasswordResetCommandTest
             .TestPasswordReset(new()
             {
                 Token = HandlerTest.TestToken,
-            });
+            })
+            .Response;
 
         response.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
     }
@@ -42,7 +43,8 @@ public class PasswordResetCommandTest
             .TestPasswordReset(new()
             {
                 Token = HandlerTest.TestToken,
-            });
+            })
+            .Response;
 
         response.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
     }
@@ -59,7 +61,8 @@ public class PasswordResetCommandTest
             .TestPasswordReset(new()
             {
                 Token = HandlerTest.TestToken,
-            });
+            })
+            .Response;
 
         response.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
     }
@@ -76,7 +79,8 @@ public class PasswordResetCommandTest
             .TestPasswordReset(new()
             {
                 Token = HandlerTest.TestToken,
-            });
+            })
+            .Response;
 
         response.StatusCode.Should().Be(StatusCodes.Status500InternalServerError);
     }
@@ -100,7 +104,8 @@ public class PasswordResetCommandTest
             {
                 Token = HandlerTest.TestToken,
                 Password = HandlerTest.TestPassword,
-            });
+            })
+            .Response;
 
         response.StatusCode.Should().Be(StatusCodes.Status200OK);
         user.Password.Should().Be("hashed_password");

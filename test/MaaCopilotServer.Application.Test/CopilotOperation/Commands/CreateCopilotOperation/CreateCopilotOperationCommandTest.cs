@@ -236,21 +236,21 @@ public class CreateCopilotOperationCommandTest
         {
             test = test.SetupCopilotServerOption(_optionsWithAllRequirement);
         }
-        var response = test.TestCreateCopilotOperation(new()
+        var result = test.TestCreateCopilotOperation(new()
         {
             Content = testContent,
         });
 
         if (expectNon200Response)
         {
-            response.StatusCode.Should().NotBe(StatusCodes.Status200OK);
-            test.DbContext.CopilotOperations.Any().Should().BeFalse();
+            result.Response.StatusCode.Should().NotBe(StatusCodes.Status200OK);
+            result.DbContext.CopilotOperations.Any().Should().BeFalse();
         }
         else
         {
-            var id = ((CreateCopilotOperationDto)response.Data!).Id;
-            test.DbContext.CopilotOperations.Any().Should().BeTrue();
-            var entity = test.DbContext.CopilotOperations.FirstOrDefault();
+            var id = ((CreateCopilotOperationDto)result.Response.Data!).Id;
+            result.DbContext.CopilotOperations.Any().Should().BeTrue();
+            var entity = result.DbContext.CopilotOperations.FirstOrDefault();
             entity.Should().NotBeNull();
             entity!.Id.Should().Be(_copilotIdService.DecodeId(id));
             entity.Content.Should().Be(testContent);

@@ -39,7 +39,8 @@ public class GetCopilotOperationQueryTest
             .TestGetCopilotOperation(new()
             {
                 Id = _copilotIdService.EncodeId(entities[0].Id),
-            });
+            })
+            .Response;
 
         response.StatusCode.Should().Be(StatusCodes.Status200OK);
         response.Data.Should().NotBeNull();
@@ -59,7 +60,8 @@ public class GetCopilotOperationQueryTest
             .TestGetCopilotOperation(new()
             {
                 Id = null,
-            });
+            })
+            .Response;
 
         response.StatusCode.Should().Be(StatusCodes.Status404NotFound);
     }
@@ -75,7 +77,8 @@ public class GetCopilotOperationQueryTest
             .TestGetCopilotOperation(new()
             {
                 Id = _copilotIdService.EncodeId(0),
-            });
+            })
+            .Response;
 
         response.StatusCode.Should().Be(StatusCodes.Status404NotFound);
     }

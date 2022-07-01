@@ -27,7 +27,8 @@ public class UpdateCopilotUserInfoCommandTest
             .TestUpdateCopilotUserInfo(new()
             {
                 UserName = "new_username",
-            });
+            })
+            .Response;
 
         response.StatusCode.Should().Be(StatusCodes.Status200OK);
         user.UserName.Should().Be("new_username");
@@ -49,7 +50,8 @@ public class UpdateCopilotUserInfoCommandTest
             .TestUpdateCopilotUserInfo(new()
             {
                 Email = HandlerTest.TestEmail,
-            });
+            })
+            .Response;
 
         response.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
     }
@@ -70,7 +72,8 @@ public class UpdateCopilotUserInfoCommandTest
             .TestUpdateCopilotUserInfo(new()
             {
                 Email = HandlerTest.TestEmail,
-            });
+            })
+            .Response;
 
         response.StatusCode.Should().Be(StatusCodes.Status500InternalServerError);
     }
@@ -91,7 +94,8 @@ public class UpdateCopilotUserInfoCommandTest
             .TestUpdateCopilotUserInfo(new()
             {
                 Email = HandlerTest.TestEmail,
-            });
+            })
+            .Response;
 
         response.StatusCode.Should().Be(StatusCodes.Status200OK);
         user.Email.Should().Be(HandlerTest.TestEmail);

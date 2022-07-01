@@ -28,7 +28,8 @@ public class UpdateCopilotUserPasswordCommandTest
             .TestUpdateCopilotUserPassword(new()
             {
                 OriginalPassword = "wrong_password",
-            });
+            })
+            .Response;
 
         response.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
     }
@@ -49,7 +50,8 @@ public class UpdateCopilotUserPasswordCommandTest
             {
                 OriginalPassword = HandlerTest.TestPassword,
                 NewPassword = "new_password",
-            });
+            })
+            .Response;
 
         response.StatusCode.Should().Be(StatusCodes.Status200OK);
         user.Password.Should().Be("new_password_hash");
