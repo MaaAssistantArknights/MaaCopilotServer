@@ -5,8 +5,8 @@
 using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Application.Common.Models;
 using MaaCopilotServer.Application.CopilotOperation.Queries.QueryCopilotOperations;
+using MaaCopilotServer.Application.Test.TestHelpers;
 using MaaCopilotServer.Infrastructure.Services;
-using MaaCopilotServer.Test.TestHelpers;
 using Microsoft.AspNetCore.Http;
 
 namespace MaaCopilotServer.Application.Test.CopilotOperation.Queries.QueryCopilotOperations;
@@ -28,33 +28,22 @@ public class QueryCopilotOperationsQueryHandlerTest
     private static readonly int s_highestRateId = 8;
 
     /// <summary>
-    ///     The API error message.
-    /// </summary>
-    private readonly Resources.ApiErrorMessage _apiErrorMessage = new();
-
-    /// <summary>
     ///     The service for processing copilot ID.
     /// </summary>
     private readonly ICopilotIdService _copilotIdService = new CopilotIdService();
 
     /// <summary>
-    ///     The DB context.
+    /// Initializes database with initial test data.
     /// </summary>
-    private readonly IMaaCopilotDbContext _dbContext = new TestDbContext();
-
-    /// <summary>
-    /// Initializes database with initial test data.s
-    /// </summary>
-    /// <returns>A list of users.</returns>
-    public List<Domain.Entities.CopilotUser> InitializeDatabase()
+    /// <param name="test">The <see cref="HandlerTest"/> instance.</param>
+    /// <returns>A list of users, and the <see cref="HandlerTest"/> instance.</returns>
+    private static (List<Domain.Entities.CopilotUser>, HandlerTest) InitializeDatabase(HandlerTest test)
     {
         List<Domain.Entities.CopilotUser> users = new()
         {
             new Domain.Entities.CopilotUser(string.Empty, string.Empty, "user0", Domain.Enums.UserRole.User, null),
             new Domain.Entities.CopilotUser(string.Empty, string.Empty, "user1", Domain.Enums.UserRole.User, null),
         };
-        _dbContext.CopilotUsers.AddRange(users);
-        _dbContext.SaveChangesAsync(new CancellationToken()).Wait();
 
         List<Domain.Entities.CopilotOperation> data = new();
         for (var i = 0; i < 5; i++)
@@ -72,10 +61,11 @@ public class QueryCopilotOperationsQueryHandlerTest
         // Set operation[8] to have one like
         data[s_highestRateId].AddLike(Guid.Empty);
 
-        _dbContext.CopilotOperations.AddRange(data);
-        _dbContext.SaveChangesAsync(new CancellationToken()).Wait();
+        test = test
+            .SetupDatabase(db => db.CopilotUsers.AddRange(users))
+            .SetupDatabase(db => db.CopilotOperations.AddRange(data));
 
-        return users;
+        return (users, test);
     }
 
     /// <summary>
@@ -87,17 +77,14 @@ public class QueryCopilotOperationsQueryHandlerTest
     [DataRow(true)]
     public void TestHandle_All(bool descending)
     {
-        var users = InitializeDatabase();
-        var currentUserService = new Mock<ICurrentUserService>();
-        currentUserService.Setup(x => x.GetUserIdentity()).Returns(users[0].EntityId);
-        currentUserService.Setup(x => x.GetUser().Result).Returns(users[0]);
-        var request = new QueryCopilotOperationsQuery()
-        {
-            Desc = descending ? "desc" : null,
-        };
+        var (users, test) = InitializeDatabase(new HandlerTest());
+        var response = test.SetupGetUserIdentity(users[0].EntityId)
+            .SetupGetUser(users[0])
+            .TestQueryCopilotOperations(new()
+            {
+                Desc = descending ? "desc" : null,
+            });
 
-        var handler = new QueryCopilotOperationsQueryHandler(_dbContext, _copilotIdService, currentUserService.Object, _apiErrorMessage);
-        var response = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult();
         response.Data.Should().NotBeNull();
         var responseData = (PaginationResult<QueryCopilotOperationsQueryDto>)response.Data!;
         responseData.HasNext.Should().BeFalse();
@@ -117,17 +104,14 @@ public class QueryCopilotOperationsQueryHandlerTest
     [TestMethod]
     public void TestHandle_CurrentUser()
     {
-        var users = InitializeDatabase();
-        var currentUserService = new Mock<ICurrentUserService>();
-        currentUserService.Setup(x => x.GetUserIdentity()).Returns(users[0].EntityId);
-        currentUserService.Setup(x => x.GetUser().Result).Returns(users[0]);
-        var request = new QueryCopilotOperationsQuery()
-        {
-            UploaderId = "me",
-        };
+        var (users, test) = InitializeDatabase(new HandlerTest());
+        var response = test.SetupGetUserIdentity(users[0].EntityId)
+            .SetupGetUser(users[0])
+            .TestQueryCopilotOperations(new()
+            {
+                UploaderId = "me",
+            });
 
-        var handler = new QueryCopilotOperationsQueryHandler(_dbContext, _copilotIdService, currentUserService.Object, _apiErrorMessage);
-        var response = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult();
         response.Data.Should().NotBeNull();
         var responseData = (PaginationResult<QueryCopilotOperationsQueryDto>)response.Data!;
         responseData.HasNext.Should().BeFalse();
@@ -148,17 +132,14 @@ public class QueryCopilotOperationsQueryHandlerTest
     [TestMethod]
     public void TestHandle_WithUploaderId()
     {
-        var users = InitializeDatabase();
-        var currentUserService = new Mock<ICurrentUserService>();
-        currentUserService.Setup(x => x.GetUserIdentity()).Returns(users[0].EntityId);
-        currentUserService.Setup(x => x.GetUser().Result).Returns(users[0]);
-        var request = new QueryCopilotOperationsQuery()
-        {
-            UploaderId = users[0].EntityId.ToString(),
-        };
+        var (users, test) = InitializeDatabase(new HandlerTest());
+        var response = test.SetupGetUserIdentity(users[0].EntityId)
+            .SetupGetUser(users[0])
+            .TestQueryCopilotOperations(new()
+            {
+                UploaderId = users[0].EntityId.ToString(),
+            });
 
-        var handler = new QueryCopilotOperationsQueryHandler(_dbContext, _copilotIdService, currentUserService.Object, _apiErrorMessage);
-        var response = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult();
         response.Data.Should().NotBeNull();
         var responseData = (PaginationResult<QueryCopilotOperationsQueryDto>)response.Data!;
         responseData.HasNext.Should().BeFalse();
@@ -179,16 +160,14 @@ public class QueryCopilotOperationsQueryHandlerTest
     [TestMethod]
     public void TestHandle_InvalidCurrentUser()
     {
-        var currentUserService = new Mock<ICurrentUserService>();
-        currentUserService.Setup(x => x.GetUserIdentity()).Returns((Guid?)null);
-        currentUserService.Setup(x => x.GetUser().Result).Returns((Domain.Entities.CopilotUser?)null);
-        var request = new QueryCopilotOperationsQuery()
-        {
-            UploaderId = "me",
-        };
+        var test = new HandlerTest();
+        var response = test.SetupGetUserIdentity(null)
+            .SetupGetUser(null)
+            .TestQueryCopilotOperations(new()
+            {
+                UploaderId = "me",
+            });
 
-        var handler = new QueryCopilotOperationsQueryHandler(_dbContext, _copilotIdService, currentUserService.Object, _apiErrorMessage);
-        var response = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult();
         response.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
     }
 
@@ -198,17 +177,14 @@ public class QueryCopilotOperationsQueryHandlerTest
     [TestMethod]
     public void TestHandle_WithStageName()
     {
-        var users = InitializeDatabase();
-        var currentUserService = new Mock<ICurrentUserService>();
-        currentUserService.Setup(x => x.GetUserIdentity()).Returns(users[0].EntityId);
-        currentUserService.Setup(x => x.GetUser().Result).Returns(users[0]);
-        var request = new QueryCopilotOperationsQuery()
-        {
-            StageName = "stage0",
-        };
+        var (users, test) = InitializeDatabase(new HandlerTest());
+        var response = test.SetupGetUserIdentity(users[0].EntityId)
+            .SetupGetUser(users[0])
+            .TestQueryCopilotOperations(new()
+            {
+                StageName = "stage0",
+            });
 
-        var handler = new QueryCopilotOperationsQueryHandler(_dbContext, _copilotIdService, currentUserService.Object, _apiErrorMessage);
-        var response = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult();
         response.Data.Should().NotBeNull();
         var responseData = (PaginationResult<QueryCopilotOperationsQueryDto>)response.Data!;
         responseData.HasNext.Should().BeFalse();
@@ -226,17 +202,14 @@ public class QueryCopilotOperationsQueryHandlerTest
     [TestMethod]
     public void TestHandle_WithContent()
     {
-        var users = InitializeDatabase();
-        var currentUserService = new Mock<ICurrentUserService>();
-        currentUserService.Setup(x => x.GetUserIdentity()).Returns(users[0].EntityId);
-        currentUserService.Setup(x => x.GetUser().Result).Returns(users[0]);
-        var request = new QueryCopilotOperationsQuery()
-        {
-            Content = "content0",
-        };
+        var (users, test) = InitializeDatabase(new HandlerTest());
+        var response = test.SetupGetUserIdentity(users[0].EntityId)
+            .SetupGetUser(users[0])
+            .TestQueryCopilotOperations(new()
+            {
+                Content = "content0",
+            });
 
-        var handler = new QueryCopilotOperationsQueryHandler(_dbContext, _copilotIdService, currentUserService.Object, _apiErrorMessage);
-        var response = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult();
         response.Data.Should().NotBeNull();
         var responseData = (PaginationResult<QueryCopilotOperationsQueryDto>)response.Data!;
         responseData.HasNext.Should().BeFalse();
@@ -253,17 +226,14 @@ public class QueryCopilotOperationsQueryHandlerTest
     [TestMethod]
     public void TestHandle_WithUploader()
     {
-        var users = InitializeDatabase();
-        var currentUserService = new Mock<ICurrentUserService>();
-        currentUserService.Setup(x => x.GetUserIdentity()).Returns(users[0].EntityId);
-        currentUserService.Setup(x => x.GetUser().Result).Returns(users[0]);
-        var request = new QueryCopilotOperationsQuery()
-        {
-            Uploader = users[0].UserName,
-        };
+        var (users, test) = InitializeDatabase(new HandlerTest());
+        var response = test.SetupGetUserIdentity(users[0].EntityId)
+            .SetupGetUser(users[0])
+            .TestQueryCopilotOperations(new()
+            {
+                Uploader = users[0].UserName,
+            });
 
-        var handler = new QueryCopilotOperationsQueryHandler(_dbContext, _copilotIdService, currentUserService.Object, _apiErrorMessage);
-        var response = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult();
         response.Data.Should().NotBeNull();
         var responseData = (PaginationResult<QueryCopilotOperationsQueryDto>)response.Data!;
         responseData.HasNext.Should().BeFalse();
@@ -290,18 +260,15 @@ public class QueryCopilotOperationsQueryHandlerTest
     [DataRow("rating", true)]
     public void TestHandle_OrderBy(string orderBy, bool descending)
     {
-        var users = InitializeDatabase();
-        var currentUserService = new Mock<ICurrentUserService>();
-        currentUserService.Setup(x => x.GetUserIdentity()).Returns(users[0].EntityId);
-        currentUserService.Setup(x => x.GetUser().Result).Returns(users[0]);
-        var request = new QueryCopilotOperationsQuery()
-        {
-            OrderBy = orderBy,
-            Desc = descending ? "desc" : null,
-        };
+        var (users, test) = InitializeDatabase(new HandlerTest());
+        var response = test.SetupGetUserIdentity(users[0].EntityId)
+            .SetupGetUser(users[0])
+            .TestQueryCopilotOperations(new()
+            {
+                OrderBy = orderBy,
+                Desc = descending ? "desc" : null,
+            });
 
-        var handler = new QueryCopilotOperationsQueryHandler(_dbContext, _copilotIdService, currentUserService.Object, _apiErrorMessage);
-        var response = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult();
         response.Data.Should().NotBeNull();
         var responseData = (PaginationResult<QueryCopilotOperationsQueryDto>)response.Data!;
         responseData.HasNext.Should().BeFalse();

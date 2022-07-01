@@ -5,6 +5,10 @@
 using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Application.Common.Models;
+using MaaCopilotServer.Application.CopilotOperation.Commands.CreateCopilotOperation;
+using MaaCopilotServer.Application.CopilotOperation.Commands.DeleteCopilotOperation;
+using MaaCopilotServer.Application.CopilotOperation.Queries.GetCopilotOperation;
+using MaaCopilotServer.Application.CopilotOperation.Queries.QueryCopilotOperations;
 using MaaCopilotServer.Application.CopilotUser.Commands.ActivateCopilotAccount;
 using MaaCopilotServer.Application.CopilotUser.Commands.ChangeCopilotUserInfo;
 using MaaCopilotServer.Application.CopilotUser.Commands.CreateCopilotUser;
@@ -15,6 +19,7 @@ using MaaCopilotServer.Application.CopilotUser.Commands.UpdateCopilotUserInfo;
 using MaaCopilotServer.Application.CopilotUser.Commands.UpdateCopilotUserPassword;
 using MaaCopilotServer.Domain.Email.Models;
 using MaaCopilotServer.Domain.Options;
+using MaaCopilotServer.Infrastructure.Services;
 using MaaCopilotServer.Test.TestHelpers;
 using Microsoft.Extensions.Options;
 
@@ -237,6 +242,49 @@ public class HandlerTest
     #endregion
 
     #region Testers
+    /// <summary>
+    /// Tests <see cref="CreateCopilotOperationCommandHandler"/>.
+    /// </summary>
+    /// <param name="request">The test request.</param>
+    /// <returns>The response.</returns>
+    public MaaApiResponse TestCreateCopilotOperation(CreateCopilotOperationCommand request)
+    {
+        var handler = new CreateCopilotOperationCommandHandler(DbContext, CurrentUserService.Object, new CopilotIdService(), CopilotServerOption, ValidationErrorMessage);
+        return handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult();
+    }
+
+    /// <summary>
+    /// Tests <see cref="DeleteCopilotOperationCommandHandler"/>.
+    /// </summary>
+    /// <param name="request">The test request.</param>
+    /// <returns>The response.</returns>
+    public MaaApiResponse TestDeleteCopilotOperation(DeleteCopilotOperationCommand request)
+    {
+        var handler = new DeleteCopilotOperationCommandHandler(DbContext, new CopilotIdService(), CurrentUserService.Object, ApiErrorMessage);
+        return handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult();
+    }
+
+    /// <summary>
+    /// Tests <see cref="GetCopilotOperationQueryHandler"/>.
+    /// </summary>
+    /// <param name="request">The test request.</param>
+    /// <returns>The response.</returns>
+    public MaaApiResponse TestGetCopilotOperation(GetCopilotOperationQuery request)
+    {
+        var handler = new GetCopilotOperationQueryHandler(DbContext, CurrentUserService.Object, new CopilotIdService(), ApiErrorMessage);
+        return handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult();
+    }
+
+    /// <summary>
+    /// Tests <see cref="QueryCopilotOperationsQueryHandler"/>.
+    /// </summary>
+    /// <param name="request">The test request.</param>
+    /// <returns>The response.</returns>
+    public MaaApiResponse TestQueryCopilotOperations(QueryCopilotOperationsQuery request)
+    {
+        var handler = new QueryCopilotOperationsQueryHandler(DbContext, new CopilotIdService(), CurrentUserService.Object, ApiErrorMessage);
+        return handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult();
+    }
 
     /// <summary>
     /// Tests <see cref="ChangeCopilotUserInfoCommandHandler"/>.
@@ -351,7 +399,7 @@ public static class HandlerTestExtension
     /// <param name="test">The <see cref="HandlerTest"/> instance.</param>
     /// <param name="returns">The returned value.</param>
     /// <returns>The <see cref="HandlerTest"/> instance.</returns>
-    public static HandlerTest SetupGetUser(this HandlerTest test, Domain.Entities.CopilotUser returns)
+    public static HandlerTest SetupGetUser(this HandlerTest test, Domain.Entities.CopilotUser? returns)
     {
         return test.SetupCurrentUserService(mock => mock.Setup(x => x.GetUser().Result).Returns(returns));
     }

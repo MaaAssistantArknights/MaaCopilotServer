@@ -8,6 +8,7 @@ using System.Text.Json.Serialization;
 using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Application.Common.Models;
 using MaaCopilotServer.Application.CopilotOperation.Commands.CreateCopilotOperation;
+using MaaCopilotServer.Application.Test.TestHelpers;
 using MaaCopilotServer.Domain.Enums;
 using MaaCopilotServer.Domain.Options;
 using MaaCopilotServer.Infrastructure.Services;
@@ -30,43 +31,13 @@ public class CreateCopilotOperationCommandTest
     private readonly ICopilotIdService _copilotIdService = new CopilotIdService();
 
     /// <summary>
-    ///     The service for current user.
-    /// </summary>
-    private readonly ICurrentUserService _currentUserService = Mock.Of<ICurrentUserService>(
-        x =>
-            x.GetUserIdentity() == Guid.Empty &&
-            x.GetUser().Result ==
-                new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, Domain.Enums.UserRole.User, Guid.Empty));
-
-    /// <summary>
     ///     The service for processing copilot server options.
     /// </summary>
-    private readonly IOptions<CopilotServerOption> _optionsWithNoRequirement = Mock.Of<IOptions<CopilotServerOption>>(
-        x => x.Value == new CopilotServerOption
-        {
-            RequireDetailsInOperation = false,
-            RequireTitleInOperation = false
-        });
-
-    /// <summary>
-    ///     The service for processing copilot server options.
-    /// </summary>
-    private readonly IOptions<CopilotServerOption> _optionsWithAllRequirement = Mock.Of<IOptions<CopilotServerOption>>(
-        x => x.Value == new CopilotServerOption
-        {
-            RequireDetailsInOperation = true,
-            RequireTitleInOperation = true
-        });
-
-    /// <summary>
-    ///     The DB context.
-    /// </summary>
-    private readonly IMaaCopilotDbContext _dbContext = new TestDbContext();
-
-    /// <summary>
-    /// The validation error message.
-    /// </summary>
-    private readonly ValidationErrorMessage _validationErrorMessage = new();
+    private readonly CopilotServerOption _optionsWithAllRequirement = new()
+    {
+        RequireDetailsInOperation = true,
+        RequireTitleInOperation = true
+    };
 
     /// <summary>
     /// Tests <see cref="CreateCopilotOperationCommandHandler.Handle(CreateCopilotOperationCommand, CancellationToken)"/>.
@@ -259,28 +230,27 @@ public class CreateCopilotOperationCommandTest
                     removeNullFields ? JsonIgnoreCondition.Never : JsonIgnoreCondition.WhenWritingNull
             });
 
-        var noRequireHandler = new CreateCopilotOperationCommandHandler(_dbContext, _currentUserService,
-            _copilotIdService, _optionsWithNoRequirement, _validationErrorMessage);
-        var allRequireHandler = new CreateCopilotOperationCommandHandler(_dbContext, _currentUserService,
-            _copilotIdService, _optionsWithAllRequirement, _validationErrorMessage);
-
-        var action = async () =>
-            haveRequirement 
-                ? await allRequireHandler.Handle(new CreateCopilotOperationCommand{Content = testContent}, new CancellationToken())
-                : await noRequireHandler.Handle(new CreateCopilotOperationCommand { Content = testContent }, new CancellationToken());
+        var test = new HandlerTest()
+            .SetupGetUser(new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, Domain.Enums.UserRole.User, Guid.Empty));
+        if (haveRequirement)
+        {
+            test = test.SetupCopilotServerOption(_optionsWithAllRequirement);
+        }
+        var response = test.TestCreateCopilotOperation(new()
+        {
+            Content = testContent,
+        });
 
         if (expectNon200Response)
         {
-            var response = action().GetAwaiter().GetResult();
             response.StatusCode.Should().NotBe(StatusCodes.Status200OK);
-            _dbContext.CopilotOperations.Any().Should().BeFalse();
+            test.DbContext.CopilotOperations.Any().Should().BeFalse();
         }
         else
         {
-            var response = action().GetAwaiter().GetResult();
             var id = ((CreateCopilotOperationDto)response.Data!).Id;
-            _dbContext.CopilotOperations.Any().Should().BeTrue();
-            var entity = _dbContext.CopilotOperations.FirstOrDefault();
+            test.DbContext.CopilotOperations.Any().Should().BeTrue();
+            var entity = test.DbContext.CopilotOperations.FirstOrDefault();
             entity.Should().NotBeNull();
             entity!.Id.Should().Be(_copilotIdService.DecodeId(id));
             entity.Content.Should().Be(testContent);

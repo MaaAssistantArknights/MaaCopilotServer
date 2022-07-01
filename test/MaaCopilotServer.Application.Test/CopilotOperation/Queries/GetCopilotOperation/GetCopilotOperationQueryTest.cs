@@ -4,8 +4,8 @@
 
 using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Application.CopilotOperation.Queries.GetCopilotOperation;
+using MaaCopilotServer.Application.Test.TestHelpers;
 using MaaCopilotServer.Infrastructure.Services;
-using MaaCopilotServer.Test.TestHelpers;
 using Microsoft.AspNetCore.Http;
 
 namespace MaaCopilotServer.Application.Test.CopilotOperation.Queries.GetCopilotOperation;
@@ -17,25 +17,9 @@ namespace MaaCopilotServer.Application.Test.CopilotOperation.Queries.GetCopilotO
 public class GetCopilotOperationQueryTest
 {
     /// <summary>
-    ///     The API error message.
-    /// </summary>
-    private readonly Resources.ApiErrorMessage _apiErrorMessage = new();
-
-    /// <summary>
     ///     The service for processing copilot ID.
     /// </summary>
     private readonly ICopilotIdService _copilotIdService = new CopilotIdService();
-
-    /// <summary>
-    ///     The DB context.
-    /// </summary>
-    private readonly IMaaCopilotDbContext _dbContext = new TestDbContext();
-
-    /// <summary>
-    ///     The current user service.
-    /// </summary>
-    private readonly ICurrentUserService _currentUserService = Mock.Of<ICurrentUserService>(
-        x => x.GetUser().Result == null);
 
     /// <summary>
     /// Tests <see cref="GetCopilotOperationQueryHandler.Handle(GetCopilotOperationQuery, CancellationToken)"/>.
@@ -43,49 +27,19 @@ public class GetCopilotOperationQueryTest
     [TestMethod]
     public void TestHandle()
     {
+        var user = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, Domain.Enums.UserRole.User, Guid.Empty);
         var entities = new Domain.Entities.CopilotOperation[]
         {
-            new Domain.Entities.CopilotOperation(
-                1,
-                string.Empty,
-                string.Empty,
-                string.Empty,
-                string.Empty,
-                string.Empty,
-                new Domain.Entities.CopilotUser(
-                    string.Empty,
-                    string.Empty,
-                    string.Empty,
-                    Domain.Enums.UserRole.User,
-                    Guid.Empty),
-                Guid.Empty,
-                new List<string>(),
-                new List<string>()),
-            new Domain.Entities.CopilotOperation(
-                2,
-                string.Empty,
-                string.Empty,
-                string.Empty,
-                string.Empty,
-                string.Empty,
-                new Domain.Entities.CopilotUser(
-                    string.Empty,
-                    string.Empty,
-                    string.Empty,
-                    Domain.Enums.UserRole.User,
-                    Guid.Empty),
-                Guid.Empty,
-                new List<string>(),
-                new List<string>())
+            new Domain.Entities.CopilotOperation(1,string.Empty,string.Empty,string.Empty,string.Empty,string.Empty,user,Guid.Empty,new List<string>(),new List<string>()),
+            new Domain.Entities.CopilotOperation(2,string.Empty,string.Empty,string.Empty,string.Empty,string.Empty,user,Guid.Empty,new List<string>(),new List<string>()),
         };
-        _dbContext.CopilotOperations.AddRange(entities);
-        _dbContext.SaveChangesAsync(new CancellationToken()).Wait();
-
-        var handler = new GetCopilotOperationQueryHandler(_dbContext, _currentUserService, _copilotIdService, _apiErrorMessage);
-        var response = handler.Handle(new GetCopilotOperationQuery()
-        {
-            Id = _copilotIdService.EncodeId(entities[0].Id),
-        }, new CancellationToken()).GetAwaiter().GetResult();
+        var response = new HandlerTest()
+            .SetupDatabase(db => db.CopilotUsers.Add(user))
+            .SetupDatabase(db => db.CopilotOperations.AddRange(entities))
+            .TestGetCopilotOperation(new()
+            {
+                Id = _copilotIdService.EncodeId(entities[0].Id),
+            });
 
         response.StatusCode.Should().Be(StatusCodes.Status200OK);
         response.Data.Should().NotBeNull();
@@ -101,11 +55,11 @@ public class GetCopilotOperationQueryTest
     [TestMethod]
     public void TestHandle_InvalidId()
     {
-        var handler = new GetCopilotOperationQueryHandler(_dbContext, _currentUserService, _copilotIdService, _apiErrorMessage);
-        var response = handler.Handle(new GetCopilotOperationQuery()
-        {
-            Id = null,
-        }, new CancellationToken()).GetAwaiter().GetResult();
+        var response = new HandlerTest()
+            .TestGetCopilotOperation(new()
+            {
+                Id = null,
+            });
 
         response.StatusCode.Should().Be(StatusCodes.Status404NotFound);
     }
@@ -117,11 +71,11 @@ public class GetCopilotOperationQueryTest
     [TestMethod]
     public void TestHandle_EntityNotFound()
     {
-        var handler = new GetCopilotOperationQueryHandler(_dbContext, _currentUserService, _copilotIdService, _apiErrorMessage);
-        var response = handler.Handle(new GetCopilotOperationQuery()
-        {
-            Id = _copilotIdService.EncodeId(0),
-        }, new CancellationToken()).GetAwaiter().GetResult();
+        var response = new HandlerTest()
+            .TestGetCopilotOperation(new()
+            {
+                Id = _copilotIdService.EncodeId(0),
+            });
 
         response.StatusCode.Should().Be(StatusCodes.Status404NotFound);
     }
