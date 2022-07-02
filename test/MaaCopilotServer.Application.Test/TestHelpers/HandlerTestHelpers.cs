@@ -25,6 +25,8 @@ using MaaCopilotServer.Test.TestHelpers;
 using Microsoft.Extensions.Options;
 using MaaCopilotServer.Application.CopilotUser.Commands.LoginCopilotUser;
 using MaaCopilotServer.Application.CopilotUser.Commands.RequestActivationToken;
+using MaaCopilotServer.Application.CopilotUser.Queries.GetCopilotUser;
+using MaaCopilotServer.Application.CopilotUser.Queries.QueryCopilotUser;
 
 namespace MaaCopilotServer.Application.Test.TestHelpers;
 
@@ -407,6 +409,28 @@ public class HandlerTest
     public HandlerTestResult TestRequestActivationToken(RequestActivationTokenCommand request)
     {
         var handler = new RequestActivationTokenCommandHandler(TokenOption, DbContext, MailService.Object, SecretService.Object, CurrentUserService.Object, ApiErrorMessage);
+        return new HandlerTestResult { Response = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult(), DbContext = DbContext };
+    }
+
+    /// <summary>
+    /// Tests <see cref="GetCopilotUserQueryHandler"/>.
+    /// </summary>
+    /// <param name="request">The test request.</param>
+    /// <returns>The result.</returns>
+    public HandlerTestResult TestGetCopilotUser(GetCopilotUserQuery request)
+    {
+        var handler = new GetCopilotUserQueryHandler(DbContext, CurrentUserService.Object, ApiErrorMessage);
+        return new HandlerTestResult { Response = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult(), DbContext = DbContext };
+    }
+
+    /// <summary>
+    /// Tests <see cref="QueryCopilotUserQueryHandler"/>.
+    /// </summary>
+    /// <param name="request">The test request.</param>
+    /// <returns>The result.</returns>
+    public HandlerTestResult TestQueryCopilotUser(QueryCopilotUserQuery request)
+    {
+        var handler = new QueryCopilotUserQueryHandler(DbContext, CurrentUserService.Object);
         return new HandlerTestResult { Response = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult(), DbContext = DbContext };
     }
     #endregion
