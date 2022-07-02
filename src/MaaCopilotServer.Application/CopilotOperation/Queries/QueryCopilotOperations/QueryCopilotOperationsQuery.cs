@@ -52,7 +52,7 @@ public record QueryCopilotOperationsQuery : IRequest<MaaApiResponse>
     public string? UploaderId { get; set; } = null;
 
     /// <summary>
-    ///     The description to query.
+    ///     Desc or Asc. Default is Asc. Set this value to "true" to sort in descending order.
     /// </summary>
     [FromQuery(Name = "desc")]
     public string? Desc { get; set; } = null;
