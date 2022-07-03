@@ -27,6 +27,8 @@ using MaaCopilotServer.Application.CopilotUser.Commands.LoginCopilotUser;
 using MaaCopilotServer.Application.CopilotUser.Commands.RequestActivationToken;
 using MaaCopilotServer.Application.CopilotUser.Queries.GetCopilotUser;
 using MaaCopilotServer.Application.CopilotUser.Queries.QueryCopilotUser;
+using MaaCopilotServer.Application.System.GetCurrentVersion;
+using MaaCopilotServer.Application.System.SendEmailTest;
 
 namespace MaaCopilotServer.Application.Test.TestHelpers;
 
@@ -140,7 +142,17 @@ public class HandlerTest
         RequireTitleInOperation = default,
         RequireDetailsInOperation = default,
         EnableTestEmailApi = default,
-        TestEmailApiToken = string.Empty,
+        TestEmailApiToken = TestToken,
+    });
+
+    /// <summary>
+    /// The application options.
+    /// </summary>
+    public IOptions<ApplicationOption> ApplicationOption { get; private set; } = Options.Create(new ApplicationOption()
+    {
+        AssemblyPath = string.Empty,
+        DataDirectory = string.Empty,
+        Version = string.Empty,
     });
     #endregion
 
@@ -242,6 +254,17 @@ public class HandlerTest
     public HandlerTest SetupCopilotServerOption(CopilotServerOption newOption)
     {
         CopilotServerOption = Options.Create(newOption);
+        return this;
+    }
+
+    /// <summary>
+    /// Setups <see cref="ApplicationOption"/>.
+    /// </summary>
+    /// <param name="newOption">The new option.</param>
+    /// <returns>The current instance for method chaining.</returns>
+    public HandlerTest SetupApplicationOption(ApplicationOption newOption)
+    {
+        ApplicationOption = Options.Create(newOption);
         return this;
     }
     #endregion
@@ -431,6 +454,28 @@ public class HandlerTest
     public HandlerTestResult TestQueryCopilotUser(QueryCopilotUserQuery request)
     {
         var handler = new QueryCopilotUserQueryHandler(DbContext, CurrentUserService.Object);
+        return new HandlerTestResult { Response = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult(), DbContext = DbContext };
+    }
+
+    /// <summary>
+    /// Tests <see cref="GetCurrentVersionCommandHandler"/>.
+    /// </summary>
+    /// <param name="request">The test request.</param>
+    /// <returns>The result.</returns>
+    public HandlerTestResult TestGetCurrentVersion(GetCurrentVersionCommand request)
+    {
+        var handler = new GetCurrentVersionCommandHandler(ApplicationOption);
+        return new HandlerTestResult { Response = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult(), DbContext = DbContext };
+    }
+
+    /// <summary>
+    /// Tests <see cref="SendEmailTestCommandHandler"/>.
+    /// </summary>
+    /// <param name="request">The test request.</param>
+    /// <returns>The result.</returns>
+    public HandlerTestResult TestSendEmailTest(SendEmailTestCommand request)
+    {
+        var handler = new SendEmailTestCommandHandler(MailService.Object, CopilotServerOption);
         return new HandlerTestResult { Response = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult(), DbContext = DbContext };
     }
     #endregion
