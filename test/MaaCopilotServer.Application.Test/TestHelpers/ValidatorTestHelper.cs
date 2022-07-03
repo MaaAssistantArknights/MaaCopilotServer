@@ -32,14 +32,26 @@ public static class ValidatorTestHelper
         where TValidator : AbstractValidator<TCommand>
     {
         var validatorType = typeof(TValidator);
+        TValidator validator;
 
         var ctor = validatorType.GetConstructor(new[] { typeof(Resources.ValidationErrorMessage) });
-        if (ctor == null)
+        if (ctor != null)
         {
-            throw new ArgumentOutOfRangeException(nameof(TValidator));
+            validator = (TValidator)ctor.Invoke(new object[] { s_validationErrorMessage });
+        }
+        else
+        {
+            ctor = validatorType.GetConstructor(Array.Empty<Type>());
+            if (ctor != null)
+            {
+                validator = (TValidator)ctor.Invoke(Array.Empty<object?>());
+            }
+            else
+            {
+                throw new ArgumentOutOfRangeException(nameof(TValidator));
+            }
         }
 
-        var validator = (TValidator)ctor.Invoke(new object[] { s_validationErrorMessage });
         validator.Validate(request).IsValid.Should().Be(expected);
     }
 }

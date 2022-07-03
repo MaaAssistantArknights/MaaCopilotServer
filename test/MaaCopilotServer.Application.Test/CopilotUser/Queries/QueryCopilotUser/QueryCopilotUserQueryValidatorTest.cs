@@ -14,9 +14,10 @@ namespace MaaCopilotServer.Application.Test.CopilotUser.Queries.QueryCopilotUser
 public class QueryCopilotUserQueryValidatorTest
 {
     /// <summary>
-    /// Tests <see cref="GetCopilotUserQueryValidator"/>.
+    /// Tests <see cref="QueryCopilotUserQueryValidator"/>.
     /// </summary>
-    /// <param name="userId">The test user ID.</param>
+    /// <param name="page">The test page number.</param>
+    /// <param name="limit">The test limit number.</param>
     /// <param name="expected">The expected validation result.</param>
     [DataTestMethod]
     [DataRow(1, 10, true)]
