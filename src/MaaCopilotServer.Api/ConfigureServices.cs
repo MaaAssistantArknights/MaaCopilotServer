@@ -48,6 +48,7 @@ public static class ConfigureServices
         services.AddScoped<ICurrentUserService, CurrentUserService>();
 
         services.AddHostedService<DatabaseInitializer>();
+        services.AddHostedService<TokenValidationCheck>();
 
         services.AddAuthentication(options =>
             {
