@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -10,6 +11,7 @@ namespace MaaCopilotServer.Application;
 /// <summary>
 ///     The extension to add application services.
 /// </summary>
+[ExcludeFromCodeCoverage]
 public static class ConfigureServices
 {
     /// <summary>
