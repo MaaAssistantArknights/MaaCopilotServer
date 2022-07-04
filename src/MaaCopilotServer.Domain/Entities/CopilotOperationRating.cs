@@ -12,6 +12,7 @@ namespace MaaCopilotServer.Domain.Entities;
 /// <summary>
 ///     The entity to store user ratings.
 /// </summary>
+[ExcludeFromCodeCoverage]
 public class CopilotOperationRating : BaseEntity
 {
     /// <summary>
@@ -31,7 +32,6 @@ public class CopilotOperationRating : BaseEntity
 
 #pragma warning disable CS8618
     // ReSharper disable once UnusedMember.Local
-    [ExcludeFromCodeCoverage]
     private CopilotOperationRating() { }
 #pragma warning restore CS8618
 

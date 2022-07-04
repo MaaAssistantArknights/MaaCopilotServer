@@ -12,6 +12,7 @@ namespace MaaCopilotServer.Domain.Entities;
 /// <summary>
 ///     Maa Copilot token entity.
 /// </summary>
+[ExcludeFromCodeCoverage]
 public class CopilotToken : BaseEntity
 {
     /// <summary>
@@ -31,7 +32,6 @@ public class CopilotToken : BaseEntity
 
 #pragma warning disable CS8618
     // ReSharper disable once UnusedMember.Local
-    [ExcludeFromCodeCoverage]
     private CopilotToken() { }
 #pragma warning restore CS8618
 

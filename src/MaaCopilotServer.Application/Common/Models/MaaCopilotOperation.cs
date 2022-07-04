@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 
 namespace MaaCopilotServer.Application.Common.Models;
@@ -9,6 +10,7 @@ namespace MaaCopilotServer.Application.Common.Models;
 /// <summary>
 ///     The JSON content of Maa Copilot Operation.
 /// </summary>
+[ExcludeFromCodeCoverage]
 public record MaaCopilotOperation
 {
     /// <summary>
@@ -46,6 +48,7 @@ public record MaaCopilotOperation
 /// <summary>
 ///     The JSON content of <c>doc</c>.
 /// </summary>
+[ExcludeFromCodeCoverage]
 public record MaaCopilotOperationDoc
 {
     /// <summary>
@@ -64,6 +67,7 @@ public record MaaCopilotOperationDoc
 /// <summary>
 ///     The JSON content of <c>operator</c>.
 /// </summary>
+[ExcludeFromCodeCoverage]
 public record MaaCopilotOperationOperator
 {
     /// <summary>
@@ -82,6 +86,7 @@ public record MaaCopilotOperationOperator
 /// <summary>
 ///     The JSON content of <c>Group</c>.
 /// </summary>
+[ExcludeFromCodeCoverage]
 public record MaaCopilotOperationGroup
 {
     /// <summary>
@@ -100,6 +105,7 @@ public record MaaCopilotOperationGroup
 /// <summary>
 ///     A DTO style class for <see cref="MaaCopilotOperationGroup"/>.
 /// </summary>
+[ExcludeFromCodeCoverage]
 public record MaaCopilotOperationGroupStore
 {
     /// <summary>

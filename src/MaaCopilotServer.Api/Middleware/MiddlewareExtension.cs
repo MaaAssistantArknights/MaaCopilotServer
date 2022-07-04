@@ -2,11 +2,14 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace MaaCopilotServer.Api.Middleware;
 
 /// <summary>
 ///     The middleware extension.
 /// </summary>
+[ExcludeFromCodeCoverage]
 public static class MiddlewareExtension
 {
     /// <summary>

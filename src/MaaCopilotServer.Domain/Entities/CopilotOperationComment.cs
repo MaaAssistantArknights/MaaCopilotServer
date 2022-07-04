@@ -11,6 +11,7 @@ namespace MaaCopilotServer.Domain.Entities;
 /// <summary>
 ///     Maa Copilot operation comment entity.
 /// </summary>
+[ExcludeFromCodeCoverage]
 public class CopilotOperationComment : BaseEntity
 {
     /// <summary>
@@ -32,7 +33,6 @@ public class CopilotOperationComment : BaseEntity
 
 #pragma warning disable CS8618
     // ReSharper disable once UnusedMember.Local
-    [ExcludeFromCodeCoverage]
     private CopilotOperationComment() { }
 #pragma warning restore CS8618
 
