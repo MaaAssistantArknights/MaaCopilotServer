@@ -11,6 +11,7 @@ namespace MaaCopilotServer.Domain.Entities;
 /// <summary>
 ///     Maa Copilot user favorite list entity.
 /// </summary>
+[ExcludeFromCodeCoverage]
 public class CopilotUserFavorite : EditableEntity
 {
     /// <summary>
@@ -26,7 +27,6 @@ public class CopilotUserFavorite : EditableEntity
 
 #pragma warning disable CS8618
     // ReSharper disable once UnusedMember.Local
-    [ExcludeFromCodeCoverage]
     private CopilotUserFavorite() { }
 #pragma warning restore CS8618
 

@@ -12,6 +12,7 @@ namespace MaaCopilotServer.Domain.Entities;
 /// <summary>
 ///     Maa Copilot user entity.
 /// </summary>
+[ExcludeFromCodeCoverage]
 public class CopilotUser : EditableEntity
 {
     /// <summary>
@@ -42,7 +43,6 @@ public class CopilotUser : EditableEntity
 
 #pragma warning disable CS8618
     // ReSharper disable once UnusedMember.Local
-    [ExcludeFromCodeCoverage]
     private CopilotUser() { }
 #pragma warning restore CS8618
 

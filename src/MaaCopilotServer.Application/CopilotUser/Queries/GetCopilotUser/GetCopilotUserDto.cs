@@ -3,6 +3,7 @@
 // Licensed under the AGPL-3.0 license.
 
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 using MaaCopilotServer.Domain.Enums;
 
@@ -11,6 +12,7 @@ namespace MaaCopilotServer.Application.CopilotUser.Queries.GetCopilotUser;
 /// <summary>
 ///     The response to the <see cref="GetCopilotUserQuery"/>.
 /// </summary>
+[ExcludeFromCodeCoverage]
 public class GetCopilotUserDto
 {
     /// <summary>

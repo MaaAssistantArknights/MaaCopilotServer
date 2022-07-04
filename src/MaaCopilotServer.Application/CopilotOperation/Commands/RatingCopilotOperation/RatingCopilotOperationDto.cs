@@ -3,6 +3,7 @@
 // Licensed under the AGPL-3.0 license.
 
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 using MaaCopilotServer.Domain.Enums;
 
@@ -11,6 +12,7 @@ namespace MaaCopilotServer.Application.CopilotOperation.Commands.RatingCopilotOp
 /// <summary>
 ///     The response to a <see cref="RatingCopilotOperationCommand" />.
 /// </summary>
+[ExcludeFromCodeCoverage]
 public record RatingCopilotOperationDto
 {
     public RatingCopilotOperationDto(string id, OperationRatingType ratingType, float currentRatio)
