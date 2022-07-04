@@ -55,6 +55,12 @@ public class QueryCopilotOperationsQueryHandlerTest
             data.Add(new Domain.Entities.CopilotOperation(i, $"content{i}", $"stage{i}", string.Empty, string.Empty, string.Empty, users[1], Guid.Empty, new List<string>(), new List<string>()));
         }
 
+        List<Domain.Entities.CopilotOperationRating> rating = new();
+        for (var i = 0; i < 10; i++)
+        {
+            rating.Add(new Domain.Entities.CopilotOperationRating(data[i].EntityId, data[i].Author.EntityId, Domain.Enums.OperationRatingType.Like));
+        }
+
         // Set operation[9] to have one view
         data[s_highestViewId].AddViewCount();
 
@@ -63,7 +69,8 @@ public class QueryCopilotOperationsQueryHandlerTest
 
         test = test
             .SetupDatabase(db => db.CopilotUsers.AddRange(users))
-            .SetupDatabase(db => db.CopilotOperations.AddRange(data));
+            .SetupDatabase(db => db.CopilotOperations.AddRange(data))
+            .SetupDatabase(db => db.CopilotOperationRatings.AddRange(rating));
 
         return (users, test);
     }
@@ -97,6 +104,37 @@ public class QueryCopilotOperationsQueryHandlerTest
         {
             data[i].Id.Should().Be(_copilotIdService.EncodeId(descending ? 9 - i : i));
         }
+    }
+
+    /// <summary>
+    /// Tests querying all operations.
+    /// </summary>
+    /// <param name="descending">Whether the result should be in descending order.</param>
+    [DataTestMethod]
+    [DataRow(false)]
+    [DataRow(true)]
+    public void TestHandle_PageAndLimit(bool descending)
+    {
+        var (users, test) = InitializeDatabase(new HandlerTest());
+        var response = test.SetupGetUserIdentity(users[0].EntityId)
+            .SetupGetUser(users[0])
+            .TestQueryCopilotOperations(new()
+            {
+                Desc = descending ? "desc" : null,
+                Limit = 2,
+                Page = 2,
+            })
+            .Response;
+
+        response.Data.Should().NotBeNull();
+        var responseData = (PaginationResult<QueryCopilotOperationsQueryDto>)response.Data!;
+        responseData.HasNext.Should().BeTrue();
+        responseData.Page.Should().Be(2);
+        responseData.Total.Should().Be(10);
+        responseData.Data.Should().NotBeNull().And.HaveCount(2);
+        var data = responseData.Data!;
+        data[0].Id.Should().Be(_copilotIdService.EncodeId(descending ? 7 : 2));
+        data[1].Id.Should().Be(_copilotIdService.EncodeId(descending ? 6 : 3));
     }
 
     /// <summary>
@@ -173,6 +211,35 @@ public class QueryCopilotOperationsQueryHandlerTest
             .Response;
 
         response.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
+    }
+
+    /// <summary>
+    /// Tests querying with guest.
+    /// </summary>
+    /// <param name="descending">Whether the result should be in descending order.</param>
+    [DataTestMethod]
+    [DataRow(false)]
+    [DataRow(true)]
+    public void TestHandle_NotLoggedIn(bool descending)
+    {
+        var (_, test) = InitializeDatabase(new HandlerTest());
+        var response = test.TestQueryCopilotOperations(new()
+        {
+            Desc = descending ? "desc" : null,
+        }).Response;
+
+        response.Data.Should().NotBeNull();
+        var responseData = (PaginationResult<QueryCopilotOperationsQueryDto>)response.Data!;
+        responseData.HasNext.Should().BeFalse();
+        responseData.Page.Should().Be(1);
+        responseData.Total.Should().Be(10);
+        responseData.Data.Should().NotBeNull().And.HaveCount(10);
+        var data = responseData.Data!;
+        for (var i = 0; i < 10; i++)
+        {
+            data[i].Id.Should().Be(_copilotIdService.EncodeId(descending ? 9 - i : i));
+            data[i].RatingType.Should().BeNull();
+        }
     }
 
     /// <summary>
