@@ -55,7 +55,6 @@ public class LoginCopilotUserCommandHandler : IRequestHandler<LoginCopilotUserCo
     {
         // Find the user by email address
         var user = await _dbContext.CopilotUsers
-            .Include(x => x.UserFavorites)
             .FirstOrDefaultAsync(x => x.Email == request.Email, cancellationToken);
         if (user is null)
         {
@@ -78,14 +77,9 @@ public class LoginCopilotUserCommandHandler : IRequestHandler<LoginCopilotUserCo
         // Generate JWT token
         var (token, expire) = _secretService.GenerateJwtToken(user.EntityId);
 
-        // Build fav list DTO
-        var favList = user.UserFavorites
-            .ToDictionary(fav => fav.EntityId.ToString(), fav => fav.FavoriteName);
-
         // Build DTO
         var dto = new LoginCopilotUserDto(token, expire.ToIsoString(),
-            new GetCopilotUserDto(user.EntityId, user.UserName, user.UserRole, uploadCount, user.UserActivated,
-                favList));
+            new GetCopilotUserDto(user.EntityId, user.UserName, user.UserRole, uploadCount, user.UserActivated));
         return MaaApiResponseHelper.Ok(dto);
     }
 }

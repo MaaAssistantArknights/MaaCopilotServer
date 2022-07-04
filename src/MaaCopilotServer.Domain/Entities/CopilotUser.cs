@@ -76,11 +76,6 @@ public class CopilotUser : EditableEntity
     public bool UserActivated { get; private set; }
 
     /// <summary>
-    ///     The list of favorite operation list of the user.
-    /// </summary>
-    public List<CopilotUserFavorite> UserFavorites { get; private set; } = new();
-
-    /// <summary>
     ///     Activate the user.
     /// </summary>
     /// <param name="operator">The operator.</param>

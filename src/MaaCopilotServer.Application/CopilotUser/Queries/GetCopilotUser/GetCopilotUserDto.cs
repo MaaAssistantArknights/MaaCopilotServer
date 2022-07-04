@@ -21,16 +21,13 @@ public class GetCopilotUserDto
     /// <param name="userRole">The role of the user.</param>
     /// <param name="uploadCount">The number of uploads.</param>
     /// <param name="accountActivated">Account activation status.</param>
-    /// <param name="favoriteLists">The list of favorite list.</param>
-    public GetCopilotUserDto(Guid id, string userName, UserRole userRole, int uploadCount, bool accountActivated,
-        Dictionary<string, string> favoriteLists)
+    public GetCopilotUserDto(Guid id, string userName, UserRole userRole, int uploadCount, bool accountActivated)
     {
         Id = id;
         UserName = userName;
         UserRole = userRole;
         UploadCount = uploadCount;
         AccountActivated = accountActivated;
-        FavoriteLists = favoriteLists;
     }
 
 #pragma warning disable CS8618
@@ -65,13 +62,6 @@ public class GetCopilotUserDto
     [Required]
     [JsonPropertyName("activated")]
     public bool AccountActivated { get; set; }
-
-    /// <summary>
-    ///     User favorite lists.
-    /// </summary>
-    [Required]
-    [JsonPropertyName("favorite_lists")]
-    public Dictionary<string, string> FavoriteLists { get; set; }
 
     /// <summary>
     ///     The number of uploads.

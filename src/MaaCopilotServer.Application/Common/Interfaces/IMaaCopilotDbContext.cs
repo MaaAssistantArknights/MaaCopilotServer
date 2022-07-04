@@ -28,16 +28,6 @@ public interface IMaaCopilotDbContext
     DbSet<CopilotToken> CopilotTokens { get; }
 
     /// <summary>
-    ///     The DB set of operations comments.
-    /// </summary>
-    DbSet<CopilotOperationComment> CopilotOperationComments { get; }
-
-    /// <summary>
-    ///     The DB set of favorite lists.
-    /// </summary>
-    DbSet<CopilotUserFavorite> CopilotUserFavorites { get; }
-
-    /// <summary>
     ///     The DB set of operation rating.
     /// </summary>
     DbSet<CopilotOperationRating> CopilotOperationRatings { get; }
