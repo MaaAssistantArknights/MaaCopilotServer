@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Domain.Enums;
 
 namespace MaaCopilotServer.Application.Common.Security;
@@ -10,6 +11,7 @@ namespace MaaCopilotServer.Application.Common.Security;
 ///     The attribute for authorization on user roles.
 /// </summary>
 [AttributeUsage(AttributeTargets.Class)]
+[ExcludeFromCodeCoverage]
 public class AuthorizedAttribute : Attribute
 {
     /// <summary>

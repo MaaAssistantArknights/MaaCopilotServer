@@ -8,7 +8,7 @@ using MaaCopilotServer.Application.Test.TestHelpers;
 namespace MaaCopilotServer.Application.Test.CopilotUser.Queries.GetCopilotUser;
 
 /// <summary>
-/// Tests of <see cref="GetCopilotUserQueryValidator"/>.
+/// Tests <see cref="GetCopilotUserQueryValidator"/>.
 /// </summary>
 [TestClass]
 public class GetCopilotUserQueryValidatorTest

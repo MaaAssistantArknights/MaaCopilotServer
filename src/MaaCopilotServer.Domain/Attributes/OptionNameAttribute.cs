@@ -2,12 +2,15 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace MaaCopilotServer.Domain.Attributes;
 
 /// <summary>
 ///     The base attribute of options.
 /// </summary>
 [AttributeUsage(AttributeTargets.Class)]
+[ExcludeFromCodeCoverage]
 public class OptionNameAttribute : Attribute
 {
     /// <summary>

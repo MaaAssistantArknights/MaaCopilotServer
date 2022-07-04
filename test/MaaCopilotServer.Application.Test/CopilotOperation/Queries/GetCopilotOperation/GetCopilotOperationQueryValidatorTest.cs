@@ -3,51 +3,29 @@
 // Licensed under the AGPL-3.0 license.
 
 using MaaCopilotServer.Application.CopilotOperation.Queries.GetCopilotOperation;
+using MaaCopilotServer.Application.Test.TestHelpers;
 
 namespace MaaCopilotServer.Application.Test.CopilotOperation.Queries.GetCopilotOperation;
 
 /// <summary>
-/// Tests for <see cref="GetCopilotOperationQueryValidator"/>.
+/// Tests <see cref="GetCopilotOperationQueryValidator"/>.
 /// </summary>
 [TestClass]
 public class GetCopilotOperationQueryValidatorTest
 {
     /// <summary>
-    /// The validation error message.
-    /// </summary>
-    private readonly Resources.ValidationErrorMessage _validationErrorMessage = new();
-
-    /// <summary>
     /// Tests <see cref="GetCopilotOperationQueryValidator"/>.
     /// </summary>
-    [TestMethod]
-    public void Test_Valid()
+    /// <param name="id">The test ID.</param>
+    /// <param name="expected">The expected result.</param>
+    [DataTestMethod]
+    [DataRow("10001", true)]
+    [DataRow(null, false)]
+    public void Test(string? id, bool expected)
     {
-        var validator = new GetCopilotOperationQueryValidator(_validationErrorMessage);
-        var data = new GetCopilotOperationQuery()
+        ValidatorTestHelper.Test<GetCopilotOperationQueryValidator, GetCopilotOperationQuery>(new()
         {
-            Id = "10001",
-        };
-
-        var result = validator.Validate(data);
-
-        result.IsValid.Should().BeTrue();
-    }
-
-    /// <summary>
-    /// Tests <see cref="GetCopilotOperationQueryHandler"/> with empty ID.
-    /// </summary>
-    [TestMethod]
-    public void Test_EmptyId()
-    {
-        var validator = new GetCopilotOperationQueryValidator(_validationErrorMessage);
-        var data = new GetCopilotOperationQuery()
-        {
-            Id = null,
-        };
-
-        var result = validator.Validate(data);
-
-        result.IsValid.Should().BeFalse();
+            Id = id,
+        }, expected);
     }
 }

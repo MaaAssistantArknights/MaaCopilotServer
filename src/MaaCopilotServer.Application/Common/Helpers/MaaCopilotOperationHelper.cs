@@ -68,10 +68,10 @@ public static class MaaCopilotOperationHelper
     /// <returns>String enumerable.</returns>
     public static IEnumerable<string> SerializeGroup(this MaaCopilotOperation operation)
         => (from g in operation.Groups ?? Array.Empty<MaaCopilotOperationGroup>()
-                let opers = g.Operators ?? Array.Empty<MaaCopilotOperationOperator>()
-                let groupOperators = opers.SerializeOperator()
-                let groupOperatorString = string.Join((string?)"<>", groupOperators)
-                select $"{g.Name}=>{groupOperatorString}")
+            let opers = g.Operators ?? Array.Empty<MaaCopilotOperationOperator>()
+            let groupOperators = opers.SerializeOperator()
+            let groupOperatorString = string.Join((string?)"<>", groupOperators)
+            select $"{g.Name}=>{groupOperatorString}")
             .ToList();
 
     /// <summary>
@@ -89,9 +89,9 @@ public static class MaaCopilotOperationHelper
     /// <returns><see cref="MaaCopilotOperationGroupStore"/> enumerable.</returns>
     public static IEnumerable<MaaCopilotOperationGroupStore> DeserializeGroup(this string[]? groups)
         => (from g in groups ?? Array.Empty<string>()
-                let groupName = g.Split("=>")[0]
-                let operators = g.Split("=>")[1].Split("<>")
-                select new MaaCopilotOperationGroupStore(groupName, operators.ToList()))
+            let groupName = g.Split("=>")[0]
+            let operators = g.Split("=>")[1].Split("<>")
+            select new MaaCopilotOperationGroupStore(groupName, operators.ToList()))
             .ToList();
 
     /// <summary>

@@ -8,7 +8,7 @@ using MaaCopilotServer.Application.Test.TestHelpers;
 namespace MaaCopilotServer.Application.Test.System.SendEmailTest;
 
 /// <summary>
-/// Tests of <see cref="SendEmailTestCommandValidator"/>.
+/// Tests <see cref="SendEmailTestCommandValidator"/>.
 /// </summary>
 [TestClass]
 public class SendEmailTestCommandValidatorTest

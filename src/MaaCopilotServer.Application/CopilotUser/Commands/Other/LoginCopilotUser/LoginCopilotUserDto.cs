@@ -3,6 +3,7 @@
 // Licensed under the AGPL-3.0 license.
 
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 using MaaCopilotServer.Application.CopilotUser.Queries.GetCopilotUser;
 
@@ -11,6 +12,7 @@ namespace MaaCopilotServer.Application.CopilotUser.Commands.LoginCopilotUser;
 /// <summary>
 ///     The response of the <see cref="LoginCopilotUserCommand"/>.
 /// </summary>
+[ExcludeFromCodeCoverage]
 public class LoginCopilotUserDto
 {
     /// <summary>

@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 using MaaCopilotServer.Domain.Attributes;
 
@@ -11,6 +12,7 @@ namespace MaaCopilotServer.Domain.Options;
 ///     The <c>Token</c> Option
 /// </summary>
 [OptionName("Token")]
+[ExcludeFromCodeCoverage]
 public class TokenOption
 {
     /// <summary>

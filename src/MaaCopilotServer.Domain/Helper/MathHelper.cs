@@ -14,7 +14,7 @@ public static class MathHelper
     /// </summary>
     /// <param name="r">As the ratio part.</param>
     /// <param name="o">As the other part of the sum.</param>
-    /// <returns></returns>
+    /// <returns>The ratio.</returns>
     public static float CalculateRatio(int r, int o)
     {
         var all = r + o;

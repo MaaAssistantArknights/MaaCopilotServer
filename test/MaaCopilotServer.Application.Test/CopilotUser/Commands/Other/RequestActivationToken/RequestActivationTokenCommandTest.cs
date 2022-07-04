@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Http;
 namespace MaaCopilotServer.Application.Test.CopilotUser.Commands.Other.RequestActivationToken;
 
 /// <summary>
-/// Tests of <see cref="RequestActivationTokenCommandHandler"/>.
+/// Tests <see cref="RequestActivationTokenCommandHandler"/>.
 /// </summary>
 [TestClass]
 public class RequestActivationTokenCommandHandlerTest

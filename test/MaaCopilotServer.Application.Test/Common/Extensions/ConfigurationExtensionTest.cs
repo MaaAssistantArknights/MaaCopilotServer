@@ -10,7 +10,7 @@ using Microsoft.Extensions.Configuration;
 namespace MaaCopilotServer.Application.Test.Common.Extensions;
 
 /// <summary>
-///     Tests of <see cref="ConfigurationExtension" />.
+///     Tests <see cref="ConfigurationExtension" />.
 /// </summary>
 [TestClass]
 public class ConfigurationExtensionTest

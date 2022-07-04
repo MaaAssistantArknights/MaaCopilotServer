@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Domain.Attributes;
 
 namespace MaaCopilotServer.Domain.Options;
@@ -10,6 +11,7 @@ namespace MaaCopilotServer.Domain.Options;
 ///     Options about application itself.
 /// </summary>
 [OptionName("Application")]
+[ExcludeFromCodeCoverage]
 public class ApplicationOption
 {
     /// <summary>

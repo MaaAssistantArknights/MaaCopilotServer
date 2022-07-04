@@ -13,7 +13,7 @@ using Microsoft.Extensions.Configuration;
 namespace MaaCopilotServer.Api.Test.Services;
 
 /// <summary>
-///     Tests for <see cref="CurrentUserService" />.
+///     Tests <see cref="CurrentUserService" />.
 /// </summary>
 [TestClass]
 public class CurrentUserServiceTest

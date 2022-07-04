@@ -9,7 +9,7 @@ using MaaCopilotServer.Application.System.SendEmailTest;
 namespace MaaCopilotServer.Application.Test.System.SendEmailTest;
 
 /// <summary>
-/// Tests of <see cref="SendEmailTestCommandHandler"/>.
+/// Tests <see cref="SendEmailTestCommandHandler"/>.
 /// </summary>
 [TestClass]
 public class SendEmailTestCommandHandlerTest

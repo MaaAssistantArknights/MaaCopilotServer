@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Http;
 namespace MaaCopilotServer.Application.Test.CopilotUser.Commands.Change.RequestPasswordReset;
 
 /// <summary>
-/// Tests for <see cref="RequestPasswordResetCommandHandler"/>.
+/// Tests <see cref="RequestPasswordResetCommandHandler"/>.
 /// </summary>
 [TestClass]
 public class RequestPasswordResetCommandTest
