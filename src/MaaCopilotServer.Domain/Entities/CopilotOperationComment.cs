@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Domain.Common;
 
 namespace MaaCopilotServer.Domain.Entities;
@@ -31,6 +32,7 @@ public class CopilotOperationComment : BaseEntity
 
 #pragma warning disable CS8618
     // ReSharper disable once UnusedMember.Local
+    [ExcludeFromCodeCoverage]
     private CopilotOperationComment() { }
 #pragma warning restore CS8618
 
