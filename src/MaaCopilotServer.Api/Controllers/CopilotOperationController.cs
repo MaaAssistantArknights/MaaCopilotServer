@@ -106,7 +106,7 @@ public class CopilotOperationController : MaaControllerBase
     /// <param name="command">The request body.</param>
     /// <response code="200">The rating was successfully added to the operation.</response>
     [HttpPost("rating")]
-    [ProducesResponseType(typeof(MaaApiResponseModel<RatingCopilotOperationDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(MaaApiResponseModel<GetCopilotOperationQueryDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult> RatingCopilotOperation([FromBody] RatingCopilotOperationCommand command)
     {
         return await GetResponse(command);

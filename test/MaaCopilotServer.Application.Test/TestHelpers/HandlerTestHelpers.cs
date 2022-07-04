@@ -25,6 +25,8 @@ using MaaCopilotServer.Test.TestHelpers;
 using Microsoft.Extensions.Options;
 using MaaCopilotServer.Application.CopilotUser.Commands.LoginCopilotUser;
 using MaaCopilotServer.Application.CopilotUser.Commands.RequestActivationToken;
+using MaaCopilotServer.Domain.Enums;
+using MaaCopilotServer.Resources;
 
 namespace MaaCopilotServer.Application.Test.TestHelpers;
 
@@ -80,12 +82,17 @@ public class HandlerTest
     /// <summary>
     /// The API error message.
     /// </summary>
-    public Resources.ApiErrorMessage ApiErrorMessage { get; } = new();
+    public ApiErrorMessage ApiErrorMessage { get; } = new();
 
     /// <summary>
     /// The validation error message.
     /// </summary>
-    public Resources.ValidationErrorMessage ValidationErrorMessage { get; } = new();
+    public ValidationErrorMessage ValidationErrorMessage { get; } = new();
+
+    /// <summary>
+    /// The domain string i18n resouece.
+    /// </summary>
+    public DomainString DomainString { get; } = new();
 
     /// <summary>
     /// The DB context.
@@ -132,14 +139,23 @@ public class HandlerTest
     /// <summary>
     /// The copilot server options.
     /// </summary>
-    public IOptions<CopilotServerOption> CopilotServerOption { get; private set; } = Options.Create(new CopilotServerOption()
+    public IOptions<CopilotOperationOption> CopilotOperationOption { get; private set; } = Options.Create(new
+        CopilotOperationOption()
     {
-        RegisterUserDefaultRole = Domain.Enums.UserRole.User,
-        RequireTitleInOperation = default,
-        RequireDetailsInOperation = default,
-        EnableTestEmailApi = default,
-        TestEmailApiToken = string.Empty,
+        DislikeMultiplier = 2,
+        LikeMultiplier = 10,
+        ViewMultiplier = 1,
+        RequireTitle = default,
+        RequireDetails = default
     });
+
+    public IOptions<CopilotServerOption> CopilotServerOption { get; private set; } = Options.Create(new
+        CopilotServerOption()
+        {
+            RegisterUserDefaultRole = UserRole.User,
+            EnableTestEmailApi = default,
+            TestEmailApiToken = string.Empty,
+        });
     #endregion
 
     #region Mock Setups
@@ -233,7 +249,18 @@ public class HandlerTest
     }
 
     /// <summary>
-    /// Setups <see cref="CopilotServerOption"/>.
+    /// Setups <see cref="CopilotOperationOption"/>.
+    /// </summary>
+    /// <param name="newOption">The new option.</param>
+    /// <returns>The current instance for method chaining.</returns>
+    public HandlerTest SetupCopilotOperationOption(CopilotOperationOption newOption)
+    {
+        CopilotOperationOption = Options.Create(newOption);
+        return this;
+    }
+
+    /// <summary>
+    /// Setups <see cref="CopilotOperationOption"/>.
     /// </summary>
     /// <param name="newOption">The new option.</param>
     /// <returns>The current instance for method chaining.</returns>
@@ -252,7 +279,7 @@ public class HandlerTest
     /// <returns>The result.</returns>
     public HandlerTestResult TestCreateCopilotOperation(CreateCopilotOperationCommand request)
     {
-        var handler = new CreateCopilotOperationCommandHandler(DbContext, CurrentUserService.Object, new CopilotIdService(), CopilotServerOption, ValidationErrorMessage);
+        var handler = new CreateCopilotOperationCommandHandler(DbContext, CurrentUserService.Object, new CopilotOperationService(CopilotOperationOption, DomainString), CopilotOperationOption, ValidationErrorMessage);
         return new HandlerTestResult { Response = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult(), DbContext = DbContext };
     }
 
@@ -263,7 +290,7 @@ public class HandlerTest
     /// <returns>The result.</returns>
     public HandlerTestResult TestDeleteCopilotOperation(DeleteCopilotOperationCommand request)
     {
-        var handler = new DeleteCopilotOperationCommandHandler(DbContext, new CopilotIdService(), CurrentUserService.Object, ApiErrorMessage);
+        var handler = new DeleteCopilotOperationCommandHandler(DbContext, new CopilotOperationService(CopilotOperationOption, DomainString), CurrentUserService.Object, ApiErrorMessage);
         return new HandlerTestResult { Response = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult(), DbContext = DbContext };
     }
 
@@ -274,7 +301,7 @@ public class HandlerTest
     /// <returns>The result.</returns>
     public HandlerTestResult TestGetCopilotOperation(GetCopilotOperationQuery request)
     {
-        var handler = new GetCopilotOperationQueryHandler(DbContext, CurrentUserService.Object, new CopilotIdService(), ApiErrorMessage);
+        var handler = new GetCopilotOperationQueryHandler(DbContext, CurrentUserService.Object, new CopilotOperationService(CopilotOperationOption, DomainString), ApiErrorMessage);
         return new HandlerTestResult { Response = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult(), DbContext = DbContext };
     }
 
@@ -285,7 +312,7 @@ public class HandlerTest
     /// <returns>The result.</returns>
     public HandlerTestResult TestQueryCopilotOperations(QueryCopilotOperationsQuery request)
     {
-        var handler = new QueryCopilotOperationsQueryHandler(DbContext, new CopilotIdService(), CurrentUserService.Object, ApiErrorMessage);
+        var handler = new QueryCopilotOperationsQueryHandler(DbContext, new CopilotOperationService(CopilotOperationOption, DomainString), CurrentUserService.Object, ApiErrorMessage);
         return new HandlerTestResult { Response = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult(), DbContext = DbContext };
     }
 

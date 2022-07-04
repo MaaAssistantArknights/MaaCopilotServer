@@ -26,19 +26,19 @@ public class
         MaaApiResponse>
 {
     private readonly ApiErrorMessage _apiErrorMessage;
-    private readonly ICopilotIdService _copilotIdService;
+    private readonly ICopilotOperationService _copilotOperationService;
     private readonly IMaaCopilotDbContext _dbContext;
     private readonly ICurrentUserService _currentUserService;
 
     public GetCopilotOperationQueryHandler(
         IMaaCopilotDbContext dbContext,
         ICurrentUserService currentUserService,
-        ICopilotIdService copilotIdService,
+        ICopilotOperationService copilotOperationService,
         ApiErrorMessage apiErrorMessage)
     {
         _dbContext = dbContext;
         _currentUserService = currentUserService;
-        _copilotIdService = copilotIdService;
+        _copilotOperationService = copilotOperationService;
         _apiErrorMessage = apiErrorMessage;
     }
 
@@ -50,7 +50,7 @@ public class
         var isLoggedIn = user is not null;
 
         // Get operation
-        var id = _copilotIdService.DecodeId(request.Id!);
+        var id = _copilotOperationService.DecodeId(request.Id!);
         var entity = await _dbContext.CopilotOperations
             .Include(x => x.Author)
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
@@ -69,6 +69,11 @@ public class
                 .RatingType ?? OperationRatingType.None
             : null;
 
+        // Add view count and update hot score
+        // Do this before build dto, so user can see their action
+        entity.AddViewCount();
+        entity.UpdateHotScore(_copilotOperationService.CalculateHotScore(entity));
+
         // Build dto
         var dto = new GetCopilotOperationQueryDto
         {
@@ -82,13 +87,13 @@ public class
             Uploader = entity.Author.UserName,
             UploadTime = entity.CreateAt.ToIsoString(),
             ViewCounts = entity.ViewCounts,
-            RatingRatio = entity.RatingRatio,
+            HotScore = entity.HotScore,
             Groups = entity.Groups.ToArray().DeserializeGroup(),
+            RatingLevel = _copilotOperationService.GetRatingLevelString(entity.RatingLevel),
             RatingType = rating
         };
 
         // Add an view count to the operation and update it in the database
-        entity.AddViewCount();
         _dbContext.CopilotOperations.Update(entity);
         await _dbContext.SaveChangesAsync(cancellationToken);
 

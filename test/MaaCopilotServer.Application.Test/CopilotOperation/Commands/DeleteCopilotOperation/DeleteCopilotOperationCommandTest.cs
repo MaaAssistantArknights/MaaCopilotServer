@@ -6,8 +6,11 @@ using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Application.CopilotOperation.Commands.DeleteCopilotOperation;
 using MaaCopilotServer.Application.Test.TestHelpers;
 using MaaCopilotServer.Domain.Enums;
+using MaaCopilotServer.Domain.Options;
 using MaaCopilotServer.Infrastructure.Services;
+using MaaCopilotServer.Resources;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 
 namespace MaaCopilotServer.Application.Test.CopilotOperation.Commands.DeleteCopilotOperation;
 
@@ -18,9 +21,10 @@ namespace MaaCopilotServer.Application.Test.CopilotOperation.Commands.DeleteCopi
 public class DeleteCopilotOperationCommandTest
 {
     /// <summary>
-    ///     The service for processing copilot ID.
+    ///     The service for copilot operations.
     /// </summary>
-    private readonly ICopilotIdService _copilotIdService = new CopilotIdService();
+    private readonly ICopilotOperationService _copilotOperationService
+        = new CopilotOperationService(Options.Create(new CopilotOperationOption()), new DomainString());
 
     /// <summary>
     /// Tests <see cref="DeleteCopilotOperationCommandHandler.Handle(DeleteCopilotOperationCommand, CancellationToken)"/>
@@ -37,7 +41,7 @@ public class DeleteCopilotOperationCommandTest
             .SetupDatabase(db => db.CopilotOperations.Add(entity))
             .SetupGetUser(user).TestDeleteCopilotOperation(new()
             {
-                Id = _copilotIdService.EncodeId(entity.Id)
+                Id = _copilotOperationService.EncodeId(entity.Id)
             });
 
         result.Response.StatusCode.Should().Be(StatusCodes.Status200OK);
@@ -70,7 +74,7 @@ public class DeleteCopilotOperationCommandTest
             .SetupDatabase(db => db.CopilotOperations.Add(entity))
             .SetupGetUser(user).TestDeleteCopilotOperation(new()
             {
-                Id = _copilotIdService.EncodeId(entity.Id)
+                Id = _copilotOperationService.EncodeId(entity.Id)
             });
 
         if (expectedToSucceed)
@@ -96,7 +100,7 @@ public class DeleteCopilotOperationCommandTest
             .SetupGetUser(new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, UserRole.User, null))
             .TestDeleteCopilotOperation(new()
             {
-                Id = _copilotIdService.EncodeId(1),
+                Id = _copilotOperationService.EncodeId(1),
             });
 
         result.Response.StatusCode.Should().Be(StatusCodes.Status404NotFound);

@@ -5,7 +5,6 @@
 using MaaCopilotServer.Api.Controllers;
 using MaaCopilotServer.Api.Test.TestHelpers;
 using MaaCopilotServer.Application.Common.Models;
-using MaaCopilotServer.Application.CopilotFavorite.Queries.GetCopilotUserFavorites;
 using MaaCopilotServer.Application.CopilotUser.Commands.ActivateCopilotAccount;
 using MaaCopilotServer.Application.CopilotUser.Commands.ChangeCopilotUserInfo;
 using MaaCopilotServer.Application.CopilotUser.Commands.CreateCopilotUser;

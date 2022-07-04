@@ -42,7 +42,8 @@ public class RequestCultureMiddlewareTest
         requestCultureMiddleware.InvokeAsync(
             context,
             Mock.Of<ValidationErrorMessage>(),
-            Mock.Of<ApiErrorMessage>()).Wait();
+            Mock.Of<ApiErrorMessage>(),
+            Mock.Of<DomainString>()).Wait();
         itemsDict.Should().NotBeEmpty();
         itemsDict["culture"].Should().BeEquivalentTo(new CultureInfo(expectedCulture));
     }

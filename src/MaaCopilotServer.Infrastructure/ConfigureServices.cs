@@ -30,7 +30,8 @@ public static class ConfigureServices
 
         services.AddDbContext<IMaaCopilotDbContext, MaaCopilotDbContext>();
 
-        services.AddSingleton<ICopilotIdService, CopilotIdService>();
+        services.AddScoped<ICopilotOperationService, CopilotOperationService>();
+
         services.AddSingleton<ISecretService, SecretService>();
 
         var smtpClientOptions = new SmtpClientOptions

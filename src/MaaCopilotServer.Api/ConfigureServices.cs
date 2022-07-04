@@ -37,7 +37,8 @@ public static class ConfigureServices
             .AddOption<EmailOption>()
             .AddOption<ApplicationOption>()
             .AddOption<TokenOption>()
-            .AddOption<CopilotServerOption>();
+            .AddOption<CopilotServerOption>()
+            .AddOption<CopilotOperationOption>();
 
         services.AddHttpContextAccessor();
         services.AddScoped<ICurrentUserService, CurrentUserService>();

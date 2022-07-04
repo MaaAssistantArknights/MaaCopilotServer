@@ -6,8 +6,11 @@ using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Application.Common.Models;
 using MaaCopilotServer.Application.CopilotOperation.Queries.QueryCopilotOperations;
 using MaaCopilotServer.Application.Test.TestHelpers;
+using MaaCopilotServer.Domain.Options;
 using MaaCopilotServer.Infrastructure.Services;
+using MaaCopilotServer.Resources;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 
 namespace MaaCopilotServer.Application.Test.CopilotOperation.Queries.QueryCopilotOperations;
 
@@ -28,9 +31,16 @@ public class QueryCopilotOperationsQueryHandlerTest
     private static readonly int s_highestRateId = 8;
 
     /// <summary>
-    ///     The service for processing copilot ID.
+    ///     The service for copilot operations.
     /// </summary>
-    private readonly ICopilotIdService _copilotIdService = new CopilotIdService();
+    private static readonly ICopilotOperationService s_copilotOperationService
+        = new CopilotOperationService(Options.Create(new CopilotOperationOption
+        {
+            ViewMultiplier = 1,
+            DislikeMultiplier = 2,
+            LikeMultiplier = 10,
+            InitialHotScore = 100
+        }), new DomainString());
 
     /// <summary>
     /// Initializes database with initial test data.
@@ -55,11 +65,19 @@ public class QueryCopilotOperationsQueryHandlerTest
             data.Add(new Domain.Entities.CopilotOperation(i, $"content{i}", $"stage{i}", string.Empty, string.Empty, string.Empty, users[1], Guid.Empty, new List<string>(), new List<string>()));
         }
 
-        // Set operation[9] to have one view
+        // Set operation[9] to have two view
+        data[s_highestViewId].AddViewCount();
         data[s_highestViewId].AddViewCount();
 
-        // Set operation[8] to have one like
+        // Set operation[8] to have one like and ine view
         data[s_highestRateId].AddLike(Guid.Empty);
+        data[s_highestRateId].AddViewCount();
+
+        // Calculate the hot score for each operation
+        foreach (var oper in data)
+        {
+            oper.UpdateHotScore(s_copilotOperationService.CalculateHotScore(oper));
+        }
 
         test = test
             .SetupDatabase(db => db.CopilotUsers.AddRange(users))
@@ -95,7 +113,7 @@ public class QueryCopilotOperationsQueryHandlerTest
         var data = responseData.Data!;
         for (var i = 0; i < 10; i++)
         {
-            data[i].Id.Should().Be(_copilotIdService.EncodeId(descending ? 9 - i : i));
+            data[i].Id.Should().Be(s_copilotOperationService.EncodeId(descending ? 9 - i : i));
         }
     }
 
@@ -123,7 +141,7 @@ public class QueryCopilotOperationsQueryHandlerTest
         var data = responseData.Data!;
         for (var i = 0; i < 5; i++)
         {
-            data[i].Id.Should().Be(_copilotIdService.EncodeId(i));
+            data[i].Id.Should().Be(s_copilotOperationService.EncodeId(i));
             data[i].StageName.Should().Be($"stage{i}");
         }
     }
@@ -152,7 +170,7 @@ public class QueryCopilotOperationsQueryHandlerTest
         var data = responseData.Data!;
         for (var i = 0; i < 5; i++)
         {
-            data[i].Id.Should().Be(_copilotIdService.EncodeId(i));
+            data[i].Id.Should().Be(s_copilotOperationService.EncodeId(i));
             data[i].StageName.Should().Be($"stage{i}");
         }
     }
@@ -197,7 +215,7 @@ public class QueryCopilotOperationsQueryHandlerTest
         responseData.Total.Should().Be(1);
         responseData.Data.Should().NotBeNull().And.HaveCount(1);
         var data = responseData.Data!;
-        data[0].Id.Should().Be(_copilotIdService.EncodeId(0));
+        data[0].Id.Should().Be(s_copilotOperationService.EncodeId(0));
         data[0].StageName.Should().Be("stage0");
     }
 
@@ -223,7 +241,7 @@ public class QueryCopilotOperationsQueryHandlerTest
         responseData.Total.Should().Be(1);
         responseData.Data.Should().NotBeNull().And.HaveCount(1);
         var data = responseData.Data!;
-        data[0].Id.Should().Be(_copilotIdService.EncodeId(0));
+        data[0].Id.Should().Be(s_copilotOperationService.EncodeId(0));
     }
 
     /// <summary>
@@ -250,7 +268,7 @@ public class QueryCopilotOperationsQueryHandlerTest
         var data = responseData.Data!;
         for (var i = 0; i < 5; i++)
         {
-            data[i].Id.Should().Be(_copilotIdService.EncodeId(i));
+            data[i].Id.Should().Be(s_copilotOperationService.EncodeId(i));
             data[i].Uploader.Should().Be(users[0].UserName);
         }
     }
@@ -263,8 +281,8 @@ public class QueryCopilotOperationsQueryHandlerTest
     [DataTestMethod]
     [DataRow("views", false)]
     [DataRow("views", true)]
-    [DataRow("rating", false)]
-    [DataRow("rating", true)]
+    [DataRow("hot", false)]
+    [DataRow("hot", true)]
     public void TestHandle_OrderBy(string orderBy, bool descending)
     {
         var (users, test) = InitializeDatabase(new HandlerTest());
@@ -273,7 +291,7 @@ public class QueryCopilotOperationsQueryHandlerTest
             .TestQueryCopilotOperations(new()
             {
                 OrderBy = orderBy,
-                Desc = descending ? "desc" : null,
+                Desc = descending ? "true" : null,
             })
             .Response;
 
@@ -287,11 +305,11 @@ public class QueryCopilotOperationsQueryHandlerTest
         var highestId = orderBy == "views" ? s_highestViewId : s_highestRateId;
         if (descending)
         {
-            data[0].Id.Should().Be(_copilotIdService.EncodeId(highestId));
+            data[0].Id.Should().Be(s_copilotOperationService.EncodeId(highestId));
         }
         else
         {
-            data[9].Id.Should().Be(_copilotIdService.EncodeId(highestId));
+            data[9].Id.Should().Be(s_copilotOperationService.EncodeId(highestId));
         }
     }
 }

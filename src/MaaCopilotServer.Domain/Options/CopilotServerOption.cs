@@ -24,18 +24,6 @@ public class CopilotServerOption
     public UserRole RegisterUserDefaultRole { get; set; } = UserRole.User;
 
     /// <summary>
-    ///     Require title filed in copilot operation is not null or empty.
-    /// </summary>
-    [JsonPropertyName("RequireTitleInOperation")]
-    public bool RequireTitleInOperation { get; set; } = false;
-
-    /// <summary>
-    ///     Require details filed in copilot operation is not null or empty.
-    /// </summary>
-    [JsonPropertyName("RequireDetailsInOperation")]
-    public bool RequireDetailsInOperation { get; set; } = false;
-
-    /// <summary>
     ///     Enable the test email api at <c>/test/email?to={address}&amp;token={token}</c>
     /// endpoint. This is useful for testing purposes. But this should not be enabled in production.
     /// </summary>

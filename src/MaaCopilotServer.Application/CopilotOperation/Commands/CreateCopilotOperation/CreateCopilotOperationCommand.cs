@@ -25,8 +25,8 @@ public record CreateCopilotOperationCommand : IRequest<MaaApiResponse>
 
 public class CreateCopilotOperationCommandHandler : IRequestHandler<CreateCopilotOperationCommand, MaaApiResponse>
 {
-    private readonly ICopilotIdService _copilotIdService;
-    private readonly IOptions<CopilotServerOption> _copilotServerOption;
+    private readonly ICopilotOperationService _copilotOperationService;
+    private readonly IOptions<CopilotOperationOption> _copilotOperationOption;
     private readonly ICurrentUserService _currentUserService;
     private readonly IMaaCopilotDbContext _dbContext;
     private readonly ValidationErrorMessage _validationErrorMessage;
@@ -34,14 +34,14 @@ public class CreateCopilotOperationCommandHandler : IRequestHandler<CreateCopilo
     public CreateCopilotOperationCommandHandler(
         IMaaCopilotDbContext dbContext,
         ICurrentUserService currentUserService,
-        ICopilotIdService copilotIdService,
-        IOptions<CopilotServerOption> copilotServerOption,
+        ICopilotOperationService copilotOperationService,
+        IOptions<CopilotOperationOption> copilotOperationOption,
         ValidationErrorMessage validationErrorMessage)
     {
         _dbContext = dbContext;
         _currentUserService = currentUserService;
-        _copilotIdService = copilotIdService;
-        _copilotServerOption = copilotServerOption;
+        _copilotOperationService = copilotOperationService;
+        _copilotOperationOption = copilotOperationOption;
         _validationErrorMessage = validationErrorMessage;
     }
 
@@ -59,11 +59,11 @@ public class CreateCopilotOperationCommandHandler : IRequestHandler<CreateCopilo
         var docDetails = content.GetDocDetails();
 
         // Check configuration if title and details are required.
-        if (_copilotServerOption.Value.RequireTitleInOperation && string.IsNullOrEmpty(docTitle))
+        if (_copilotOperationOption.Value.RequireDetails && string.IsNullOrEmpty(docTitle))
         {
             return MaaApiResponseHelper.BadRequest(_validationErrorMessage.CopilotOperationJsonIsInvalid);
         }
-        if (_copilotServerOption.Value.RequireDetailsInOperation && string.IsNullOrEmpty(docDetails))
+        if (_copilotOperationOption.Value.RequireDetails && string.IsNullOrEmpty(docDetails))
         {
             return MaaApiResponseHelper.BadRequest(_validationErrorMessage.CopilotOperationJsonIsInvalid);
         }
@@ -85,13 +85,14 @@ public class CreateCopilotOperationCommandHandler : IRequestHandler<CreateCopilo
         // Build entity
         var entity = new Domain.Entities.CopilotOperation(
             request.Content!, stageName, minimumRequired, docTitle, docDetails, user, user.EntityId, operators, groups);
+        entity.UpdateHotScore(_copilotOperationService.CalculateHotScore(entity));
 
         // Add entity to database.
         _dbContext.CopilotOperations.Add(entity);
         await _dbContext.SaveChangesAsync(cancellationToken);
 
         // Build response.
-        var id = _copilotIdService.EncodeId(entity.Id);
+        var id = _copilotOperationService.EncodeId(entity.Id);
         return MaaApiResponseHelper.Ok(new CreateCopilotOperationDto()
         {
             Id = id,

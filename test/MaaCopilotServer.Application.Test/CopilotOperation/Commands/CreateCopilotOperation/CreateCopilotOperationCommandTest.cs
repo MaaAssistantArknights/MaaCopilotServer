@@ -4,16 +4,13 @@
 
 using System.Text.Json;
 using System.Text.Json.Serialization;
-
 using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Application.Common.Models;
 using MaaCopilotServer.Application.CopilotOperation.Commands.CreateCopilotOperation;
 using MaaCopilotServer.Application.Test.TestHelpers;
-using MaaCopilotServer.Domain.Enums;
 using MaaCopilotServer.Domain.Options;
 using MaaCopilotServer.Infrastructure.Services;
 using MaaCopilotServer.Resources;
-using MaaCopilotServer.Test.TestHelpers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 
@@ -28,15 +25,16 @@ public class CreateCopilotOperationCommandTest
     /// <summary>
     ///     The service for processing copilot ID.
     /// </summary>
-    private readonly ICopilotIdService _copilotIdService = new CopilotIdService();
+    private readonly ICopilotOperationService _copilotOperationService =
+        new CopilotOperationService(Options.Create(new CopilotOperationOption()), new DomainString());
 
     /// <summary>
     ///     The service for processing copilot server options.
     /// </summary>
-    private readonly CopilotServerOption _optionsWithAllRequirement = new()
+    private readonly CopilotOperationOption _optionsWithAllRequirement = new()
     {
-        RequireDetailsInOperation = true,
-        RequireTitleInOperation = true
+        RequireDetails = true,
+        RequireTitle = true
     };
 
     /// <summary>
@@ -234,7 +232,7 @@ public class CreateCopilotOperationCommandTest
             .SetupGetUser(new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, Domain.Enums.UserRole.User, Guid.Empty));
         if (haveRequirement)
         {
-            test = test.SetupCopilotServerOption(_optionsWithAllRequirement);
+            test = test.SetupCopilotOperationOption(_optionsWithAllRequirement);
         }
         var result = test.TestCreateCopilotOperation(new()
         {
@@ -252,7 +250,7 @@ public class CreateCopilotOperationCommandTest
             result.DbContext.CopilotOperations.Any().Should().BeTrue();
             var entity = result.DbContext.CopilotOperations.FirstOrDefault();
             entity.Should().NotBeNull();
-            entity!.Id.Should().Be(_copilotIdService.DecodeId(id));
+            entity!.Id.Should().Be(_copilotOperationService.DecodeId(id));
             entity.Content.Should().Be(testContent);
             entity.StageName.Should().Be(testJsonContent.StageName);
             entity.MinimumRequired.Should().Be(testJsonContent.MinimumRequired);

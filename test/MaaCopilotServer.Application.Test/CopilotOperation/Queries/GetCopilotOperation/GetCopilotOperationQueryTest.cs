@@ -5,8 +5,11 @@
 using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Application.CopilotOperation.Queries.GetCopilotOperation;
 using MaaCopilotServer.Application.Test.TestHelpers;
+using MaaCopilotServer.Domain.Options;
 using MaaCopilotServer.Infrastructure.Services;
+using MaaCopilotServer.Resources;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 
 namespace MaaCopilotServer.Application.Test.CopilotOperation.Queries.GetCopilotOperation;
 
@@ -17,9 +20,10 @@ namespace MaaCopilotServer.Application.Test.CopilotOperation.Queries.GetCopilotO
 public class GetCopilotOperationQueryTest
 {
     /// <summary>
-    ///     The service for processing copilot ID.
+    ///     The service for copilot operations.
     /// </summary>
-    private readonly ICopilotIdService _copilotIdService = new CopilotIdService();
+    private readonly ICopilotOperationService _copilotOperationService
+        = new CopilotOperationService(Options.Create(new CopilotOperationOption()), new DomainString());
 
     /// <summary>
     /// Tests <see cref="GetCopilotOperationQueryHandler.Handle(GetCopilotOperationQuery, CancellationToken)"/>.
@@ -38,14 +42,14 @@ public class GetCopilotOperationQueryTest
             .SetupDatabase(db => db.CopilotOperations.AddRange(entities))
             .TestGetCopilotOperation(new()
             {
-                Id = _copilotIdService.EncodeId(entities[0].Id),
+                Id = _copilotOperationService.EncodeId(entities[0].Id),
             })
             .Response;
 
         response.StatusCode.Should().Be(StatusCodes.Status200OK);
         response.Data.Should().NotBeNull();
         var dto = (GetCopilotOperationQueryDto)response.Data!;
-        dto.Id.Should().Be(_copilotIdService.EncodeId(entities[0].Id));
+        dto.Id.Should().Be(_copilotOperationService.EncodeId(entities[0].Id));
         entities[0].ViewCounts.Should().Be(1);
     }
 
@@ -76,7 +80,7 @@ public class GetCopilotOperationQueryTest
         var response = new HandlerTest()
             .TestGetCopilotOperation(new()
             {
-                Id = _copilotIdService.EncodeId(0),
+                Id = _copilotOperationService.EncodeId(0),
             })
             .Response;
 

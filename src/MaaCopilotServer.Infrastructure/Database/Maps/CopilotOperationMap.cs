@@ -3,9 +3,11 @@
 // Licensed under the AGPL-3.0 license.
 
 using MaaCopilotServer.Domain.Entities;
+using MaaCopilotServer.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace MaaCopilotServer.Infrastructure.Database.Maps;
 
@@ -21,6 +23,8 @@ public class CopilotOperationMap : IEntityTypeConfiguration<CopilotOperation>
     public void Configure(EntityTypeBuilder<CopilotOperation> builder)
     {
         builder.Property(x => x.Id).ValueGeneratedOnAdd();
+        builder.Property(x => x.RatingLevel)
+            .HasConversion<EnumToStringConverter<RatingLevel>>();
         builder.Property(x => x.Operators)
             .HasConversion(
                 list => string.Join(";", list),

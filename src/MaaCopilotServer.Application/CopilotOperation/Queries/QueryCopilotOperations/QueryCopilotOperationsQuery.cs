@@ -58,7 +58,7 @@ public record QueryCopilotOperationsQuery : IRequest<MaaApiResponse>
     public string? Desc { get; set; } = null;
 
     /// <summary>
-    ///     Orders result by a field. Only supports ordering by "views", "rating" and "id" (default).
+    ///     Orders result by a field. Only supports ordering by "views", "hot" and "id" (default).
     /// </summary>
     [FromQuery(Name = "order_by")]
     public string? OrderBy { get; set; } = null;
@@ -68,18 +68,18 @@ public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOp
     MaaApiResponse>
 {
     private readonly ApiErrorMessage _apiErrorMessage;
-    private readonly ICopilotIdService _copilotIdService;
+    private readonly ICopilotOperationService _copilotOperationService;
     private readonly ICurrentUserService _currentUserService;
     private readonly IMaaCopilotDbContext _dbContext;
 
     public QueryCopilotOperationsQueryHandler(
         IMaaCopilotDbContext dbContext,
-        ICopilotIdService copilotIdService,
+        ICopilotOperationService copilotOperationService,
         ICurrentUserService currentUserService,
         ApiErrorMessage apiErrorMessage)
     {
         _dbContext = dbContext;
-        _copilotIdService = copilotIdService;
+        _copilotOperationService = copilotOperationService;
         _currentUserService = currentUserService;
         _apiErrorMessage = apiErrorMessage;
     }
@@ -160,9 +160,9 @@ public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOp
                 ? queryable.OrderBy(x => x.ViewCounts)
                 : queryable.OrderByDescending(x => x.ViewCounts),
             // if rating is set, order by rating
-            "rating" => string.IsNullOrEmpty(request.Desc)
-                ? queryable.OrderBy(x => x.RatingRatio)
-                : queryable.OrderByDescending(x => x.RatingRatio),
+            "hot" => string.IsNullOrEmpty(request.Desc)
+                ? queryable.OrderBy(x => x.HotScore)
+                : queryable.OrderByDescending(x => x.HotScore),
             // if no order is set, order by id
             _ => string.IsNullOrEmpty(request.Desc)
                 ? queryable.OrderBy(x => x.Id)
@@ -193,17 +193,18 @@ public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOp
         var dtos = result.Select(x =>
                 new QueryCopilotOperationsQueryDto
                 {
-                    Id = _copilotIdService.EncodeId(x.Id),
+                    Id = _copilotOperationService.EncodeId(x.Id),
                     Detail = x.Details,
                     MinimumRequired = x.MinimumRequired,
                     StageName = x.StageName,
                     Title = x.Title,
                     Uploader = x.Author.UserName,
-                    RatingRatio = x.RatingRatio,
+                    HotScore = x.HotScore,
                     Groups = x.Groups.ToArray().DeserializeGroup(),
                     Operators = x.Operators,
                     UploadTime = x.UpdateAt.ToIsoString(),
                     ViewCounts = x.ViewCounts,
+                    RatingLevel = _copilotOperationService.GetRatingLevelString(x.RatingLevel),
                     // If the user is logged in, get the rating for the operation, default value is None
                     // If not, set to null
                     RatingType = isLoggedIn

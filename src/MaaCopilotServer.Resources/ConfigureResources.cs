@@ -20,6 +20,7 @@ public static class ConfigureResources
     {
         services.AddScoped<ValidationErrorMessage>();
         services.AddScoped<ApiErrorMessage>();
+        services.AddScoped<DomainString>();
 
         return services;
     }

@@ -3,7 +3,7 @@
 // Licensed under the AGPL-3.0 license.
 
 using MaaCopilotServer.Domain.Common;
-using MaaCopilotServer.Domain.Helper;
+using MaaCopilotServer.Domain.Enums;
 
 namespace MaaCopilotServer.Domain.Entities;
 
@@ -99,11 +99,6 @@ public sealed class CopilotOperation : EditableEntity
     public int ViewCounts { get; private set; }
 
     /// <summary>
-    ///     Favorite counts.
-    /// </summary>
-    public int FavoriteCount { get; private set; }
-
-    /// <summary>
     ///     Like counts.
     /// </summary>
     public int LikeCount { get; private set; }
@@ -150,17 +145,17 @@ public sealed class CopilotOperation : EditableEntity
     /// </summary>
     public CopilotUser Author { get; private set; }
 
-    /// <summary>
-    ///     M2M relation. DO NOT INCLUDE QUERY THIS.
-    /// </summary>
-    public List<CopilotUserFavorite> Favorites { get; private set; } = new();
-
     // Auto calculated properties
 
     /// <summary>
-    ///     The rating ratio of the operation.
+    ///     The hot score of the operation.
     /// </summary>
-    public float RatingRatio { get; private set; } = -1f;
+    public long HotScore { get; private set; } = 0;
+
+    /// <summary>
+    ///     Current rating level.
+    /// </summary>
+    public RatingLevel RatingLevel { get; private set; } = RatingLevel.Mixed;
 
     /// <summary>
     ///     Increases download count by 1, and updates last updated time.
@@ -198,33 +193,13 @@ public sealed class CopilotOperation : EditableEntity
     }
 
     /// <summary>
-    ///     Add a favorite count, and updates last updated time.
-    /// </summary>
-    /// <param name="operator">The operator id.</param>
-    public void AddFavorites(Guid @operator)
-    {
-        FavoriteCount++;
-        Update(@operator);
-    }
-
-    /// <summary>
-    ///     Remove a favorite count, and updates last updated time.
-    /// </summary>
-    /// <param name="operator">The operator id.</param>
-    public void RemoveFavorites(Guid @operator)
-    {
-        FavoriteCount--;
-        Update(@operator);
-    }
-
-    /// <summary>
     ///     Add a like count, and updates last updated time.
     /// </summary>
     /// <param name="operator">The operator id.</param>
     public void AddLike(Guid @operator)
     {
         LikeCount++;
-        RatingRatio = MathHelper.CalculateRatio(this.LikeCount, this.DislikeCount);
+        UpdateRatingLevel();
         Update(@operator);
     }
 
@@ -235,7 +210,7 @@ public sealed class CopilotOperation : EditableEntity
     public void AddDislike(Guid @operator)
     {
         DislikeCount++;
-        RatingRatio = MathHelper.CalculateRatio(this.LikeCount, this.DislikeCount);
+        UpdateRatingLevel();
         Update(@operator);
     }
 
@@ -246,7 +221,7 @@ public sealed class CopilotOperation : EditableEntity
     public void RemoveLike(Guid @operator)
     {
         LikeCount--;
-        RatingRatio = MathHelper.CalculateRatio(this.LikeCount, this.DislikeCount);
+        UpdateRatingLevel();
         Update(@operator);
     }
 
@@ -257,7 +232,7 @@ public sealed class CopilotOperation : EditableEntity
     public void RemoveDislike(Guid @operator)
     {
         DislikeCount--;
-        RatingRatio = MathHelper.CalculateRatio(this.LikeCount, this.DislikeCount);
+        UpdateRatingLevel();
         Update(@operator);
     }
 
@@ -269,5 +244,42 @@ public sealed class CopilotOperation : EditableEntity
     {
         UpdateAt = DateTimeOffset.UtcNow;
         UpdateBy = @operator;
+    }
+
+    /// <summary>
+    ///     Calculate current like to all ratio and set rating level.
+    /// </summary>
+    private void UpdateRatingLevel()
+    {
+        var total = this.LikeCount + this.DislikeCount;
+        if (total < 5)
+        {
+            this.RatingLevel = RatingLevel.Mixed;
+            return;
+        }
+
+        var ratio = this.LikeCount / (double) total;
+
+        this.RatingLevel = ratio switch
+        {
+            >= 0.9 => RatingLevel.OverwhelminglyPositive,
+            >= 0.8 => RatingLevel.VeryPositive,
+            >= 0.7 => RatingLevel.Positive,
+            >= 0.6 => RatingLevel.MostlyPositive,
+            >= 0.5 => RatingLevel.Mixed,
+            >= 0.4 => RatingLevel.Negative,
+            >= 0.3 => RatingLevel.MostlyNegative,
+            >= 0.2 => RatingLevel.VeryNegative,
+            _ => RatingLevel.OverwhelminglyNegative
+        };
+    }
+
+    /// <summary>
+    ///     Update the hot score.
+    /// </summary>
+    /// <param name="hotScore">The current hot score.</param>
+    public void UpdateHotScore(long hotScore)
+    {
+        HotScore = hotScore;
     }
 }

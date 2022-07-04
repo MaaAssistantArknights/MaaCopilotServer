@@ -10,16 +10,21 @@ namespace MaaCopilotServer.Api.Middleware;
 public static class MiddlewareExtension
 {
     /// <summary>
-    ///     Uses request culture.
+    ///     Use request culture middleware.
     /// </summary>
-    /// <param name="app">The app</param>
-    /// <returns>The app with the middleware mounted.</returns>
+    /// <param name="app">The app pipeline.</param>
+    /// <returns>The app pipeline with the middleware mounted.</returns>
     public static IApplicationBuilder UseRequestCulture(this IApplicationBuilder app)
     {
         app.UseMiddleware<RequestCultureMiddleware>();
         return app;
     }
 
+    /// <summary>
+    ///     Use apm transaction middleware.
+    /// </summary>
+    /// <param name="app">The app pipeline.</param>
+    /// <returns>The app pipeline with the middleware mounted.</returns>
     public static IApplicationBuilder UseApmTransaction(this IApplicationBuilder app)
     {
         app.UseMiddleware<ApmTransactionMiddleware>();

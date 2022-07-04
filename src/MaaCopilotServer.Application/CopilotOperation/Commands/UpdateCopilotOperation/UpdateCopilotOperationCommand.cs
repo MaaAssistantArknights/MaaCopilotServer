@@ -35,20 +35,20 @@ public class UpdateCopilotOperationCommandHandler : IRequestHandler<UpdateCopilo
 {
     private readonly IMaaCopilotDbContext _dbContext;
     private readonly ICurrentUserService _currentUserService;
-    private readonly ICopilotIdService _copilotIdService;
+    private readonly ICopilotOperationService _copilotOperationService;
     private readonly ApiErrorMessage _apiErrorMessage;
     private readonly ValidationErrorMessage _validationErrorMessage;
 
     public UpdateCopilotOperationCommandHandler(
         IMaaCopilotDbContext dbContext,
         ICurrentUserService currentUserService,
-        ICopilotIdService copilotIdService,
+        ICopilotOperationService copilotOperationService,
         ApiErrorMessage apiErrorMessage,
         ValidationErrorMessage validationErrorMessage)
     {
         _dbContext = dbContext;
         _currentUserService = currentUserService;
-        _copilotIdService = copilotIdService;
+        _copilotOperationService = copilotOperationService;
         _apiErrorMessage = apiErrorMessage;
         _validationErrorMessage = validationErrorMessage;
     }
@@ -59,7 +59,7 @@ public class UpdateCopilotOperationCommandHandler : IRequestHandler<UpdateCopilo
         var user = (await _currentUserService.GetUser()).IsNotNull();
 
         // Get operation
-        var operationId = _copilotIdService.DecodeId(request.Id!);
+        var operationId = _copilotOperationService.DecodeId(request.Id!);
         var operation = await _dbContext.CopilotOperations
             .Include(x => x.Author)
             .FirstOrDefaultAsync(x => x.Id == operationId, cancellationToken);

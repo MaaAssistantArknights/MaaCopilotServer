@@ -15,9 +15,5 @@ public class CopilotUserMap : IEntityTypeConfiguration<CopilotUser>
     public void Configure(EntityTypeBuilder<CopilotUser> builder)
     {
         builder.Property(x => x.UserRole).HasConversion<EnumToStringConverter<UserRole>>();
-
-        builder.HasMany(x => x.UserFavorites)
-            .WithOne(x => x.User)
-            .IsRequired();
     }
 }
