@@ -58,7 +58,8 @@ public sealed class CopilotOperation : EditableEntity
     /// <param name="createBy">The creator of the operation.</param>
     /// <param name="operators">The operators in the operation.</param>
     /// <param name="groups">The groups in the operation.</param>
-    public CopilotOperation(long id,
+    public CopilotOperation(
+        long id,
         string content,
         string stageName,
         string minimumRequired,
