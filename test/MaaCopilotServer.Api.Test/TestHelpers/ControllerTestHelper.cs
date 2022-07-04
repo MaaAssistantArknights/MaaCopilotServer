@@ -17,28 +17,27 @@ public static class ControllerTestHelper
     /// <summary>
     ///     Tests an endpoint of the controller.
     /// </summary>
-    /// <typeparam name="TRequest">The type of the request, e.g. a class end with "Command".</typeparam>
-    /// <typeparam name="TController">The type of the controller, which should be a derived class of <see cref="MaaControllerBase"/>.</typeparam>
-    /// <param name="testRequest">The test request.</param>
-    /// <param name="testResponse">The test response.</param>
-    /// <param name="controllerBuilder">The function to build a new controller with the mock mediator.</param>
-    /// <param name="controllerAction">The method to call the controller with request.</param>
-    public static void TestControllerEndpoint<TRequest, TController>(
-        TRequest testRequest,
-        object? testResponse,
-        Func<IMediator, TController> controllerBuilder,
-        Func<TController, TRequest, Task<ActionResult>> controllerAction)
+    /// <typeparam name="TController">
+    ///     The type of the controller, which should be a derived class of <see cref="MaaControllerBase"/>.
+    /// </typeparam>
+    /// <param name="testMethod">The function to call a controller method.</param>
+    public static void Test<TController>(Func<TController, Task<ActionResult>> testMethod)
         where TController : MaaControllerBase
     {
+        var testResponse = new object();
         var testResponseData = MaaApiResponseHelper.Ok(testResponse);
         var mediator = new Mock<IMediator>();
         mediator.Setup(x => x.Send(It.IsAny<It.IsAnyType>(), It.IsAny<CancellationToken>()).Result)
                 .Returns(testResponseData);
 
-        var controller = controllerBuilder(mediator.Object);
+        var controllerType = typeof(TController);
 
-        var actualResponse = controllerAction(controller, testRequest).GetAwaiter().GetResult();
-        actualResponse.Should().NotBeNull();
-        actualResponse.Should().BeEquivalentTo(new OkObjectResult(MaaApiResponseHelper.Ok(testResponse)));
+        // Get controller constructor which takes 1 argument of IMediator type.
+        var ctor = controllerType.GetConstructor(new Type[] { typeof(IMediator) });
+        var controller = (TController)ctor!.Invoke(new object[] { mediator.Object });
+
+        var response = testMethod.Invoke(controller).GetAwaiter().GetResult();
+        response.Should().NotBeNull();
+        response.Should().BeEquivalentTo(new OkObjectResult(MaaApiResponseHelper.Ok(testResponse)));
     }
 }
