@@ -17,7 +17,7 @@ using Microsoft.AspNetCore.Http;
 namespace MaaCopilotServer.Application.Test.Common.Behaviours;
 
 /// <summary>
-///     Tests for <see cref="AuthorizationBehaviour{TRequest,TResponse}" />.
+///     Tests <see cref="AuthorizationBehaviour{TRequest,TResponse}" />.
 /// </summary>
 [TestClass]
 [ExcludeFromCodeCoverage]

@@ -9,7 +9,7 @@ using MaaCopilotServer.Application.Common.Models;
 namespace MaaCopilotServer.Application.Test.Helpers;
 
 /// <summary>
-/// Tests of <see cref="MaaCopilotOperationHelper"/>.
+/// Tests <see cref="MaaCopilotOperationHelper"/>.
 /// </summary>
 [TestClass]
 public class MaaCopilotOperationHelperTest

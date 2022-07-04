@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Http;
 namespace MaaCopilotServer.Application.Test.CopilotUser.Commands.Change.ChangeCopilotUserInfo;
 
 /// <summary>
-/// Tests for <see cref="ChangeCopilotUserInfoCommandHandler"/>.
+/// Tests <see cref="ChangeCopilotUserInfoCommandHandler"/>.
 /// </summary>
 [TestClass]
 public class ChangeCopilotUserInfoCommandTest

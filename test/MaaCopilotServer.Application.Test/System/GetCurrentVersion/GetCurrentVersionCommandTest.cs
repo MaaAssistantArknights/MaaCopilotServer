@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Http;
 namespace MaaCopilotServer.Application.Test.System.GetCurrentVersion;
 
 /// <summary>
-/// Tests of <see cref="GetCurrentVersionCommandHandler"/>.
+/// Tests <see cref="GetCurrentVersionCommandHandler"/>.
 /// </summary>
 [TestClass]
 public class GetCurrentVersionCommandHandlerTest

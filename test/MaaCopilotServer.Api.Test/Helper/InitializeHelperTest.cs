@@ -8,7 +8,7 @@ using MaaCopilotServer.Api.Helper;
 namespace MaaCopilotServer.Api.Test.Helper;
 
 /// <summary>
-/// Tests for <see cref="InitializeHelper"/>.
+/// Tests <see cref="InitializeHelper"/>.
 /// </summary>
 [TestClass]
 public class InitializeHelperTest

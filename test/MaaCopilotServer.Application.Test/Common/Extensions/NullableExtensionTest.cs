@@ -7,7 +7,7 @@ using MaaCopilotServer.Application.Common.Extensions;
 namespace MaaCopilotServer.Application.Test.Common.Extensions;
 
 /// <summary>
-///     Tests of <see cref="NullableExtension" />.
+///     Tests <see cref="NullableExtension" />.
 /// </summary>
 [TestClass]
 public class NullableExtensionTest

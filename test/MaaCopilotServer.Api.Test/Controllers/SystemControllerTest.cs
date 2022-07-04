@@ -12,7 +12,7 @@ using Microsoft.Extensions.Options;
 namespace MaaCopilotServer.Api.Test.Controllers;
 
 /// <summary>
-///     Tests for <see cref="SystemController" />.
+///     Tests <see cref="SystemController" />.
 /// </summary>
 [TestClass]
 public class SystemControllerTest

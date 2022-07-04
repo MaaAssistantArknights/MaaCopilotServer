@@ -9,18 +9,14 @@ using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Application.Common.Models;
 using MaaCopilotServer.Application.CopilotOperation.Commands.CreateCopilotOperation;
 using MaaCopilotServer.Application.Test.TestHelpers;
-using MaaCopilotServer.Domain.Enums;
 using MaaCopilotServer.Domain.Options;
 using MaaCopilotServer.Infrastructure.Services;
-using MaaCopilotServer.Resources;
-using MaaCopilotServer.Test.TestHelpers;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Options;
 
 namespace MaaCopilotServer.Application.Test.CopilotOperation.Commands.CreateCopilotOperation;
 
 /// <summary>
-/// Tests for <see cref="CreateCopilotOperationCommandHandler"/>.
+/// Tests <see cref="CreateCopilotOperationCommandHandler"/>.
 /// </summary>
 [TestClass]
 public class CreateCopilotOperationCommandTest

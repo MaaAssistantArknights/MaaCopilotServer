@@ -7,7 +7,7 @@ using MaaCopilotServer.Application.Common.Extensions;
 namespace MaaCopilotServer.Application.Test.Common.Extensions;
 
 /// <summary>
-/// Tests for <see cref="DateTimeOffsetExtension"/>.
+/// Tests <see cref="DateTimeOffsetExtension"/>.
 /// </summary>
 [TestClass]
 public class DateTimeOffsetExtensionTest

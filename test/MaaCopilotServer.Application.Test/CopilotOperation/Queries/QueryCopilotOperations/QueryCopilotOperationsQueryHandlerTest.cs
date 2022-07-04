@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Http;
 namespace MaaCopilotServer.Application.Test.CopilotOperation.Queries.QueryCopilotOperations;
 
 /// <summary>
-/// Tests for <see cref="QueryCopilotOperationsQueryHandler"/>.
+/// Tests <see cref="QueryCopilotOperationsQueryHandler"/>.
 /// </summary>
 [TestClass]
 public class QueryCopilotOperationsQueryHandlerTest

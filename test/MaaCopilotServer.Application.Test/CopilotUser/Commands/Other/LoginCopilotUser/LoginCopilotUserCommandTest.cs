@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Http;
 namespace MaaCopilotServer.Application.Test.CopilotUser.Commands.Other.LoginCopilotUser;
 
 /// <summary>
-/// Tests of <see cref="LoginCopilotUserCommandHandler"/>.
+/// Tests <see cref="LoginCopilotUserCommandHandler"/>.
 /// </summary>
 [TestClass]
 public class LoginCopilotUserCommandHandlerTest

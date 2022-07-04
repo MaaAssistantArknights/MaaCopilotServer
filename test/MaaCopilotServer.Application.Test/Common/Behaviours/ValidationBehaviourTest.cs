@@ -15,7 +15,7 @@ using Microsoft.AspNetCore.Http;
 namespace MaaCopilotServer.Application.Test.Common.Behaviours;
 
 /// <summary>
-///     Tests for <see cref="ValidationBehaviour{TRequest,TResponse}" />.
+///     Tests <see cref="ValidationBehaviour{TRequest,TResponse}" />.
 /// </summary>
 [TestClass]
 public class ValidationBehaviourTest

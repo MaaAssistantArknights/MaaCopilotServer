@@ -9,7 +9,7 @@ using MaaCopilotServer.Resources;
 namespace MaaCopilotServer.Application.Test.CopilotUser.Commands.Change.PasswordReset;
 
 /// <summary>
-/// Tests for <see cref="PasswordResetCommandValidator"/>.
+/// Tests <see cref="PasswordResetCommandValidator"/>.
 /// </summary>
 [TestClass]
 public class PasswordResetCommandValidatorTest

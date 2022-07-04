@@ -9,7 +9,7 @@ using Microsoft.Extensions.Options;
 namespace MaaCopilotServer.Infrastructure.Test.Services;
 
 /// <summary>
-/// Tests of <see cref="SecretService"/>.
+/// Tests <see cref="SecretService"/>.
 /// </summary>
 [TestClass]
 public class SecretServiceTest

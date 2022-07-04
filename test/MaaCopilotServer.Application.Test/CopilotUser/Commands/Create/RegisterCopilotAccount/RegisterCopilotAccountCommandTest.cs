@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Http;
 namespace MaaCopilotServer.Application.Test.CopilotUser.Commands.Create.RegisterCopilotAccount;
 
 /// <summary>
-/// Tests of <see cref="RegisterCopilotAccountCommandHandler"/>.
+/// Tests <see cref="RegisterCopilotAccountCommandHandler"/>.
 /// </summary>
 [TestClass]
 public class RegisterCopilotAccountCommandHandlerTest

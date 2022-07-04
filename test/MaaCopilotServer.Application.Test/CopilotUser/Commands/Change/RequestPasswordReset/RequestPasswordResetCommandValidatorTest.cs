@@ -8,7 +8,7 @@ using MaaCopilotServer.Application.Test.TestHelpers;
 namespace MaaCopilotServer.Application.Test.CopilotUser.Commands.Change.RequestPasswordReset;
 
 /// <summary>
-/// Tests for <see cref="RequestPasswordResetCommandValidator"/>.
+/// Tests <see cref="RequestPasswordResetCommandValidator"/>.
 /// </summary>
 [TestClass]
 public class RequestPasswordResetCommandValidatorTest

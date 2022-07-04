@@ -7,7 +7,7 @@ using MaaCopilotServer.Domain.Helper;
 namespace MaaCopilotServer.Domain.Test.Helper;
 
 /// <summary>
-/// Tests of <see cref="MathHelper"/>.
+/// Tests <see cref="MathHelper"/>.
 /// </summary>
 [TestClass]
 public class MathHelperTest

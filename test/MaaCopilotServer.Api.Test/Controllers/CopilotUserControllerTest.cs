@@ -8,7 +8,7 @@ using MaaCopilotServer.Api.Test.TestHelpers;
 namespace MaaCopilotServer.Api.Test.Properties;
 
 /// <summary>
-///     Tests for <see cref="CopilotUserController" />.
+///     Tests <see cref="CopilotUserController" />.
 /// </summary>
 [TestClass]
 public class CopilotUserControllerTest

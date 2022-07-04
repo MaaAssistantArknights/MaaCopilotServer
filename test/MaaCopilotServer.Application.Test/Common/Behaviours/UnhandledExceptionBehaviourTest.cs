@@ -12,7 +12,7 @@ using Microsoft.Extensions.Logging;
 namespace MaaCopilotServer.Application.Test.Common.Behaviours;
 
 /// <summary>
-///     Tests of <see cref="UnhandledExceptionBehaviour{TRequest,TResponse}" />.
+///     Tests <see cref="UnhandledExceptionBehaviour{TRequest,TResponse}" />.
 /// </summary>
 [TestClass]
 public class UnhandledExceptionBehaviourTest

@@ -7,7 +7,7 @@ using MaaCopilotServer.Infrastructure.Services;
 namespace MaaCopilotServer.Infrastructure.Test.Services;
 
 /// <summary>
-/// Tests of <see cref="CopilotIdService"/>.
+/// Tests <see cref="CopilotIdService"/>.
 /// </summary>
 [TestClass]
 public class CopilotIdServiceTest

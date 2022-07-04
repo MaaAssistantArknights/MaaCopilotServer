@@ -7,7 +7,7 @@ using MaaCopilotServer.Application.Common.Extensions;
 namespace MaaCopilotServer.Application.Test.Common.Extensions;
 
 /// <summary>
-///     Tests of <see cref="PathExtension" />.
+///     Tests <see cref="PathExtension" />.
 /// </summary>
 [TestClass]
 public class PathExtensionTest

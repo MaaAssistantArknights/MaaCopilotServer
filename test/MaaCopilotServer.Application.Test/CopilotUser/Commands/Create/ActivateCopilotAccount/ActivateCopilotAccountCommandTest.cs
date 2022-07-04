@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Http;
 namespace MaaCopilotServer.Application.Test.CopilotUser.Commands.Create.ActivateCopilotAccount;
 
 /// <summary>
-/// Tests of <see cref="ActivateCopilotAccountCommandHandler"/>.
+/// Tests <see cref="ActivateCopilotAccountCommandHandler"/>.
 /// </summary>
 [TestClass]
 public class ActivateCopilotAccountCommandTest

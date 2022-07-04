@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Http;
 namespace MaaCopilotServer.Application.Test.CopilotUser.Queries.GetCopilotUser;
 
 /// <summary>
-/// Tests of <see cref="GetCopilotUserQueryHandler"/>.
+/// Tests <see cref="GetCopilotUserQueryHandler"/>.
 /// </summary>
 [TestClass]
 public class GetCopilotUserQueryHandlerTest

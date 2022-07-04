@@ -8,7 +8,7 @@ using MaaCopilotServer.Application.Test.TestHelpers;
 namespace MaaCopilotServer.Application.Test.CopilotUser.Commands.Create.RegisterCopilotAccount;
 
 /// <summary>
-/// Tests of <see cref="RegisterCopilotAccountCommandValidator"/>.
+/// Tests <see cref="RegisterCopilotAccountCommandValidator"/>.
 /// </summary>
 [TestClass]
 public class RegisterCopilotAccountCommandValidatorTest
