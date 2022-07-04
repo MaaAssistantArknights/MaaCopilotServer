@@ -151,8 +151,8 @@ public class QueryCopilotOperationsQueryHandlerTest
         responseData.Total.Should().Be(10);
         responseData.Data.Should().NotBeNull().And.HaveCount(2);
         var data = responseData.Data!;
-        data[0].Id.Should().Be(_copilotIdService.EncodeId(descending ? 7 : 2));
-        data[1].Id.Should().Be(_copilotIdService.EncodeId(descending ? 6 : 3));
+        data[0].Id.Should().Be(s_copilotOperationService.EncodeId(descending ? 7 : 2));
+        data[1].Id.Should().Be(s_copilotOperationService.EncodeId(descending ? 6 : 3));
     }
 
     /// <summary>
@@ -255,7 +255,7 @@ public class QueryCopilotOperationsQueryHandlerTest
         var data = responseData.Data!;
         for (var i = 0; i < 10; i++)
         {
-            data[i].Id.Should().Be(_copilotIdService.EncodeId(descending ? 9 - i : i));
+            data[i].Id.Should().Be(s_copilotOperationService.EncodeId(descending ? 9 - i : i));
             data[i].RatingType.Should().BeNull();
         }
     }

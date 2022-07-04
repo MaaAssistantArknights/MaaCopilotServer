@@ -29,6 +29,7 @@ using MaaCopilotServer.Application.CopilotUser.Queries.GetCopilotUser;
 using MaaCopilotServer.Application.CopilotUser.Queries.QueryCopilotUser;
 using MaaCopilotServer.Application.System.GetCurrentVersion;
 using MaaCopilotServer.Application.System.SendEmailTest;
+using MaaCopilotServer.Resources;
 
 namespace MaaCopilotServer.Application.Test.TestHelpers;
 
@@ -144,8 +145,6 @@ public class HandlerTest
     public IOptions<CopilotServerOption> CopilotServerOption { get; private set; } = Options.Create(new CopilotServerOption()
     {
         RegisterUserDefaultRole = Domain.Enums.UserRole.User,
-        RequireTitleInOperation = default,
-        RequireDetailsInOperation = default,
         EnableTestEmailApi = default,
         TestEmailApiToken = TestToken,
     });
