@@ -2,11 +2,14 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace MaaCopilotServer.Domain.Common;
 
 /// <summary>
 ///     Editable entity base class.
 /// </summary>
+[ExcludeFromCodeCoverage]
 public abstract class EditableEntity : BaseEntity
 {
     /// <summary>

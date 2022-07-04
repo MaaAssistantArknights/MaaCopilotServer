@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Http;
 namespace MaaCopilotServer.Application.Test.CopilotUser.Commands.Other.DeleteCopilotUser;
 
 /// <summary>
-/// Tests of <see cref="DeleteCopilotUserCommandHandler"/>
+/// Tests <see cref="DeleteCopilotUserCommandHandler"/>
 /// </summary>
 [TestClass]
 public class DeleteCopilotUserCommandHandlerTest

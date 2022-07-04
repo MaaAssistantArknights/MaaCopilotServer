@@ -3,6 +3,7 @@
 // Licensed under the AGPL-3.0 license.
 
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 
 namespace MaaCopilotServer.Application.CopilotOperation.Commands.CreateCopilotOperation;
@@ -10,6 +11,7 @@ namespace MaaCopilotServer.Application.CopilotOperation.Commands.CreateCopilotOp
 /// <summary>
 ///     The response to a <see cref="CreateCopilotOperationCommand" />.
 /// </summary>
+[ExcludeFromCodeCoverage]
 public record CreateCopilotOperationDto
 {
     /// <summary>

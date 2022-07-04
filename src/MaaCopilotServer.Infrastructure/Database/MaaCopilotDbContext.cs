@@ -50,7 +50,7 @@ public class MaaCopilotDbContext : DbContext, IMaaCopilotDbContext
     {
         // Create Postgres database for development and production.
         optionsBuilder.UseNpgsql(_connectionString.IsNotNull());
-            base.OnConfiguring(optionsBuilder);
+        base.OnConfiguring(optionsBuilder);
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

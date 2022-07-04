@@ -11,7 +11,7 @@ using Microsoft.Extensions.Primitives;
 namespace MaaCopilotServer.Api.Test.Middleware;
 
 /// <summary>
-///     Tests for <see cref="RequestCultureMiddleware" />.
+///     Tests <see cref="RequestCultureMiddleware" />.
 /// </summary>
 [TestClass]
 public class RequestCultureMiddlewareTest

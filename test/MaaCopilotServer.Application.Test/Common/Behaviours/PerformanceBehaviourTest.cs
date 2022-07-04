@@ -12,7 +12,7 @@ using Microsoft.Extensions.Logging;
 namespace MaaCopilotServer.Application.Test.Common.Behaviours;
 
 /// <summary>
-///     Tests of <see cref="PerformanceBehaviour{TRequest,TResponse}" />.
+///     Tests <see cref="PerformanceBehaviour{TRequest,TResponse}" />.
 /// </summary>
 [TestClass]
 public class PerformanceBehaviourTest

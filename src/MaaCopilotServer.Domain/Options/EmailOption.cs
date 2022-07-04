@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 using MaaCopilotServer.Domain.Attributes;
 
@@ -11,6 +12,7 @@ namespace MaaCopilotServer.Domain.Options;
 ///     Email sender options.
 /// </summary>
 [OptionName("Email")]
+[ExcludeFromCodeCoverage]
 public class EmailOption
 {
     /// <summary>
@@ -26,6 +28,7 @@ public class EmailOption
 /// <summary>
 ///     Email sender options.
 /// </summary>
+[ExcludeFromCodeCoverage]
 public class EmailSenderOption
 {
     /// <summary>
@@ -41,6 +44,7 @@ public class EmailSenderOption
 /// <summary>
 ///     The email SMTP server option.
 /// </summary>
+[ExcludeFromCodeCoverage]
 public class EmailSmtpOption
 {
     /// <summary>

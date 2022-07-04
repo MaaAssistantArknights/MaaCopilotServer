@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Http;
 namespace MaaCopilotServer.Application.Test.CopilotUser.Commands.Change.UpdateCopilotUserPassword;
 
 /// <summary>
-/// Tests of <see cref="UpdateCopilotUserPasswordCommandHandler"/>.
+/// Tests <see cref="UpdateCopilotUserPasswordCommandHandler"/>.
 /// </summary>
 [TestClass]
 public class UpdateCopilotUserPasswordCommandTest

@@ -8,7 +8,7 @@ using MaaCopilotServer.Application.Test.TestHelpers;
 namespace MaaCopilotServer.Application.Test.CopilotUser.Commands.Other.DeleteCopilotUser;
 
 /// <summary>
-/// Tests for <see cref="DeleteCopilotUserCommandValidator"/>.
+/// Tests <see cref="DeleteCopilotUserCommandValidator"/>.
 /// </summary>
 [TestClass]
 public class DeleteCopilotUserCommandValidatorTest

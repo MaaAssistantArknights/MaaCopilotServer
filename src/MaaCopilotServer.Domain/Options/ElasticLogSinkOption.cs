@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 using MaaCopilotServer.Domain.Attributes;
 
@@ -11,6 +12,7 @@ namespace MaaCopilotServer.Domain.Options;
 ///     The <c>ElasticLogSink</c> option.
 /// </summary>
 [OptionName("ElasticLogSink")]
+[ExcludeFromCodeCoverage]
 public class ElasticLogSinkOption
 {
     /// <summary>
@@ -41,6 +43,7 @@ public class ElasticLogSinkOption
 /// <summary>
 ///     The authentication settings of <c>ElasticLogSink</c>.
 /// </summary>
+[ExcludeFromCodeCoverage]
 public class ElasticLogSinkAuthenticationOption
 {
     /// <summary>
@@ -59,6 +62,7 @@ public class ElasticLogSinkAuthenticationOption
 /// <summary>
 ///     The secret settings of authentication of <c>ElasticLogSink</c>.
 /// </summary>
+[ExcludeFromCodeCoverage]
 public class ElasticLogSinkAuthenticationSecretOption
 {
     /// <summary>

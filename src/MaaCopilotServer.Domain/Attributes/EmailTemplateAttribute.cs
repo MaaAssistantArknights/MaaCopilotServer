@@ -2,12 +2,15 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace MaaCopilotServer.Domain.Attributes;
 
 /// <summary>
 ///     Attribute used to mark a class as email model and bind to a specific email template.
 /// </summary>
 [AttributeUsage(AttributeTargets.Class)]
+[ExcludeFromCodeCoverage]
 public class EmailTemplateAttribute : Attribute
 {
     /// <summary>

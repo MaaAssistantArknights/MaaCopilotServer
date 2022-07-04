@@ -8,7 +8,7 @@ using MaaCopilotServer.Application.Test.TestHelpers;
 namespace MaaCopilotServer.Application.Test.CopilotUser.Commands.Change.UpdateCopilotUserInfo;
 
 /// <summary>
-/// Tests for <see cref="UpdateCopilotUserInfoCommandValidator"/>.
+/// Tests <see cref="UpdateCopilotUserInfoCommandValidator"/>.
 /// </summary>
 [TestClass]
 public class UpdateCopilotUserInfoCommandValidatorTest

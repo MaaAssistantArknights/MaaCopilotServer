@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Application.Common.Behaviours;
 
 using MaaCopilotServer.Application.Common.Helpers;
@@ -16,9 +17,10 @@ using Microsoft.AspNetCore.Http;
 namespace MaaCopilotServer.Application.Test.Common.Behaviours;
 
 /// <summary>
-///     Tests for <see cref="AuthorizationBehaviour{TRequest,TResponse}" />.
+///     Tests <see cref="AuthorizationBehaviour{TRequest,TResponse}" />.
 /// </summary>
 [TestClass]
+[ExcludeFromCodeCoverage]
 public class AuthorizationBehaviourTest
 {
     /// <summary>

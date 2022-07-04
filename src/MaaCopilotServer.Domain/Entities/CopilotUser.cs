@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Domain.Common;
 using MaaCopilotServer.Domain.Enums;
 
@@ -11,6 +12,7 @@ namespace MaaCopilotServer.Domain.Entities;
 /// <summary>
 ///     Maa Copilot user entity.
 /// </summary>
+[ExcludeFromCodeCoverage]
 public class CopilotUser : EditableEntity
 {
     /// <summary>

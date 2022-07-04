@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 using MaaCopilotServer.Domain.Attributes;
 using MaaCopilotServer.Domain.Enums;
@@ -12,6 +13,7 @@ namespace MaaCopilotServer.Domain.Options;
 ///     The options for the server.
 /// </summary>
 [OptionName("CopilotServer")]
+[ExcludeFromCodeCoverage]
 public class CopilotServerOption
 {
     /// <summary>

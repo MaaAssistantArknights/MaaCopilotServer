@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 
 namespace MaaCopilotServer.Application.Common.Models;
@@ -10,6 +11,7 @@ namespace MaaCopilotServer.Application.Common.Models;
 ///     The model of pagination.
 /// </summary>
 /// <typeparam name="T">The type of the result.</typeparam>
+[ExcludeFromCodeCoverage]
 public record PaginationResult<T>
 {
     /// <summary>

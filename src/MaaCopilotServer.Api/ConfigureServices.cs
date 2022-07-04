@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using MaaCopilotServer.Api.Services;
 using MaaCopilotServer.Application.Common.Extensions;
@@ -17,6 +18,7 @@ namespace MaaCopilotServer.Api;
 /// <summary>
 ///     The extension to add API service to the services.
 /// </summary>
+[ExcludeFromCodeCoverage]
 public static class ConfigureServices
 {
     /// <summary>
@@ -25,6 +27,7 @@ public static class ConfigureServices
     /// <param name="services">The collection of services.</param>
     /// <param name="configuration">The configuration.</param>
     /// <returns>The collection of services with the configuration added.</returns>
+    [ExcludeFromCodeCoverage]
     public static IServiceCollection AddApiServices(this IServiceCollection services, IConfiguration configuration)
     {
         var jwtOption = configuration.GetOption<JwtOption>();

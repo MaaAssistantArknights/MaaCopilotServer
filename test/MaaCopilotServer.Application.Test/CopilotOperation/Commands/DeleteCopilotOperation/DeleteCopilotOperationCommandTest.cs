@@ -15,7 +15,7 @@ using Microsoft.Extensions.Options;
 namespace MaaCopilotServer.Application.Test.CopilotOperation.Commands.DeleteCopilotOperation;
 
 /// <summary>
-/// Tests for <see cref="DeleteCopilotOperationCommandHandler"/>.
+/// Tests <see cref="DeleteCopilotOperationCommandHandler"/>.
 /// </summary>
 [TestClass]
 public class DeleteCopilotOperationCommandTest

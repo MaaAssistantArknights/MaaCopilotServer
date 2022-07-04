@@ -3,6 +3,7 @@
 // Licensed under the AGPL-3.0 license.
 
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 using MaaCopilotServer.Application.CopilotOperation.Queries.QueryCopilotOperations;
 using MaaCopilotServer.Domain.Enums;
@@ -12,6 +13,7 @@ namespace MaaCopilotServer.Application.CopilotOperation.Queries.GetCopilotOperat
 /// <summary>
 ///     The response of the <see cref="GetCopilotOperationQuery"/>.
 /// </summary>
+[ExcludeFromCodeCoverage]
 public class GetCopilotOperationQueryDto : QueryCopilotOperationsQueryDto
 {
 #pragma warning disable CS8618

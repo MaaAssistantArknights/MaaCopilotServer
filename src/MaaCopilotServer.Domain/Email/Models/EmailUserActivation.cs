@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Domain.Attributes;
 
 namespace MaaCopilotServer.Domain.Email.Models;
@@ -14,4 +15,5 @@ namespace MaaCopilotServer.Domain.Email.Models;
 /// <param name="ValidBefore">The time that the token is valid before.</param>
 /// <param name="HasCallbackUrl">Has callback url or not.</param>
 [EmailTemplate("EmailUserActivation")]
+[ExcludeFromCodeCoverage]
 public record EmailUserActivation(string UserName, string Token, string ValidBefore, bool HasCallbackUrl) : IEmailModel;
