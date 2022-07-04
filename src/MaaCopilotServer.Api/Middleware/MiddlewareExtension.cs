@@ -33,4 +33,15 @@ public static class MiddlewareExtension
         app.UseMiddleware<ApmTransactionMiddleware>();
         return app;
     }
+
+    /// <summary>
+    ///     Use system status middleware.
+    /// </summary>
+    /// <param name="app">The app pipeline.</param>
+    /// <returns>The app pipeline with the middleware mounted.</returns>
+    public static IApplicationBuilder UseSystemStatus(this IApplicationBuilder app)
+    {
+        app.UseMiddleware<SystemStatusMiddleware>();
+        return app;
+    }
 }

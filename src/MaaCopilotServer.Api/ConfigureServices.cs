@@ -4,6 +4,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
+using MaaCopilotServer.Api.Jobs;
 using MaaCopilotServer.Api.Services;
 using MaaCopilotServer.Application.Common.Extensions;
 using MaaCopilotServer.Application.Common.Interfaces;
@@ -45,6 +46,8 @@ public static class ConfigureServices
 
         services.AddHttpContextAccessor();
         services.AddScoped<ICurrentUserService, CurrentUserService>();
+
+        services.AddHostedService<DatabaseInitializer>();
 
         services.AddAuthentication(options =>
             {

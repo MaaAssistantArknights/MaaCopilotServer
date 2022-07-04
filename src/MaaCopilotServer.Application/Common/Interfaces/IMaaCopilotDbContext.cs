@@ -33,6 +33,11 @@ public interface IMaaCopilotDbContext
     DbSet<CopilotOperationRating> CopilotOperationRatings { get; }
 
     /// <summary>
+    ///     The DB set of some system persistent data.
+    /// </summary>
+    DbSet<PersistStorage> PersistStorage { get; }
+
+    /// <summary>
     ///     Saves changes to DB asynchronously.
     /// </summary>
     /// <param name="cancellationToken">The cancellation token.</param>

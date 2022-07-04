@@ -45,6 +45,9 @@ public class MaaCopilotDbContext : DbContext, IMaaCopilotDbContext
     /// <inheritdoc />
     public DbSet<CopilotToken> CopilotTokens { get; set; } = null!;
 
+    /// <inheritdoc />
+    public DbSet<PersistStorage> PersistStorage { get; set; } = null!;
+
     /// <inheritdoc/>
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
