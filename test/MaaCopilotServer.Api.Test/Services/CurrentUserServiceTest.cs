@@ -178,7 +178,7 @@ public class CurrentUserServiceTest
 
             return httpContext.Object;
         });
-        var testConfiguration = new Dictionary<string, string> { { "Switches:Apm", apmSwitch.ToString().ToLower(CultureInfo.CurrentCulture) } };
+        var testConfiguration = new Dictionary<string, string> { { "Switches:Apm", apmSwitch.ToString().ToLowerInvariant() } };
         var configuration = new ConfigurationBuilder()
             .AddInMemoryCollection(testConfiguration)
             .Build();
@@ -211,7 +211,7 @@ public class CurrentUserServiceTest
         });
         var testConfiguration = new Dictionary<string, string>
         {
-            { "Switches:Apm", apmSwitch.ToString().ToLower(CultureInfo.CurrentCulture) }
+            { "Switches:Apm", apmSwitch.ToString().ToLowerInvariant() }
         };
         var configuration = new ConfigurationBuilder()
             .AddInMemoryCollection(testConfiguration)
@@ -234,7 +234,7 @@ public class CurrentUserServiceTest
         var httpContextAccessor = new Mock<IHttpContextAccessor>();
         var testConfiguration = new Dictionary<string, string>
         {
-            { "Switches:Apm", apmSwitch.ToString().ToLower(CultureInfo.CurrentCulture) }
+            { "Switches:Apm", apmSwitch.ToString().ToLowerInvariant() }
         };
         var configuration = new ConfigurationBuilder()
             .AddInMemoryCollection(testConfiguration)
