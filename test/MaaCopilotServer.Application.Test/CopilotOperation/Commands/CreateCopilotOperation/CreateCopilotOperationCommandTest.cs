@@ -2,6 +2,8 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using MaaCopilotServer.Application.Common.Interfaces;
@@ -20,6 +22,7 @@ namespace MaaCopilotServer.Application.Test.CopilotOperation.Commands.CreateCopi
 /// Tests <see cref="CreateCopilotOperationCommandHandler"/>.
 /// </summary>
 [TestClass]
+[ExcludeFromCodeCoverage]
 public class CreateCopilotOperationCommandTest
 {
     /// <summary>
@@ -41,7 +44,7 @@ public class CreateCopilotOperationCommandTest
     /// Tests <see cref="CreateCopilotOperationCommandHandler.Handle(CreateCopilotOperationCommand, CancellationToken)"/>.
     /// </summary>
     [TestMethod]
-    public void TestHandle_Full()
+    public void TestHandleFull()
     {
         var testJsonContent = new MaaCopilotOperation
         {
@@ -61,7 +64,7 @@ public class CreateCopilotOperationCommandTest
     /// Tests <see cref="CreateCopilotOperationCommandHandler.Handle(CreateCopilotOperationCommand, CancellationToken)"/>.
     /// </summary>
     [TestMethod]
-    public void TestHandle_FullRequired()
+    public void TestHandleFullRequired()
     {
         var testJsonContent = new MaaCopilotOperation
         {
@@ -80,7 +83,7 @@ public class CreateCopilotOperationCommandTest
     /// Tests <see cref="CreateCopilotOperationCommandHandler.Handle(CreateCopilotOperationCommand, CancellationToken)"/> without <c>doc</c> field.
     /// </summary>
     [TestMethod]
-    public void TestHandle_WithoutDoc()
+    public void TestHandleWithoutDoc()
     {
         var testJsonContent = new MaaCopilotOperation
         {
@@ -99,7 +102,7 @@ public class CreateCopilotOperationCommandTest
     /// Tests <see cref="CreateCopilotOperationCommandHandler.Handle(CreateCopilotOperationCommand, CancellationToken)"/> without <c>doc</c> field (undefined).
     /// </summary>
     [TestMethod]
-    public void TestHandle_WithoutDocUndefined()
+    public void TestHandleWithoutDocUndefined()
     {
         var testJsonContent = new MaaCopilotOperation
         {
@@ -118,7 +121,7 @@ public class CreateCopilotOperationCommandTest
     /// Tests <see cref="CreateCopilotOperationCommandHandler.Handle(CreateCopilotOperationCommand, CancellationToken)"/> without <c>doc</c> field (undefined).
     /// </summary>
     [TestMethod]
-    public void TestHandle_WithoutRequiredDocTitle()
+    public void TestHandleWithoutRequiredDocTitle()
     {
         var testJsonContent = new MaaCopilotOperation
         {
@@ -140,7 +143,7 @@ public class CreateCopilotOperationCommandTest
     /// Tests <see cref="CreateCopilotOperationCommandHandler.Handle(CreateCopilotOperationCommand, CancellationToken)"/> without <c>doc</c> field (undefined).
     /// </summary>
     [TestMethod]
-    public void TestHandle_WithoutRequiredDocDetails()
+    public void TestHandleWithoutRequiredDocDetails()
     {
         var testJsonContent = new MaaCopilotOperation
         {
@@ -159,7 +162,7 @@ public class CreateCopilotOperationCommandTest
     /// Tests <see cref="CreateCopilotOperationCommandHandler.Handle(CreateCopilotOperationCommand, CancellationToken)"/> without <c>doc</c> field (undefined).
     /// </summary>
     [TestMethod]
-    public void TestHandle_WithoutRequiredDoc()
+    public void TestHandleWithoutRequiredDoc()
     {
         var testJsonContent = new MaaCopilotOperation
         {
@@ -177,7 +180,7 @@ public class CreateCopilotOperationCommandTest
     /// Tests <see cref="CreateCopilotOperationCommandHandler.Handle(CreateCopilotOperationCommand, CancellationToken)"/> without a <c>name</c> field in <c>operators</c>.
     /// </summary>
     [TestMethod]
-    public void TestHandle_MissingOperatorName()
+    public void TestHandleMissingOperatorName()
     {
         var testJsonContent = new MaaCopilotOperation
         {
@@ -196,7 +199,7 @@ public class CreateCopilotOperationCommandTest
     /// Tests <see cref="CreateCopilotOperationCommandHandler.Handle(CreateCopilotOperationCommand, CancellationToken)"/> with duplicate items in <c>operators</c> field.
     /// </summary>
     [TestMethod]
-    public void TestHandle_DuplicateOperators()
+    public void TestHandleDuplicateOperators()
     {
         var testJsonContent = new MaaCopilotOperation
         {
@@ -258,7 +261,7 @@ public class CreateCopilotOperationCommandTest
             entity.Details.Should().Be(testJsonContent.Doc?.Details ?? string.Empty);
 
             var entityOperators = (from @operator in testJsonContent.Operators ?? Array.Empty<MaaCopilotOperationOperator>()
-                                   select $"{@operator.Name}::{@operator.Skill?.ToString() ?? "1"}").Distinct().ToList();
+                                   select $"{@operator.Name}::{@operator.Skill?.ToString(CultureInfo.CurrentCulture) ?? "1"}").Distinct().ToList();
             entity.Operators.Should().BeEquivalentTo(entityOperators);
         }
     }

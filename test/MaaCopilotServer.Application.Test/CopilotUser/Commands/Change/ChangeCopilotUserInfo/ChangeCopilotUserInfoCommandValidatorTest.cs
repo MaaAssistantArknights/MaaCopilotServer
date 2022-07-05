@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Application.CopilotUser.Commands.ChangeCopilotUserInfo;
 using MaaCopilotServer.Application.Test.TestHelpers;
 
@@ -11,6 +12,7 @@ namespace MaaCopilotServer.Application.Test.CopilotUser.Commands.Change.ChangeCo
 /// Tests <see cref="ChangeCopilotUserInfoCommandValidator"/>.
 /// </summary>
 [TestClass]
+[ExcludeFromCodeCoverage]
 public class ChangeCopilotUserInfoCommandValidatorTest
 {
     /// <summary>

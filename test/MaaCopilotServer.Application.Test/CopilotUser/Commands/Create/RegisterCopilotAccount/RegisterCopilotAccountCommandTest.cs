@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Application.CopilotUser.Commands.RegisterCopilotAccount;
 using MaaCopilotServer.Application.Test.TestHelpers;
 using Microsoft.AspNetCore.Http;
@@ -12,6 +13,7 @@ namespace MaaCopilotServer.Application.Test.CopilotUser.Commands.Create.Register
 /// Tests <see cref="RegisterCopilotAccountCommandHandler"/>.
 /// </summary>
 [TestClass]
+[ExcludeFromCodeCoverage]
 public class RegisterCopilotAccountCommandHandlerTest
 {
     /// <summary>
@@ -19,7 +21,7 @@ public class RegisterCopilotAccountCommandHandlerTest
     /// with email in use.
     /// </summary>
     [TestMethod]
-    public void TestHandle_EmailInUse()
+    public void TestHandleEmailInUse()
     {
         var user = new Domain.Entities.CopilotUser(HandlerTest.TestEmail, string.Empty, string.Empty, Domain.Enums.UserRole.User, null);
 
@@ -39,7 +41,7 @@ public class RegisterCopilotAccountCommandHandlerTest
     /// with email failed to send.
     /// </summary>
     [TestMethod]
-    public void TestHandle_EmailFailedToSend()
+    public void TestHandleEmailFailedToSend()
     {
         var result = new HandlerTest()
             .SetupHashPassword()
@@ -96,7 +98,7 @@ public class RegisterCopilotAccountCommandHandlerTest
     /// with default role higher than <see cref="Domain.Enums.UserRole.Uploader"/>.
     /// </summary>
     [TestMethod]
-    public void TestHandle_DefaultRoleTooHigh()
+    public void TestHandleDefaultRoleTooHigh()
     {
         var result = new HandlerTest()
             .SetupHashPassword()

@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Application.CopilotUser.Commands.ChangeCopilotUserInfo;
 using MaaCopilotServer.Application.Test.TestHelpers;
 using Microsoft.AspNetCore.Http;
@@ -12,13 +13,14 @@ namespace MaaCopilotServer.Application.Test.CopilotUser.Commands.Change.ChangeCo
 /// Tests <see cref="ChangeCopilotUserInfoCommandHandler"/>.
 /// </summary>
 [TestClass]
+[ExcludeFromCodeCoverage]
 public class ChangeCopilotUserInfoCommandTest
 {
     /// <summary>
     /// Tests <see cref="ChangeCopilotUserInfoCommandHandler.Handle(ChangeCopilotUserInfoCommand, CancellationToken)"/> with non-existing user.
     /// </summary>
     [TestMethod]
-    public void TestHandle_UserNotFound()
+    public void TestHandleUserNotFound()
     {
         var response = new HandlerTest()
             .TestChangeCopilotUserInfo(new()
@@ -38,7 +40,7 @@ public class ChangeCopilotUserInfoCommandTest
     [DataTestMethod]
     [DataRow(Domain.Enums.UserRole.Admin, Domain.Enums.UserRole.Admin)]
     [DataRow(Domain.Enums.UserRole.SuperAdmin, Domain.Enums.UserRole.Admin)]
-    public void TestHandle_OperatorPermissionDenied(Domain.Enums.UserRole userRole, Domain.Enums.UserRole operatorRole)
+    public void TestHandleOperatorPermissionDenied(Domain.Enums.UserRole userRole, Domain.Enums.UserRole operatorRole)
     {
         var user = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, userRole, null);
         var @operator = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, operatorRole, null);
@@ -60,7 +62,7 @@ public class ChangeCopilotUserInfoCommandTest
     /// Tests <see cref="ChangeCopilotUserInfoCommandHandler.Handle(ChangeCopilotUserInfoCommand, CancellationToken)"/> with super admin role changes.
     /// </summary>
     [TestMethod]
-    public void TestHandle_SuperAdminRoleChanges()
+    public void TestHandleSuperAdminRoleChanges()
     {
         var user = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, Domain.Enums.UserRole.SuperAdmin, null);
         var @operator = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, Domain.Enums.UserRole.SuperAdmin, null);
@@ -82,7 +84,7 @@ public class ChangeCopilotUserInfoCommandTest
     /// Tests <see cref="ChangeCopilotUserInfoCommandHandler.Handle(ChangeCopilotUserInfoCommand, CancellationToken)"/> with email address in use.
     /// </summary>
     [TestMethod]
-    public void TestHandle_EmailInUse()
+    public void TestHandleEmailInUse()
     {
         var user = new Domain.Entities.CopilotUser(HandlerTest.TestEmail, string.Empty, string.Empty, Domain.Enums.UserRole.User, null);
         var @operator = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, Domain.Enums.UserRole.Admin, null);
@@ -105,7 +107,7 @@ public class ChangeCopilotUserInfoCommandTest
     /// Tests <see cref="ChangeCopilotUserInfoCommandHandler.Handle(ChangeCopilotUserInfoCommand, CancellationToken)"/> with valid request.
     /// </summary>
     [TestMethod]
-    public void TestHandle_Valid()
+    public void TestHandleValid()
     {
         var user = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, Domain.Enums.UserRole.User, null);
         user.ActivateUser(Guid.Empty);

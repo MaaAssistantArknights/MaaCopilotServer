@@ -2,7 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
-
+using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Application.Common.Extensions;
 using MaaCopilotServer.Domain.Attributes;
 using Microsoft.Extensions.Configuration;
@@ -13,6 +13,7 @@ namespace MaaCopilotServer.Application.Test.Common.Extensions;
 ///     Tests <see cref="ConfigurationExtension" />.
 /// </summary>
 [TestClass]
+[ExcludeFromCodeCoverage]
 public class ConfigurationExtensionTest
 {
     /// <summary>
@@ -20,7 +21,7 @@ public class ConfigurationExtensionTest
     ///     <see cref="OptionNameAttribute" />.
     /// </summary>
     [TestMethod]
-    public void TestGetOption_WithOptionName()
+    public void TestGetOptionWithOptionName()
     {
         var configurationMock = new Mock<IConfiguration>();
         configurationMock
@@ -38,7 +39,7 @@ public class ConfigurationExtensionTest
     ///     .
     /// </summary>
     [TestMethod]
-    public void TestGetOption_WithoutOptionName()
+    public void TestGetOptionWithoutOptionName()
     {
         var configuration = new Mock<IConfiguration>().Object;
 

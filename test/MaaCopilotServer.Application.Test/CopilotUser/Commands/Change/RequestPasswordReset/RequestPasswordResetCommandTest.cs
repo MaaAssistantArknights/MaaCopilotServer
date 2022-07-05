@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Application.CopilotUser.Commands.RequestPasswordReset;
 using MaaCopilotServer.Application.Test.TestHelpers;
 using Microsoft.AspNetCore.Http;
@@ -12,13 +13,14 @@ namespace MaaCopilotServer.Application.Test.CopilotUser.Commands.Change.RequestP
 /// Tests <see cref="RequestPasswordResetCommandHandler"/>.
 /// </summary>
 [TestClass]
+[ExcludeFromCodeCoverage]
 public class RequestPasswordResetCommandTest
 {
     /// <summary>
     /// Tests <see cref="RequestPasswordResetCommandHandler.Handle(RequestPasswordResetCommand, CancellationToken)"/> with non-existing email.
     /// </summary>
     [TestMethod]
-    public void TestHandle_UserNotFound()
+    public void TestHandleUserNotFound()
     {
         var response = new HandlerTest()
             .TestRequestPasswordReset(new()
@@ -34,7 +36,7 @@ public class RequestPasswordResetCommandTest
     /// Tests <see cref="RequestPasswordResetCommandHandler.Handle(RequestPasswordResetCommand, CancellationToken)"/> with the case when the email is not sent successfully.
     /// </summary>
     [TestMethod]
-    public void TestHandle_SendingEmailFailed()
+    public void TestHandleSendingEmailFailed()
     {
         var user = new Domain.Entities.CopilotUser(HandlerTest.TestEmail, string.Empty, string.Empty, Domain.Enums.UserRole.User, null);
         var response = new HandlerTest()
@@ -56,7 +58,7 @@ public class RequestPasswordResetCommandTest
     [DataTestMethod]
     [DataRow(false)]
     [DataRow(true)]
-    public void TestHandle_Successful(bool alreadyHaveToken)
+    public void TestHandleSuccessful(bool alreadyHaveToken)
     {
         var user = new Domain.Entities.CopilotUser(HandlerTest.TestEmail, string.Empty, string.Empty, Domain.Enums.UserRole.User, null);
         var result = new HandlerTest()

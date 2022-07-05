@@ -2,8 +2,9 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
-using MaaCopilotServer.Application.Test.TestHelpers;
+using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Application.CopilotUser.Commands.DeleteCopilotUser;
+using MaaCopilotServer.Application.Test.TestHelpers;
 using Microsoft.AspNetCore.Http;
 
 namespace MaaCopilotServer.Application.Test.CopilotUser.Commands.Other.DeleteCopilotUser;
@@ -12,6 +13,7 @@ namespace MaaCopilotServer.Application.Test.CopilotUser.Commands.Other.DeleteCop
 /// Tests <see cref="DeleteCopilotUserCommandHandler"/>
 /// </summary>
 [TestClass]
+[ExcludeFromCodeCoverage]
 public class DeleteCopilotUserCommandHandlerTest
 {
     /// <summary>
@@ -19,7 +21,7 @@ public class DeleteCopilotUserCommandHandlerTest
     /// with user not found.
     /// </summary>
     [TestMethod]
-    public void TestHandle_UserNotFound()
+    public void TestHandleUserNotFound()
     {
         var result = new HandlerTest()
             .TestDeleteCopilotUser(new()
@@ -35,7 +37,7 @@ public class DeleteCopilotUserCommandHandlerTest
     /// with insufficient permission.
     /// </summary>
     [TestMethod]
-    public void TestHandle_InsufficientPermission()
+    public void TestHandleInsufficientPermission()
     {
         var user = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, Domain.Enums.UserRole.SuperAdmin, null);
         var @operator = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, Domain.Enums.UserRole.Admin, null);

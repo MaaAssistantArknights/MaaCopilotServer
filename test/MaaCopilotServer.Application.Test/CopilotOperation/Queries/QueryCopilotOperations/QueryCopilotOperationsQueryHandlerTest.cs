@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Application.Common.Models;
 using MaaCopilotServer.Application.CopilotOperation.Queries.QueryCopilotOperations;
@@ -18,17 +19,18 @@ namespace MaaCopilotServer.Application.Test.CopilotOperation.Queries.QueryCopilo
 /// Tests <see cref="QueryCopilotOperationsQueryHandler"/>.
 /// </summary>
 [TestClass]
+[ExcludeFromCodeCoverage]
 public class QueryCopilotOperationsQueryHandlerTest
 {
     /// <summary>
     /// The index of entity that has the highest views.
     /// </summary>
-    private static readonly int s_highestViewId = 9;
+    private const int HighestViewId = 9;
 
     /// <summary>
     /// The index of entity that has the highest rate.
     /// </summary>
-    private static readonly int s_highestRateId = 8;
+    private const int HighestRateId = 8;
 
     /// <summary>
     ///     The service for copilot operations.
@@ -72,12 +74,12 @@ public class QueryCopilotOperationsQueryHandlerTest
         }
 
         // Set operation[9] to have one view
-        data[s_highestViewId].AddViewCount();
-        data[s_highestViewId].AddViewCount();
+        data[HighestViewId].AddViewCount();
+        data[HighestViewId].AddViewCount();
 
         // Set operation[8] to have one like and ine view
-        data[s_highestRateId].AddLike(Guid.Empty);
-        data[s_highestRateId].AddViewCount();
+        data[HighestRateId].AddLike(Guid.Empty);
+        data[HighestRateId].AddViewCount();
 
         // Calculate the hot score for each operation
         foreach (var oper in data)
@@ -100,7 +102,7 @@ public class QueryCopilotOperationsQueryHandlerTest
     [DataTestMethod]
     [DataRow(false)]
     [DataRow(true)]
-    public void TestHandle_All(bool descending)
+    public void TestHandleAll(bool descending)
     {
         var (users, test) = InitializeDatabase(new HandlerTest());
         var response = test.SetupGetUserIdentity(users[0].EntityId)
@@ -131,7 +133,7 @@ public class QueryCopilotOperationsQueryHandlerTest
     [DataTestMethod]
     [DataRow(false)]
     [DataRow(true)]
-    public void TestHandle_PageAndLimit(bool descending)
+    public void TestHandlePageAndLimit(bool descending)
     {
         var (users, test) = InitializeDatabase(new HandlerTest());
         var response = test.SetupGetUserIdentity(users[0].EntityId)
@@ -159,7 +161,7 @@ public class QueryCopilotOperationsQueryHandlerTest
     /// Tests querying operations of current user.
     /// </summary>
     [TestMethod]
-    public void TestHandle_CurrentUser()
+    public void TestHandleCurrentUser()
     {
         var (users, test) = InitializeDatabase(new HandlerTest());
         var response = test.SetupGetUserIdentity(users[0].EntityId)
@@ -188,7 +190,7 @@ public class QueryCopilotOperationsQueryHandlerTest
     /// Tests querying with uploader ID.
     /// </summary>
     [TestMethod]
-    public void TestHandle_WithUploaderId()
+    public void TestHandleWithUploaderId()
     {
         var (users, test) = InitializeDatabase(new HandlerTest());
         var response = test.SetupGetUserIdentity(users[0].EntityId)
@@ -217,7 +219,7 @@ public class QueryCopilotOperationsQueryHandlerTest
     /// Tests querying with invalid current user.
     /// </summary>
     [TestMethod]
-    public void TestHandle_InvalidCurrentUser()
+    public void TestHandleInvalidCurrentUser()
     {
         var test = new HandlerTest();
         var response = test.SetupGetUserIdentity(null)
@@ -238,7 +240,7 @@ public class QueryCopilotOperationsQueryHandlerTest
     [DataTestMethod]
     [DataRow(false)]
     [DataRow(true)]
-    public void TestHandle_NotLoggedIn(bool descending)
+    public void TestHandleNotLoggedIn(bool descending)
     {
         var (_, test) = InitializeDatabase(new HandlerTest());
         var response = test.TestQueryCopilotOperations(new()
@@ -264,7 +266,7 @@ public class QueryCopilotOperationsQueryHandlerTest
     /// Tests querying with stage name.
     /// </summary>
     [TestMethod]
-    public void TestHandle_WithStageName()
+    public void TestHandleWithStageName()
     {
         var (users, test) = InitializeDatabase(new HandlerTest());
         var response = test.SetupGetUserIdentity(users[0].EntityId)
@@ -290,7 +292,7 @@ public class QueryCopilotOperationsQueryHandlerTest
     /// Tests querying with content.
     /// </summary>
     [TestMethod]
-    public void TestHandle_WithContent()
+    public void TestHandleWithContent()
     {
         var (users, test) = InitializeDatabase(new HandlerTest());
         var response = test.SetupGetUserIdentity(users[0].EntityId)
@@ -315,7 +317,7 @@ public class QueryCopilotOperationsQueryHandlerTest
     /// Tests querying with uploader's username.
     /// </summary>
     [TestMethod]
-    public void TestHandle_WithUploader()
+    public void TestHandleWithUploader()
     {
         var (users, test) = InitializeDatabase(new HandlerTest());
         var response = test.SetupGetUserIdentity(users[0].EntityId)
@@ -350,7 +352,7 @@ public class QueryCopilotOperationsQueryHandlerTest
     [DataRow("views", true)]
     [DataRow("hot", false)]
     [DataRow("hot", true)]
-    public void TestHandle_OrderBy(string orderBy, bool descending)
+    public void TestHandleOrderBy(string orderBy, bool descending)
     {
         var (users, test) = InitializeDatabase(new HandlerTest());
         var response = test.SetupGetUserIdentity(users[0].EntityId)
@@ -369,7 +371,7 @@ public class QueryCopilotOperationsQueryHandlerTest
         responseData.Total.Should().Be(10);
         responseData.Data.Should().NotBeNull().And.HaveCount(10);
         var data = responseData.Data!;
-        var highestId = orderBy == "views" ? s_highestViewId : s_highestRateId;
+        var highestId = orderBy == "views" ? HighestViewId : HighestRateId;
         if (descending)
         {
             data[0].Id.Should().Be(s_copilotOperationService.EncodeId(highestId));

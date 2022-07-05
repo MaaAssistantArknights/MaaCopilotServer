@@ -2,9 +2,10 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
+using MaaCopilotServer.Application.System.SendEmailTest;
 using MaaCopilotServer.Application.Test.TestHelpers;
 using Microsoft.AspNetCore.Http;
-using MaaCopilotServer.Application.System.SendEmailTest;
 
 namespace MaaCopilotServer.Application.Test.System.SendEmailTest;
 
@@ -12,6 +13,7 @@ namespace MaaCopilotServer.Application.Test.System.SendEmailTest;
 /// Tests <see cref="SendEmailTestCommandHandler"/>.
 /// </summary>
 [TestClass]
+[ExcludeFromCodeCoverage]
 public class SendEmailTestCommandHandlerTest
 {
     /// <summary>
@@ -19,7 +21,7 @@ public class SendEmailTestCommandHandlerTest
     /// with wrong token.
     /// </summary>
     [TestMethod]
-    public void TestHandle_InvalidToken()
+    public void TestHandleInvalidToken()
     {
         var response = new HandlerTest()
             .TestSendEmailTest(new()
@@ -36,7 +38,7 @@ public class SendEmailTestCommandHandlerTest
     /// with email failed to send.
     /// </summary>
     [TestMethod]
-    public void TestHandle_FailedToSend()
+    public void TestHandleFailedToSend()
     {
         var response = new HandlerTest()
             .SetupSendEmailAsync(false)

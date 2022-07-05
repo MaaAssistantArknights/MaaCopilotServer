@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using MaaCopilotServer.Api.Middleware;
 using MaaCopilotServer.Resources;
@@ -14,6 +15,7 @@ namespace MaaCopilotServer.Api.Test.Middleware;
 ///     Tests <see cref="RequestCultureMiddleware" />.
 /// </summary>
 [TestClass]
+[ExcludeFromCodeCoverage]
 public class RequestCultureMiddlewareTest
 {
     /// <summary>

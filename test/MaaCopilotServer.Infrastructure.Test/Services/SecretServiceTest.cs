@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Domain.Options;
 using MaaCopilotServer.Infrastructure.Services;
 using Microsoft.Extensions.Options;
@@ -12,6 +13,7 @@ namespace MaaCopilotServer.Infrastructure.Test.Services;
 /// Tests <see cref="SecretService"/>.
 /// </summary>
 [TestClass]
+[ExcludeFromCodeCoverage]
 public class SecretServiceTest
 {
     /// <summary>

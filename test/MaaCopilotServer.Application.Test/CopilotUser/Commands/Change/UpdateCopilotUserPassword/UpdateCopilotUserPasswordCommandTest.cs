@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Application.CopilotUser.Commands.UpdateCopilotUserPassword;
 using MaaCopilotServer.Application.Test.TestHelpers;
 using Microsoft.AspNetCore.Http;
@@ -12,13 +13,14 @@ namespace MaaCopilotServer.Application.Test.CopilotUser.Commands.Change.UpdateCo
 /// Tests <see cref="UpdateCopilotUserPasswordCommandHandler"/>.
 /// </summary>
 [TestClass]
+[ExcludeFromCodeCoverage]
 public class UpdateCopilotUserPasswordCommandTest
 {
     /// <summary>
     /// Tests <see cref="UpdateCopilotUserPasswordCommandHandler"/> with wrong original password.
     /// </summary>
     [TestMethod]
-    public void TestHandle_OriginalPasswordWrong()
+    public void TestHandleOriginalPasswordWrong()
     {
         var user = new Domain.Entities.CopilotUser(string.Empty, HandlerTest.TestHashedPassword, string.Empty, Domain.Enums.UserRole.User, null);
         var response = new HandlerTest()

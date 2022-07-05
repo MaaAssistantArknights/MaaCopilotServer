@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Application.CopilotOperation.Queries.GetCopilotOperation;
 using MaaCopilotServer.Application.Test.TestHelpers;
 
@@ -11,6 +12,7 @@ namespace MaaCopilotServer.Application.Test.CopilotOperation.Queries.GetCopilotO
 /// Tests <see cref="GetCopilotOperationQueryValidator"/>.
 /// </summary>
 [TestClass]
+[ExcludeFromCodeCoverage]
 public class GetCopilotOperationQueryValidatorTest
 {
     /// <summary>

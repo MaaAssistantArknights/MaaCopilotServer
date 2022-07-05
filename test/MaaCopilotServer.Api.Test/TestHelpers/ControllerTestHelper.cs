@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Api.Controllers;
 using MaaCopilotServer.Application.Common.Helpers;
 using MediatR;
@@ -12,6 +13,7 @@ namespace MaaCopilotServer.Api.Test.TestHelpers;
 /// <summary>
 /// The helper class for testing controllers.
 /// </summary>
+[ExcludeFromCodeCoverage]
 public static class ControllerTestHelper
 {
     /// <summary>
@@ -41,9 +43,20 @@ public static class ControllerTestHelper
     /// </typeparam>
     /// <param name="controllerBuilder">The builder function of the controller.</param>
     /// <param name="testMethod">The function to call a controller method.</param>
+    /// <exception cref="ArgumentNullException">Thrown when the arguments are null.</exception>
     public static void Test<TController>(Func<IMediator, TController> controllerBuilder, Func<TController, Task<ActionResult>> testMethod)
         where TController : MaaControllerBase
     {
+        if (controllerBuilder == null)
+        {
+            throw new ArgumentNullException(nameof(controllerBuilder));
+        }
+
+        if (testMethod == null)
+        {
+            throw new ArgumentNullException(nameof(testMethod));
+        }
+
         var testResponse = new object();
         var testResponseData = MaaApiResponseHelper.Ok(testResponse);
         var mediator = new Mock<IMediator>();

@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Application.CopilotUser.Commands.PasswordReset;
 using MaaCopilotServer.Application.Test.TestHelpers;
 using MaaCopilotServer.Domain.Entities;
@@ -13,13 +14,14 @@ namespace MaaCopilotServer.Application.Test.CopilotUser.Commands.Change.Password
 /// Tests <see cref="PasswordResetCommandHandler"/>.
 /// </summary>
 [TestClass]
+[ExcludeFromCodeCoverage]
 public class PasswordResetCommandTest
 {
     /// <summary>
     /// Tests <see cref="PasswordResetCommandHandler.Handle(PasswordResetCommand, CancellationToken)"/> with invalid token.
     /// </summary>
     [TestMethod]
-    public void TestHandle_InvalidToken()
+    public void TestHandleInvalidToken()
     {
         var response = new HandlerTest()
             .TestPasswordReset(new()
@@ -35,7 +37,7 @@ public class PasswordResetCommandTest
     /// Tests <see cref="PasswordResetCommandHandler.Handle(PasswordResetCommand, CancellationToken)"/> with expired token.
     /// </summary>
     [TestMethod]
-    public void TestHandle_ExpiredToken()
+    public void TestHandleExpiredToken()
     {
         var token = new CopilotToken(Guid.Empty, Domain.Enums.TokenType.UserPasswordReset, HandlerTest.TestToken, HandlerTest.TestTokenTimePast);
         var response = new HandlerTest()
@@ -53,7 +55,7 @@ public class PasswordResetCommandTest
     /// Tests <see cref="PasswordResetCommandHandler.Handle(PasswordResetCommand, CancellationToken)"/> with token of wrong type.
     /// </summary>
     [TestMethod]
-    public void TestHandle_WrongTypeToken()
+    public void TestHandleWrongTypeToken()
     {
         var token = new CopilotToken(Guid.Empty, Domain.Enums.TokenType.UserActivation, HandlerTest.TestToken, HandlerTest.TestTokenTimeFuture);
         var response = new HandlerTest()
@@ -71,7 +73,7 @@ public class PasswordResetCommandTest
     /// Tests <see cref="PasswordResetCommandHandler.Handle(PasswordResetCommand, CancellationToken)"/> with invalid user.
     /// </summary>
     [TestMethod]
-    public void TestHandle_InvalidUser()
+    public void TestHandleInvalidUser()
     {
         var token = new CopilotToken(Guid.Empty, Domain.Enums.TokenType.UserPasswordReset, HandlerTest.TestToken, HandlerTest.TestTokenTimeFuture);
         var response = new HandlerTest()
@@ -89,7 +91,7 @@ public class PasswordResetCommandTest
     /// Tests <see cref="PasswordResetCommandHandler.Handle(PasswordResetCommand, CancellationToken)"/> with valid data.
     /// </summary>
     [TestMethod]
-    public void TestHandle_Valid()
+    public void TestHandleValid()
     {
         var user = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, Domain.Enums.UserRole.User, null);
         var response = new HandlerTest()

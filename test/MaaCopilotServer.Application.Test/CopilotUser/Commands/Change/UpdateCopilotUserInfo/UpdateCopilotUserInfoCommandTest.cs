@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Application.CopilotUser.Commands.UpdateCopilotUserInfo;
 using MaaCopilotServer.Application.Test.TestHelpers;
 using Microsoft.AspNetCore.Http;
@@ -12,13 +13,14 @@ namespace MaaCopilotServer.Application.Test.CopilotUser.Commands.Change.UpdateCo
 /// Tests <see cref="UpdateCopilotUserInfoCommandHandler"/>.
 /// </summary>
 [TestClass]
+[ExcludeFromCodeCoverage]
 public class UpdateCopilotUserInfoCommandTest
 {
     /// <summary>
     /// Tests <see cref="UpdateCopilotUserInfoCommandHandler.Handle(UpdateCopilotUserInfoCommand, CancellationToken)"/> with username changes.
     /// </summary>
     [TestMethod]
-    public void TestHandle_ChangeUsername()
+    public void TestHandleChangeUsername()
     {
         var user = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, Domain.Enums.UserRole.User, null);
         var response = new HandlerTest()
@@ -39,7 +41,7 @@ public class UpdateCopilotUserInfoCommandTest
     /// but email is already in use.
     /// </summary>
     [TestMethod]
-    public void TestHandle_EmailAlreadyInUse()
+    public void TestHandleEmailAlreadyInUse()
     {
         var user = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, Domain.Enums.UserRole.User, null);
         var user2 = new Domain.Entities.CopilotUser(HandlerTest.TestEmail, string.Empty, string.Empty, Domain.Enums.UserRole.User, null);
@@ -61,7 +63,7 @@ public class UpdateCopilotUserInfoCommandTest
     /// but the activation email failed to send.
     /// </summary>
     [TestMethod]
-    public void TestHandle_ActivationEmailFailedToSend()
+    public void TestHandleActivationEmailFailedToSend()
     {
         var user = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, Domain.Enums.UserRole.User, null);
         var response = new HandlerTest()
@@ -82,7 +84,7 @@ public class UpdateCopilotUserInfoCommandTest
     /// Tests <see cref="UpdateCopilotUserInfoCommandHandler.Handle(UpdateCopilotUserInfoCommand, CancellationToken)"/> with email changes.
     /// </summary>
     [TestMethod]
-    public void TestHandle_ChangeEmail()
+    public void TestHandleChangeEmail()
     {
         var user = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, Domain.Enums.UserRole.User, null);
         user.ActivateUser(Guid.Empty);

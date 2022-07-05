@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Domain.Entities;
 using MaaCopilotServer.Domain.Enums;
 using MaaCopilotServer.Domain.Options;
@@ -15,18 +16,19 @@ namespace MaaCopilotServer.Infrastructure.Test.Services;
 /// Tests <see cref="CopilotOperationService"/>.
 /// </summary>
 [TestClass]
+[ExcludeFromCodeCoverage]
 public class CopilotIdServiceTest
 {
     private readonly CopilotOperationService _copilotOperationService
         = new(Options.Create(new CopilotOperationOption
-            {
-                DislikeMultiplier = 2,
-                ViewMultiplier = 1,
-                LikeMultiplier = 10,
-                InitialHotScore = 100,
-                RequireDetails = default,
-                RequireTitle = default
-            }), new DomainString());
+        {
+            DislikeMultiplier = 2,
+            ViewMultiplier = 1,
+            LikeMultiplier = 10,
+            InitialHotScore = 100,
+            RequireDetails = default,
+            RequireTitle = default
+        }), new DomainString());
 
     /// <summary>
     /// Tests <see cref="CopilotOperationService.EncodeId(long)"/>.
@@ -41,7 +43,7 @@ public class CopilotIdServiceTest
     /// Tests <see cref="CopilotOperationService.DecodeId(string)"/> with invalid ID.
     /// </summary>
     [TestMethod]
-    public void TestDecodeId_Invalid()
+    public void TestDecodeIdInvalid()
     {
         _copilotOperationService.DecodeId("invalid").Should().BeNull();
     }
@@ -50,7 +52,7 @@ public class CopilotIdServiceTest
     /// Tests <see cref="CopilotOperationService.DecodeId(string)"/> with ID out of range.
     /// </summary>
     [TestMethod]
-    public void TestDecodeId_OutOfRange()
+    public void TestDecodeIdOutOfRange()
     {
         _copilotOperationService.DecodeId("9999").Should().BeNull();
     }
@@ -68,7 +70,7 @@ public class CopilotIdServiceTest
     /// Tests <see cref="CopilotOperationService.CalculateHotScore(CopilotOperation)"/>.
     /// </summary>
     [TestMethod]
-    public void TestCalculateHotScore_FromEntity()
+    public void TestCalculateHotScoreFromEntity()
     {
         var entity = new CopilotOperation(
             10001,
@@ -91,7 +93,7 @@ public class CopilotIdServiceTest
     /// Tests <see cref="CopilotOperationService.CalculateHotScore(int, int, int)"/>.
     /// </summary>
     [TestMethod]
-    public void TestCalculateHotScore_FromParam()
+    public void TestCalculateHotScoreFromParam()
     {
         _copilotOperationService.CalculateHotScore(1, 1, 1).Should().Be(100 + 2 + 1 + 10);
     }

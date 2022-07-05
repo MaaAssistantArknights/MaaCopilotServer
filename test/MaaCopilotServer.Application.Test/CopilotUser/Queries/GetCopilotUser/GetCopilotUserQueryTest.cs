@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Application.CopilotUser.Queries.GetCopilotUser;
 using MaaCopilotServer.Application.Test.TestHelpers;
 using Microsoft.AspNetCore.Http;
@@ -12,6 +13,7 @@ namespace MaaCopilotServer.Application.Test.CopilotUser.Queries.GetCopilotUser;
 /// Tests <see cref="GetCopilotUserQueryHandler"/>.
 /// </summary>
 [TestClass]
+[ExcludeFromCodeCoverage]
 public class GetCopilotUserQueryHandlerTest
 {
     /// <summary>
@@ -19,7 +21,7 @@ public class GetCopilotUserQueryHandlerTest
     /// with null current user identity.
     /// </summary>
     [TestMethod]
-    public void TestHandle_CurrentUserNull()
+    public void TestHandleCurrentUserNull()
     {
         var result = new HandlerTest()
             .SetupGetUserIdentity(null)
@@ -36,7 +38,7 @@ public class GetCopilotUserQueryHandlerTest
     /// with user not found.
     /// </summary>
     [TestMethod]
-    public void TestHandle_UserNotFound()
+    public void TestHandleUserNotFound()
     {
         var result = new HandlerTest()
             .SetupGetUserIdentity(null)
@@ -75,7 +77,7 @@ public class GetCopilotUserQueryHandlerTest
     /// with current user.
     /// </summary>
     [TestMethod]
-    public void TestHandle_CurrentUser()
+    public void TestHandleCurrentUser()
     {
         var user = new Domain.Entities.CopilotUser(HandlerTest.TestEmail, string.Empty, HandlerTest.TestUsername, Domain.Enums.UserRole.User, null);
 

@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Application.CopilotOperation.Queries.GetCopilotOperation;
 using MaaCopilotServer.Application.Test.TestHelpers;
@@ -17,6 +18,7 @@ namespace MaaCopilotServer.Application.Test.CopilotOperation.Queries.GetCopilotO
 /// Tests <see cref="GetCopilotOperationQueryHandler"/>.
 /// </summary>
 [TestClass]
+[ExcludeFromCodeCoverage]
 public class GetCopilotOperationQueryTest
 {
     /// <summary>
@@ -58,7 +60,7 @@ public class GetCopilotOperationQueryTest
     /// with invalid ID.
     /// </summary>
     [TestMethod]
-    public void TestHandle_InvalidId()
+    public void TestHandleInvalidId()
     {
         var response = new HandlerTest()
             .TestGetCopilotOperation(new()
@@ -75,7 +77,7 @@ public class GetCopilotOperationQueryTest
     /// with ID that does not exist.
     /// </summary>
     [TestMethod]
-    public void TestHandle_EntityNotFound()
+    public void TestHandleEntityNotFound()
     {
         var response = new HandlerTest()
             .TestGetCopilotOperation(new()
