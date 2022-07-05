@@ -6,7 +6,7 @@
 
 using MaaCopilotServer.GameData.Constants;
 
-namespace MaaCopilotServer.Api.Constants;
+namespace MaaCopilotServer.Domain.Constants;
 
 /// <summary>
 ///     System constants.

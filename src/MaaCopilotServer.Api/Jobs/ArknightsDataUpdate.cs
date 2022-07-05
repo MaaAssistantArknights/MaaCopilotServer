@@ -7,6 +7,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using MaaCopilotServer.Api.Constants;
 using MaaCopilotServer.Application.Common.Enum;
+using MaaCopilotServer.Domain.Constants;
 using MaaCopilotServer.Domain.Entities;
 using MaaCopilotServer.Domain.Options;
 using MaaCopilotServer.GameData;
