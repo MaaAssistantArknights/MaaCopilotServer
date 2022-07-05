@@ -9,7 +9,7 @@ namespace MaaCopilotServer.GameData.Model;
 /// <summary>
 ///     Data from <c>level.json</c>
 /// </summary>
-internal record ArkLevel
+public record ArkLevel
 {
     /// <summary>
     ///     Level name
@@ -18,7 +18,7 @@ internal record ArkLevel
     ///     坍塌
     /// </example>
     [JsonPropertyName("name")]
-    internal string Name { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
 
     /// <summary>
     ///     Stage code
@@ -27,7 +27,7 @@ internal record ArkLevel
     ///     0-1
     /// </example>
     [JsonPropertyName("code")]
-    internal string Code { get; set; } = string.Empty;
+    public string Code { get; set; } = string.Empty;
 
     /// <summary>
     ///     Level id
@@ -36,7 +36,7 @@ internal record ArkLevel
     ///     obt/main/level_main_00-01
     /// </example>
     [JsonPropertyName("levelId")]
-    internal string LevelId { get; set; } = string.Empty;
+    public string LevelId { get; set; } = string.Empty;
 
     /// <summary>
     ///     Stage id
@@ -45,17 +45,17 @@ internal record ArkLevel
     ///     main_00-01
     /// </example>
     [JsonPropertyName("stageId")]
-    internal string StageId { get; set; } = string.Empty;
+    public string StageId { get; set; } = string.Empty;
 
     /// <summary>
     ///     Level map width
     /// </summary>
     [JsonPropertyName("width")]
-    internal int Width { get; set; }
+    public int Width { get; set; }
 
     /// <summary>
     ///     Level map height
     /// </summary>
     [JsonPropertyName("height")]
-    internal int Height { get; set; }
+    public int Height { get; set; }
 }

@@ -9,7 +9,7 @@ namespace MaaCopilotServer.GameData.Model;
 /// <summary>
 ///     Data from <c>activity_table.json</c>
 /// </summary>
-internal record ArkActivity
+public record ArkActivity
 {
     /// <summary>
     ///     Activity id
@@ -18,7 +18,7 @@ internal record ArkActivity
     ///     act9d0
     /// </example>
     [JsonPropertyName("id")]
-    internal string Id { get; set; } = string.Empty;
+    public string Id { get; set; } = string.Empty;
 
     /// <summary>
     ///     Activity name
@@ -27,5 +27,5 @@ internal record ArkActivity
     ///     生于黑夜
     /// </example>
     [JsonPropertyName("name")]
-    internal string Name { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
 }

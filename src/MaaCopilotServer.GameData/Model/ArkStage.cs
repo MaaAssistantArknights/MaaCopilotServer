@@ -9,7 +9,7 @@ namespace MaaCopilotServer.GameData.Model;
 /// <summary>
 ///     Data from <c>stage_table.json</c>
 /// </summary>
-internal record ArkStage
+public record ArkStage
 {
     /// <summary>
     ///     Level id, call <see cref="string.ToLower()"/> before use this value.
@@ -18,7 +18,7 @@ internal record ArkStage
     ///     Activities/ACT5D0/level_act5d0_ex08
     /// </example>
     [JsonPropertyName("levelId")]
-    internal string LevelId { get; set; } = string.Empty;
+    public string LevelId { get; set; } = string.Empty;
 
     /// <summary>
     ///     Stage zone id
@@ -27,7 +27,7 @@ internal record ArkStage
     ///     act14d7_zone2
     /// </example>
     [JsonPropertyName("zoneId")]
-    internal string ZoneId { get; set; } = string.Empty;
+    public string ZoneId { get; set; } = string.Empty;
 
     /// <summary>
     ///     Stage id
@@ -36,7 +36,7 @@ internal record ArkStage
     ///     act5d0_ex08
     /// </example>
     [JsonPropertyName("stageId")]
-    internal string StageId { get; set; } = string.Empty;
+    public string StageId { get; set; } = string.Empty;
 
     /// <summary>
     ///     Stage code
@@ -45,5 +45,5 @@ internal record ArkStage
     ///    CB-EX8
     /// </example>
     [JsonPropertyName("code")]
-    internal string Code { get; set; } = string.Empty;
+    public string Code { get; set; } = string.Empty;
 }

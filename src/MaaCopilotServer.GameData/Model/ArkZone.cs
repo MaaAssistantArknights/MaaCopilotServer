@@ -9,7 +9,7 @@ namespace MaaCopilotServer.GameData.Model;
 /// <summary>
 ///     Data from <c>zone_table.json</c>
 /// </summary>
-internal record ArkZone
+public record ArkZone
 {
     /// <summary>
     ///     Zone id
@@ -18,7 +18,7 @@ internal record ArkZone
     ///     main_10
     /// </example>
     [JsonPropertyName("zoneID")]
-    internal string ZoneId { get; set; } = string.Empty;
+    public string ZoneId { get; set; } = string.Empty;
 
     /// <summary>
     ///     Zone name first
@@ -27,7 +27,7 @@ internal record ArkZone
     ///     第十章
     /// </example>
     [JsonPropertyName("zoneNameFirst")]
-    internal string ZoneNameFirst { get; set; } = string.Empty;
+    public string ZoneNameFirst { get; set; } = string.Empty;
 
     /// <summary>
     ///     Zone name second
@@ -36,5 +36,5 @@ internal record ArkZone
     ///     破碎日冕
     /// </example>
     [JsonPropertyName("zoneNameSecond")]
-    internal string ZoneNameSecond { get; set; } = string.Empty;
+    public string ZoneNameSecond { get; set; } = string.Empty;
 }

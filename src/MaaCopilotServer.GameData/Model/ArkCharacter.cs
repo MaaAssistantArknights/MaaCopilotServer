@@ -9,23 +9,23 @@ namespace MaaCopilotServer.GameData.Model;
 /// <summary>
 ///     Data from <c>character_table.json</c>
 /// </summary>
-internal record ArkCharacter
+public record ArkCharacter
 {
     /// <summary>
     ///     Character's name.
     /// </summary>
     [JsonPropertyName("name")]
-    internal string Name { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
 
     /// <summary>
     ///     Character's id.
     /// </summary>
     [JsonIgnore]
-    internal string Id { get; set; } = string.Empty;
+    public string Id { get; set; } = string.Empty;
 
     /// <summary>
     ///     Character's profession.
     /// </summary>
     [JsonPropertyName("profession")]
-    internal string Profession { get; set; } = string.Empty;
+    public string Profession { get; set; } = string.Empty;
 }

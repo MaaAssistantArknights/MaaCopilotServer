@@ -4,12 +4,12 @@
 
 namespace MaaCopilotServer.GameData.Model;
 
-internal record ArkGameData
+public record ArkGameData
 {
-    internal List<ArkActivity> ArkActivities { get; set; } = new();
-    internal List<ArkCharacter> ArkCharacters { get; set; } = new();
-    internal List<ArkLevel> ArkLevels { get; set; } = new();
-    internal List<ArkStage> ArkStages { get; set; } = new();
-    internal List<ArkZone> ArkZones { get; set; } = new();
-    internal Dictionary<string, string> ArkZoneActMap { get; set; } = new();
+    public List<ArkActivity> ArkActivities { get; set; } = new();
+    public List<ArkCharacter> ArkCharacters { get; set; } = new();
+    public List<ArkLevel> ArkLevels { get; set; } = new();
+    public List<ArkStage> ArkStages { get; set; } = new();
+    public List<ArkZone> ArkZones { get; set; } = new();
+    public Dictionary<string, string> ArkZoneActMap { get; set; } = new();
 }
