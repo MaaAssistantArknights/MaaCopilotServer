@@ -28,4 +28,10 @@ public record ArkCharacter
     /// </summary>
     [JsonPropertyName("profession")]
     public string Profession { get; set; } = string.Empty;
+
+    /// <summary>
+    ///     Character's rarity.
+    /// </summary>
+    [JsonPropertyName("rarity")]
+    public int Rarity { get; set; } = -1;
 }

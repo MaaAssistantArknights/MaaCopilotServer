@@ -321,7 +321,7 @@ public static class GameDataParser
 
         var arkActObj = JsonSerializer.Deserialize<Dictionary<string, ArkActivity>>(arkActStr)?.Values.ToList() ?? new List<ArkActivity>();
         var arkCharObj = JsonSerializer.Deserialize<Dictionary<string, ArkCharacter>>(dataSource.ArkChar)?
-            .Select(x => new ArkCharacter { Id = x.Key, Name = x.Value.Name, Profession = x.Value.Profession })
+            .Select(x => new ArkCharacter { Id = x.Key, Name = x.Value.Name, Profession = x.Value.Profession, Rarity = x.Value.Rarity })
             .ToList() ?? new List<ArkCharacter>();
         var arkLevelObj = JsonSerializer.Deserialize<List<ArkLevel>>(dataSource.ArkLevel) ?? new List<ArkLevel>();
         var arkStageObj = JsonSerializer.Deserialize<Dictionary<string, ArkStage>>(arkStageStr)?.Values.ToList() ?? new List<ArkStage>();

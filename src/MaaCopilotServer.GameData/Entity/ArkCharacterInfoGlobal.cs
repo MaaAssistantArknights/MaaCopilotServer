@@ -18,6 +18,7 @@ public class ArkCharacterInfoGlobal
 
         Id = cn.Id;
         Profession = cn.Profession;
+        Star = cn.Rarity + 1;
     }
 
     public string NameCn { get; }
@@ -27,4 +28,5 @@ public class ArkCharacterInfoGlobal
 
     public string Id { get; }
     public string Profession { get; }
+    public int Star { get; }
 }
