@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MaaCopilotServer.Domain\MaaCopilotServer.Domain.csproj" />
+    <ProjectReference Include="..\MaaCopilotServer.GameData\MaaCopilotServer.GameData.csproj" />
     <ProjectReference Include="..\MaaCopilotServer.Resources\MaaCopilotServer.Resources.csproj" />
   </ItemGroup>
 
