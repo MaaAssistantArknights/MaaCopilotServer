@@ -38,6 +38,16 @@ public interface IMaaCopilotDbContext
     DbSet<PersistStorage> PersistStorage { get; }
 
     /// <summary>
+    ///     The DB set of arknights characters.
+    /// </summary>
+    DbSet<ArkCharacterInfo> ArkCharacterInfos { get; }
+
+    /// <summary>
+    ///     The DB set of arknights levels.
+    /// </summary>
+    DbSet<ArkLevelData> ArkLevelData { get; }
+
+    /// <summary>
     ///     Saves changes to DB asynchronously.
     /// </summary>
     /// <param name="cancellationToken">The cancellation token.</param>

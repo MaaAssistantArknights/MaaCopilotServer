@@ -49,6 +49,7 @@ public static class ConfigureServices
 
         services.AddHostedService<DatabaseInitializer>();
         services.AddHostedService<TokenValidationCheck>();
+        services.AddHostedService<ArknightsDataUpdate>();
 
         services.AddAuthentication(options =>
             {

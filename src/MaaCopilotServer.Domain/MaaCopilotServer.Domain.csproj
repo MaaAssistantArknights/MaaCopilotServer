@@ -48,4 +48,8 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\MaaCopilotServer.GameData\MaaCopilotServer.GameData.csproj" />
+  </ItemGroup>
+
 </Project>

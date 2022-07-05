@@ -48,6 +48,12 @@ public class MaaCopilotDbContext : DbContext, IMaaCopilotDbContext
     /// <inheritdoc />
     public DbSet<PersistStorage> PersistStorage { get; set; } = null!;
 
+    /// <inheritdoc />
+    public DbSet<ArkCharacterInfo> ArkCharacterInfos { get; set; } = null!;
+
+    /// <inheritdoc />
+    public DbSet<ArkLevelData> ArkLevelData { get; set; } = null!;
+
     /// <inheritdoc/>
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

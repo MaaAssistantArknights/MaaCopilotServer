@@ -37,4 +37,28 @@ public class CopilotServerOption
     /// </summary>
     [JsonPropertyName("TestEmailApiToken")]
     public string TestEmailApiToken { get; set; } = string.Empty;
+
+    /// <summary>
+    ///     GitHub api request use proxy or not.
+    /// </summary>
+    [JsonPropertyName("GitHubApiRequestProxyEnable")]
+    public bool GitHubApiRequestProxyEnable { get; set; } = false;
+
+    /// <summary>
+    ///     GitHub api request proxy address.
+    /// </summary>
+    [JsonPropertyName("GitHubApiRequestProxyAddress")]
+    public string GitHubApiRequestProxyAddress { get; set; } = string.Empty;
+
+    /// <summary>
+    ///     GitHub api request proxy port.
+    /// </summary>
+    [JsonPropertyName("GitHubApiRequestProxyPort")]
+    public int GitHubApiRequestProxyPort { get; set; } = 0;
+
+    /// <summary>
+    ///     GitHub api request user agent.
+    /// </summary>
+    [JsonPropertyName("GitHubApiRequestUserAgent")]
+    public string GitHubApiRequestUserAgent { get; set; } = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.66 Safari/537.36 Edg/103.0.1264.44";
 }

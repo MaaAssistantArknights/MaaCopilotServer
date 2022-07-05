@@ -9,7 +9,9 @@ namespace MaaCopilotServer.Api.Constants;
 [ExcludeFromCodeCoverage]
 public static class SystemStatus
 {
-    public static bool IsOk => DatabaseInitialized;
+    public static bool IsOk => DatabaseInitialized && ArknightsDataInitialized;
 
     public static bool DatabaseInitialized { get; set; } = false;
+
+    public static bool ArknightsDataInitialized { get; set; } = false;
 }
