@@ -52,7 +52,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MaaCopilotServer.Test", "te
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MaaCopilotServer.Domain.Test", "test\MaaCopilotServer.Domain.Test\MaaCopilotServer.Domain.Test.csproj", "{F6F8D207-C690-4430-B798-F4D515E295E5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaaCopilotServer.Infrastructure.Test", "test\MaaCopilotServer.Infrastructure.Test\MaaCopilotServer.Infrastructure.Test.csproj", "{DFADDC3E-C899-4F04-BB87-DA4398B9260C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MaaCopilotServer.Infrastructure.Test", "test\MaaCopilotServer.Infrastructure.Test\MaaCopilotServer.Infrastructure.Test.csproj", "{DFADDC3E-C899-4F04-BB87-DA4398B9260C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

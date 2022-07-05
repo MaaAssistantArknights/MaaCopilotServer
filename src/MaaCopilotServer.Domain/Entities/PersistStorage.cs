@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Domain.Common;
 
 namespace MaaCopilotServer.Domain.Entities;
@@ -9,6 +10,7 @@ namespace MaaCopilotServer.Domain.Entities;
 /// <summary>
 ///     Some system persistent data.
 /// </summary>
+[ExcludeFromCodeCoverage]
 public class PersistStorage : BaseEntity
 {
     /// <summary>
