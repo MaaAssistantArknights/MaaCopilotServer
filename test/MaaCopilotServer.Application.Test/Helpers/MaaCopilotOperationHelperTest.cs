@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using MaaCopilotServer.Application.Common.Helpers;
 using MaaCopilotServer.Application.Common.Models;
@@ -12,6 +13,7 @@ namespace MaaCopilotServer.Application.Test.Helpers;
 /// Tests <see cref="MaaCopilotOperationHelper"/>.
 /// </summary>
 [TestClass]
+[ExcludeFromCodeCoverage]
 public class MaaCopilotOperationHelperTest
 {
     /// <summary>
@@ -87,7 +89,7 @@ public class MaaCopilotOperationHelperTest
     /// Tests getters with default values.
     /// </summary>
     [TestMethod]
-    public void TestGetters_DefaultValue()
+    public void TestGettersDefaultValue()
     {
         var data = GetTestData();
         data.Doc = null;
@@ -119,7 +121,7 @@ public class MaaCopilotOperationHelperTest
     /// with empty groups.
     /// </summary>
     [TestMethod]
-    public void TestSerializeGroup_Empty()
+    public void TestSerializeGroupEmpty()
     {
         var data = GetTestData();
         data.Groups = null;
@@ -145,7 +147,7 @@ public class MaaCopilotOperationHelperTest
     /// with empty operators.
     /// </summary>
     [TestMethod]
-    public void TestSerializezOperator_Empty()
+    public void TestSerializezOperatorEmpty()
     {
         var data = GetTestData();
         data.Operators = null;
@@ -175,7 +177,7 @@ public class MaaCopilotOperationHelperTest
     /// with empty groups.
     /// </summary>
     [TestMethod]
-    public void TestDeserializeGroup_Empty()
+    public void TestDeserializeGroupEmpty()
     {
         var data = GetTestData();
         data.Groups = null;

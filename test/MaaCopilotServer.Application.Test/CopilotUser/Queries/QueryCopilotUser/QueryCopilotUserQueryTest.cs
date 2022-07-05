@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Application.Common.Models;
 using MaaCopilotServer.Application.CopilotUser.Queries.QueryCopilotUser;
 using MaaCopilotServer.Application.Test.TestHelpers;
@@ -13,6 +14,7 @@ namespace MaaCopilotServer.Application.Test.CopilotUser.Queries.QueryCopilotUser
 /// Tests <see cref="QueryCopilotUserQueryHandler"/>.
 /// </summary>
 [TestClass]
+[ExcludeFromCodeCoverage]
 public class QueryCopilotUserQueryHandlerTest
 {
     /// <summary>
@@ -38,7 +40,7 @@ public class QueryCopilotUserQueryHandlerTest
     /// with default request.
     /// </summary>
     [TestMethod]
-    public void TestHandle_Default()
+    public void TestHandleDefault()
     {
         var result = InitializeDatabase()
             .TestQueryCopilotUser(new());
@@ -56,7 +58,7 @@ public class QueryCopilotUserQueryHandlerTest
     /// with limit and page.
     /// </summary>
     [TestMethod]
-    public void TestHandle_LimitAndPage()
+    public void TestHandleLimitAndPage()
     {
         var result = InitializeDatabase()
             .TestQueryCopilotUser(new()
@@ -78,7 +80,7 @@ public class QueryCopilotUserQueryHandlerTest
     /// with username.
     /// </summary>
     [TestMethod]
-    public void TestHandle_Username()
+    public void TestHandleUsername()
     {
         var result = InitializeDatabase()
             .TestQueryCopilotUser(new()

@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Api.Controllers;
 using MaaCopilotServer.Api.Test.TestHelpers;
 using MaaCopilotServer.Domain.Options;
@@ -15,6 +16,7 @@ namespace MaaCopilotServer.Api.Test.Controllers;
 ///     Tests <see cref="SystemController" />.
 /// </summary>
 [TestClass]
+[ExcludeFromCodeCoverage]
 public class SystemControllerTest
 {
     /// <summary>
@@ -36,7 +38,7 @@ public class SystemControllerTest
     /// with feature disabled.
     /// </summary>
     [TestMethod]
-    public void TestSendEmailTest_Disabled()
+    public void TestSendEmailTestDisabled()
     {
         var options = Options.Create(new CopilotServerOption()
         {

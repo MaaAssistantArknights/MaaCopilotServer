@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Application.CopilotOperation.Commands.DeleteCopilotOperation;
 using MaaCopilotServer.Application.Test.TestHelpers;
@@ -18,6 +19,7 @@ namespace MaaCopilotServer.Application.Test.CopilotOperation.Commands.DeleteCopi
 /// Tests <see cref="DeleteCopilotOperationCommandHandler"/>.
 /// </summary>
 [TestClass]
+[ExcludeFromCodeCoverage]
 public class DeleteCopilotOperationCommandTest
 {
     /// <summary>
@@ -31,7 +33,7 @@ public class DeleteCopilotOperationCommandTest
     /// with the same user.
     /// </summary>
     [TestMethod]
-    public void TestHandle_SameUser()
+    public void TestHandleSameUser()
     {
         var user = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, UserRole.User, Guid.Empty);
         var entity = new Domain.Entities.CopilotOperation(1, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, user, Guid.Empty, new List<string>(), new List<string>());
@@ -62,7 +64,7 @@ public class DeleteCopilotOperationCommandTest
     [DataRow(UserRole.SuperAdmin, UserRole.Uploader, true)]
     [DataRow(UserRole.SuperAdmin, UserRole.Admin, true)]
     [DataRow(UserRole.SuperAdmin, UserRole.SuperAdmin, true)]
-    public void TestHandle_DifferentUsers(UserRole requesterRole, UserRole authorRole, bool expectedToSucceed)
+    public void TestHandleDifferentUsers(UserRole requesterRole, UserRole authorRole, bool expectedToSucceed)
     {
         var user = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, requesterRole, Guid.Empty);
         var author = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, authorRole, Guid.Empty);
@@ -94,7 +96,7 @@ public class DeleteCopilotOperationCommandTest
     /// with non-existing ID.
     /// </summary>
     [TestMethod]
-    public void TestHandle_OperationNotFound()
+    public void TestHandleOperationNotFound()
     {
         var result = new HandlerTest()
             .SetupGetUser(new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, UserRole.User, null))

@@ -12,24 +12,24 @@ using MaaCopilotServer.Application.CopilotOperation.Queries.QueryCopilotOperatio
 using MaaCopilotServer.Application.CopilotUser.Commands.ActivateCopilotAccount;
 using MaaCopilotServer.Application.CopilotUser.Commands.ChangeCopilotUserInfo;
 using MaaCopilotServer.Application.CopilotUser.Commands.CreateCopilotUser;
+using MaaCopilotServer.Application.CopilotUser.Commands.DeleteCopilotUser;
+using MaaCopilotServer.Application.CopilotUser.Commands.LoginCopilotUser;
 using MaaCopilotServer.Application.CopilotUser.Commands.PasswordReset;
 using MaaCopilotServer.Application.CopilotUser.Commands.RegisterCopilotAccount;
+using MaaCopilotServer.Application.CopilotUser.Commands.RequestActivationToken;
 using MaaCopilotServer.Application.CopilotUser.Commands.RequestPasswordReset;
 using MaaCopilotServer.Application.CopilotUser.Commands.UpdateCopilotUserInfo;
 using MaaCopilotServer.Application.CopilotUser.Commands.UpdateCopilotUserPassword;
-using MaaCopilotServer.Application.CopilotUser.Commands.DeleteCopilotUser;
-using MaaCopilotServer.Domain.Email.Models;
-using MaaCopilotServer.Domain.Options;
-using MaaCopilotServer.Infrastructure.Services;
-using MaaCopilotServer.Test.TestHelpers;
-using Microsoft.Extensions.Options;
-using MaaCopilotServer.Application.CopilotUser.Commands.LoginCopilotUser;
-using MaaCopilotServer.Application.CopilotUser.Commands.RequestActivationToken;
 using MaaCopilotServer.Application.CopilotUser.Queries.GetCopilotUser;
 using MaaCopilotServer.Application.CopilotUser.Queries.QueryCopilotUser;
 using MaaCopilotServer.Application.System.GetCurrentVersion;
 using MaaCopilotServer.Application.System.SendEmailTest;
+using MaaCopilotServer.Domain.Email.Models;
+using MaaCopilotServer.Domain.Options;
+using MaaCopilotServer.Infrastructure.Services;
 using MaaCopilotServer.Resources;
+using MaaCopilotServer.Test.TestHelpers;
+using Microsoft.Extensions.Options;
 
 namespace MaaCopilotServer.Application.Test.TestHelpers;
 
@@ -178,8 +178,14 @@ public class HandlerTest
     /// </summary>
     /// <param name="action">The setup action.</param>
     /// <returns>The current instance for method chaining.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="action"/> is <c>null</c>.</exception>
     public HandlerTest SetupDatabase(Action<IMaaCopilotDbContext> action)
     {
+        if (action == null)
+        {
+            throw new ArgumentNullException(nameof(action));
+        }
+
         action.Invoke(DbContext);
         DbContext.SaveChangesAsync(new CancellationToken()).Wait();
         return this;
@@ -190,8 +196,14 @@ public class HandlerTest
     /// </summary>
     /// <param name="action">The setup action.</param>
     /// <returns>The current instance for method chaining.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="action"/> is <c>null</c>.</exception>
     public HandlerTest SetupCurrentUserService(Action<Mock<ICurrentUserService>> action)
     {
+        if (action == null)
+        {
+            throw new ArgumentNullException(nameof(action));
+        }
+
         action.Invoke(CurrentUserService);
         return this;
     }
@@ -212,8 +224,14 @@ public class HandlerTest
     /// </summary>
     /// <param name="action">The setup action.</param>
     /// <returns>The current instance for method chaining.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="action"/> is <c>null</c>.</exception>
     public HandlerTest SetupSecretService(Action<Mock<ISecretService>> action)
     {
+        if (action == null)
+        {
+            throw new ArgumentNullException(nameof(action));
+        }
+
         action.Invoke(SecretService);
         return this;
     }
@@ -234,8 +252,14 @@ public class HandlerTest
     /// </summary>
     /// <param name="action">The setup action.</param>
     /// <returns>The current instance for method chaining.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="action"/> is <c>null</c>.</exception>
     public HandlerTest SetupEmailService(Action<Mock<IMailService>> action)
     {
+        if (action == null)
+        {
+            throw new ArgumentNullException(nameof(action));
+        }
+
         action.Invoke(MailService);
         return this;
     }
@@ -538,8 +562,14 @@ public static class HandlerTestExtension
     /// <param name="test">The <see cref="HandlerTest"/> instance.</param>
     /// <param name="returns">The returned value.</param>
     /// <returns>The <see cref="HandlerTest"/> instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="test"/> is <c>null</c>.</exception>
     public static HandlerTest SetupGetUserIdentity(this HandlerTest test, Guid? returns)
     {
+        if (test == null)
+        {
+            throw new ArgumentNullException(nameof(test));
+        }
+
         return test.SetupCurrentUserService(mock => mock.Setup(x => x.GetUserIdentity()).Returns(returns));
     }
 
@@ -549,8 +579,14 @@ public static class HandlerTestExtension
     /// <param name="test">The <see cref="HandlerTest"/> instance.</param>
     /// <param name="returns">The returned value.</param>
     /// <returns>The <see cref="HandlerTest"/> instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="test"/> is <c>null</c>.</exception>
     public static HandlerTest SetupGetUser(this HandlerTest test, Domain.Entities.CopilotUser? returns)
     {
+        if (test == null)
+        {
+            throw new ArgumentNullException(nameof(test));
+        }
+
         return test.SetupCurrentUserService(mock => mock.Setup(x => x.GetUser().Result).Returns(returns));
     }
     #endregion
@@ -563,8 +599,14 @@ public static class HandlerTestExtension
     /// <param name="password">The test password.</param>
     /// <param name="returns">The returned value.</param>
     /// <returns>The <see cref="HandlerTest"/> instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="test"/> is <c>null</c>.</exception>
     public static HandlerTest SetupHashPassword(this HandlerTest test, string password = HandlerTest.TestPassword, string returns = HandlerTest.TestHashedPassword)
     {
+        if (test == null)
+        {
+            throw new ArgumentNullException(nameof(test));
+        }
+
         return test.SetupSecretService(mock => mock.Setup(x => x.HashPassword(password)).Returns(returns));
     }
 
@@ -576,8 +618,14 @@ public static class HandlerTestExtension
     /// <param name="password">The test password.</param>
     /// <param name="result">The returned value.</param>
     /// <returns>The <see cref="HandlerTest"/> instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="test"/> is <c>null</c>.</exception>
     public static HandlerTest SetupVerifyPassword(this HandlerTest test, string hash, string password, bool result)
     {
+        if (test == null)
+        {
+            throw new ArgumentNullException(nameof(test));
+        }
+
         return test.SetupSecretService(mock => mock.Setup(x => x.VerifyPassword(hash, password)).Returns(result));
     }
 
@@ -587,8 +635,14 @@ public static class HandlerTestExtension
     /// <param name="test">The <see cref="HandlerTest"/> instance.</param>
     /// <param name="returnedToken">The returned token.</param>
     /// <returns>The <see cref="HandlerTest"/> instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="test"/> is <c>null</c>.</exception>
     public static HandlerTest SetupGenerateToken(this HandlerTest test, string returnedToken = HandlerTest.TestToken)
     {
+        if (test == null)
+        {
+            throw new ArgumentNullException(nameof(test));
+        }
+
         return test.SetupSecretService(mock => mock.Setup(x => x.GenerateToken(It.IsAny<Guid>(), It.IsAny<TimeSpan>())).Returns((returnedToken, HandlerTest.TestTokenTime)));
     }
 
@@ -599,8 +653,14 @@ public static class HandlerTestExtension
     /// <param name="userEntity">The test user entity.</param>
     /// <param name="returnedToken">The returned token.</param>
     /// <returns>The <see cref="HandlerTest"/> instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="test"/> is <c>null</c>.</exception>
     public static HandlerTest SetupGenerateJwtToken(this HandlerTest test, Guid userEntity, string returnedToken = HandlerTest.TestToken)
     {
+        if (test == null)
+        {
+            throw new ArgumentNullException(nameof(test));
+        }
+
         return test.SetupSecretService(mock => mock.Setup(x => x.GenerateJwtToken(userEntity)).Returns((returnedToken, HandlerTest.TestTokenTime)));
     }
     #endregion
@@ -613,8 +673,14 @@ public static class HandlerTestExtension
     /// <param name="success">Whether the email sending is successful.</param>
     /// <param name="targetAddress">The test target address.</param>
     /// <returns>The <see cref="HandlerTest"/> instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="test"/> is <c>null</c>.</exception>
     public static HandlerTest SetupSendEmailAsync(this HandlerTest test, bool success, string targetAddress = HandlerTest.TestEmail)
     {
+        if (test == null)
+        {
+            throw new ArgumentNullException(nameof(test));
+        }
+
         return test.SetupEmailService(mock => mock.Setup(x => x.SendEmailAsync(It.IsAny<IEmailModel>(), targetAddress).Result).Returns(success));
     }
     #endregion

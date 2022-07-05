@@ -2,9 +2,9 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Application.CopilotUser.Commands.PasswordReset;
 using MaaCopilotServer.Application.Test.TestHelpers;
-using MaaCopilotServer.Resources;
 
 namespace MaaCopilotServer.Application.Test.CopilotUser.Commands.Change.PasswordReset;
 
@@ -12,6 +12,7 @@ namespace MaaCopilotServer.Application.Test.CopilotUser.Commands.Change.Password
 /// Tests <see cref="PasswordResetCommandValidator"/>.
 /// </summary>
 [TestClass]
+[ExcludeFromCodeCoverage]
 public class PasswordResetCommandValidatorTest
 {
     /// <summary>

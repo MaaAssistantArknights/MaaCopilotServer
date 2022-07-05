@@ -2,10 +2,10 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
 using FluentValidation;
 using FluentValidation.Results;
 using MaaCopilotServer.Application.Common.Behaviours;
-
 using MaaCopilotServer.Application.Common.Helpers;
 using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Application.Common.Models;
@@ -18,6 +18,7 @@ namespace MaaCopilotServer.Application.Test.Common.Behaviours;
 ///     Tests <see cref="ValidationBehaviour{TRequest,TResponse}" />.
 /// </summary>
 [TestClass]
+[ExcludeFromCodeCoverage]
 public class ValidationBehaviourTest
 {
     /// <summary>
@@ -32,7 +33,7 @@ public class ValidationBehaviourTest
     ///     with empty valiators.
     /// </summary>
     [TestMethod]
-    public void TestHandle_EmptyValidators()
+    public void TestHandleEmptyValidators()
     {
         var validators = new List<IValidator<IRequest<MaaApiResponse>>>();
 
@@ -40,7 +41,7 @@ public class ValidationBehaviourTest
             new ValidationBehaviour<IRequest<MaaApiResponse>, MaaApiResponse>(validators, _currentUserService);
         var action = async () => await behaviour.Handle(Mock.Of<IRequest<MaaApiResponse>>(),
             new CancellationToken(),
-            () => Task.FromResult(MaaApiResponseHelper.Ok()));
+            () => Task.FromResult(MaaApiResponseHelper.Ok())).ConfigureAwait(false);
 
         action.Should().NotThrowAsync().Wait();
     }
@@ -59,7 +60,7 @@ public class ValidationBehaviourTest
     [DataRow(true, false, true)]
     [DataRow(false, true, true)]
     [DataRow(false, false, true)]
-    public void TestHandle_Validators(bool validator1Passed, bool validator2Passed, bool expectException)
+    public void TestHandleValidators(bool validator1Passed, bool validator2Passed, bool expectException)
     {
         var validator1 = new Mock<IValidator<IRequest<MaaApiResponse>>>();
         validator1.Setup(x => x.ValidateAsync(It.IsAny<IValidationContext>(), It.IsAny<CancellationToken>()).Result)
@@ -73,7 +74,7 @@ public class ValidationBehaviourTest
             new ValidationBehaviour<IRequest<MaaApiResponse>, MaaApiResponse>(validators, _currentUserService);
         var action = async () => await behaviour.Handle(Mock.Of<IRequest<MaaApiResponse>>(),
             new CancellationToken(),
-            () => Task.FromResult(MaaApiResponseHelper.Ok()));
+            () => Task.FromResult(MaaApiResponseHelper.Ok())).ConfigureAwait(false);
 
         if (expectException)
         {

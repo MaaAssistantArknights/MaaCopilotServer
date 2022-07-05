@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Application.CopilotUser.Commands.ActivateCopilotAccount;
 using MaaCopilotServer.Application.Test.TestHelpers;
 using MaaCopilotServer.Domain.Entities;
@@ -14,6 +15,7 @@ namespace MaaCopilotServer.Application.Test.CopilotUser.Commands.Create.Activate
 /// Tests <see cref="ActivateCopilotAccountCommandHandler"/>.
 /// </summary>
 [TestClass]
+[ExcludeFromCodeCoverage]
 public class ActivateCopilotAccountCommandTest
 {
     /// <summary>
@@ -21,7 +23,7 @@ public class ActivateCopilotAccountCommandTest
     /// with not existing token.
     /// </summary>
     [TestMethod]
-    public void TestHandle_NotExistingToken()
+    public void TestHandleNotExistingToken()
     {
         var response = new HandlerTest()
             .TestActivateCopilotAccount(new()
@@ -38,7 +40,7 @@ public class ActivateCopilotAccountCommandTest
     /// with expired token.
     /// </summary>
     [TestMethod]
-    public void TestHandle_ExpiredToken()
+    public void TestHandleExpiredToken()
     {
         var token = new CopilotToken(Guid.Empty, TokenType.UserActivation, HandlerTest.TestToken, HandlerTest.TestTokenTimePast);
         var response = new HandlerTest()
@@ -57,7 +59,7 @@ public class ActivateCopilotAccountCommandTest
     /// with token of wrong type.
     /// </summary>
     [TestMethod]
-    public void TestHandle_WrongTypeToken()
+    public void TestHandleWrongTypeToken()
     {
         var token = new CopilotToken(Guid.Empty, TokenType.UserPasswordReset, HandlerTest.TestToken, HandlerTest.TestTokenTimeFuture);
         var response = new HandlerTest()
@@ -76,7 +78,7 @@ public class ActivateCopilotAccountCommandTest
     /// with user not found.
     /// </summary>
     [TestMethod]
-    public void TestHandle_UserNotFound()
+    public void TestHandleUserNotFound()
     {
         var token = new CopilotToken(Guid.Empty, TokenType.UserActivation, HandlerTest.TestToken, HandlerTest.TestTokenTimeFuture);
         var response = new HandlerTest()

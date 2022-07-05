@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Application.CopilotUser.Commands.RequestActivationToken;
 using MaaCopilotServer.Application.Test.TestHelpers;
 using Microsoft.AspNetCore.Http;
@@ -12,6 +13,7 @@ namespace MaaCopilotServer.Application.Test.CopilotUser.Commands.Other.RequestAc
 /// Tests <see cref="RequestActivationTokenCommandHandler"/>.
 /// </summary>
 [TestClass]
+[ExcludeFromCodeCoverage]
 public class RequestActivationTokenCommandHandlerTest
 {
     /// <summary>
@@ -19,7 +21,7 @@ public class RequestActivationTokenCommandHandlerTest
     /// with user already activated.
     /// </summary>
     [TestMethod]
-    public void TestHandle_UserAlreadyActivated()
+    public void TestHandleUserAlreadyActivated()
     {
         var user = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, Domain.Enums.UserRole.User, null);
         user.ActivateUser(Guid.Empty);
@@ -37,7 +39,7 @@ public class RequestActivationTokenCommandHandlerTest
     /// with token not found.
     /// </summary>
     [TestMethod]
-    public void TestHandle_TokenNotFound()
+    public void TestHandleTokenNotFound()
     {
         var user = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, Domain.Enums.UserRole.User, null);
 
@@ -56,7 +58,7 @@ public class RequestActivationTokenCommandHandlerTest
     /// with email failed to send.
     /// </summary>
     [TestMethod]
-    public void TestHandle_EmailFailedToSend()
+    public void TestHandleEmailFailedToSend()
     {
         var user = new Domain.Entities.CopilotUser(HandlerTest.TestEmail, string.Empty, string.Empty, Domain.Enums.UserRole.User, null);
 
