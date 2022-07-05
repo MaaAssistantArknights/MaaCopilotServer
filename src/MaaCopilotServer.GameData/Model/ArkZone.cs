@@ -37,13 +37,4 @@ internal record ArkZone
     /// </example>
     [JsonPropertyName("zoneNameSecond")]
     internal string ZoneNameSecond { get; set; } = string.Empty;
-
-    /// <summary>
-    ///     Zone type
-    /// </summary>
-    /// <example>
-    ///     MAINLINE
-    /// </example>
-    [JsonPropertyName("type")]
-    internal string ZoneType { get; set; } = string.Empty;
 }

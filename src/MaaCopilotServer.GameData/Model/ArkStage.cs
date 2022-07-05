@@ -46,13 +46,4 @@ internal record ArkStage
     /// </example>
     [JsonPropertyName("code")]
     internal string Code { get; set; } = string.Empty;
-
-    /// <summary>
-    ///     Stage name
-    /// </summary>
-    /// <example>
-    ///     日常
-    /// </example>
-    [JsonPropertyName("name")]
-    internal string Name { get; set; } = string.Empty;
 }
