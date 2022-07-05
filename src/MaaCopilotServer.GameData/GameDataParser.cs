@@ -75,12 +75,17 @@ public static class GameDataParser
     /// <param name="ko">ArkData Korea server.</param>
     /// <param name="loggerCallback">A logger to log exceptions.</param>
     /// <returns></returns>
-    public static List<ArkLevelEntityGlobal> ParseToEntity(ArkDataSource cn, ArkDataSource en, ArkDataSource jp, ArkDataSource ko, Action<Exception>? loggerCallback)
+    public static ArkDataParsed Parse(ArkDataSource cn, ArkDataSource en, ArkDataSource jp, ArkDataSource ko, Action<Exception>? loggerCallback)
     {
-        var cnEs = cn.ParseToEntitySingleLanguage(loggerCallback).ToList();
-        var enEs = en.ParseToEntitySingleLanguage(loggerCallback).ToList();
-        var jpEs = jp.ParseToEntitySingleLanguage(loggerCallback).ToList();
-        var koEs = ko.ParseToEntitySingleLanguage(loggerCallback).ToList();
+        var cnGd = cn.ParseToGameDataModel();
+        var enGd = en.ParseToGameDataModel();
+        var jpGd = jp.ParseToGameDataModel();
+        var koGd = ko.ParseToGameDataModel();
+
+        var cnEs = cnGd.ParseToEntitySingleLanguage(cn.Language, loggerCallback).ToList();
+        var enEs = enGd.ParseToEntitySingleLanguage(en.Language, loggerCallback).ToList();
+        var jpEs = jpGd.ParseToEntitySingleLanguage(jp.Language, loggerCallback).ToList();
+        var koEs = koGd.ParseToEntitySingleLanguage(ko.Language, loggerCallback).ToList();
 
         var globalEs = (
                 from cnE in cnEs
@@ -90,18 +95,23 @@ public static class GameDataParser
                 select new ArkLevelEntityGlobal(cnE, enE, jpE, koE)
             ).ToList();
 
-        return globalEs;
+        var globalChar = (
+                from cnC in cnGd.ArkCharacters
+                let enC = enGd.ArkCharacters.FirstOrDefault(x => x.Id == cnC.Id)
+                let jpC = jpGd.ArkCharacters.FirstOrDefault(x => x.Id == cnC.Id)
+                let koC = koGd.ArkCharacters.FirstOrDefault(x => x.Id == cnC.Id)
+                select new ArkCharacterInfoGlobal(cnC, enC, jpC, koC)
+            ).ToList();
+
+        return new ArkDataParsed
+        {
+            ArkCharacterInfos = globalChar,
+            ArkLevelEntities = globalEs
+        };
     }
 
-    private static IEnumerable<ArkLevelEntity> ParseToEntitySingleLanguage(this ArkDataSource arkDataSource, Action<Exception>? loggerCallback)
+    private static IEnumerable<ArkLevelEntity> ParseToEntitySingleLanguage(this ArkGameData gd, ArkServerLanguage language, Action<Exception>? loggerCallback)
     {
-        var language = arkDataSource.Language;
-        var gd = ParseToGameDataModel(
-            arkDataSource.ArkAct,
-            arkDataSource.ArkChar,
-            arkDataSource.ArkLevel,
-            arkDataSource.ArkStage,
-            arkDataSource.ArkZone);
         var es = new List<ArkLevelEntity>();
 
         var levels = gd.ArkLevels.DistinctBy(x => x.LevelId).ToList();
@@ -301,19 +311,19 @@ public static class GameDataParser
         return es;
     }
 
-    private static ArkGameData ParseToGameDataModel(string arkAct, string arkChar, string arkLevel, string arkStage, string arkZone)
+    private static ArkGameData ParseToGameDataModel(this ArkDataSource dataSource)
     {
-        var arkActDoc = JsonDocument.Parse(arkAct).RootElement;
+        var arkActDoc = JsonDocument.Parse(dataSource.ArkAct).RootElement;
         var arkActStr = arkActDoc.GetProperty("basicInfo").ToString();
         var arkZoneActMapStr = arkActDoc.GetProperty("zoneToActivity").ToString();
-        var arkStageStr = JsonDocument.Parse(arkStage).RootElement.GetProperty("stages").ToString();
-        var arkZoneStr = JsonDocument.Parse(arkZone).RootElement.GetProperty("zones").ToString();
+        var arkStageStr = JsonDocument.Parse(dataSource.ArkStage).RootElement.GetProperty("stages").ToString();
+        var arkZoneStr = JsonDocument.Parse(dataSource.ArkZone).RootElement.GetProperty("zones").ToString();
 
         var arkActObj = JsonSerializer.Deserialize<Dictionary<string, ArkActivity>>(arkActStr)?.Values.ToList() ?? new List<ArkActivity>();
-        var arkCharObj = JsonSerializer.Deserialize<Dictionary<string, ArkCharacter>>(arkChar)?
+        var arkCharObj = JsonSerializer.Deserialize<Dictionary<string, ArkCharacter>>(dataSource.ArkChar)?
             .Select(x => new ArkCharacter { Id = x.Key, Name = x.Value.Name, Profession = x.Value.Profession })
             .ToList() ?? new List<ArkCharacter>();
-        var arkLevelObj = JsonSerializer.Deserialize<List<ArkLevel>>(arkLevel) ?? new List<ArkLevel>();
+        var arkLevelObj = JsonSerializer.Deserialize<List<ArkLevel>>(dataSource.ArkLevel) ?? new List<ArkLevel>();
         var arkStageObj = JsonSerializer.Deserialize<Dictionary<string, ArkStage>>(arkStageStr)?.Values.ToList() ?? new List<ArkStage>();
         var arkZoneObj = JsonSerializer.Deserialize<Dictionary<string, ArkZone>>(arkZoneStr)?.Values.ToList() ?? new List<ArkZone>();
         var arkZoneActMapObj = JsonSerializer.Deserialize<Dictionary<string, string>>(arkZoneActMapStr) ?? new Dictionary<string, string>();
@@ -331,7 +341,6 @@ public static class GameDataParser
 
     private static CharacterProfessions GetCharacterProfessionType(string pro) => pro.ToLower() switch
     {
-
         "medic" => CharacterProfessions.Medic,
         "special" => CharacterProfessions.Special,
         "warrior" => CharacterProfessions.Warrior,

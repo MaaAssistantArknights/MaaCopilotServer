@@ -24,7 +24,7 @@ internal record ArkCharacter
     internal string Id { get; set; } = string.Empty;
 
     /// <summary>
-    ///     Character's class.
+    ///     Character's profession.
     /// </summary>
     [JsonPropertyName("profession")]
     internal string Profession { get; set; } = string.Empty;

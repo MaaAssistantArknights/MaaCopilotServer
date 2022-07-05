@@ -33,27 +33,27 @@ public class ArkLevelEntityGlobal
         Height = cn.Height;
     }
 
-    public string NameCn { get; set; }
-    public string NameKo { get; set; }
-    public string NameJp { get; set; }
-    public string NameEn { get; set; }
+    public string NameCn { get; }
+    public string NameKo { get; }
+    public string NameJp { get; }
+    public string NameEn { get; }
 
-    public string CatOneCn { get; set; }
-    public string CatOneKo { get; set; }
-    public string CatOneJp { get; set; }
-    public string CatOneEn { get; set; }
+    public string CatOneCn { get; }
+    public string CatOneKo { get; }
+    public string CatOneJp { get; }
+    public string CatOneEn { get; }
 
-    public string CatTwoCn { get; set; }
-    public string CatTwoKo { get; set; }
-    public string CatTwoJp { get; set; }
-    public string CatTwoEn { get; set; }
+    public string CatTwoCn { get; }
+    public string CatTwoKo { get; }
+    public string CatTwoJp { get; }
+    public string CatTwoEn { get; }
 
-    public string CatThreeCn { get; set; }
-    public string CatThreeKo { get; set; }
-    public string CatThreeJp { get; set; }
-    public string CatThreeEn { get; set; }
+    public string CatThreeCn { get; }
+    public string CatThreeKo { get; }
+    public string CatThreeJp { get; }
+    public string CatThreeEn { get; }
 
-    public string LevelId { get; set; }
-    public int Width { get; set; }
-    public int Height { get; set; }
+    public string LevelId { get; }
+    public int Width { get; }
+    public int Height { get; }
 }
