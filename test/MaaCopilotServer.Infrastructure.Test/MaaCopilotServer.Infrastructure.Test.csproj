@@ -6,7 +6,6 @@
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
     <AnalysisLevel>latest-all</AnalysisLevel>
-    <CodeAnalysisTreatWarningsAsErrors>true</CodeAnalysisTreatWarningsAsErrors>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\MaaCopilotServer.Infrastructure\MaaCopilotServer.Infrastructure.csproj" />
+    <ProjectReference Include="..\MaaCopilotServer.Test\MaaCopilotServer.Test.csproj" />
   </ItemGroup>
 
   <ItemGroup>
