@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Text.Json;
 using MaaCopilotServer.Api.Constants;
 using MaaCopilotServer.Application.Common.Extensions;
 using MaaCopilotServer.Infrastructure.Adapters;
@@ -37,7 +38,7 @@ public static class ConfigurationHelper
             appsettingsFile.EnsureDeleted();
 
             var text = File.ReadAllText(originalAppsettingsFile.FullName);
-            text = text.Replace("{{ DATA DIRECTORY }}", System.Web.HttpUtility.JavaScriptStringEncode(GlobalConstants.DataDirectory));
+            text = text.Replace("{{ DATA DIRECTORY }}", JsonSerializer.Serialize(GlobalConstants.DataDirectory).Replace("\"", ""));
             File.WriteAllText(appsettingsFile.FullName, text);
 
             if (GlobalConstants.IsProductionEnvironment)
