@@ -46,12 +46,12 @@ public class CreateCopilotOperationCommandTest
     [TestMethod]
     public void TestHandleFull()
     {
-        var testJsonContent = new MaaCopilotOperation
+        var testJsonContent = new Operation
         {
             StageName = "test_stage_name",
             MinimumRequired = "0.0.1",
-            Doc = new MaaCopilotOperationDoc { Title = "test_title", Details = "test_details" },
-            Operators = new MaaCopilotOperationOperator[]
+            Doc = new Doc { Title = "test_title", Details = "test_details" },
+            Operators = new Operator[]
             {
                 new() { Name = "test_oper_0_name", Skill = 0 },
                 new() { Name = "test_oper_1_name", Skill = 1 }
@@ -66,12 +66,12 @@ public class CreateCopilotOperationCommandTest
     [TestMethod]
     public void TestHandleFullRequired()
     {
-        var testJsonContent = new MaaCopilotOperation
+        var testJsonContent = new Operation
         {
             StageName = "test_stage_name",
             MinimumRequired = "0.0.1",
-            Doc = new MaaCopilotOperationDoc { Title = "test_title", Details = "test_details" },
-            Operators = new MaaCopilotOperationOperator[]
+            Doc = new Doc { Title = "test_title", Details = "test_details" },
+            Operators = new Operator[]
             {
                 new() { Name = "test_oper_0_name", Skill = 0 }, new() { Name = "test_oper_1_name", Skill = 1 }
             }
@@ -85,11 +85,11 @@ public class CreateCopilotOperationCommandTest
     [TestMethod]
     public void TestHandleWithoutDoc()
     {
-        var testJsonContent = new MaaCopilotOperation
+        var testJsonContent = new Operation
         {
             StageName = "test_stage_name",
             MinimumRequired = "0.0.1",
-            Operators = new MaaCopilotOperationOperator[]
+            Operators = new Operator[]
             {
                 new() { Name = "test_oper_0_name", Skill = 0 },
                 new() { Name = "test_oper_1_name", Skill = 1 }
@@ -104,11 +104,11 @@ public class CreateCopilotOperationCommandTest
     [TestMethod]
     public void TestHandleWithoutDocUndefined()
     {
-        var testJsonContent = new MaaCopilotOperation
+        var testJsonContent = new Operation
         {
             StageName = "test_stage_name",
             MinimumRequired = "0.0.1",
-            Operators = new MaaCopilotOperationOperator[]
+            Operators = new Operator[]
             {
                 new() { Name = "test_oper_0_name", Skill = 0 },
                 new() { Name = "test_oper_1_name", Skill = 1 }
@@ -123,15 +123,15 @@ public class CreateCopilotOperationCommandTest
     [TestMethod]
     public void TestHandleWithoutRequiredDocTitle()
     {
-        var testJsonContent = new MaaCopilotOperation
+        var testJsonContent = new Operation
         {
             StageName = "test_stage_name",
             MinimumRequired = "0.0.1",
-            Operators = new MaaCopilotOperationOperator[]
+            Operators = new Operator[]
             {
                 new() { Name = "test_oper_0_name", Skill = 0 }, new() { Name = "test_oper_1_name", Skill = 1 }
             },
-            Doc = new MaaCopilotOperationDoc
+            Doc = new Doc
             {
                 Details = "details"
             }
@@ -145,15 +145,15 @@ public class CreateCopilotOperationCommandTest
     [TestMethod]
     public void TestHandleWithoutRequiredDocDetails()
     {
-        var testJsonContent = new MaaCopilotOperation
+        var testJsonContent = new Operation
         {
             StageName = "test_stage_name",
             MinimumRequired = "0.0.1",
-            Operators = new MaaCopilotOperationOperator[]
+            Operators = new Operator[]
             {
                 new() { Name = "test_oper_0_name", Skill = 0 }, new() { Name = "test_oper_1_name", Skill = 1 }
             },
-            Doc = new MaaCopilotOperationDoc { Title = "title" }
+            Doc = new Doc { Title = "title" }
         };
         TestHandle(testJsonContent, true, haveRequirement: true);
     }
@@ -164,11 +164,11 @@ public class CreateCopilotOperationCommandTest
     [TestMethod]
     public void TestHandleWithoutRequiredDoc()
     {
-        var testJsonContent = new MaaCopilotOperation
+        var testJsonContent = new Operation
         {
             StageName = "test_stage_name",
             MinimumRequired = "0.0.1",
-            Operators = new MaaCopilotOperationOperator[]
+            Operators = new Operator[]
             {
                 new() { Name = "test_oper_0_name", Skill = 0 }, new() { Name = "test_oper_1_name", Skill = 1 }
             }
@@ -182,11 +182,11 @@ public class CreateCopilotOperationCommandTest
     [TestMethod]
     public void TestHandleMissingOperatorName()
     {
-        var testJsonContent = new MaaCopilotOperation
+        var testJsonContent = new Operation
         {
             StageName = "test_stage_name",
             MinimumRequired = "0.0.1",
-            Operators = new MaaCopilotOperationOperator[]
+            Operators = new Operator[]
             {
                 new() { Skill = 0 },
                 new() { Name = "test_oper_1_name", Skill = 1 }
@@ -201,11 +201,11 @@ public class CreateCopilotOperationCommandTest
     [TestMethod]
     public void TestHandleDuplicateOperators()
     {
-        var testJsonContent = new MaaCopilotOperation
+        var testJsonContent = new Operation
         {
             StageName = "test_stage_name",
             MinimumRequired = "0.0.1",
-            Operators = new MaaCopilotOperationOperator[]
+            Operators = new Operator[]
             {
                 new() { Name = "test_oper_0_name", Skill = 0 },
                 new() { Name = "test_oper_0_name", Skill = 0 }
@@ -221,7 +221,7 @@ public class CreateCopilotOperationCommandTest
     /// <param name="expectNon200Response"><c>true</c> if the result should not be 200, <c>false</c> otherwise.</param>
     /// <param name="removeNullFields">Whether null fields in JSON should be removed.</param>
     /// <param name="haveRequirement">Whether use options will all requirement.</param>
-    private void TestHandle(MaaCopilotOperation testJsonContent, bool expectNon200Response = false,
+    private void TestHandle(Operation testJsonContent, bool expectNon200Response = false,
         bool removeNullFields = false, bool haveRequirement = false)
     {
         var testContent = JsonSerializer.Serialize(testJsonContent,
@@ -260,7 +260,7 @@ public class CreateCopilotOperationCommandTest
             entity.Title.Should().Be(testJsonContent.Doc?.Title ?? string.Empty);
             entity.Details.Should().Be(testJsonContent.Doc?.Details ?? string.Empty);
 
-            var entityOperators = (from @operator in testJsonContent.Operators ?? Array.Empty<MaaCopilotOperationOperator>()
+            var entityOperators = (from @operator in testJsonContent.Operators ?? Array.Empty<Operator>()
                                    select $"{@operator.Name}::{@operator.Skill?.ToString(CultureInfo.InvariantCulture) ?? "1"}").Distinct().ToList();
             entity.Operators.Should().BeEquivalentTo(entityOperators);
         }

@@ -6,11 +6,12 @@ using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using MaaCopilotServer.Application.Common.Helpers;
 using MaaCopilotServer.Application.Common.Models;
+using MaaCopilotServer.Application.Common.Operation;
 
 namespace MaaCopilotServer.Application.Test.Helpers;
 
 /// <summary>
-/// Tests <see cref="MaaCopilotOperationHelper"/>.
+/// Tests <see cref="OperationConvertor"/>.
 /// </summary>
 [TestClass]
 [ExcludeFromCodeCoverage]
@@ -20,24 +21,24 @@ public class MaaCopilotOperationHelperTest
     /// The test operation data.
     /// </summary>
     /// <returns>The test data.</returns>
-    private static MaaCopilotOperation GetTestData()
+    private static Operation GetTestData()
     {
-        return new MaaCopilotOperation
+        return new Operation
         {
             StageName = "test_stage_name",
             MinimumRequired = "0.0.1",
-            Doc = new MaaCopilotOperationDoc { Title = "test_title", Details = "test_details" },
-            Operators = new MaaCopilotOperationOperator[]
+            Doc = new Doc { Title = "test_title", Details = "test_details" },
+            Operators = new Operator[]
             {
                 new() { Name = "test_oper_0_name" },
                 new() { Name = "test_oper_1_name", Skill = 2 },
             },
-            Groups = new MaaCopilotOperationGroup[]
+            Groups = new Group[]
             {
                 new()
                 {
                     Name = "test_group_0_name",
-                    Operators = new MaaCopilotOperationOperator[]
+                    Operators = new Operator[]
                     {
                         new() { Name = "test_group_0_oper_0_name", Skill = 1 },
                         new() { Name = "test_group_0_oper_1_name", Skill = 2 },
@@ -46,7 +47,7 @@ public class MaaCopilotOperationHelperTest
                 new()
                 {
                     Name = "test_group_1_name",
-                    Operators = new MaaCopilotOperationOperator[]
+                    Operators = new Operator[]
                     {
                         new() { Name = "test_group_1_oper_0_name" },
                         new() { Name = "test_group_1_oper_1_name", Skill = 2 },
@@ -61,49 +62,7 @@ public class MaaCopilotOperationHelperTest
     }
 
     /// <summary>
-    /// Tests <see cref="MaaCopilotOperationHelper.DeserializeMaaCopilotOperation(string)"/>.
-    /// </summary>
-    [TestMethod]
-    public void TestDeserializeMaaCopilotOperation()
-    {
-        var data = GetTestData();
-
-        MaaCopilotOperationHelper.DeserializeMaaCopilotOperation(JsonSerializer.Serialize(data)).Should().BeEquivalentTo(data);
-    }
-
-    /// <summary>
-    /// Tests getters.
-    /// </summary>
-    [TestMethod]
-    public void TestGetters()
-    {
-        var data = GetTestData();
-
-        data.GetDocTitle().Should().Be("test_title");
-        data.GetDocDetails().Should().Be("test_details");
-        data.GetStageName().Should().Be("test_stage_name");
-        data.GetMinimumRequired().Should().Be("0.0.1");
-    }
-
-    /// <summary>
-    /// Tests getters with default values.
-    /// </summary>
-    [TestMethod]
-    public void TestGettersDefaultValue()
-    {
-        var data = GetTestData();
-        data.Doc = null;
-        data.StageName = null;
-        data.MinimumRequired = null;
-
-        data.GetDocTitle().Should().Be("");
-        data.GetDocDetails().Should().Be("");
-        data.GetStageName().Should().Be("");
-        data.GetMinimumRequired().Should().Be("");
-    }
-
-    /// <summary>
-    /// Tests <see cref="MaaCopilotOperationHelper.SerializeGroup(MaaCopilotOperation)"/>.
+    /// Tests <see cref="OperationConvertor.SerializeGroup(Operation)"/>.
     /// </summary>
     [TestMethod]
     public void TestSerializeGroup()
@@ -117,7 +76,7 @@ public class MaaCopilotOperationHelperTest
     }
 
     /// <summary>
-    /// Tests <see cref="MaaCopilotOperationHelper.SerializeGroup(MaaCopilotOperation)"/>
+    /// Tests <see cref="OperationConvertor.SerializeGroup(Operation)"/>
     /// with empty groups.
     /// </summary>
     [TestMethod]
@@ -130,7 +89,7 @@ public class MaaCopilotOperationHelperTest
     }
 
     /// <summary>
-    /// Tests <see cref="MaaCopilotOperationHelper.SerializeOperator(MaaCopilotOperation)"/>.
+    /// Tests <see cref="OperationConvertor.SerializeOperator(Operation)"/>.
     /// </summary>
     [TestMethod]
     public void TestSerializezOperator()
@@ -143,7 +102,7 @@ public class MaaCopilotOperationHelperTest
     }
 
     /// <summary>
-    /// Tests <see cref="MaaCopilotOperationHelper.SerializeOperator(MaaCopilotOperation)"/>
+    /// Tests <see cref="OperationConvertor.SerializeOperator(Operation)"/>
     /// with empty operators.
     /// </summary>
     [TestMethod]
@@ -156,7 +115,7 @@ public class MaaCopilotOperationHelperTest
     }
 
     /// <summary>
-    /// Tests <see cref="MaaCopilotOperationHelper.DeserializeGroup(string[]?)"/>.
+    /// Tests <see cref="OperationConvertor.DeserializeGroup(string[]?)"/>.
     /// </summary>
     [TestMethod]
     public void TestDeserializeGroup()
@@ -173,7 +132,7 @@ public class MaaCopilotOperationHelperTest
     }
 
     /// <summary>
-    /// Tests <see cref="MaaCopilotOperationHelper.DeserializeGroup(string[]?)"/>
+    /// Tests <see cref="OperationConvertor.DeserializeGroup(string[]?)"/>
     /// with empty groups.
     /// </summary>
     [TestMethod]

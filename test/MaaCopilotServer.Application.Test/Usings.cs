@@ -4,4 +4,5 @@
 
 global using FluentAssertions;
 global using Microsoft.VisualStudio.TestTools.UnitTesting;
+global using MaaCopilotServer.Application.Common.Operation.Model;
 global using Moq;
