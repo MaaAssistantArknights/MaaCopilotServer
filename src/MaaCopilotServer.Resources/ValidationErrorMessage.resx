@@ -74,4 +74,7 @@
   <data name="UnknownLanguageType" xml:space="preserve">
     <value>未知的语言类型</value>
   </data>
+  <data name="CopilotOperationUnknownLevel" xml:space="preserve">
+    <value>未知的关卡</value>
+  </data>
 </root>

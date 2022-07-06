@@ -26,6 +26,8 @@ public static class SystemConstants
     public const string ARK_ASSET_VERSION_JP = "ark.asset.version.jp";
     public const string ARK_ASSET_VERSION_KO = "ark.asset.version.ko";
 
+    public const string MaaCopilotSchemaPath = "static/maa-copilot-schema.json";
+
     public const string LevelUrl = "https://raw.githubusercontent.com/yuanyan3060/Arknights-Bot-Resource/main/levels.json";
     public const string ActUrl = "https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/{REGION}/gamedata/excel/activity_table.json";
     public const string CharUrl = "https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/{REGION}/gamedata/excel/character_table.json";

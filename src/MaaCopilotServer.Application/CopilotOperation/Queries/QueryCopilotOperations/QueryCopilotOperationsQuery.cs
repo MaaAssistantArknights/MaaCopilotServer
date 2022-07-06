@@ -3,6 +3,7 @@
 // Licensed under the AGPL-3.0 license.
 
 using MaaCopilotServer.Application.Common.Helpers;
+using MaaCopilotServer.Application.Common.Operation;
 using MaaCopilotServer.Domain.Entities;
 using MaaCopilotServer.Domain.Enums;
 using Microsoft.AspNetCore.Mvc;
@@ -26,12 +27,6 @@ public record QueryCopilotOperationsQuery : IRequest<MaaApiResponse>
     /// </summary>
     [FromQuery(Name = "limit")]
     public int? Limit { get; set; } = null;
-
-    /// <summary>
-    ///     The stage name to query.
-    /// </summary>
-    [FromQuery(Name = "stage_name")]
-    public string? StageName { get; set; } = null;
 
     /// <summary>
     ///     The content to query.
@@ -62,6 +57,12 @@ public record QueryCopilotOperationsQuery : IRequest<MaaApiResponse>
     /// </summary>
     [FromQuery(Name = "order_by")]
     public string? OrderBy { get; set; } = null;
+
+    /// <summary>
+    ///     The server language. Could be (ignore case) Chinese (Default), English, Japanese, Korean.
+    /// </summary>
+    [FromQuery(Name = "server")]
+    public string Server { get; set; } = string.Empty;
 }
 
 public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOperationsQuery,
@@ -123,12 +124,10 @@ public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOp
         }
 
         // Build queryable
-        var queryable = _dbContext.CopilotOperations.Include(x => x.Author).AsQueryable();
-        if (string.IsNullOrEmpty(request.StageName) is false)
-        {
-            // if stage name is set, filter by it
-            queryable = queryable.Where(x => x.StageName.Contains(request.StageName));
-        }
+        var queryable = _dbContext.CopilotOperations
+            .Include(x => x.ArkLevel)
+            .Include(x => x.Author)
+            .AsQueryable();
         if (string.IsNullOrEmpty(request.Content) is false)
         {
             // if content is set, filter by it
@@ -196,7 +195,6 @@ public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOp
                     Id = _copilotOperationService.EncodeId(x.Id),
                     Detail = x.Details,
                     MinimumRequired = x.MinimumRequired,
-                    StageName = x.StageName,
                     Title = x.Title,
                     Uploader = x.Author.UserName,
                     HotScore = x.HotScore,
@@ -204,6 +202,7 @@ public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOp
                     Operators = x.Operators,
                     UploadTime = x.UpdateAt.ToIsoString(),
                     ViewCounts = x.ViewCounts,
+                    Level = x.ArkLevel.MapToDto(request.Server),
                     RatingLevel = _copilotOperationService.GetRatingLevelString(x.RatingLevel),
                     // If the user is logged in, get the rating for the operation, default value is None
                     // If not, set to null

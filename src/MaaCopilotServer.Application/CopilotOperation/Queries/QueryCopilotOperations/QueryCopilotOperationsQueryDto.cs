@@ -5,6 +5,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
+using MaaCopilotServer.Application.Arknights.GetLevelList;
 using MaaCopilotServer.Domain.Enums;
 
 namespace MaaCopilotServer.Application.CopilotOperation.Queries.QueryCopilotOperations;
@@ -25,13 +26,6 @@ public class QueryCopilotOperationsQueryDto
     [Required]
     [JsonPropertyName("id")]
     public string Id { get; set; }
-
-    /// <summary>
-    ///     The stage name.
-    /// </summary>
-    [Required]
-    [JsonPropertyName("stage_name")]
-    public string StageName { get; set; }
 
     /// <summary>
     ///     The minimum required version of MAA.
@@ -95,6 +89,20 @@ public class QueryCopilotOperationsQueryDto
     [Required]
     [JsonPropertyName("HotScore")]
     public long HotScore { get; set; }
+
+    /// <summary>
+    ///     The level this operation is made for.
+    /// </summary>
+    [Required]
+    [JsonPropertyName("level")]
+    public GetLevelListDto Level { get; set; }
+
+    /// <summary>
+    ///     The level this operation is made for is available in your region.
+    /// </summary>
+    [Required]
+    [JsonPropertyName("available")]
+    public bool Available => string.IsNullOrEmpty(Level.Name) is false;
 
     /// <summary>
     ///     Current rating level, i18n string.

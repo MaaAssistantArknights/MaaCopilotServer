@@ -34,6 +34,8 @@ public static class ConfigureServices
 
         services.AddScoped<ICopilotOperationService, CopilotOperationService>();
 
+        services.AddScoped<IOperationProcessService, OperationProcessService>();
+
         services.AddSingleton<ISecretService, SecretService>();
 
         var smtpClientOptions = new SmtpClientOptions

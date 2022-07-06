@@ -4,9 +4,8 @@
 
 using System.Text.Json.Serialization;
 using MaaCopilotServer.Application.Common.Helpers;
+using MaaCopilotServer.Application.Common.Operation;
 using MaaCopilotServer.Domain.Enums;
-using MaaCopilotServer.Domain.Options;
-using Microsoft.Extensions.Options;
 
 namespace MaaCopilotServer.Application.CopilotOperation.Commands.CreateCopilotOperation;
 
@@ -26,65 +25,48 @@ public record CreateCopilotOperationCommand : IRequest<MaaApiResponse>
 public class CreateCopilotOperationCommandHandler : IRequestHandler<CreateCopilotOperationCommand, MaaApiResponse>
 {
     private readonly ICopilotOperationService _copilotOperationService;
-    private readonly IOptions<CopilotOperationOption> _copilotOperationOption;
     private readonly ICurrentUserService _currentUserService;
+    private readonly IOperationProcessService _operationProcessService;
     private readonly IMaaCopilotDbContext _dbContext;
-    private readonly ValidationErrorMessage _validationErrorMessage;
 
     public CreateCopilotOperationCommandHandler(
         IMaaCopilotDbContext dbContext,
         ICurrentUserService currentUserService,
-        ICopilotOperationService copilotOperationService,
-        IOptions<CopilotOperationOption> copilotOperationOption,
-        ValidationErrorMessage validationErrorMessage)
+        IOperationProcessService operationProcessService,
+        ICopilotOperationService copilotOperationService)
     {
         _dbContext = dbContext;
         _currentUserService = currentUserService;
+        _operationProcessService = operationProcessService;
         _copilotOperationService = copilotOperationService;
-        _copilotOperationOption = copilotOperationOption;
-        _validationErrorMessage = validationErrorMessage;
     }
 
     public async Task<MaaApiResponse> Handle(CreateCopilotOperationCommand request, CancellationToken cancellationToken)
     {
-        // Deserialize the operation JSON content.
-        var content = MaaCopilotOperationHelper.DeserializeMaaCopilotOperation(request.Content!).IsNotNull();
+        // Validate operation JSON content.
+        var validationResult = await _operationProcessService.Validate(request.Content);
 
-        // Parse stage_name and version.
-        var stageName = content.GetStageName();
-        var minimumRequired = content.GetMinimumRequired();
-
-        // Parse doc.
-        var docTitle = content.GetDocTitle();
-        var docDetails = content.GetDocDetails();
-
-        // Check configuration if title and details are required.
-        if (_copilotOperationOption.Value.RequireDetails && string.IsNullOrEmpty(docTitle))
+        if (validationResult.IsValid is false)
         {
-            return MaaApiResponseHelper.BadRequest(_validationErrorMessage.CopilotOperationJsonIsInvalid);
-        }
-        if (_copilotOperationOption.Value.RequireDetails && string.IsNullOrEmpty(docDetails))
-        {
-            return MaaApiResponseHelper.BadRequest(_validationErrorMessage.CopilotOperationJsonIsInvalid);
+            return MaaApiResponseHelper.BadRequest(validationResult.ErrorMessages);
         }
 
-        // Check operators
-        var operatorArray = content.Operators ?? Array.Empty<MaaCopilotOperationOperator>();
-        if (operatorArray.Any(item => item.Name is null))
-        {
-            return MaaApiResponseHelper.BadRequest(_validationErrorMessage.CopilotOperationJsonIsInvalid);
-        }
-
-        // Get groups and operators
-        var groups = content.SerializeGroup();
-        var operators = content.SerializeOperator();
+        var obj = validationResult.Operation!;
 
         // Get user
         var user = (await _currentUserService.GetUser()).IsNotNull();
 
         // Build entity
         var entity = new Domain.Entities.CopilotOperation(
-            request.Content!, stageName, minimumRequired, docTitle, docDetails, user, user.EntityId, operators, groups);
+            request.Content!,
+            obj.MinimumRequired!,
+            obj.Doc!.Title!,
+            obj.Doc!.Details!,
+            user,
+            user.EntityId,
+            validationResult.ArkLevel!,
+            obj.SerializeOperator(),
+            obj.SerializeGroup());
         entity.UpdateHotScore(_copilotOperationService.CalculateHotScore(entity));
 
         // Add entity to database.

@@ -19,23 +19,23 @@ public sealed class CopilotOperation : EditableEntity
     ///     The constructor of <see cref="CopilotOperation" />.
     /// </summary>
     /// <param name="content">The content.</param>
-    /// <param name="stageName">The stage name.</param>
     /// <param name="minimumRequired">The minimum required version of MAA.</param>
     /// <param name="title">The title of the operation.</param>
     /// <param name="details">The detail of the operation.</param>
     /// <param name="author">The author of the operation.</param>
     /// <param name="createBy">The creator of the operation.</param>
+    /// <param name="level">The level this operation is made for.</param>
     /// <param name="operators">The operators in the operation.</param>
     /// <param name="groups">The groups in the operation.</param>
-    public CopilotOperation(string content, string stageName, string minimumRequired, string title, string details,
-        CopilotUser author, Guid createBy, IEnumerable<string> operators, IEnumerable<string> groups)
+    public CopilotOperation(string content, string minimumRequired, string title, string details,
+        CopilotUser author, Guid createBy, ArkLevelData level, IEnumerable<string> operators, IEnumerable<string> groups)
     {
         Content = content;
-        StageName = stageName;
         MinimumRequired = minimumRequired;
         Title = title;
         Details = details;
         Author = author;
+        ArkLevel = level;
         Operators = operators.ToList();
         Groups = groups.ToList();
         CreateBy = createBy;
@@ -50,26 +50,26 @@ public sealed class CopilotOperation : EditableEntity
     /// </remarks>
     /// <param name="id">The ID.</param>
     /// <param name="content">The content.</param>
-    /// <param name="stageName">The stage name.</param>
     /// <param name="minimumRequired">The minimum required version of MAA.</param>
     /// <param name="title">The title of the operation.</param>
     /// <param name="details">The detail of the operation.</param>
     /// <param name="author">The author of the operation.</param>
     /// <param name="createBy">The creator of the operation.</param>
+    /// <param name="level">The level this operation is made for.</param>
     /// <param name="operators">The operators in the operation.</param>
     /// <param name="groups">The groups in the operation.</param>
     public CopilotOperation(
         long id,
         string content,
-        string stageName,
         string minimumRequired,
         string title,
         string details,
         CopilotUser author,
         Guid createBy,
+        ArkLevelData level,
         IEnumerable<string> operators,
         IEnumerable<string> groups)
-        : this(content, stageName, minimumRequired, title, details, author, createBy, operators, groups)
+        : this(content, minimumRequired, title, details, author, createBy, level, operators, groups)
     {
         Id = id;
     }
@@ -114,11 +114,6 @@ public sealed class CopilotOperation : EditableEntity
     // Extract from Content
 
     /// <summary>
-    ///     The stage name.
-    /// </summary>
-    public string StageName { get; private set; }
-
-    /// <summary>
     ///     The minimum required version of MAA.
     /// </summary>
     public string MinimumRequired { get; private set; }
@@ -148,6 +143,11 @@ public sealed class CopilotOperation : EditableEntity
     /// </summary>
     public CopilotUser Author { get; private set; }
 
+    /// <summary>
+    ///     The level this operation is made for.
+    /// </summary>
+    public ArkLevelData ArkLevel { get; private set; }
+
     // Auto calculated properties
 
     /// <summary>
@@ -161,7 +161,7 @@ public sealed class CopilotOperation : EditableEntity
     public RatingLevel RatingLevel { get; private set; } = RatingLevel.Mixed;
 
     /// <summary>
-    ///     Increases download count by 1, and updates last updated time.
+    ///     Increases view count by 1, and updates last updated time.
     /// </summary>
     /// <remarks>This API is reachable anonymously, so the update will not be recorded.</remarks>
     public void AddViewCount()
@@ -174,18 +174,16 @@ public sealed class CopilotOperation : EditableEntity
     ///     Update this operation.
     /// </summary>
     /// <param name="content">The content.</param>
-    /// <param name="stageName">The stage name.</param>
     /// <param name="minimumRequired">The minimum required version of MAA.</param>
     /// <param name="title">The title of the operation.</param>
     /// <param name="details">The detail of the operation.</param>
     /// <param name="operators">The operators in the operation.</param>
     /// <param name="groups">The groups in the operation.</param>
     /// <param name="operator">The one who call this method.</param>
-    public void UpdateOperation(string content, string stageName, string minimumRequired, string title, string details,
+    public void UpdateOperation(string content, string minimumRequired, string title, string details,
         IEnumerable<string> operators, IEnumerable<string> groups, Guid @operator)
     {
         Content = content;
-        StageName = stageName;
         MinimumRequired = minimumRequired;
         Title = title;
         Details = details;

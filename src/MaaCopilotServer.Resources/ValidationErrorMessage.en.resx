@@ -66,4 +66,7 @@
   <data name="UnknownLanguageType" xml:space="preserve">
     <value>Unknown language type</value>
   </data>
+  <data name="CopilotOperationUnknownLevel" xml:space="preserve">
+    <value>Unknown level</value>
+  </data>
 </root>

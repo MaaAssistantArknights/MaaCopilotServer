@@ -23,6 +23,13 @@
     </EmbeddedResource>
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="maa-copilot-schema.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <TargetPath>static/maa-copilot-schema.json</TargetPath>
+    </None>
+  </ItemGroup>
+
   <PropertyGroup>
     <ResXFileCodeGenerator_PublicClass>true</ResXFileCodeGenerator_PublicClass>
     <ResXFileCodeGenerator_StaticClass>false</ResXFileCodeGenerator_StaticClass>

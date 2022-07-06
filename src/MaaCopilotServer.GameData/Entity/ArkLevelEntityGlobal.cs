@@ -33,27 +33,32 @@ public class ArkLevelEntityGlobal
         Height = cn.Height;
     }
 
-    public string NameCn { get; }
-    public string NameKo { get; }
-    public string NameJp { get; }
-    public string NameEn { get; }
+    /// <summary>
+    ///     FOR TEST ONLY
+    /// </summary>
+    public ArkLevelEntityGlobal() { }
 
-    public string CatOneCn { get; }
-    public string CatOneKo { get; }
-    public string CatOneJp { get; }
-    public string CatOneEn { get; }
+    public string NameCn { get; } = string.Empty;
+    public string NameKo { get; } = string.Empty;
+    public string NameJp { get; } = string.Empty;
+    public string NameEn { get; } = string.Empty;
 
-    public string CatTwoCn { get; }
-    public string CatTwoKo { get; }
-    public string CatTwoJp { get; }
-    public string CatTwoEn { get; }
+    public string CatOneCn { get; } = string.Empty;
+    public string CatOneKo { get; } = string.Empty;
+    public string CatOneJp { get; } = string.Empty;
+    public string CatOneEn { get; } = string.Empty;
 
-    public string CatThreeCn { get; }
-    public string CatThreeKo { get; }
-    public string CatThreeJp { get; }
-    public string CatThreeEn { get; }
+    public string CatTwoCn { get; } = string.Empty;
+    public string CatTwoKo { get; } = string.Empty;
+    public string CatTwoJp { get; } = string.Empty;
+    public string CatTwoEn { get; } = string.Empty;
 
-    public string LevelId { get; }
-    public int Width { get; }
-    public int Height { get; }
+    public string CatThreeCn { get; } = string.Empty;
+    public string CatThreeKo { get; } = string.Empty;
+    public string CatThreeJp { get; } = string.Empty;
+    public string CatThreeEn { get; } = string.Empty;
+
+    public string LevelId { get; } = string.Empty;
+    public int Width { get; } = 0;
+    public int Height { get; } = 0;
 }

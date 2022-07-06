@@ -5,6 +5,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using MaaCopilotServer.Application.Common.Helpers;
+using MaaCopilotServer.Application.Common.Operation;
 using MaaCopilotServer.Application.CopilotOperation.Queries.GetCopilotOperation;
 using MaaCopilotServer.Domain.Entities;
 using MaaCopilotServer.Domain.Enums;
@@ -131,7 +132,6 @@ public class RatingCopilotOperationCommandHandler : IRequestHandler<RatingCopilo
         var dto = new GetCopilotOperationQueryDto
         {
             Id = request.Id!,
-            StageName = operation.StageName,
             MinimumRequired = operation.MinimumRequired,
             Content = operation.Content,
             Detail = operation.Details,

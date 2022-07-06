@@ -4,6 +4,7 @@
 
 using System.ComponentModel.DataAnnotations;
 using MaaCopilotServer.Application.Common.Helpers;
+using MaaCopilotServer.Application.Common.Operation;
 using MaaCopilotServer.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,6 +20,11 @@ public record GetCopilotOperationQuery : IRequest<MaaApiResponse>
     /// </summary>
     [Required]
     public string? Id { get; set; }
+
+    /// <summary>
+    ///     The arknights server language.
+    /// </summary>
+    public string? Server { get; set; }
 }
 
 public class
@@ -53,6 +59,7 @@ public class
         var id = _copilotOperationService.DecodeId(request.Id!);
         var entity = await _dbContext.CopilotOperations
             .Include(x => x.Author)
+            .Include(x => x.ArkLevel)
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
         if (entity is null)
         {
@@ -78,7 +85,6 @@ public class
         var dto = new GetCopilotOperationQueryDto
         {
             Id = request.Id!,
-            StageName = entity.StageName,
             MinimumRequired = entity.MinimumRequired,
             Content = entity.Content,
             Detail = entity.Details,
@@ -88,6 +94,7 @@ public class
             UploadTime = entity.CreateAt.ToIsoString(),
             ViewCounts = entity.ViewCounts,
             HotScore = entity.HotScore,
+            Level = entity.ArkLevel.MapToDto(request.Server),
             Groups = entity.Groups.ToArray().DeserializeGroup(),
             RatingLevel = _copilotOperationService.GetRatingLevelString(entity.RatingLevel),
             RatingType = rating

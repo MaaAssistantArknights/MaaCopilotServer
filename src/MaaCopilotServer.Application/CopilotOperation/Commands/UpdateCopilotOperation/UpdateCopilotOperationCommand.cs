@@ -5,6 +5,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using MaaCopilotServer.Application.Common.Helpers;
+using MaaCopilotServer.Application.Common.Operation;
 using MaaCopilotServer.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 
@@ -36,21 +37,21 @@ public class UpdateCopilotOperationCommandHandler : IRequestHandler<UpdateCopilo
     private readonly IMaaCopilotDbContext _dbContext;
     private readonly ICurrentUserService _currentUserService;
     private readonly ICopilotOperationService _copilotOperationService;
+    private readonly IOperationProcessService _operationProcessService;
     private readonly ApiErrorMessage _apiErrorMessage;
-    private readonly ValidationErrorMessage _validationErrorMessage;
 
     public UpdateCopilotOperationCommandHandler(
         IMaaCopilotDbContext dbContext,
         ICurrentUserService currentUserService,
         ICopilotOperationService copilotOperationService,
-        ApiErrorMessage apiErrorMessage,
-        ValidationErrorMessage validationErrorMessage)
+        IOperationProcessService operationProcessService,
+        ApiErrorMessage apiErrorMessage)
     {
         _dbContext = dbContext;
         _currentUserService = currentUserService;
         _copilotOperationService = copilotOperationService;
+        _operationProcessService = operationProcessService;
         _apiErrorMessage = apiErrorMessage;
-        _validationErrorMessage = validationErrorMessage;
     }
 
     public async Task<MaaApiResponse> Handle(UpdateCopilotOperationCommand request, CancellationToken cancellationToken)
@@ -61,6 +62,7 @@ public class UpdateCopilotOperationCommandHandler : IRequestHandler<UpdateCopilo
         // Get operation
         var operationId = _copilotOperationService.DecodeId(request.Id!);
         var operation = await _dbContext.CopilotOperations
+            .Include(x => x.ArkLevel)
             .Include(x => x.Author)
             .FirstOrDefaultAsync(x => x.Id == operationId, cancellationToken);
         if (operation is null)
@@ -75,30 +77,31 @@ public class UpdateCopilotOperationCommandHandler : IRequestHandler<UpdateCopilo
             return MaaApiResponseHelper.Forbidden(_apiErrorMessage.PermissionDenied!);
         }
 
-        // Deserialize the operation JSON content
-        var content = MaaCopilotOperationHelper.DeserializeMaaCopilotOperation(request.Content!).IsNotNull();
+        // Validate operation JSON content.
+        var validationResult = await _operationProcessService.Validate(request.Content);
 
-        // Parse stage_name and version.
-        var stageName = content.GetStageName() ;
-        var minimumRequired = content.GetMinimumRequired();
-
-        // Parse doc.
-        var docTitle = content.GetDocTitle();
-        var docDetails = content.GetDocDetails();
-
-        // Check if the operator field is valid
-        var operatorArray = content.Operators ?? Array.Empty<MaaCopilotOperationOperator>();
-        if (operatorArray.Any(item => item.Name is null))
+        if (validationResult.IsValid is false)
         {
-            return MaaApiResponseHelper.BadRequest(_validationErrorMessage.CopilotOperationJsonIsInvalid);
+            return MaaApiResponseHelper.BadRequest(validationResult.ErrorMessages);
         }
 
-        // Parse groups and operators
-        var groups = content.SerializeGroup();
-        var operators = content.SerializeOperator();
+        var obj = validationResult.Operation!;
+
+        // Check if level is the same as the one in the database.
+        if (validationResult.ArkLevel!.LevelId != operation.ArkLevel.LevelId)
+        {
+            return MaaApiResponseHelper.BadRequest();
+        }
 
         // Update the operation
-        operation.UpdateOperation(request.Content!, stageName, minimumRequired, docTitle, docDetails, operators, groups, user.EntityId);
+        operation.UpdateOperation(
+            request.Content!,
+            obj.MinimumRequired!,
+            obj.Doc!.Title!,
+            obj.Doc!.Details!,
+            obj.SerializeOperator(),
+            obj.SerializeGroup(),
+            user.EntityId);
         _dbContext.CopilotOperations.Update(operation);
         await _dbContext.SaveChangesAsync(cancellationToken);
 
