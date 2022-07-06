@@ -54,7 +54,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MaaCopilotServer.Infrastruc
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Library", "Library", "{69B89871-2D91-4D24-9ACF-6B86595DDD33}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaaCopilotServer.GameData", "src\MaaCopilotServer.GameData\MaaCopilotServer.GameData.csproj", "{9A32C618-8422-4B49-81CE-5E9D8775E254}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MaaCopilotServer.GameData", "src\MaaCopilotServer.GameData\MaaCopilotServer.GameData.csproj", "{9A32C618-8422-4B49-81CE-5E9D8775E254}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
