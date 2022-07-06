@@ -29,6 +29,30 @@ public record QueryCopilotOperationsQuery : IRequest<MaaApiResponse>
     public int? Limit { get; set; } = null;
 
     /// <summary>
+    ///     Level category one.
+    /// </summary>
+    [FromQuery(Name = "level_cat_one")]
+    public string? LevelCatOne { get; set; } = null;
+
+    /// <summary>
+    ///     Level category two.
+    /// </summary>
+    [FromQuery(Name = "level_cat_two")]
+    public string? LevelCatTwo { get; set; } = null;
+
+    /// <summary>
+    ///     Level category three.
+    /// </summary>
+    [FromQuery(Name = "level_cat_three")]
+    public string? LevelCatThree { get; set; } = null;
+
+    /// <summary>
+    ///     Level name.
+    /// </summary>
+    [FromQuery(Name = "level_name")]
+    public string? LevelName { get; set; } = null;
+
+    /// <summary>
     ///     The content to query.
     /// </summary>
     [FromQuery(Name = "content")]
@@ -139,6 +163,54 @@ public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOp
             queryable = queryable.Where(x => x.Author.UserName.Contains(request.Uploader));
         }
 
+        if (string.IsNullOrEmpty(request.LevelName) is false)
+        {
+            // if level name is set, filter by it
+            queryable = request.Server.ToLower() switch
+            {
+                "japanese" => queryable.Where(x => x.ArkLevel.NameJp.Contains(request.LevelName)),
+                "korean" => queryable.Where(x => x.ArkLevel.NameKo.Contains(request.LevelName)),
+                "english" => queryable.Where(x => x.ArkLevel.NameEn.Contains(request.LevelName)),
+                _ => queryable.Where(x => x.ArkLevel.NameCn.Contains(request.LevelName))
+            };
+        }
+
+        if (string.IsNullOrEmpty(request.LevelCatOne) is false)
+        {
+            // if level cat one is set, filter by it
+            queryable = request.Server.ToLower() switch
+            {
+                "japanese" => queryable.Where(x => x.ArkLevel.CatOneJp.Contains(request.LevelCatOne)),
+                "korean" => queryable.Where(x => x.ArkLevel.CatOneKo.Contains(request.LevelCatOne)),
+                "english" => queryable.Where(x => x.ArkLevel.CatOneEn.Contains(request.LevelCatOne)),
+                _ => queryable.Where(x => x.ArkLevel.CatOneCn.Contains(request.LevelCatOne))
+            };
+        }
+
+        if (string.IsNullOrEmpty(request.LevelCatTwo) is false)
+        {
+            // if level cat two is set, filter by it
+            queryable = request.Server.ToLower() switch
+            {
+                "japanese" => queryable.Where(x => x.ArkLevel.CatTwoJp.Contains(request.LevelCatTwo)),
+                "korean" => queryable.Where(x => x.ArkLevel.CatTwoKo.Contains(request.LevelCatTwo)),
+                "english" => queryable.Where(x => x.ArkLevel.CatTwoEn.Contains(request.LevelCatTwo)),
+                _ => queryable.Where(x => x.ArkLevel.CatTwoCn.Contains(request.LevelCatTwo))
+            };
+        }
+
+        if (string.IsNullOrEmpty(request.LevelCatThree) is false)
+        {
+            // if level cat three is set, filter by it
+            queryable = request.Server.ToLower() switch
+            {
+                "japanese" => queryable.Where(x => x.ArkLevel.CatThreeJp.Contains(request.LevelCatThree)),
+                "korean" => queryable.Where(x => x.ArkLevel.CatThreeKo.Contains(request.LevelCatThree)),
+                "english" => queryable.Where(x => x.ArkLevel.CatThreeEn.Contains(request.LevelCatThree)),
+                _ => queryable.Where(x => x.ArkLevel.CatThreeCn.Contains(request.LevelCatThree))
+            };
+        }
+
         if (uploaderId is not null)
         {
             // if uploader id is set, filter by it
@@ -162,11 +234,13 @@ public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOp
             "hot" => string.IsNullOrEmpty(request.Desc)
                 ? queryable.OrderBy(x => x.HotScore)
                 : queryable.OrderByDescending(x => x.HotScore),
-            // if no order is set, order by id
-            _ => string.IsNullOrEmpty(request.Desc)
-                ? queryable.OrderBy(x => x.Id)
-                : queryable.OrderByDescending(x => x.Id)
+            _ => queryable
         };
+
+        // Always order by id at the end
+        queryable = string.IsNullOrEmpty(request.Desc)
+            ? queryable.OrderBy(x => x.Id)
+            : queryable.OrderByDescending(x => x.Id);
 
         // Build full query
         queryable = queryable.Skip(skip).Take(limit);
