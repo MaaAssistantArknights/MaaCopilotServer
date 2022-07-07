@@ -23,7 +23,7 @@ public class CopilotOperationControllerTest
     {
         ControllerTestHelper.Test<CopilotOperationController>(c => c.CreateCopilotOperation(new()));
         ControllerTestHelper.Test<CopilotOperationController>(c => c.DeleteCopilotOperation(new()));
-        ControllerTestHelper.Test<CopilotOperationController>(c => c.GetCopilotOperation(string.Empty));
+        ControllerTestHelper.Test<CopilotOperationController>(c => c.GetCopilotOperation(string.Empty, null));
         ControllerTestHelper.Test<CopilotOperationController>(c => c.QueryCopilotOperation(new()));
         ControllerTestHelper.Test<CopilotOperationController>(c => c.UpdateCopilotOperation(new()));
         ControllerTestHelper.Test<CopilotOperationController>(c => c.RatingCopilotOperation(new()));
