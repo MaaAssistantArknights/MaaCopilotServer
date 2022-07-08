@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
 using Destructurama;
 using Elastic.Apm.SerilogEnricher;
 using Elastic.CommonSchema.Serilog;
@@ -15,6 +16,7 @@ namespace MaaCopilotServer.Api.Helper;
 /// <summary>
 ///     The helper class of logger.
 /// </summary>
+[ExcludeFromCodeCoverage]
 public static class LoggerConfigurationHelper
 {
     /// <summary>
