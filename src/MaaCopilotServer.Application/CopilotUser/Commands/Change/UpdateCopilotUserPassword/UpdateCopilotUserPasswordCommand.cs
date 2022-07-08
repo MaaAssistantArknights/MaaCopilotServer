@@ -7,7 +7,6 @@ using System.Text.Json.Serialization;
 using Destructurama.Attributed;
 using MaaCopilotServer.Application.Common.Helpers;
 using MaaCopilotServer.Domain.Enums;
-using Microsoft.EntityFrameworkCore;
 
 namespace MaaCopilotServer.Application.CopilotUser.Commands.UpdateCopilotUserPassword;
 
@@ -59,7 +58,7 @@ public class UpdateCopilotUserPasswordCommandHandler : IRequestHandler<UpdateCop
         var user = (await _currentUserService.GetUser()).IsNotNull();
 
         // Check if original password is valid or not
-        var ok = _secretService.VerifyPassword(user!.Password, request.OriginalPassword!);
+        var ok = _secretService.VerifyPassword(user.Password, request.OriginalPassword!);
         if (ok is false)
         {
             return MaaApiResponseHelper.BadRequest(_apiErrorMessage.PasswordInvalid);

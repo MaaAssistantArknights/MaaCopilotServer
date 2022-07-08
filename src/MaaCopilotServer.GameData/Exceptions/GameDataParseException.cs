@@ -2,8 +2,6 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
-using MaaCopilotServer.GameData.Model;
-
 namespace MaaCopilotServer.GameData.Exceptions;
 
 public class GameDataParseException : Exception

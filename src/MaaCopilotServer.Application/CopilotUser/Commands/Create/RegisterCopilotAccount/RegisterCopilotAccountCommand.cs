@@ -46,7 +46,6 @@ public record RegisterCopilotAccountCommand : IRequest<MaaApiResponse>
 public class RegisterCopilotAccountCommandHandler : IRequestHandler<RegisterCopilotAccountCommand, MaaApiResponse>
 {
     private readonly ApiErrorMessage _apiErrorMessage;
-    private readonly ICurrentUserService _currentUserService;
     private readonly IMaaCopilotDbContext _dbContext;
     private readonly IMailService _mailService;
     private readonly IOptions<CopilotServerOption> _copilotServerOption;
@@ -55,7 +54,6 @@ public class RegisterCopilotAccountCommandHandler : IRequestHandler<RegisterCopi
 
     public RegisterCopilotAccountCommandHandler(
         IOptions<TokenOption> tokenOption,
-        ICurrentUserService currentUserService,
         IMaaCopilotDbContext dbContext,
         ISecretService secretService,
         IMailService mailService,
@@ -63,7 +61,6 @@ public class RegisterCopilotAccountCommandHandler : IRequestHandler<RegisterCopi
         ApiErrorMessage apiErrorMessage)
     {
         _tokenOption = tokenOption;
-        _currentUserService = currentUserService;
         _dbContext = dbContext;
         _secretService = secretService;
         _mailService = mailService;

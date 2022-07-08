@@ -434,7 +434,7 @@ public class HandlerTest
     /// <returns>The result.</returns>
     public HandlerTestResult TestActivateCopilotAccount(ActivateCopilotAccountCommand request)
     {
-        var handler = new ActivateCopilotAccountCommandHandler(CurrentUserService.Object, DbContext, ApiErrorMessage);
+        var handler = new ActivateCopilotAccountCommandHandler(DbContext, ApiErrorMessage);
         return new HandlerTestResult { Response = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult(), DbContext = DbContext };
     }
 
@@ -456,7 +456,7 @@ public class HandlerTest
     /// <returns>The result.</returns>
     public HandlerTestResult TestRegisterCopilotAccount(RegisterCopilotAccountCommand request)
     {
-        var handler = new RegisterCopilotAccountCommandHandler(TokenOption, CurrentUserService.Object, DbContext, SecretService.Object, MailService.Object, CopilotServerOption, ApiErrorMessage);
+        var handler = new RegisterCopilotAccountCommandHandler(TokenOption, DbContext, SecretService.Object, MailService.Object, CopilotServerOption, ApiErrorMessage);
         return new HandlerTestResult { Response = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult(), DbContext = DbContext };
     }
 
@@ -478,7 +478,7 @@ public class HandlerTest
     /// <returns>The result.</returns>
     public HandlerTestResult TestLoginCopilotUser(LoginCopilotUserCommand request)
     {
-        var handler = new LoginCopilotUserCommandHandler(DbContext, SecretService.Object, CurrentUserService.Object, ApiErrorMessage);
+        var handler = new LoginCopilotUserCommandHandler(DbContext, SecretService.Object, ApiErrorMessage);
         return new HandlerTestResult { Response = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult(), DbContext = DbContext };
     }
 
@@ -511,7 +511,7 @@ public class HandlerTest
     /// <returns>The result.</returns>
     public HandlerTestResult TestQueryCopilotUser(QueryCopilotUserQuery request)
     {
-        var handler = new QueryCopilotUserQueryHandler(DbContext, CurrentUserService.Object);
+        var handler = new QueryCopilotUserQueryHandler(DbContext);
         return new HandlerTestResult { Response = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult(), DbContext = DbContext };
     }
 

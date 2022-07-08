@@ -2,7 +2,6 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
-using System.Text.Json.Serialization;
 using MaaCopilotServer.GameData.Model;
 
 namespace MaaCopilotServer.GameData.Entity;

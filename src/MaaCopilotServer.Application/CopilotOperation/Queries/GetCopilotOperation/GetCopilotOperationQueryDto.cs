@@ -6,7 +6,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 using MaaCopilotServer.Application.CopilotOperation.Queries.QueryCopilotOperations;
-using MaaCopilotServer.Domain.Enums;
 
 namespace MaaCopilotServer.Application.CopilotOperation.Queries.GetCopilotOperation;
 
@@ -17,6 +16,7 @@ namespace MaaCopilotServer.Application.CopilotOperation.Queries.GetCopilotOperat
 public class GetCopilotOperationQueryDto : QueryCopilotOperationsQueryDto
 {
 #pragma warning disable CS8618
+    // ReSharper disable once EmptyConstructor
     public GetCopilotOperationQueryDto() { }
 #pragma warning restore CS8618
 
