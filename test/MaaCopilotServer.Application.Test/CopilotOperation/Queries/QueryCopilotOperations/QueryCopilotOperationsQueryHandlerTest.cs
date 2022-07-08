@@ -7,7 +7,9 @@ using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Application.Common.Models;
 using MaaCopilotServer.Application.CopilotOperation.Queries.QueryCopilotOperations;
 using MaaCopilotServer.Application.Test.TestHelpers;
+using MaaCopilotServer.Domain.Entities;
 using MaaCopilotServer.Domain.Options;
+using MaaCopilotServer.GameData.Entity;
 using MaaCopilotServer.Infrastructure.Services;
 using MaaCopilotServer.Resources;
 using Microsoft.AspNetCore.Http;
@@ -60,26 +62,35 @@ public class QueryCopilotOperationsQueryHandlerTest
         List<Domain.Entities.CopilotOperation> data = new();
         for (var i = 0; i < 5; i++)
         {
-            data.Add(new Domain.Entities.CopilotOperation(i, $"content{i}", $"stage{i}", string.Empty, string.Empty, string.Empty, users[0], Guid.Empty, new List<string>(), new List<string>()));
+            data.Add(new Domain.Entities.CopilotOperation(i, $"content{i}", string.Empty,
+                string.Empty, string.Empty, users[0], Guid.Empty,
+                new ArkLevelData(new ArkLevelEntityGlobal($"level{i}")),
+                new List<string>(), new List<string>()));
         }
         for (var i = 5; i < 10; i++)
         {
-            data.Add(new Domain.Entities.CopilotOperation(i, $"content{i}", $"stage{i}", string.Empty, string.Empty, string.Empty, users[1], Guid.Empty, new List<string>(), new List<string>()));
+            data.Add(new Domain.Entities.CopilotOperation(i, $"content{i}", string.Empty,
+                string.Empty, string.Empty, users[1], Guid.Empty,
+                new ArkLevelData(new ArkLevelEntityGlobal($"level{i}")),
+                new List<string>(), new List<string>()));
         }
 
-        List<Domain.Entities.CopilotOperationRating> rating = new();
+        List<CopilotOperationRating> rating = new();
         for (var i = 0; i < 10; i++)
         {
-            rating.Add(new Domain.Entities.CopilotOperationRating(data[i].EntityId, data[i].Author.EntityId, Domain.Enums.OperationRatingType.Like));
+            rating.Add(new CopilotOperationRating(data[i].EntityId, data[i].Author.EntityId, Domain.Enums.OperationRatingType.Like));
+            data[i].AddViewCount();
+            data[i].AddLike(Guid.Empty);
         }
 
-        // Set operation[9] to have one view
+        // Set operation[9] to have another two views
         data[HighestViewId].AddViewCount();
-        data[HighestViewId].AddViewCount();
-
-        // Set operation[8] to have one like and ine view
-        data[HighestRateId].AddLike(Guid.Empty);
         data[HighestRateId].AddViewCount();
+
+
+        // Set operation[8] to have another two like
+        data[HighestRateId].AddLike(Guid.Empty);
+        data[HighestRateId].AddLike(Guid.Empty);
 
         // Calculate the hot score for each operation
         foreach (var oper in data)
@@ -107,7 +118,7 @@ public class QueryCopilotOperationsQueryHandlerTest
         var (users, test) = InitializeDatabase(new HandlerTest());
         var response = test.SetupGetUserIdentity(users[0].EntityId)
             .SetupGetUser(users[0])
-            .TestQueryCopilotOperations(new()
+            .TestQueryCopilotOperations(new QueryCopilotOperationsQuery
             {
                 Desc = descending ? "desc" : null,
             })
@@ -119,7 +130,7 @@ public class QueryCopilotOperationsQueryHandlerTest
         responseData.Page.Should().Be(1);
         responseData.Total.Should().Be(10);
         responseData.Data.Should().NotBeNull().And.HaveCount(10);
-        var data = responseData.Data!;
+        var data = responseData.Data;
         for (var i = 0; i < 10; i++)
         {
             data[i].Id.Should().Be(s_copilotOperationService.EncodeId(descending ? 9 - i : i));
@@ -152,7 +163,7 @@ public class QueryCopilotOperationsQueryHandlerTest
         responseData.Page.Should().Be(2);
         responseData.Total.Should().Be(10);
         responseData.Data.Should().NotBeNull().And.HaveCount(2);
-        var data = responseData.Data!;
+        var data = responseData.Data;
         data[0].Id.Should().Be(s_copilotOperationService.EncodeId(descending ? 7 : 2));
         data[1].Id.Should().Be(s_copilotOperationService.EncodeId(descending ? 6 : 3));
     }
@@ -178,11 +189,11 @@ public class QueryCopilotOperationsQueryHandlerTest
         responseData.Page.Should().Be(1);
         responseData.Total.Should().Be(5);
         responseData.Data.Should().NotBeNull().And.HaveCount(5);
-        var data = responseData.Data!;
+        var data = responseData.Data;
         for (var i = 0; i < 5; i++)
         {
             data[i].Id.Should().Be(s_copilotOperationService.EncodeId(i));
-            data[i].StageName.Should().Be($"stage{i}");
+            data[i].Level.LevelId.Should().Be($"level{i}");
         }
     }
 
@@ -207,11 +218,11 @@ public class QueryCopilotOperationsQueryHandlerTest
         responseData.Page.Should().Be(1);
         responseData.Total.Should().Be(5);
         responseData.Data.Should().NotBeNull().And.HaveCount(5);
-        var data = responseData.Data!;
+        var data = responseData.Data;
         for (var i = 0; i < 5; i++)
         {
             data[i].Id.Should().Be(s_copilotOperationService.EncodeId(i));
-            data[i].StageName.Should().Be($"stage{i}");
+            data[i].Level.LevelId.Should().Be($"level{i}");
         }
     }
 
@@ -224,7 +235,7 @@ public class QueryCopilotOperationsQueryHandlerTest
         var test = new HandlerTest();
         var response = test.SetupGetUserIdentity(null)
             .SetupGetUser(null)
-            .TestQueryCopilotOperations(new()
+            .TestQueryCopilotOperations(new QueryCopilotOperationsQuery
             {
                 UploaderId = "me",
             })
@@ -263,17 +274,24 @@ public class QueryCopilotOperationsQueryHandlerTest
     }
 
     /// <summary>
-    /// Tests querying with stage name.
+    /// Tests querying with level name.
     /// </summary>
     [TestMethod]
-    public void TestHandleWithStageName()
+    [DataRow("", "CN")]
+    [DataRow("qwerty", "CN")]
+    [DataRow("chinese", "CN")]
+    [DataRow("english", "EN")]
+    [DataRow("japanese", "JP")]
+    [DataRow("korean", "KO")]
+    public void TestHandleWithLevelName(string language, string resultAppendix)
     {
         var (users, test) = InitializeDatabase(new HandlerTest());
         var response = test.SetupGetUserIdentity(users[0].EntityId)
             .SetupGetUser(users[0])
-            .TestQueryCopilotOperations(new()
+            .TestQueryCopilotOperations(new QueryCopilotOperationsQuery
             {
-                StageName = "stage0",
+                LevelName = "level0",
+                Server = language
             })
             .Response;
 
@@ -285,7 +303,8 @@ public class QueryCopilotOperationsQueryHandlerTest
         responseData.Data.Should().NotBeNull().And.HaveCount(1);
         var data = responseData.Data!;
         data[0].Id.Should().Be(s_copilotOperationService.EncodeId(0));
-        data[0].StageName.Should().Be("stage0");
+        data[0].Level.LevelId.Should().Be("level0");
+        data[0].Level.Name.Should().Be($"level0{resultAppendix}");
     }
 
     /// <summary>

@@ -3,6 +3,7 @@
 // Licensed under the AGPL-3.0 license.
 
 using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Application.Common.Models;
 using MaaCopilotServer.Application.CopilotOperation.Commands.CreateCopilotOperation;
@@ -25,7 +26,9 @@ using MaaCopilotServer.Application.CopilotUser.Queries.QueryCopilotUser;
 using MaaCopilotServer.Application.System.GetCurrentVersion;
 using MaaCopilotServer.Application.System.SendEmailTest;
 using MaaCopilotServer.Domain.Email.Models;
+using MaaCopilotServer.Domain.Entities;
 using MaaCopilotServer.Domain.Options;
+using MaaCopilotServer.GameData.Entity;
 using MaaCopilotServer.Infrastructure.Services;
 using MaaCopilotServer.Resources;
 using MaaCopilotServer.Test.TestHelpers;
@@ -93,7 +96,7 @@ public class HandlerTest
     public ValidationErrorMessage ValidationErrorMessage { get; } = new();
 
     /// <summary>
-    /// The domain string i18n resouece.
+    /// The domain string i18n resource.
     /// </summary>
     public DomainString DomainString { get; } = new();
 
@@ -156,9 +159,7 @@ public class HandlerTest
     {
         DislikeMultiplier = 2,
         LikeMultiplier = 10,
-        ViewMultiplier = 1,
-        RequireTitle = default,
-        RequireDetails = default
+        ViewMultiplier = 1
     });
 
     /// <summary>
@@ -328,7 +329,13 @@ public class HandlerTest
     /// <returns>The result.</returns>
     public HandlerTestResult TestCreateCopilotOperation(CreateCopilotOperationCommand request)
     {
-        var handler = new CreateCopilotOperationCommandHandler(DbContext, CurrentUserService.Object, new CopilotOperationService(CopilotOperationOption, DomainString), CopilotOperationOption, ValidationErrorMessage);
+        var ops = new OperationProcessService(DbContext, new ValidationErrorMessage(), Options.Create(
+            new ApplicationOption
+            {
+                AssemblyPath = new FileInfo(Assembly.GetExecutingAssembly().Location).Directory!.FullName,
+                DataDirectory = string.Empty, Version = string.Empty
+            }));
+        var handler = new CreateCopilotOperationCommandHandler(DbContext, CurrentUserService.Object, ops, new CopilotOperationService(CopilotOperationOption, DomainString));
         return new HandlerTestResult { Response = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult(), DbContext = DbContext };
     }
 

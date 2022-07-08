@@ -10,11 +10,15 @@ using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Application.Common.Models;
 using MaaCopilotServer.Application.CopilotOperation.Commands.CreateCopilotOperation;
 using MaaCopilotServer.Application.Test.TestHelpers;
+using MaaCopilotServer.Domain.Entities;
+using MaaCopilotServer.Domain.Enums;
 using MaaCopilotServer.Domain.Options;
+using MaaCopilotServer.GameData.Entity;
 using MaaCopilotServer.Infrastructure.Services;
 using MaaCopilotServer.Resources;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
+using Action = MaaCopilotServer.Application.Common.Operation.Model.Action;
 
 namespace MaaCopilotServer.Application.Test.CopilotOperation.Commands.CreateCopilotOperation;
 
@@ -31,13 +35,71 @@ public class CreateCopilotOperationCommandTest
     private readonly ICopilotOperationService _copilotOperationService =
         new CopilotOperationService(Options.Create(new CopilotOperationOption()), new DomainString());
 
-    /// <summary>
-    ///     The service for processing copilot server options.
-    /// </summary>
-    private readonly CopilotOperationOption _optionsWithAllRequirement = new()
+    private static Operation OperationFull => new()
     {
-        RequireDetails = true,
-        RequireTitle = true
+        StageName = "test_stage_name",
+        MinimumRequired = "v4.0.0",
+        Doc = new Doc
+        {
+            Title = "test_title",
+            TitleColor = "test_title_color",
+            Details = "test_details",
+            DetailsColor = "test_details_color",
+        },
+        Operators = new Operator[]
+        {
+            new()
+            {
+                Name = "test_oper_0_name",
+                Skill = 1
+            },
+            new()
+            {
+                Name = "test_oper_1_name",
+                Skill = 2
+            },
+            new()
+            {
+                Name = "test_oper_2_name"
+            }
+        },
+        Groups = new Group[]
+        {
+            new()
+            {
+                Name = "test_group_0_name",
+                Operators = new Operator[]
+                {
+                    new()
+                    {
+                        Name = "test_g_oper_0_name",
+                        Skill = 1
+                    },
+                    new()
+                    {
+                        Name = "test_g_oper_1_name",
+                        Skill = 2
+                    },
+                    new()
+                    {
+                        Name = "test_g_oper_2_name"
+                    }
+                }
+            }
+        },
+        Actions = new Action[]
+        {
+            new() { Name = "test_oper_0_name", Location = new []{ 1, 2 }, Direction = "Left" },
+            new() { Type = "Skill", Name = "test_oper_0_name" },
+            new() { Type = "Retreat", Name = "test_oper_0_name" },
+            new() { Type = "Retreat", Location = new[] { 1, 2 } },
+            new() { Type = "SkillUsage", SkillUsage = 1 },
+            new() { Name = "test_oper_0_name", Location = new[] { 1, 2 }, Direction = "Left" },
+            new() { Type = "技能", Name = "test_oper_0_name" },
+            new() { Type = "撤退", Name = "test_oper_0_name" },
+            new() { Type = "撤退", Location = new[] { 1, 2 } },
+            new() { Type = "技能用法", SkillUsage = 1 }
+        }
     };
 
     /// <summary>
@@ -46,197 +108,219 @@ public class CreateCopilotOperationCommandTest
     [TestMethod]
     public void TestHandleFull()
     {
-        var testJsonContent = new Operation
-        {
-            StageName = "test_stage_name",
-            MinimumRequired = "0.0.1",
-            Doc = new Doc { Title = "test_title", Details = "test_details" },
-            Operators = new Operator[]
-            {
-                new() { Name = "test_oper_0_name", Skill = 0 },
-                new() { Name = "test_oper_1_name", Skill = 1 }
-            }
-        };
-        TestHandle(testJsonContent);
+        TestHandle(OperationFull);
     }
 
     /// <summary>
     /// Tests <see cref="CreateCopilotOperationCommandHandler.Handle(CreateCopilotOperationCommand, CancellationToken)"/>.
     /// </summary>
     [TestMethod]
-    public void TestHandleFullRequired()
+    public void TestHandleWithoutAction()
     {
-        var testJsonContent = new Operation
-        {
-            StageName = "test_stage_name",
-            MinimumRequired = "0.0.1",
-            Doc = new Doc { Title = "test_title", Details = "test_details" },
-            Operators = new Operator[]
-            {
-                new() { Name = "test_oper_0_name", Skill = 0 }, new() { Name = "test_oper_1_name", Skill = 1 }
-            }
-        };
-        TestHandle(testJsonContent, haveRequirement: true);
+        var oper = OperationFull with { Actions = null };
+        TestHandle(oper);
     }
 
     /// <summary>
-    /// Tests <see cref="CreateCopilotOperationCommandHandler.Handle(CreateCopilotOperationCommand, CancellationToken)"/> without <c>doc</c> field.
+    /// Tests <see cref="CreateCopilotOperationCommandHandler.Handle(CreateCopilotOperationCommand, CancellationToken)"/>.
+    /// </summary>
+    [TestMethod]
+    public void TestHandleWithoutGroup()
+    {
+        var oper = OperationFull with { Groups = null };
+        TestHandle(oper);
+    }
+
+    /// <summary>
+    /// Tests <see cref="CreateCopilotOperationCommandHandler.Handle(CreateCopilotOperationCommand, CancellationToken)"/>.
+    /// </summary>
+    [TestMethod]
+    public void TestHandleWithoutOpers()
+    {
+        var oper = OperationFull with { Operators = null };
+        TestHandle(oper);
+    }
+
+    /// <summary>
+    /// Tests <see cref="CreateCopilotOperationCommandHandler.Handle(CreateCopilotOperationCommand, CancellationToken)"/>.
     /// </summary>
     [TestMethod]
     public void TestHandleWithoutDoc()
     {
-        var testJsonContent = new Operation
-        {
-            StageName = "test_stage_name",
-            MinimumRequired = "0.0.1",
-            Operators = new Operator[]
-            {
-                new() { Name = "test_oper_0_name", Skill = 0 },
-                new() { Name = "test_oper_1_name", Skill = 1 }
-            }
-        };
-        TestHandle(testJsonContent);
+        var oper = OperationFull with { Doc = null };
+        TestHandle(oper, true);
     }
 
     /// <summary>
-    /// Tests <see cref="CreateCopilotOperationCommandHandler.Handle(CreateCopilotOperationCommand, CancellationToken)"/> without <c>doc</c> field (undefined).
+    /// Tests <see cref="CreateCopilotOperationCommandHandler.Handle(CreateCopilotOperationCommand, CancellationToken)"/>.
     /// </summary>
     [TestMethod]
-    public void TestHandleWithoutDocUndefined()
+    public void TestHandleWithoutStageName()
     {
-        var testJsonContent = new Operation
-        {
-            StageName = "test_stage_name",
-            MinimumRequired = "0.0.1",
-            Operators = new Operator[]
-            {
-                new() { Name = "test_oper_0_name", Skill = 0 },
-                new() { Name = "test_oper_1_name", Skill = 1 }
-            }
-        };
-        TestHandle(testJsonContent, removeNullFields: true);
+        var oper = OperationFull with { StageName = null };
+        TestHandle(oper, true);
     }
 
     /// <summary>
-    /// Tests <see cref="CreateCopilotOperationCommandHandler.Handle(CreateCopilotOperationCommand, CancellationToken)"/> without <c>doc</c> field (undefined).
+    /// Tests <see cref="CreateCopilotOperationCommandHandler.Handle(CreateCopilotOperationCommand, CancellationToken)"/>.
     /// </summary>
     [TestMethod]
-    public void TestHandleWithoutRequiredDocTitle()
+    public void TestHandleWithoutMinimumRequired()
     {
-        var testJsonContent = new Operation
-        {
-            StageName = "test_stage_name",
-            MinimumRequired = "0.0.1",
-            Operators = new Operator[]
-            {
-                new() { Name = "test_oper_0_name", Skill = 0 }, new() { Name = "test_oper_1_name", Skill = 1 }
-            },
-            Doc = new Doc
-            {
-                Details = "details"
-            }
-        };
-        TestHandle(testJsonContent, true, haveRequirement: true);
+        var oper = OperationFull with { MinimumRequired = null };
+        TestHandle(oper, true);
     }
 
     /// <summary>
-    /// Tests <see cref="CreateCopilotOperationCommandHandler.Handle(CreateCopilotOperationCommand, CancellationToken)"/> without <c>doc</c> field (undefined).
+    /// Tests <see cref="CreateCopilotOperationCommandHandler.Handle(CreateCopilotOperationCommand, CancellationToken)"/>.
     /// </summary>
     [TestMethod]
-    public void TestHandleWithoutRequiredDocDetails()
+    public void TestHandleUnknownStageName()
     {
-        var testJsonContent = new Operation
-        {
-            StageName = "test_stage_name",
-            MinimumRequired = "0.0.1",
-            Operators = new Operator[]
-            {
-                new() { Name = "test_oper_0_name", Skill = 0 }, new() { Name = "test_oper_1_name", Skill = 1 }
-            },
-            Doc = new Doc { Title = "title" }
-        };
-        TestHandle(testJsonContent, true, haveRequirement: true);
+        var oper = OperationFull with { StageName = "unknown_stage_name" };
+        TestHandle(oper, true);
     }
 
     /// <summary>
-    /// Tests <see cref="CreateCopilotOperationCommandHandler.Handle(CreateCopilotOperationCommand, CancellationToken)"/> without <c>doc</c> field (undefined).
+    /// Tests <see cref="CreateCopilotOperationCommandHandler.Handle(CreateCopilotOperationCommand, CancellationToken)"/>.
     /// </summary>
     [TestMethod]
-    public void TestHandleWithoutRequiredDoc()
+    public void TestHandleWithoutDocTitle()
     {
-        var testJsonContent = new Operation
-        {
-            StageName = "test_stage_name",
-            MinimumRequired = "0.0.1",
-            Operators = new Operator[]
-            {
-                new() { Name = "test_oper_0_name", Skill = 0 }, new() { Name = "test_oper_1_name", Skill = 1 }
-            }
-        };
-        TestHandle(testJsonContent, true, haveRequirement: true);
+        var oper = OperationFull;
+        oper.Doc!.Title = null;
+        TestHandle(oper, true);
     }
 
     /// <summary>
-    /// Tests <see cref="CreateCopilotOperationCommandHandler.Handle(CreateCopilotOperationCommand, CancellationToken)"/> without a <c>name</c> field in <c>operators</c>.
+    /// Tests <see cref="CreateCopilotOperationCommandHandler.Handle(CreateCopilotOperationCommand, CancellationToken)"/>.
     /// </summary>
     [TestMethod]
-    public void TestHandleMissingOperatorName()
+    public void TestHandleWithoutDocDetails()
     {
-        var testJsonContent = new Operation
-        {
-            StageName = "test_stage_name",
-            MinimumRequired = "0.0.1",
-            Operators = new Operator[]
-            {
-                new() { Skill = 0 },
-                new() { Name = "test_oper_1_name", Skill = 1 }
-            }
-        };
-        TestHandle(testJsonContent, true);
+        var oper = OperationFull;
+        oper.Doc!.Details = null;
+        TestHandle(oper, true);
     }
 
     /// <summary>
-    /// Tests <see cref="CreateCopilotOperationCommandHandler.Handle(CreateCopilotOperationCommand, CancellationToken)"/> with duplicate items in <c>operators</c> field.
+    /// Tests <see cref="CreateCopilotOperationCommandHandler.Handle(CreateCopilotOperationCommand, CancellationToken)"/>.
     /// </summary>
     [TestMethod]
-    public void TestHandleDuplicateOperators()
+    public void TestHandleEmptyDocTitle()
     {
-        var testJsonContent = new Operation
-        {
-            StageName = "test_stage_name",
-            MinimumRequired = "0.0.1",
-            Operators = new Operator[]
-            {
-                new() { Name = "test_oper_0_name", Skill = 0 },
-                new() { Name = "test_oper_0_name", Skill = 0 }
-            }
-        };
-        TestHandle(testJsonContent);
+        var oper = OperationFull;
+        oper.Doc!.Title = null;
+        TestHandle(oper, true);
     }
+
+    /// <summary>
+    /// Tests <see cref="CreateCopilotOperationCommandHandler.Handle(CreateCopilotOperationCommand, CancellationToken)"/>.
+    /// </summary>
+    [TestMethod]
+    public void TestHandleEmptyDocDetails()
+    {
+        var oper = OperationFull;
+        oper.Doc!.Details = null;
+        TestHandle(oper, true);
+    }
+
+    /// <summary>
+    /// Tests <see cref="CreateCopilotOperationCommandHandler.Handle(CreateCopilotOperationCommand, CancellationToken)"/>.
+    /// </summary>
+    [TestMethod]
+    public void TestHandleActionDeployWithoutName()
+    {
+        var oper = OperationFull;
+        oper.Actions![0].Name = null;
+        TestHandle(oper, true);
+    }
+
+    /// <summary>
+    /// Tests <see cref="CreateCopilotOperationCommandHandler.Handle(CreateCopilotOperationCommand, CancellationToken)"/>.
+    /// </summary>
+    [TestMethod]
+    public void TestHandleActionDeployWithoutLocation()
+    {
+        var oper = OperationFull;
+        oper.Actions![0].Location = null;
+        TestHandle(oper, true);
+    }
+
+    /// <summary>
+    /// Tests <see cref="CreateCopilotOperationCommandHandler.Handle(CreateCopilotOperationCommand, CancellationToken)"/>.
+    /// </summary>
+    [TestMethod]
+    public void TestHandleActionDeployWithoutDirection()
+    {
+        var oper = OperationFull;
+        oper.Actions!.First(x => x.Type is null).Direction = null;
+        TestHandle(oper, true);
+    }
+
+    /// <summary>
+    /// Tests <see cref="CreateCopilotOperationCommandHandler.Handle(CreateCopilotOperationCommand, CancellationToken)"/>.
+    /// </summary>
+    [TestMethod]
+    public void TestHandleActionSkillWithoutName()
+    {
+        var oper = OperationFull;
+        oper.Actions!.First(x => x.Type == "Skill").Name = null;
+        TestHandle(oper, true);
+    }
+
+    /// <summary>
+    /// Tests <see cref="CreateCopilotOperationCommandHandler.Handle(CreateCopilotOperationCommand, CancellationToken)"/>.
+    /// </summary>
+    [TestMethod]
+    public void TestHandleActionRetreatWithoutNameAndLocation()
+    {
+        var oper = OperationFull;
+        oper.Actions!.First(x => x.Type == "Retreat").Name = null;
+        oper.Actions!.First(x => x.Type == "Retreat").Location = null;
+        TestHandle(oper, true);
+    }
+
+    /// <summary>
+    /// Tests <see cref="CreateCopilotOperationCommandHandler.Handle(CreateCopilotOperationCommand, CancellationToken)"/>.
+    /// </summary>
+    [TestMethod]
+    public void TestHandleActionSkillUsageWithoutSkillUsage()
+    {
+        var oper = OperationFull;
+        oper.Actions!.First(x => x.Type == "SkillUsage").SkillUsage = null;
+        TestHandle(oper, true);
+    }
+
+    /// <summary>
+    /// Tests <see cref="CreateCopilotOperationCommandHandler.Handle(CreateCopilotOperationCommand, CancellationToken)"/>.
+    /// </summary>
+    [TestMethod]
+    public void TestHandleActionUnknownType()
+    {
+        var oper = OperationFull with { Actions = new Action[] { new() { Type = "unknown_type" } } };
+        TestHandle(oper, true);
+    }
+
 
     /// <summary>
     /// Tests <see cref="CreateCopilotOperationCommandHandler"/>.
     /// </summary>
     /// <param name="testJsonContent">The test JSON content.</param>
     /// <param name="expectNon200Response"><c>true</c> if the result should not be 200, <c>false</c> otherwise.</param>
-    /// <param name="removeNullFields">Whether null fields in JSON should be removed.</param>
-    /// <param name="haveRequirement">Whether use options will all requirement.</param>
-    private void TestHandle(Operation testJsonContent, bool expectNon200Response = false,
-        bool removeNullFields = false, bool haveRequirement = false)
+    private void TestHandle(Operation testJsonContent, bool expectNon200Response = false)
     {
         var testContent = JsonSerializer.Serialize(testJsonContent,
             new JsonSerializerOptions()
             {
-                DefaultIgnoreCondition =
-                    removeNullFields ? JsonIgnoreCondition.Never : JsonIgnoreCondition.WhenWritingNull
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
             });
 
+        var level = new ArkLevelData(new ArkLevelEntityGlobal("test_stage_name"));
+
         var test = new HandlerTest()
-            .SetupGetUser(new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, Domain.Enums.UserRole.User, Guid.Empty));
-        if (haveRequirement)
-        {
-            test = test.SetupCopilotOperationOption(_optionsWithAllRequirement);
-        }
+            .SetupDatabase(db => db.ArkLevelData.Add(level))
+            .SetupGetUser(new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, UserRole.User, Guid.Empty));
         var result = test.TestCreateCopilotOperation(new()
         {
             Content = testContent,
@@ -255,7 +339,7 @@ public class CreateCopilotOperationCommandTest
             entity.Should().NotBeNull();
             entity!.Id.Should().Be(_copilotOperationService.DecodeId(id));
             entity.Content.Should().Be(testContent);
-            entity.StageName.Should().Be(testJsonContent.StageName);
+            entity.ArkLevel.LevelId.Should().Be(testJsonContent.StageName);
             entity.MinimumRequired.Should().Be(testJsonContent.MinimumRequired);
             entity.Title.Should().Be(testJsonContent.Doc?.Title ?? string.Empty);
             entity.Details.Should().Be(testJsonContent.Doc?.Details ?? string.Empty);

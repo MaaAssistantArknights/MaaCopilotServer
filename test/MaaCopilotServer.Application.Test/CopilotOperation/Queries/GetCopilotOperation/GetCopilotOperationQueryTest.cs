@@ -6,7 +6,9 @@ using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Application.CopilotOperation.Queries.GetCopilotOperation;
 using MaaCopilotServer.Application.Test.TestHelpers;
+using MaaCopilotServer.Domain.Entities;
 using MaaCopilotServer.Domain.Options;
+using MaaCopilotServer.GameData.Entity;
 using MaaCopilotServer.Infrastructure.Services;
 using MaaCopilotServer.Resources;
 using Microsoft.AspNetCore.Http;
@@ -36,8 +38,14 @@ public class GetCopilotOperationQueryTest
         var user = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, Domain.Enums.UserRole.User, Guid.Empty);
         var entities = new Domain.Entities.CopilotOperation[]
         {
-            new Domain.Entities.CopilotOperation(1,string.Empty,string.Empty,string.Empty,string.Empty,string.Empty,user,Guid.Empty,new List<string>(),new List<string>()),
-            new Domain.Entities.CopilotOperation(2,string.Empty,string.Empty,string.Empty,string.Empty,string.Empty,user,Guid.Empty,new List<string>(),new List<string>()),
+            new(1, string.Empty, string.Empty,
+                string.Empty, string.Empty, user, Guid.Empty,
+                new ArkLevelData(new ArkLevelEntityGlobal("level1")),
+                new List<string>(), new List<string>()),
+            new(2, string.Empty, string.Empty,
+                string.Empty, string.Empty, user, Guid.Empty,
+                new ArkLevelData(new ArkLevelEntityGlobal("level1")),
+                new List<string>(), new List<string>()),
         };
         var response = new HandlerTest()
             .SetupDatabase(db => db.CopilotUsers.Add(user))

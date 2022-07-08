@@ -6,6 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Domain.Entities;
 using MaaCopilotServer.Domain.Enums;
 using MaaCopilotServer.Domain.Options;
+using MaaCopilotServer.GameData.Entity;
 using MaaCopilotServer.Infrastructure.Services;
 using MaaCopilotServer.Resources;
 using Microsoft.Extensions.Options;
@@ -25,9 +26,7 @@ public class CopilotIdServiceTest
             DislikeMultiplier = 2,
             ViewMultiplier = 1,
             LikeMultiplier = 10,
-            InitialHotScore = 100,
-            RequireDetails = default,
-            RequireTitle = default
+            InitialHotScore = 100
         }), new DomainString());
 
     /// <summary>
@@ -78,9 +77,9 @@ public class CopilotIdServiceTest
             string.Empty,
             string.Empty,
             string.Empty,
-            string.Empty,
             new CopilotUser(string.Empty, string.Empty, string.Empty, UserRole.User, Guid.Empty),
             Guid.Empty,
+            new ArkLevelData(new ArkLevelEntityGlobal()),
             Array.Empty<string>(),
             Array.Empty<string>());
         entity.AddViewCount();
