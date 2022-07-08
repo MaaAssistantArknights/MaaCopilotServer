@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Domain.Options;
 using MaaCopilotServer.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +13,7 @@ namespace MaaCopilotServer.Test.TestHelpers;
 /// <summary>
 ///     Create a new in-memory database for each test.
 /// </summary>
+[ExcludeFromCodeCoverage]
 public class TestDbContext : MaaCopilotDbContext
 {
     /// <summary>

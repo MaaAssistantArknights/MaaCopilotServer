@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Application.Common.Behaviours;
 using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Application.Common.Models;
@@ -12,9 +13,10 @@ using Microsoft.Extensions.Logging;
 namespace MaaCopilotServer.Application.Test.Common.Behaviours;
 
 /// <summary>
-///     Tests of <see cref="PerformanceBehaviour{TRequest,TResponse}" />.
+///     Tests <see cref="PerformanceBehaviour{TRequest,TResponse}" />.
 /// </summary>
 [TestClass]
+[ExcludeFromCodeCoverage]
 public class PerformanceBehaviourTest
 {
     /// <summary>

@@ -4,6 +4,7 @@
 
 using System.ComponentModel.DataAnnotations;
 using MaaCopilotServer.Application.Common.Helpers;
+using MaaCopilotServer.Application.Common.Operation;
 using MaaCopilotServer.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,6 +20,11 @@ public record GetCopilotOperationQuery : IRequest<MaaApiResponse>
     /// </summary>
     [Required]
     public string? Id { get; set; }
+
+    /// <summary>
+    ///     The arknights server language.
+    /// </summary>
+    public string? Server { get; set; }
 }
 
 public class
@@ -26,19 +32,19 @@ public class
         MaaApiResponse>
 {
     private readonly ApiErrorMessage _apiErrorMessage;
-    private readonly ICopilotIdService _copilotIdService;
+    private readonly ICopilotOperationService _copilotOperationService;
     private readonly IMaaCopilotDbContext _dbContext;
     private readonly ICurrentUserService _currentUserService;
 
     public GetCopilotOperationQueryHandler(
         IMaaCopilotDbContext dbContext,
         ICurrentUserService currentUserService,
-        ICopilotIdService copilotIdService,
+        ICopilotOperationService copilotOperationService,
         ApiErrorMessage apiErrorMessage)
     {
         _dbContext = dbContext;
         _currentUserService = currentUserService;
-        _copilotIdService = copilotIdService;
+        _copilotOperationService = copilotOperationService;
         _apiErrorMessage = apiErrorMessage;
     }
 
@@ -50,9 +56,10 @@ public class
         var isLoggedIn = user is not null;
 
         // Get operation
-        var id = _copilotIdService.DecodeId(request.Id!);
+        var id = _copilotOperationService.DecodeId(request.Id!);
         var entity = await _dbContext.CopilotOperations
             .Include(x => x.Author)
+            .Include(x => x.ArkLevel)
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
         if (entity is null)
         {
@@ -69,11 +76,15 @@ public class
                 .RatingType ?? OperationRatingType.None
             : null;
 
+        // Add view count and update hot score
+        // Do this before build dto, so user can see their action
+        entity.AddViewCount();
+        entity.UpdateHotScore(_copilotOperationService.CalculateHotScore(entity));
+
         // Build dto
         var dto = new GetCopilotOperationQueryDto
         {
             Id = request.Id!,
-            StageName = entity.StageName,
             MinimumRequired = entity.MinimumRequired,
             Content = entity.Content,
             Detail = entity.Details,
@@ -82,13 +93,14 @@ public class
             Uploader = entity.Author.UserName,
             UploadTime = entity.CreateAt.ToIsoString(),
             ViewCounts = entity.ViewCounts,
-            RatingRatio = entity.RatingRatio,
+            HotScore = entity.HotScore,
+            Level = entity.ArkLevel.MapToDto(request.Server),
             Groups = entity.Groups.ToArray().DeserializeGroup(),
+            RatingLevel = _copilotOperationService.GetRatingLevelString(entity.RatingLevel),
             RatingType = rating
         };
 
         // Add an view count to the operation and update it in the database
-        entity.AddViewCount();
         _dbContext.CopilotOperations.Update(entity);
         await _dbContext.SaveChangesAsync(cancellationToken);
 

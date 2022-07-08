@@ -2,21 +2,23 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Application.Common.Extensions;
 
 namespace MaaCopilotServer.Application.Test.Common.Extensions;
 
 /// <summary>
-///     Tests of <see cref="NullableExtension" />.
+///     Tests <see cref="NullableExtension" />.
 /// </summary>
 [TestClass]
+[ExcludeFromCodeCoverage]
 public class NullableExtensionTest
 {
     /// <summary>
     ///     Tests <see cref="NullableExtension.IsNotNull{T}(T?, string, string)" /> with non-null object.
     /// </summary>
     [TestMethod]
-    public void TestIsNotNull_NotNull()
+    public void TestIsNotNullNotNull()
     {
         var testObject = new object();
 
@@ -27,7 +29,7 @@ public class NullableExtensionTest
     ///     Tests <see cref="NullableExtension.IsNotNull{T}(T?, string, string)" /> with null object.
     /// </summary>
     [TestMethod]
-    public void TestIsNotNull_Null()
+    public void TestIsNotNullNull()
     {
         object? testObject = null;
 

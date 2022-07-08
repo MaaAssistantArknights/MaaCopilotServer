@@ -11,9 +11,5 @@ public class UpdateCopilotOperationCommandValidator : AbstractValidator<UpdateCo
         RuleFor(x => x.Id)
             .NotEmpty()
             .WithMessage(errorMessage.CopilotOperationIdIsEmpty);
-        RuleFor(x => x.Content)
-            .NotEmpty()
-            .Must(FluentValidationExtension.BeValidatedOperationContent)
-            .WithMessage(errorMessage.CopilotOperationJsonIsInvalid);
     }
 }

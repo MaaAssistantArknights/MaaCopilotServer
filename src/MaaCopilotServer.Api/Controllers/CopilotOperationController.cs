@@ -67,12 +67,13 @@ public class CopilotOperationController : MaaControllerBase
     ///     Get a copilot operation by its id.
     /// </summary>
     /// <param name="id">The operation id.</param>
+    /// <param name="server">The server language. Could be (ignore case) Chinese (Default), English, Japanese, Korean.</param>
     /// <response code="200">The operation JSON and related metadata.</response>
     [HttpGet("get/{id}")]
     [ProducesResponseType(typeof(MaaApiResponseModel<GetCopilotOperationQueryDto>), StatusCodes.Status200OK)]
-    public async Task<ActionResult> GetCopilotOperation(string id)
+    public async Task<ActionResult> GetCopilotOperation(string id, [FromQuery(Name = "server")] string? server)
     {
-        var request = new GetCopilotOperationQuery { Id = id };
+        var request = new GetCopilotOperationQuery { Id = id, Server = server };
         return await GetResponse(request);
     }
 
@@ -106,7 +107,7 @@ public class CopilotOperationController : MaaControllerBase
     /// <param name="command">The request body.</param>
     /// <response code="200">The rating was successfully added to the operation.</response>
     [HttpPost("rating")]
-    [ProducesResponseType(typeof(MaaApiResponseModel<RatingCopilotOperationDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(MaaApiResponseModel<GetCopilotOperationQueryDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult> RatingCopilotOperation([FromBody] RatingCopilotOperationCommand command)
     {
         return await GetResponse(command);

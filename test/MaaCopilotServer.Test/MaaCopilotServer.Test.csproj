@@ -4,8 +4,8 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-
     <IsPackable>false</IsPackable>
+    <AnalysisLevel>latest-all</AnalysisLevel>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -22,6 +22,13 @@
     <ProjectReference Include="..\..\src\MaaCopilotServer.Domain\MaaCopilotServer.Domain.csproj" />
     <ProjectReference Include="..\..\src\MaaCopilotServer.Infrastructure\MaaCopilotServer.Infrastructure.csproj" />
     <ProjectReference Include="..\..\src\MaaCopilotServer.Resources\MaaCopilotServer.Resources.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AssemblyAttribute Include="System.CLSCompliant">
+      <_Parameter1>false</_Parameter1>
+      <_Parameter1_TypeName>System.Boolean</_Parameter1_TypeName>
+    </AssemblyAttribute>
   </ItemGroup>
 
 </Project>

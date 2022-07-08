@@ -2,14 +2,17 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Application.CopilotUser.Commands.UpdateCopilotUserInfo;
+using MaaCopilotServer.Application.Test.TestHelpers;
 
 namespace MaaCopilotServer.Application.Test.CopilotUser.Commands.Change.UpdateCopilotUserInfo;
 
 /// <summary>
-/// Tests for <see cref="UpdateCopilotUserInfoCommandValidator"/>.
+/// Tests <see cref="UpdateCopilotUserInfoCommandValidator"/>.
 /// </summary>
 [TestClass]
+[ExcludeFromCodeCoverage]
 public class UpdateCopilotUserInfoCommandValidatorTest
 {
     /// <summary>
@@ -27,13 +30,11 @@ public class UpdateCopilotUserInfoCommandValidatorTest
     [DataRow(null, "012345678901234567890123456789", false)]
     public void Test(string? email, string? username, bool expected)
     {
-        var validator = new UpdateCopilotUserInfoCommandValidator(new Resources.ValidationErrorMessage());
-        var data = new UpdateCopilotUserInfoCommand()
-        {
-            Email = email,
-            UserName = username,
-        };
-        var result = validator.Validate(data);
-        result.IsValid.Should().Be(expected);
+        ValidatorTestHelper.Test<UpdateCopilotUserInfoCommandValidator, UpdateCopilotUserInfoCommand>(
+            new()
+            {
+                Email = email,
+                UserName = username,
+            }, expected);
     }
 }

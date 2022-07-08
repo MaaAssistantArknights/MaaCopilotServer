@@ -46,6 +46,16 @@ public readonly struct LoggingType
     /// </summary>
     public static LoggingType MiddlewareException => new("Middleware Exception");
 
+    /// <summary>
+    ///     Worker services running report.
+    /// </summary>
+    public static LoggingType WorkerServicesReport => new("Worker Services Report");
+
+    /// <summary>
+    ///     Exception thrown by worker services.
+    /// </summary>
+    public static LoggingType WorkerServicesException => new("Worker Services Exception");
+
     /// <inheritdoc/>
     public override string ToString()
     {

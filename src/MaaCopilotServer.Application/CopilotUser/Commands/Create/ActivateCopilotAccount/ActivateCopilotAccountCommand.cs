@@ -26,15 +26,12 @@ public record ActivateCopilotAccountCommand : IRequest<MaaApiResponse>
 public class ActivateCopilotAccountCommandHandler : IRequestHandler<ActivateCopilotAccountCommand, MaaApiResponse>
 {
     private readonly ApiErrorMessage _apiErrorMessage;
-    private readonly ICurrentUserService _currentUserService;
     private readonly IMaaCopilotDbContext _dbContext;
 
     public ActivateCopilotAccountCommandHandler(
-        ICurrentUserService currentUserService,
         IMaaCopilotDbContext dbContext,
         ApiErrorMessage apiErrorMessage)
     {
-        _currentUserService = currentUserService;
         _dbContext = dbContext;
         _apiErrorMessage = apiErrorMessage;
     }

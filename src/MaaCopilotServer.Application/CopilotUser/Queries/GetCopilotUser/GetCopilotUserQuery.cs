@@ -60,7 +60,6 @@ public class GetCopilotUserQueryHandler : IRequestHandler<GetCopilotUserQuery, M
 
         // Find user entity
         var user = await _dbContext.CopilotUsers
-            .Include(x => x.UserFavorites)
             .FirstOrDefaultAsync(x => x.EntityId == userId, cancellationToken);
         if (user is null)
         {
@@ -74,12 +73,8 @@ public class GetCopilotUserQueryHandler : IRequestHandler<GetCopilotUserQuery, M
             .Where(x => x.Author.EntityId == userId)
             .CountAsync(cancellationToken);
 
-        // Build fav list DTO
-        var favList = user.UserFavorites
-            .ToDictionary(fav => fav.EntityId.ToString(), fav => fav.FavoriteName);
-
         // Build DTO
-        var dto = new GetCopilotUserDto(userId, user.UserName, user.UserRole, uploadCount, user.UserActivated, favList);
+        var dto = new GetCopilotUserDto(userId, user.UserName, user.UserRole, uploadCount, user.UserActivated);
         return MaaApiResponseHelper.Ok(dto);
     }
 }

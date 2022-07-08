@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using MaaCopilotServer.Api.Middleware;
 using MaaCopilotServer.Resources;
@@ -11,9 +12,10 @@ using Microsoft.Extensions.Primitives;
 namespace MaaCopilotServer.Api.Test.Middleware;
 
 /// <summary>
-///     Tests for <see cref="RequestCultureMiddleware" />.
+///     Tests <see cref="RequestCultureMiddleware" />.
 /// </summary>
 [TestClass]
+[ExcludeFromCodeCoverage]
 public class RequestCultureMiddlewareTest
 {
     /// <summary>
@@ -42,7 +44,8 @@ public class RequestCultureMiddlewareTest
         requestCultureMiddleware.InvokeAsync(
             context,
             Mock.Of<ValidationErrorMessage>(),
-            Mock.Of<ApiErrorMessage>()).Wait();
+            Mock.Of<ApiErrorMessage>(),
+            Mock.Of<DomainString>()).Wait();
         itemsDict.Should().NotBeEmpty();
         itemsDict["culture"].Should().BeEquivalentTo(new CultureInfo(expectedCulture));
     }

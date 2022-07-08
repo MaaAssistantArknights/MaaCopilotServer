@@ -2,28 +2,26 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Application.CopilotOperation.Queries.QueryCopilotOperations;
+using MaaCopilotServer.Application.Test.TestHelpers;
 
 namespace MaaCopilotServer.Application.Test.CopilotOperation.Queries.QueryCopilotOperations;
 
 /// <summary>
-/// Tests for <see cref="QueryCopilotOperationsQueryValidator"/>.
+/// Tests <see cref="QueryCopilotOperationsQueryValidator"/>.
 /// </summary>
 [TestClass]
+[ExcludeFromCodeCoverage]
 public class QueryCopilotOperationsQueryValidatorTest
 {
     /// <summary>
-    /// The validation error message.
-    /// </summary>
-    private readonly Resources.ValidationErrorMessage _validationErrorMessage = new();
-
-    /// <summary>
     /// Tests <see cref="QueryCopilotOperationsQueryValidator"/>.
     /// </summary>
-    /// <param name="page"></param>
-    /// <param name="limit"></param>
-    /// <param name="uploaderId"></param>
-    /// <param name="expected"></param>
+    /// <param name="page">The test page.</param>
+    /// <param name="limit">The test limit.</param>
+    /// <param name="uploaderId">The test uploader ID.</param>
+    /// <param name="expected">The expected result.</param>
     [DataTestMethod]
     [DataRow(null, null, null, true)]
     [DataRow(1, 2, "me", true)]
@@ -33,16 +31,11 @@ public class QueryCopilotOperationsQueryValidatorTest
     [DataRow(1, 2, "invalid_guid", false)]
     public void Test(int? page, int? limit, string? uploaderId, bool expected)
     {
-        var validator = new QueryCopilotOperationsQueryValidator(_validationErrorMessage);
-        var data = new QueryCopilotOperationsQuery()
+        ValidatorTestHelper.Test<QueryCopilotOperationsQueryValidator, QueryCopilotOperationsQuery>(new()
         {
             Page = page,
             Limit = limit,
             UploaderId = uploaderId,
-        };
-
-        var result = validator.Validate(data);
-
-        result.IsValid.Should().Be(expected);
+        }, expected);
     }
 }

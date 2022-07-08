@@ -7,7 +7,6 @@ using MaaCopilotServer.Application.Common.Helpers;
 using MaaCopilotServer.Domain.Email.Models;
 using MaaCopilotServer.Domain.Enums;
 using MaaCopilotServer.Domain.Options;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 namespace MaaCopilotServer.Application.CopilotUser.Commands.UpdateCopilotUserInfo;

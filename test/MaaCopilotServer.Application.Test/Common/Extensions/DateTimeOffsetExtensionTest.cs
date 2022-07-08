@@ -2,14 +2,16 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Application.Common.Extensions;
 
 namespace MaaCopilotServer.Application.Test.Common.Extensions;
 
 /// <summary>
-/// Tests for <see cref="DateTimeOffsetExtension"/>.
+/// Tests <see cref="DateTimeOffsetExtension"/>.
 /// </summary>
 [TestClass]
+[ExcludeFromCodeCoverage]
 public class DateTimeOffsetExtensionTest
 {
     /// <summary>

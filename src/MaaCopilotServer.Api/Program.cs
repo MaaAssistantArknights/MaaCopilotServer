@@ -65,8 +65,6 @@ public static class Program
 
         var app = builder.Build();
 
-        InitializeHelper.InitializeDatabase(configuration);
-
         app.UseMaaSwagger();
 
         // CORS settings.
@@ -79,8 +77,8 @@ public static class Program
         });
 
         app.UseApmTransaction();
-
         app.UseRequestCulture();
+        app.UseSystemStatus();
         app.UseAuthentication();
         app.MapControllers();
 

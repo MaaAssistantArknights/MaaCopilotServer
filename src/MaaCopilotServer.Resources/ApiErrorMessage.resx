@@ -62,13 +62,13 @@
   <data name="EmailNotRegister" xml:space="preserve">
     <value>邮箱未注册</value>
   </data>
-  <data name="FavListWithIdNotFound" xml:space="preserve">
-    <value>找不到 ID 为 {0} 的收藏列表</value>
-  </data>
   <data name="UserAlreadyActivated" xml:space="preserve">
     <value>用户账号已激活</value>
   </data>
   <data name="TokenAlreadyExist" xml:space="preserve">
     <value>存在未过期且有效的 Token</value>
+  </data>
+  <data name="ServerNotReady" xml:space="preserve">
+    <value>服务器启动中</value>
   </data>
 </root>

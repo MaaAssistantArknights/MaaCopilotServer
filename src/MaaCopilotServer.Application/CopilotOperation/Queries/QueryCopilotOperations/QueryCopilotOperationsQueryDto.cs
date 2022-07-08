@@ -3,7 +3,9 @@
 // Licensed under the AGPL-3.0 license.
 
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
+using MaaCopilotServer.Application.Arknights.GetLevelList;
 using MaaCopilotServer.Domain.Enums;
 
 namespace MaaCopilotServer.Application.CopilotOperation.Queries.QueryCopilotOperations;
@@ -11,43 +13,11 @@ namespace MaaCopilotServer.Application.CopilotOperation.Queries.QueryCopilotOper
 /// <summary>
 ///     The response to the <see cref="QueryCopilotOperationsQuery"/>.
 /// </summary>
+[ExcludeFromCodeCoverage]
 public class QueryCopilotOperationsQueryDto
 {
-    /// <summary>
-    ///     The constructor of <see cref="QueryCopilotOperationsQueryDto" />.
-    /// </summary>
-    /// <param name="id">The operation ID.</param>
-    /// <param name="stageName">The stage name.</param>
-    /// <param name="minimumRequired">The minimum required version of MAA.</param>
-    /// <param name="uploadTime">The time when the operation was uploaded.</param>
-    /// <param name="uploader">The name of the uploader.</param>
-    /// <param name="title">The title of the operation.</param>
-    /// <param name="detail">The detail of the operation.</param>
-    /// <param name="viewCounts">The view counts of the operation.</param>
-    /// <param name="ratingRatio">The like to all rating ratio.</param>
-    /// <param name="operators">The operators in the operation.</param>
-    /// <param name="groups">The groups in the operation.</param>
-    /// <param name="ratingType">The rating type by current user.</param>
-    public QueryCopilotOperationsQueryDto(string id, string stageName, string minimumRequired, string uploadTime,
-        string uploader, string title, string detail, int viewCounts, float ratingRatio,
-        IEnumerable<string> operators, IEnumerable<MaaCopilotOperationGroupStore> groups,
-        OperationRatingType? ratingType = null)
-    {
-        Id = id;
-        StageName = stageName;
-        MinimumRequired = minimumRequired;
-        UploadTime = uploadTime;
-        Uploader = uploader;
-        Title = title;
-        Detail = detail;
-        ViewCounts = viewCounts;
-        Operators = operators;
-        Groups = groups;
-        RatingRatio = ratingRatio;
-        RatingType = ratingType;
-    }
-
 #pragma warning disable CS8618
+    // ReSharper disable once EmptyConstructor
     public QueryCopilotOperationsQueryDto() { }
 #pragma warning restore CS8618
 
@@ -57,13 +27,6 @@ public class QueryCopilotOperationsQueryDto
     [Required]
     [JsonPropertyName("id")]
     public string Id { get; set; }
-
-    /// <summary>
-    ///     The stage name.
-    /// </summary>
-    [Required]
-    [JsonPropertyName("stage_name")]
-    public string StageName { get; set; }
 
     /// <summary>
     ///     The minimum required version of MAA.
@@ -122,11 +85,32 @@ public class QueryCopilotOperationsQueryDto
     public int ViewCounts { get; set; }
 
     /// <summary>
-    ///     The rating ratio.
+    ///     The hot score.
     /// </summary>
     [Required]
-    [JsonPropertyName("rating_ratio")]
-    public float RatingRatio { get; set; }
+    [JsonPropertyName("HotScore")]
+    public long HotScore { get; set; }
+
+    /// <summary>
+    ///     The level this operation is made for.
+    /// </summary>
+    [Required]
+    [JsonPropertyName("level")]
+    public GetLevelListDto Level { get; set; }
+
+    /// <summary>
+    ///     The level this operation is made for is available in your region.
+    /// </summary>
+    [Required]
+    [JsonPropertyName("available")]
+    public bool Available => string.IsNullOrEmpty(Level.Name) is false;
+
+    /// <summary>
+    ///     Current rating level, i18n string.
+    /// </summary>
+    [Required]
+    [JsonPropertyName("rating_level")]
+    public string RatingLevel { get; set; }
 
     /// <summary>
     ///     The rating type for this operation by current user. It will be null for anonymous user.

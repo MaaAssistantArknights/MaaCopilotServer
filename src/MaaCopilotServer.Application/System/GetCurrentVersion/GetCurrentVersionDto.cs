@@ -3,6 +3,7 @@
 // Licensed under the AGPL-3.0 license.
 
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 
 namespace MaaCopilotServer.Application.System.GetCurrentVersion;
@@ -10,6 +11,7 @@ namespace MaaCopilotServer.Application.System.GetCurrentVersion;
 /// <summary>
 ///     The response to the <see cref="GetCurrentVersionCommand"/>.
 /// </summary>
+[ExcludeFromCodeCoverage]
 public record GetCurrentVersionDto
 {
     public GetCurrentVersionDto(string version, string time)

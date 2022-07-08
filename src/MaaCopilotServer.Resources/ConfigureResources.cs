@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace MaaCopilotServer.Resources;
@@ -9,6 +10,7 @@ namespace MaaCopilotServer.Resources;
 /// <summary>
 ///     The extension to add resources.
 /// </summary>
+[ExcludeFromCodeCoverage]
 public static class ConfigureResources
 {
     /// <summary>
@@ -20,6 +22,7 @@ public static class ConfigureResources
     {
         services.AddScoped<ValidationErrorMessage>();
         services.AddScoped<ApiErrorMessage>();
+        services.AddScoped<DomainString>();
 
         return services;
     }

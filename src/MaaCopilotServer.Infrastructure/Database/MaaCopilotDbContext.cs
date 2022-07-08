@@ -33,28 +33,33 @@ public class MaaCopilotDbContext : DbContext, IMaaCopilotDbContext
         _connectionString = dbOptions.Value.ConnectionString;
     }
 
-    /// <summary>
-    ///     The DB set of operations.
-    /// </summary>
+    /// <inheritdoc />
     public DbSet<CopilotOperation> CopilotOperations { get; set; } = null!;
 
-    public DbSet<CopilotOperationComment> CopilotOperationComments { get; set; } = null!;
-    public DbSet<CopilotUserFavorite> CopilotUserFavorites { get; set; } = null!;
+    /// <inheritdoc />
     public DbSet<CopilotOperationRating> CopilotOperationRatings { get; set; } = null!;
 
-    /// <summary>
-    ///     The DB set of users.
-    /// </summary>
+    /// <inheritdoc />
     public DbSet<CopilotUser> CopilotUsers { get; set; } = null!;
 
+    /// <inheritdoc />
     public DbSet<CopilotToken> CopilotTokens { get; set; } = null!;
+
+    /// <inheritdoc />
+    public DbSet<PersistStorage> PersistStorage { get; set; } = null!;
+
+    /// <inheritdoc />
+    public DbSet<ArkCharacterInfo> ArkCharacterInfos { get; set; } = null!;
+
+    /// <inheritdoc />
+    public DbSet<ArkLevelData> ArkLevelData { get; set; } = null!;
 
     /// <inheritdoc/>
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         // Create Postgres database for development and production.
         optionsBuilder.UseNpgsql(_connectionString.IsNotNull());
-            base.OnConfiguring(optionsBuilder);
+        base.OnConfiguring(optionsBuilder);
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -82,7 +87,6 @@ public class MaaCopilotDbContext : DbContext, IMaaCopilotDbContext
     private void OnBeforeSaving()
     {
         var entities = ChangeTracker.Entries()
-            .Where(x => x.Entity is not RelationEntity)
             .Where(x => x.State is EntityState.Added or EntityState.Deleted)
             .ToList();
         foreach (var entry in entities)

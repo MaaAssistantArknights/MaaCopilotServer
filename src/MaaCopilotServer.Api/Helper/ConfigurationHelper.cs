@@ -2,8 +2,10 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Text.Json;
 using MaaCopilotServer.Api.Constants;
 using MaaCopilotServer.Application.Common.Extensions;
+using MaaCopilotServer.Infrastructure.Adapters;
 
 namespace MaaCopilotServer.Api.Helper;
 
@@ -12,6 +14,13 @@ namespace MaaCopilotServer.Api.Helper;
 /// </summary>
 public static class ConfigurationHelper
 {
+    #region Test
+    /// <summary>
+    /// The system adapter.
+    /// </summary>
+    public static ISystemAdapter SystemAdapter { get; set; } = new SystemAdapter();
+    #endregion
+
     /// <summary>
     ///     Ensures settings files are created correctly.
     /// </summary>
@@ -29,12 +38,17 @@ public static class ConfigurationHelper
             appsettingsFile.EnsureDeleted();
 
             var text = File.ReadAllText(originalAppsettingsFile.FullName);
-            text = text.Replace("{{ DATA DIRECTORY }}", GlobalConstants.DataDirectory);
+            text = text.Replace("{{ DATA DIRECTORY }}", JsonSerializer.Serialize(GlobalConstants.DataDirectory).Replace("\"", ""));
             File.WriteAllText(appsettingsFile.FullName, text);
 
             if (GlobalConstants.IsProductionEnvironment)
             {
-                Environment.Exit(0);
+                // TODO:
+                // Shall we throw an exception when the settings file does not exist?
+                // We can either catch it or not in the main function.
+                // Or shall we exit with non-zero status?
+                SystemAdapter.Exit(0);
+                return;
             }
         }
 

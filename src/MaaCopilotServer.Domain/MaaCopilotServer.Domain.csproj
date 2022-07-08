@@ -18,10 +18,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MediatR" Version="10.0.1" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Update="Email\Templates\EmailChangeAddress.liquid">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <TargetPath>templates\EmailChangeAddress.liquid</TargetPath>
@@ -50,6 +46,10 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <TargetPath>templates\EmailSendTest.liquid</TargetPath>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MaaCopilotServer.GameData\MaaCopilotServer.GameData.csproj" />
   </ItemGroup>
 
 </Project>

@@ -2,21 +2,19 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Application.CopilotUser.Commands.RequestPasswordReset;
+using MaaCopilotServer.Application.Test.TestHelpers;
 
 namespace MaaCopilotServer.Application.Test.CopilotUser.Commands.Change.RequestPasswordReset;
 
 /// <summary>
-/// Tests for <see cref="RequestPasswordResetCommandValidator"/>.
+/// Tests <see cref="RequestPasswordResetCommandValidator"/>.
 /// </summary>
 [TestClass]
+[ExcludeFromCodeCoverage]
 public class RequestPasswordResetCommandValidatorTest
 {
-    /// <summary>
-    /// The validation error message.
-    /// </summary>
-    private readonly Resources.ValidationErrorMessage _validationErrorMessage = new();
-
     /// <summary>
     /// Tests <see cref="RequestPasswordResetCommandValidator"/>.
     /// </summary>
@@ -28,13 +26,10 @@ public class RequestPasswordResetCommandValidatorTest
     [DataRow("invalid_email", false)]
     public void Test(string? email, bool expected)
     {
-        var validator = new RequestPasswordResetCommandValidator(_validationErrorMessage);
-        var data = new RequestPasswordResetCommand()
-        {
-            Email = email,
-        };
-
-        var result = validator.Validate(data);
-        result.IsValid.Should().Be(expected);
+        ValidatorTestHelper.Test<RequestPasswordResetCommandValidator, RequestPasswordResetCommand>(
+            new()
+            {
+                Email = email,
+            }, expected);
     }
 }

@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 using MaaCopilotServer.Domain.Attributes;
 using MaaCopilotServer.Domain.Enums;
@@ -12,6 +13,7 @@ namespace MaaCopilotServer.Domain.Options;
 ///     The options for the server.
 /// </summary>
 [OptionName("CopilotServer")]
+[ExcludeFromCodeCoverage]
 public class CopilotServerOption
 {
     /// <summary>
@@ -22,18 +24,6 @@ public class CopilotServerOption
     [JsonConverter(typeof(JsonStringEnumConverter))]
     [JsonPropertyName("RegisterUserDefaultRole")]
     public UserRole RegisterUserDefaultRole { get; set; } = UserRole.User;
-
-    /// <summary>
-    ///     Require title filed in copilot operation is not null or empty.
-    /// </summary>
-    [JsonPropertyName("RequireTitleInOperation")]
-    public bool RequireTitleInOperation { get; set; } = false;
-
-    /// <summary>
-    ///     Require details filed in copilot operation is not null or empty.
-    /// </summary>
-    [JsonPropertyName("RequireDetailsInOperation")]
-    public bool RequireDetailsInOperation { get; set; } = false;
 
     /// <summary>
     ///     Enable the test email api at <c>/test/email?to={address}&amp;token={token}</c>
@@ -47,4 +37,28 @@ public class CopilotServerOption
     /// </summary>
     [JsonPropertyName("TestEmailApiToken")]
     public string TestEmailApiToken { get; set; } = string.Empty;
+
+    /// <summary>
+    ///     GitHub api request use proxy or not.
+    /// </summary>
+    [JsonPropertyName("GitHubApiRequestProxyEnable")]
+    public bool GitHubApiRequestProxyEnable { get; set; } = false;
+
+    /// <summary>
+    ///     GitHub api request proxy address.
+    /// </summary>
+    [JsonPropertyName("GitHubApiRequestProxyAddress")]
+    public string GitHubApiRequestProxyAddress { get; set; } = string.Empty;
+
+    /// <summary>
+    ///     GitHub api request proxy port.
+    /// </summary>
+    [JsonPropertyName("GitHubApiRequestProxyPort")]
+    public int GitHubApiRequestProxyPort { get; set; } = 0;
+
+    /// <summary>
+    ///     GitHub api request user agent.
+    /// </summary>
+    [JsonPropertyName("GitHubApiRequestUserAgent")]
+    public string GitHubApiRequestUserAgent { get; set; } = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.66 Safari/537.36 Edg/103.0.1264.44";
 }

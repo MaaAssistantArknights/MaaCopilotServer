@@ -17,11 +17,6 @@ public class ValidationBehaviour<TRequest, TResponse> : IPipelineBehavior<TReque
     where TRequest : IRequest<MaaApiResponse> where TResponse : MaaApiResponse
 {
     /// <summary>
-    ///     The service of current user.
-    /// </summary>
-    private readonly ICurrentUserService _currentUserService;
-
-    /// <summary>
     ///     The validators.
     /// </summary>
     private readonly IEnumerable<IValidator<TRequest>> _validators;
@@ -30,11 +25,9 @@ public class ValidationBehaviour<TRequest, TResponse> : IPipelineBehavior<TReque
     ///     The constructor.
     /// </summary>
     /// <param name="validators">The validators.</param>
-    /// <param name="currentUserService">The service of current user.</param>
-    public ValidationBehaviour(IEnumerable<IValidator<TRequest>> validators, ICurrentUserService currentUserService)
+    public ValidationBehaviour(IEnumerable<IValidator<TRequest>> validators)
     {
         _validators = validators;
-        _currentUserService = currentUserService;
     }
 
     /// <summary>

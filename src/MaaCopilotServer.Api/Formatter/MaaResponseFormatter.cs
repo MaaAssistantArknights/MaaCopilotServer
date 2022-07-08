@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using MaaCopilotServer.Application.Common.Helpers;
 using MaaCopilotServer.Application.Common.Interfaces;
@@ -10,6 +11,7 @@ using Microsoft.AspNetCore.Mvc.Formatters;
 
 namespace MaaCopilotServer.Api.Formatter;
 
+[ExcludeFromCodeCoverage]
 public class MaaResponseFormatter : TextOutputFormatter
 {
     public MaaResponseFormatter()

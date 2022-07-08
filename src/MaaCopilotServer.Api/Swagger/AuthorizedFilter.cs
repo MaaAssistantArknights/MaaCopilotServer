@@ -33,7 +33,9 @@ public class AuthorizedFilter : IOperationFilter
             return;
         }
 
-        var role = attr.Role;
+        var role = attr.Role.ToString().ToUpper();
+        var allowInactivatedStr = attr.AllowInActivated
+            ? "ALLOW" : "DO NOT ALLOW";
 
         operation.Security.Add(new OpenApiSecurityRequirement
         {
@@ -50,6 +52,6 @@ public class AuthorizedFilter : IOperationFilter
             }
         });
 
-        operation.Description += $" [AUTH REQUIRED: {role.ToString()}]";
+        operation.Description += $"This API requires \"{role}\" role and \"{allowInactivatedStr}\" inactivated account to access.";
     }
 }

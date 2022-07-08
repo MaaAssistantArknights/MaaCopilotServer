@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
 using FluentEmail.MailKitSmtp;
 using MaaCopilotServer.Application.Common.Extensions;
 using MaaCopilotServer.Application.Common.Interfaces;
@@ -16,6 +17,7 @@ namespace MaaCopilotServer.Infrastructure;
 /// <summary>
 ///     The extension to add infrastructure services.
 /// </summary>
+[ExcludeFromCodeCoverage]
 public static class ConfigureServices
 {
     /// <summary>
@@ -30,7 +32,10 @@ public static class ConfigureServices
 
         services.AddDbContext<IMaaCopilotDbContext, MaaCopilotDbContext>();
 
-        services.AddSingleton<ICopilotIdService, CopilotIdService>();
+        services.AddScoped<ICopilotOperationService, CopilotOperationService>();
+
+        services.AddScoped<IOperationProcessService, OperationProcessService>();
+
         services.AddSingleton<ISecretService, SecretService>();
 
         var smtpClientOptions = new SmtpClientOptions

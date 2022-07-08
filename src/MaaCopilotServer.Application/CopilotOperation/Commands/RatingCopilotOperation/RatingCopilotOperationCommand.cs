@@ -5,6 +5,8 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using MaaCopilotServer.Application.Common.Helpers;
+using MaaCopilotServer.Application.Common.Operation;
+using MaaCopilotServer.Application.CopilotOperation.Queries.GetCopilotOperation;
 using MaaCopilotServer.Domain.Entities;
 using MaaCopilotServer.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
@@ -36,18 +38,18 @@ public class RatingCopilotOperationCommandHandler : IRequestHandler<RatingCopilo
 {
     private readonly IMaaCopilotDbContext _dbContext;
     private readonly ICurrentUserService _currentUserService;
-    private readonly ICopilotIdService _copilotIdService;
+    private readonly ICopilotOperationService _copilotOperationService;
     private readonly ApiErrorMessage _apiErrorMessage;
 
     public RatingCopilotOperationCommandHandler(
         IMaaCopilotDbContext dbContext,
         ICurrentUserService currentUserService,
-        ICopilotIdService copilotIdService,
+        ICopilotOperationService copilotOperationService,
         ApiErrorMessage apiErrorMessage)
     {
         _dbContext = dbContext;
         _currentUserService = currentUserService;
-        _copilotIdService = copilotIdService;
+        _copilotOperationService = copilotOperationService;
         _apiErrorMessage = apiErrorMessage;
     }
 
@@ -58,7 +60,7 @@ public class RatingCopilotOperationCommandHandler : IRequestHandler<RatingCopilo
         var ratingType = Enum.Parse<OperationRatingType>(request.RatingType!);
 
         // Get operations
-        var operationId = _copilotIdService.DecodeId(request.Id!);
+        var operationId = _copilotOperationService.DecodeId(request.Id!);
         var operation = await _dbContext.CopilotOperations
             .FirstOrDefaultAsync(x => x.Id == operationId, cancellationToken);
         if (operation is null)
@@ -122,15 +124,27 @@ public class RatingCopilotOperationCommandHandler : IRequestHandler<RatingCopilo
         }
 
         // Update database
+        operation.UpdateHotScore(_copilotOperationService.CalculateHotScore(operation));
         _dbContext.CopilotOperations.Update(operation);
         await _dbContext.SaveChangesAsync(cancellationToken);
 
         // Return response
-        return MaaApiResponseHelper.Ok(new RatingCopilotOperationDto
+        var dto = new GetCopilotOperationQueryDto
         {
             Id = request.Id!,
-            RatingType = currentRating,
-            CurrentRatio = operation.RatingRatio
-        });
+            MinimumRequired = operation.MinimumRequired,
+            Content = operation.Content,
+            Detail = operation.Details,
+            Operators = operation.Operators,
+            Title = operation.Title,
+            Uploader = operation.Author.UserName,
+            UploadTime = operation.CreateAt.ToIsoString(),
+            ViewCounts = operation.ViewCounts,
+            HotScore = operation.HotScore,
+            Groups = operation.Groups.ToArray().DeserializeGroup(),
+            RatingLevel = _copilotOperationService.GetRatingLevelString(operation.RatingLevel),
+            RatingType = currentRating
+        };
+        return MaaApiResponseHelper.Ok(dto);
     }
 }

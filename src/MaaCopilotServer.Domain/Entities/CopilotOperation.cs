@@ -2,8 +2,9 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Domain.Common;
-using MaaCopilotServer.Domain.Helper;
+using MaaCopilotServer.Domain.Enums;
 
 namespace MaaCopilotServer.Domain.Entities;
 
@@ -11,29 +12,30 @@ namespace MaaCopilotServer.Domain.Entities;
 /// <summary>
 ///     Maa Copilot operation entity.
 /// </summary>
+[ExcludeFromCodeCoverage]
 public sealed class CopilotOperation : EditableEntity
 {
     /// <summary>
     ///     The constructor of <see cref="CopilotOperation" />.
     /// </summary>
     /// <param name="content">The content.</param>
-    /// <param name="stageName">The stage name.</param>
     /// <param name="minimumRequired">The minimum required version of MAA.</param>
     /// <param name="title">The title of the operation.</param>
     /// <param name="details">The detail of the operation.</param>
     /// <param name="author">The author of the operation.</param>
     /// <param name="createBy">The creator of the operation.</param>
+    /// <param name="level">The level this operation is made for.</param>
     /// <param name="operators">The operators in the operation.</param>
     /// <param name="groups">The groups in the operation.</param>
-    public CopilotOperation(string content, string stageName, string minimumRequired, string title, string details,
-        CopilotUser author, Guid createBy, IEnumerable<string> operators, IEnumerable<string> groups)
+    public CopilotOperation(string content, string minimumRequired, string title, string details,
+        CopilotUser author, Guid createBy, ArkLevelData level, IEnumerable<string> operators, IEnumerable<string> groups)
     {
         Content = content;
-        StageName = stageName;
         MinimumRequired = minimumRequired;
         Title = title;
         Details = details;
         Author = author;
+        ArkLevel = level;
         Operators = operators.ToList();
         Groups = groups.ToList();
         CreateBy = createBy;
@@ -48,25 +50,26 @@ public sealed class CopilotOperation : EditableEntity
     /// </remarks>
     /// <param name="id">The ID.</param>
     /// <param name="content">The content.</param>
-    /// <param name="stageName">The stage name.</param>
     /// <param name="minimumRequired">The minimum required version of MAA.</param>
     /// <param name="title">The title of the operation.</param>
     /// <param name="details">The detail of the operation.</param>
     /// <param name="author">The author of the operation.</param>
     /// <param name="createBy">The creator of the operation.</param>
+    /// <param name="level">The level this operation is made for.</param>
     /// <param name="operators">The operators in the operation.</param>
     /// <param name="groups">The groups in the operation.</param>
-    public CopilotOperation(long id,
+    public CopilotOperation(
+        long id,
         string content,
-        string stageName,
         string minimumRequired,
         string title,
         string details,
         CopilotUser author,
         Guid createBy,
+        ArkLevelData level,
         IEnumerable<string> operators,
         IEnumerable<string> groups)
-        : this(content, stageName, minimumRequired, title, details, author, createBy, operators, groups)
+        : this(content, minimumRequired, title, details, author, createBy, level, operators, groups)
     {
         Id = id;
     }
@@ -99,11 +102,6 @@ public sealed class CopilotOperation : EditableEntity
     public int ViewCounts { get; private set; }
 
     /// <summary>
-    ///     Favorite counts.
-    /// </summary>
-    public int FavoriteCount { get; private set; }
-
-    /// <summary>
     ///     Like counts.
     /// </summary>
     public int LikeCount { get; private set; }
@@ -114,11 +112,6 @@ public sealed class CopilotOperation : EditableEntity
     public int DislikeCount { get; private set; }
 
     // Extract from Content
-
-    /// <summary>
-    ///     The stage name.
-    /// </summary>
-    public string StageName { get; private set; }
 
     /// <summary>
     ///     The minimum required version of MAA.
@@ -151,19 +144,24 @@ public sealed class CopilotOperation : EditableEntity
     public CopilotUser Author { get; private set; }
 
     /// <summary>
-    ///     M2M relation. DO NOT INCLUDE QUERY THIS.
+    ///     The level this operation is made for.
     /// </summary>
-    public List<CopilotUserFavorite> Favorites { get; private set; } = new();
+    public ArkLevelData ArkLevel { get; private set; }
 
     // Auto calculated properties
 
     /// <summary>
-    ///     The rating ratio of the operation.
+    ///     The hot score of the operation.
     /// </summary>
-    public float RatingRatio { get; private set; } = -1f;
+    public long HotScore { get; private set; } = 0;
 
     /// <summary>
-    ///     Increases download count by 1, and updates last updated time.
+    ///     Current rating level.
+    /// </summary>
+    public RatingLevel RatingLevel { get; private set; } = RatingLevel.Mixed;
+
+    /// <summary>
+    ///     Increases view count by 1, and updates last updated time.
     /// </summary>
     /// <remarks>This API is reachable anonymously, so the update will not be recorded.</remarks>
     public void AddViewCount()
@@ -176,18 +174,16 @@ public sealed class CopilotOperation : EditableEntity
     ///     Update this operation.
     /// </summary>
     /// <param name="content">The content.</param>
-    /// <param name="stageName">The stage name.</param>
     /// <param name="minimumRequired">The minimum required version of MAA.</param>
     /// <param name="title">The title of the operation.</param>
     /// <param name="details">The detail of the operation.</param>
     /// <param name="operators">The operators in the operation.</param>
     /// <param name="groups">The groups in the operation.</param>
     /// <param name="operator">The one who call this method.</param>
-    public void UpdateOperation(string content, string stageName, string minimumRequired, string title, string details,
+    public void UpdateOperation(string content, string minimumRequired, string title, string details,
         IEnumerable<string> operators, IEnumerable<string> groups, Guid @operator)
     {
         Content = content;
-        StageName = stageName;
         MinimumRequired = minimumRequired;
         Title = title;
         Details = details;
@@ -198,33 +194,13 @@ public sealed class CopilotOperation : EditableEntity
     }
 
     /// <summary>
-    ///     Add a favorite count, and updates last updated time.
-    /// </summary>
-    /// <param name="operator">The operator id.</param>
-    public void AddFavorites(Guid @operator)
-    {
-        FavoriteCount++;
-        Update(@operator);
-    }
-
-    /// <summary>
-    ///     Remove a favorite count, and updates last updated time.
-    /// </summary>
-    /// <param name="operator">The operator id.</param>
-    public void RemoveFavorites(Guid @operator)
-    {
-        FavoriteCount--;
-        Update(@operator);
-    }
-
-    /// <summary>
     ///     Add a like count, and updates last updated time.
     /// </summary>
     /// <param name="operator">The operator id.</param>
     public void AddLike(Guid @operator)
     {
         LikeCount++;
-        RatingRatio = MathHelper.CalculateRatio(this.LikeCount, this.DislikeCount);
+        UpdateRatingLevel();
         Update(@operator);
     }
 
@@ -235,7 +211,7 @@ public sealed class CopilotOperation : EditableEntity
     public void AddDislike(Guid @operator)
     {
         DislikeCount++;
-        RatingRatio = MathHelper.CalculateRatio(this.LikeCount, this.DislikeCount);
+        UpdateRatingLevel();
         Update(@operator);
     }
 
@@ -246,7 +222,7 @@ public sealed class CopilotOperation : EditableEntity
     public void RemoveLike(Guid @operator)
     {
         LikeCount--;
-        RatingRatio = MathHelper.CalculateRatio(this.LikeCount, this.DislikeCount);
+        UpdateRatingLevel();
         Update(@operator);
     }
 
@@ -257,7 +233,7 @@ public sealed class CopilotOperation : EditableEntity
     public void RemoveDislike(Guid @operator)
     {
         DislikeCount--;
-        RatingRatio = MathHelper.CalculateRatio(this.LikeCount, this.DislikeCount);
+        UpdateRatingLevel();
         Update(@operator);
     }
 
@@ -269,5 +245,42 @@ public sealed class CopilotOperation : EditableEntity
     {
         UpdateAt = DateTimeOffset.UtcNow;
         UpdateBy = @operator;
+    }
+
+    /// <summary>
+    ///     Calculate current like to all ratio and set rating level.
+    /// </summary>
+    private void UpdateRatingLevel()
+    {
+        var total = this.LikeCount + this.DislikeCount;
+        if (total < 5)
+        {
+            this.RatingLevel = RatingLevel.Mixed;
+            return;
+        }
+
+        var ratio = this.LikeCount / (double) total;
+
+        this.RatingLevel = ratio switch
+        {
+            >= 0.9 => RatingLevel.OverwhelminglyPositive,
+            >= 0.8 => RatingLevel.VeryPositive,
+            >= 0.7 => RatingLevel.Positive,
+            >= 0.6 => RatingLevel.MostlyPositive,
+            >= 0.5 => RatingLevel.Mixed,
+            >= 0.4 => RatingLevel.Negative,
+            >= 0.3 => RatingLevel.MostlyNegative,
+            >= 0.2 => RatingLevel.VeryNegative,
+            _ => RatingLevel.OverwhelminglyNegative
+        };
+    }
+
+    /// <summary>
+    ///     Update the hot score.
+    /// </summary>
+    /// <param name="hotScore">The current hot score.</param>
+    public void UpdateHotScore(long hotScore)
+    {
+        HotScore = hotScore;
     }
 }

@@ -28,19 +28,24 @@ public interface IMaaCopilotDbContext
     DbSet<CopilotToken> CopilotTokens { get; }
 
     /// <summary>
-    ///     The DB set of operations comments.
-    /// </summary>
-    DbSet<CopilotOperationComment> CopilotOperationComments { get; }
-
-    /// <summary>
-    ///     The DB set of favorite lists.
-    /// </summary>
-    DbSet<CopilotUserFavorite> CopilotUserFavorites { get; }
-
-    /// <summary>
     ///     The DB set of operation rating.
     /// </summary>
     DbSet<CopilotOperationRating> CopilotOperationRatings { get; }
+
+    /// <summary>
+    ///     The DB set of some system persistent data.
+    /// </summary>
+    DbSet<PersistStorage> PersistStorage { get; }
+
+    /// <summary>
+    ///     The DB set of arknights characters.
+    /// </summary>
+    DbSet<ArkCharacterInfo> ArkCharacterInfos { get; }
+
+    /// <summary>
+    ///     The DB set of arknights levels.
+    /// </summary>
+    DbSet<ArkLevelData> ArkLevelData { get; }
 
     /// <summary>
     ///     Saves changes to DB asynchronously.

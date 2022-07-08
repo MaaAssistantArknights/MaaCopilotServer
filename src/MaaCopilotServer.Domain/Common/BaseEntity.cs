@@ -3,6 +3,7 @@
 // Licensed under the AGPL-3.0 license.
 
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace MaaCopilotServer.Domain.Common;
 
@@ -10,6 +11,7 @@ namespace MaaCopilotServer.Domain.Common;
 /// <summary>
 ///     ReadOnly domain entity base class.
 /// </summary>
+[ExcludeFromCodeCoverage]
 public abstract class BaseEntity
 {
     /// <summary>
@@ -46,7 +48,8 @@ public abstract class BaseEntity
     {
         DeleteBy = @operator;
     }
-    
+
+    /// <inheritdoc/>
     public override bool Equals(object? obj)
     {
         if (obj is not BaseEntity compareTo)
@@ -62,11 +65,13 @@ public abstract class BaseEntity
         return EntityId.Equals(compareTo.EntityId);
     }
 
+    /// <inheritdoc/>
     public override int GetHashCode()
     {
         return GetType().GetHashCode() * 907 + EntityId.GetHashCode();
     }
 
+    /// <inheritdoc/>
     public override string ToString()
     {
         return $"{GetType().Name} [Id ={EntityId}]";

@@ -79,7 +79,7 @@ public class RequestActivationTokenCommandHandler : IRequestHandler<RequestActiv
         var result = await _mailService.SendEmailAsync(
             new EmailUserActivation(
                 user.UserName, newToken,
-                newExpireTime.ToUtc8String(), 
+                newExpireTime.ToUtc8String(),
                 _tokenOption.Value.AccountActivationToken.HasCallback),
             user.Email);
         if (result is false)

@@ -3,6 +3,7 @@
 // Licensed under the AGPL-3.0 license.
 
 using MaaCopilotServer.Application.Common.Helpers;
+using MaaCopilotServer.Application.Common.Operation;
 using MaaCopilotServer.Domain.Entities;
 using MaaCopilotServer.Domain.Enums;
 using Microsoft.AspNetCore.Mvc;
@@ -28,10 +29,28 @@ public record QueryCopilotOperationsQuery : IRequest<MaaApiResponse>
     public int? Limit { get; set; } = null;
 
     /// <summary>
-    ///     The stage name to query.
+    ///     Level category one.
     /// </summary>
-    [FromQuery(Name = "stage_name")]
-    public string? StageName { get; set; } = null;
+    [FromQuery(Name = "level_cat_one")]
+    public string? LevelCatOne { get; set; } = null;
+
+    /// <summary>
+    ///     Level category two.
+    /// </summary>
+    [FromQuery(Name = "level_cat_two")]
+    public string? LevelCatTwo { get; set; } = null;
+
+    /// <summary>
+    ///     Level category three.
+    /// </summary>
+    [FromQuery(Name = "level_cat_three")]
+    public string? LevelCatThree { get; set; } = null;
+
+    /// <summary>
+    ///     Level name.
+    /// </summary>
+    [FromQuery(Name = "level_name")]
+    public string? LevelName { get; set; } = null;
 
     /// <summary>
     ///     The content to query.
@@ -52,34 +71,40 @@ public record QueryCopilotOperationsQuery : IRequest<MaaApiResponse>
     public string? UploaderId { get; set; } = null;
 
     /// <summary>
-    ///     The description to query.
+    ///     Desc or Asc. Default is Asc. Set this value to "true" to sort in descending order.
     /// </summary>
     [FromQuery(Name = "desc")]
     public string? Desc { get; set; } = null;
 
     /// <summary>
-    ///     Orders result by a field. Only supports ordering by "views", "rating" and "id" (default).
+    ///     Orders result by a field. Only supports ordering by "views", "hot" and "id" (default).
     /// </summary>
     [FromQuery(Name = "order_by")]
     public string? OrderBy { get; set; } = null;
+
+    /// <summary>
+    ///     The server language. Could be (ignore case) Chinese (Default), English, Japanese, Korean.
+    /// </summary>
+    [FromQuery(Name = "server")]
+    public string Server { get; set; } = string.Empty;
 }
 
 public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOperationsQuery,
     MaaApiResponse>
 {
     private readonly ApiErrorMessage _apiErrorMessage;
-    private readonly ICopilotIdService _copilotIdService;
+    private readonly ICopilotOperationService _copilotOperationService;
     private readonly ICurrentUserService _currentUserService;
     private readonly IMaaCopilotDbContext _dbContext;
 
     public QueryCopilotOperationsQueryHandler(
         IMaaCopilotDbContext dbContext,
-        ICopilotIdService copilotIdService,
+        ICopilotOperationService copilotOperationService,
         ICurrentUserService currentUserService,
         ApiErrorMessage apiErrorMessage)
     {
         _dbContext = dbContext;
-        _copilotIdService = copilotIdService;
+        _copilotOperationService = copilotOperationService;
         _currentUserService = currentUserService;
         _apiErrorMessage = apiErrorMessage;
     }
@@ -123,12 +148,10 @@ public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOp
         }
 
         // Build queryable
-        var queryable = _dbContext.CopilotOperations.Include(x => x.Author).AsQueryable();
-        if (string.IsNullOrEmpty(request.StageName) is false)
-        {
-            // if stage name is set, filter by it
-            queryable = queryable.Where(x => x.StageName.Contains(request.StageName));
-        }
+        var queryable = _dbContext.CopilotOperations
+            .Include(x => x.ArkLevel)
+            .Include(x => x.Author)
+            .AsQueryable();
         if (string.IsNullOrEmpty(request.Content) is false)
         {
             // if content is set, filter by it
@@ -138,6 +161,54 @@ public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOp
         {
             // if uploader is set, filter by it
             queryable = queryable.Where(x => x.Author.UserName.Contains(request.Uploader));
+        }
+
+        if (string.IsNullOrEmpty(request.LevelName) is false)
+        {
+            // if level name is set, filter by it
+            queryable = request.Server.ToLower() switch
+            {
+                "japanese" => queryable.Where(x => x.ArkLevel.NameJp.Contains(request.LevelName)),
+                "korean" => queryable.Where(x => x.ArkLevel.NameKo.Contains(request.LevelName)),
+                "english" => queryable.Where(x => x.ArkLevel.NameEn.Contains(request.LevelName)),
+                _ => queryable.Where(x => x.ArkLevel.NameCn.Contains(request.LevelName))
+            };
+        }
+
+        if (string.IsNullOrEmpty(request.LevelCatOne) is false)
+        {
+            // if level cat one is set, filter by it
+            queryable = request.Server.ToLower() switch
+            {
+                "japanese" => queryable.Where(x => x.ArkLevel.CatOneJp.Contains(request.LevelCatOne)),
+                "korean" => queryable.Where(x => x.ArkLevel.CatOneKo.Contains(request.LevelCatOne)),
+                "english" => queryable.Where(x => x.ArkLevel.CatOneEn.Contains(request.LevelCatOne)),
+                _ => queryable.Where(x => x.ArkLevel.CatOneCn.Contains(request.LevelCatOne))
+            };
+        }
+
+        if (string.IsNullOrEmpty(request.LevelCatTwo) is false)
+        {
+            // if level cat two is set, filter by it
+            queryable = request.Server.ToLower() switch
+            {
+                "japanese" => queryable.Where(x => x.ArkLevel.CatTwoJp.Contains(request.LevelCatTwo)),
+                "korean" => queryable.Where(x => x.ArkLevel.CatTwoKo.Contains(request.LevelCatTwo)),
+                "english" => queryable.Where(x => x.ArkLevel.CatTwoEn.Contains(request.LevelCatTwo)),
+                _ => queryable.Where(x => x.ArkLevel.CatTwoCn.Contains(request.LevelCatTwo))
+            };
+        }
+
+        if (string.IsNullOrEmpty(request.LevelCatThree) is false)
+        {
+            // if level cat three is set, filter by it
+            queryable = request.Server.ToLower() switch
+            {
+                "japanese" => queryable.Where(x => x.ArkLevel.CatThreeJp.Contains(request.LevelCatThree)),
+                "korean" => queryable.Where(x => x.ArkLevel.CatThreeKo.Contains(request.LevelCatThree)),
+                "english" => queryable.Where(x => x.ArkLevel.CatThreeEn.Contains(request.LevelCatThree)),
+                _ => queryable.Where(x => x.ArkLevel.CatThreeCn.Contains(request.LevelCatThree))
+            };
         }
 
         if (uploaderId is not null)
@@ -157,13 +228,12 @@ public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOp
         {
             // if views is set, order by views
             "views" => string.IsNullOrEmpty(request.Desc)
-                ? queryable.OrderBy(x => x.ViewCounts)
-                : queryable.OrderByDescending(x => x.ViewCounts),
+                ? queryable.OrderBy(x => x.ViewCounts).ThenBy(x => x.Id)
+                : queryable.OrderByDescending(x => x.ViewCounts).ThenByDescending(x => x.Id),
             // if rating is set, order by rating
-            "rating" => string.IsNullOrEmpty(request.Desc)
-                ? queryable.OrderBy(x => x.RatingRatio)
-                : queryable.OrderByDescending(x => x.RatingRatio),
-            // if no order is set, order by id
+            "hot" => string.IsNullOrEmpty(request.Desc)
+                ? queryable.OrderBy(x => x.HotScore).ThenBy(x => x.Id)
+                : queryable.OrderByDescending(x => x.HotScore).ThenByDescending(x => x.Id),
             _ => string.IsNullOrEmpty(request.Desc)
                 ? queryable.OrderBy(x => x.Id)
                 : queryable.OrderByDescending(x => x.Id)
@@ -193,17 +263,18 @@ public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOp
         var dtos = result.Select(x =>
                 new QueryCopilotOperationsQueryDto
                 {
-                    Id = _copilotIdService.EncodeId(x.Id),
+                    Id = _copilotOperationService.EncodeId(x.Id),
                     Detail = x.Details,
                     MinimumRequired = x.MinimumRequired,
-                    StageName = x.StageName,
                     Title = x.Title,
                     Uploader = x.Author.UserName,
-                    RatingRatio = x.RatingRatio,
+                    HotScore = x.HotScore,
                     Groups = x.Groups.ToArray().DeserializeGroup(),
                     Operators = x.Operators,
                     UploadTime = x.UpdateAt.ToIsoString(),
                     ViewCounts = x.ViewCounts,
+                    Level = x.ArkLevel.MapToDto(request.Server),
+                    RatingLevel = _copilotOperationService.GetRatingLevelString(x.RatingLevel),
                     // If the user is logged in, get the rating for the operation, default value is None
                     // If not, set to null
                     RatingType = isLoggedIn

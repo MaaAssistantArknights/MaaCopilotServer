@@ -2,22 +2,19 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Application.CopilotUser.Commands.PasswordReset;
-using MaaCopilotServer.Resources;
+using MaaCopilotServer.Application.Test.TestHelpers;
 
 namespace MaaCopilotServer.Application.Test.CopilotUser.Commands.Change.PasswordReset;
 
 /// <summary>
-/// Tests for <see cref="PasswordResetCommandValidator"/>.
+/// Tests <see cref="PasswordResetCommandValidator"/>.
 /// </summary>
 [TestClass]
+[ExcludeFromCodeCoverage]
 public class PasswordResetCommandValidatorTest
 {
-    /// <summary>
-    /// The validation error message.
-    /// </summary>
-    private readonly ValidationErrorMessage _validationErrorMessage = new();
-
     /// <summary>
     /// Tests <see cref="PasswordResetCommandValidator"/>.
     /// </summary>
@@ -32,14 +29,11 @@ public class PasswordResetCommandValidatorTest
     [DataRow("token", "0123456789012345678901234567890123456789", false)]
     public void Test(string? token, string? password, bool expected)
     {
-        var validator = new PasswordResetCommandValidator(_validationErrorMessage);
-        var data = new PasswordResetCommand()
-        {
-            Token = token,
-            Password = password,
-        };
-
-        var result = validator.Validate(data);
-        result.IsValid.Should().Be(expected);
+        ValidatorTestHelper.Test<PasswordResetCommandValidator, PasswordResetCommand>(
+            new()
+            {
+                Token = token,
+                Password = password,
+            }, expected);
     }
 }

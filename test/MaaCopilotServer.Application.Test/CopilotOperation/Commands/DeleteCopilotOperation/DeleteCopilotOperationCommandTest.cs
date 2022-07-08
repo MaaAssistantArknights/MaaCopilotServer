@@ -2,82 +2,57 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Application.CopilotOperation.Commands.DeleteCopilotOperation;
+using MaaCopilotServer.Application.Test.TestHelpers;
+using MaaCopilotServer.Domain.Entities;
 using MaaCopilotServer.Domain.Enums;
+using MaaCopilotServer.Domain.Options;
+using MaaCopilotServer.GameData.Entity;
 using MaaCopilotServer.Infrastructure.Services;
-using MaaCopilotServer.Test.TestHelpers;
+using MaaCopilotServer.Resources;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 
 namespace MaaCopilotServer.Application.Test.CopilotOperation.Commands.DeleteCopilotOperation;
 
 /// <summary>
-/// Tests for <see cref="DeleteCopilotOperationCommandHandler"/>.
+/// Tests <see cref="DeleteCopilotOperationCommandHandler"/>.
 /// </summary>
 [TestClass]
+[ExcludeFromCodeCoverage]
 public class DeleteCopilotOperationCommandTest
 {
     /// <summary>
-    ///     The API error message.
+    ///     The service for copilot operations.
     /// </summary>
-    private readonly Resources.ApiErrorMessage _apiErrorMessage = new();
-
-    /// <summary>
-    ///     The service for processing copilot ID.
-    /// </summary>
-    private readonly ICopilotIdService _copilotIdService = new CopilotIdService();
-
-    /// <summary>
-    ///     The service for current user.
-    /// </summary>
-    private readonly ICurrentUserService _currentUserService = Mock.Of<ICurrentUserService>(
-        x => x.GetUserIdentity() == Guid.Empty);
-
-    /// <summary>
-    ///     The DB context.
-    /// </summary>
-    private readonly IMaaCopilotDbContext _dbContext = new TestDbContext();
+    private readonly ICopilotOperationService _copilotOperationService
+        = new CopilotOperationService(Options.Create(new CopilotOperationOption()), new DomainString());
 
     /// <summary>
     /// Tests <see cref="DeleteCopilotOperationCommandHandler.Handle(DeleteCopilotOperationCommand, CancellationToken)"/>
     /// with the same user.
     /// </summary>
     [TestMethod]
-    public void TestHandle_SameUser()
+    public void TestHandleSameUser()
     {
-        var user = new Domain.Entities.CopilotUser(
-            string.Empty,
-            string.Empty,
-            string.Empty,
-            UserRole.User,
-            Guid.Empty);
-        _dbContext.CopilotUsers.Add(user);
-        _dbContext.SaveChangesAsync(new CancellationToken()).Wait();
-        var entity = new Domain.Entities.CopilotOperation(
-            1,
-            string.Empty,
-            string.Empty,
-            string.Empty,
-            string.Empty,
-            string.Empty,
-            user,
-            Guid.Empty,
-            new List<string>(),
-            new List<string>());
-        _dbContext.CopilotOperations.Add(entity);
-        _dbContext.SaveChangesAsync(new CancellationToken()).Wait();
-        var currentUserService = new Mock<ICurrentUserService>();
-        currentUserService.Setup(x => x.GetUser().Result).Returns(user);
+        var user = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, UserRole.User, Guid.Empty);
+        var entity = new Domain.Entities.CopilotOperation(0, string.Empty, string.Empty,
+            string.Empty, string.Empty, user, Guid.Empty,
+            new ArkLevelData(new ArkLevelEntityGlobal()),
+            new List<string>(), new List<string>());
 
-        var handler = new DeleteCopilotOperationCommandHandler(
-            _dbContext, _copilotIdService, currentUserService.Object, _apiErrorMessage);
-        var result = handler.Handle(new DeleteCopilotOperationCommand()
-        {
-            Id = _copilotIdService.EncodeId(entity.Id)
-        }, new CancellationToken()).GetAwaiter().GetResult();
+        var result = new HandlerTest()
+            .SetupDatabase(db => db.CopilotUsers.Add(user))
+            .SetupDatabase(db => db.CopilotOperations.Add(entity))
+            .SetupGetUser(user).TestDeleteCopilotOperation(new()
+            {
+                Id = _copilotOperationService.EncodeId(entity.Id)
+            });
 
-        result.StatusCode.Should().Be(StatusCodes.Status200OK);
-        _dbContext.CopilotOperations.Any().Should().BeFalse();
+        result.Response.StatusCode.Should().Be(StatusCodes.Status200OK);
+        result.DbContext.CopilotOperations.Any().Should().BeFalse();
     }
 
     /// <summary>
@@ -94,55 +69,33 @@ public class DeleteCopilotOperationCommandTest
     [DataRow(UserRole.SuperAdmin, UserRole.Uploader, true)]
     [DataRow(UserRole.SuperAdmin, UserRole.Admin, true)]
     [DataRow(UserRole.SuperAdmin, UserRole.SuperAdmin, true)]
-    public void TestHandle_DifferentUsers(UserRole requesterRole, UserRole authorRole, bool expectedToSucceed)
+    public void TestHandleDifferentUsers(UserRole requesterRole, UserRole authorRole, bool expectedToSucceed)
     {
-        var user = new Domain.Entities.CopilotUser(
-            string.Empty,
-            string.Empty,
-            string.Empty,
-            requesterRole,
-            Guid.Empty);
-        var author = new Domain.Entities.CopilotUser(
-            string.Empty,
-            string.Empty,
-            string.Empty,
-            authorRole,
-            Guid.Empty);
-        _dbContext.CopilotUsers.Add(user);
-        _dbContext.CopilotUsers.Add(author);
-        _dbContext.SaveChangesAsync(new CancellationToken()).Wait();
-        var entity = new Domain.Entities.CopilotOperation(
-            1,
-            string.Empty,
-            string.Empty,
-            string.Empty,
-            string.Empty,
-            string.Empty,
-            author,
-            Guid.Empty,
-            new List<string>(),
-            new List<string>());
-        _dbContext.CopilotOperations.Add(entity);
-        _dbContext.SaveChangesAsync(new CancellationToken()).Wait();
-        var currentUserService = new Mock<ICurrentUserService>();
-        currentUserService.Setup(x => x.GetUser().Result).Returns(user);
+        var user = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, requesterRole, Guid.Empty);
+        var author = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, authorRole, Guid.Empty);
+        var entity = new Domain.Entities.CopilotOperation(0, string.Empty, string.Empty,
+            string.Empty, string.Empty, author, Guid.Empty,
+            new ArkLevelData(new ArkLevelEntityGlobal()),
+            new List<string>(), new List<string>());
 
-        var handler = new DeleteCopilotOperationCommandHandler(
-            _dbContext, _copilotIdService, currentUserService.Object, _apiErrorMessage);
-        var result = handler.Handle(new DeleteCopilotOperationCommand()
-        {
-            Id = _copilotIdService.EncodeId(entity.Id)
-        }, new CancellationToken()).GetAwaiter().GetResult();
+        var result = new HandlerTest()
+            .SetupDatabase(db => db.CopilotUsers.Add(user))
+            .SetupDatabase(db => db.CopilotUsers.Add(author))
+            .SetupDatabase(db => db.CopilotOperations.Add(entity))
+            .SetupGetUser(user).TestDeleteCopilotOperation(new()
+            {
+                Id = _copilotOperationService.EncodeId(entity.Id)
+            });
 
         if (expectedToSucceed)
         {
-            result.StatusCode.Should().Be(StatusCodes.Status200OK);
-            _dbContext.CopilotOperations.Any().Should().BeFalse();
+            result.Response.StatusCode.Should().Be(StatusCodes.Status200OK);
+            result.DbContext.CopilotOperations.Any().Should().BeFalse();
         }
         else
         {
-            result.StatusCode.Should().Be(StatusCodes.Status403Forbidden);
-            _dbContext.CopilotOperations.Any().Should().BeTrue();
+            result.Response.StatusCode.Should().Be(StatusCodes.Status403Forbidden);
+            result.DbContext.CopilotOperations.Any().Should().BeTrue();
         }
     }
 
@@ -151,18 +104,15 @@ public class DeleteCopilotOperationCommandTest
     /// with non-existing ID.
     /// </summary>
     [TestMethod]
-    public void TestHandle_OperationNotFound()
+    public void TestHandleOperationNotFound()
     {
-        var currentUserService = new Mock<ICurrentUserService>();
-        currentUserService.Setup(x => x.GetUser().Result).Returns(new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, UserRole.User, null));
+        var result = new HandlerTest()
+            .SetupGetUser(new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, UserRole.User, null))
+            .TestDeleteCopilotOperation(new()
+            {
+                Id = _copilotOperationService.EncodeId(1),
+            });
 
-        var handler = new DeleteCopilotOperationCommandHandler(
-            _dbContext, _copilotIdService, currentUserService.Object, _apiErrorMessage);
-        var result = handler.Handle(new DeleteCopilotOperationCommand()
-        {
-            Id = _copilotIdService.EncodeId(1)
-        }, new CancellationToken()).GetAwaiter().GetResult();
-
-        result.StatusCode.Should().Be(StatusCodes.Status404NotFound);
+        result.Response.StatusCode.Should().Be(StatusCodes.Status404NotFound);
     }
 }

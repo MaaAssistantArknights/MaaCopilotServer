@@ -14,642 +14,147 @@
     "version": "v1"
   },
   "paths": {
-    "/favorites/create": {
-      "post": {
-        "tags": [
-          "CopilotFavorite"
-        ],
-        "summary": "Creates a new favorite list.",
-        "description": " [AUTH REQUIRED: User]",
-        "requestBody": {
-          "description": "The request body.",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateFavoriteListCommand"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateFavoriteListCommand"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateFavoriteListCommand"
-              }
-            }
-          }
-        },
-        "responses": {
-          "400": {
-            "description": "A bad request, most cases are invalid request parameters.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              },
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "An unauthorized request, you need to login and set Authorization header at first.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              },
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "A forbidden request, you do not have permission to perform the operation.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              },
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Some thing not found.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              },
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Some server errors happens.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              },
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              }
-            }
-          },
-          "200": {
-            "description": "The favorite list was created successfully.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CreateFavoriteListDtoMaaApiResponseModel"
-                }
-              },
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/CreateFavoriteListDtoMaaApiResponseModel"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CreateFavoriteListDtoMaaApiResponseModel"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "Bearer": [ ]
-          }
-        ]
-      }
-    },
-    "/favorites/delete": {
-      "post": {
-        "tags": [
-          "CopilotFavorite"
-        ],
-        "summary": "Deletes a favorite list.",
-        "description": " [AUTH REQUIRED: User]",
-        "requestBody": {
-          "description": "The request body.",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/DeleteFavoriteListCommand"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/DeleteFavoriteListCommand"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/DeleteFavoriteListCommand"
-              }
-            }
-          }
-        },
-        "responses": {
-          "400": {
-            "description": "A bad request, most cases are invalid request parameters.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              },
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "An unauthorized request, you need to login and set Authorization header at first.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              },
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "A forbidden request, you do not have permission to perform the operation.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              },
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Some thing not found.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              },
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Some server errors happens.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              },
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              }
-            }
-          },
-          "200": {
-            "description": "The favorite list was deleted successfully.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              },
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "Bearer": [ ]
-          }
-        ]
-      }
-    },
-    "/favorites/add": {
-      "post": {
-        "tags": [
-          "CopilotFavorite"
-        ],
-        "summary": "Adds a new favorite to a favorite list.",
-        "description": " [AUTH REQUIRED: User]",
-        "requestBody": {
-          "description": "The request body.",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/AddFavoriteCommand"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/AddFavoriteCommand"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/AddFavoriteCommand"
-              }
-            }
-          }
-        },
-        "responses": {
-          "400": {
-            "description": "A bad request, most cases are invalid request parameters.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              },
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "An unauthorized request, you need to login and set Authorization header at first.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              },
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "A forbidden request, you do not have permission to perform the operation.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              },
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Some thing not found.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              },
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Some server errors happens.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              },
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              }
-            }
-          },
-          "200": {
-            "description": "The favorite was added successfully.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              },
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "Bearer": [ ]
-          }
-        ]
-      }
-    },
-    "/favorites/remove": {
-      "post": {
-        "tags": [
-          "CopilotFavorite"
-        ],
-        "summary": "Removes a favorite from a favorite list.",
-        "description": " [AUTH REQUIRED: User]",
-        "requestBody": {
-          "description": "The request body.",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RemoveFavoriteCommand"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RemoveFavoriteCommand"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/RemoveFavoriteCommand"
-              }
-            }
-          }
-        },
-        "responses": {
-          "400": {
-            "description": "A bad request, most cases are invalid request parameters.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              },
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "An unauthorized request, you need to login and set Authorization header at first.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              },
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "A forbidden request, you do not have permission to perform the operation.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              },
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Some thing not found.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              },
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Some server errors happens.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              },
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              }
-            }
-          },
-          "200": {
-            "description": "The favorite was removed successfully.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              },
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "Bearer": [ ]
-          }
-        ]
-      }
-    },
-    "/favorites/get/{id}": {
+    "/arknights/version": {
       "get": {
         "tags": [
-          "CopilotFavorite"
+          "Arknights"
         ],
-        "summary": "Get the user favorites by a specific favorite list id.",
+        "summary": "Get arknights data version.",
+        "responses": {
+          "400": {
+            "description": "A bad request, most cases are invalid request parameters.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "An unauthorized request, you need to login and set Authorization header at first.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "A forbidden request, you do not have permission to perform the operation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Some thing not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Some server errors happens.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "The version info.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetDataVersionQueryDtoMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetDataVersionQueryDtoMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetDataVersionQueryDtoMaaApiResponseModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/arknights/level": {
+      "get": {
+        "tags": [
+          "Arknights"
+        ],
+        "summary": "Get arknights level data.",
         "parameters": [
           {
-            "name": "id",
-            "in": "path",
-            "description": "The favorite list id.",
-            "required": true,
+            "name": "server",
+            "in": "query",
+            "description": "The server language. Could be (ignore case) Chinese, English, Japanese, Korean.",
             "schema": {
               "type": "string"
             }
@@ -757,21 +262,161 @@
             }
           },
           "200": {
-            "description": "The user favorites in a favorite list.",
+            "description": "The list of levels",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GetCopilotUserFavoritesDtoMaaApiResponseModel"
+                  "$ref": "#/components/schemas/GetLevelListDtoListMaaApiResponseModel"
                 }
               },
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/GetCopilotUserFavoritesDtoMaaApiResponseModel"
+                  "$ref": "#/components/schemas/GetLevelListDtoListMaaApiResponseModel"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GetCopilotUserFavoritesDtoMaaApiResponseModel"
+                  "$ref": "#/components/schemas/GetLevelListDtoListMaaApiResponseModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/arknights/operator": {
+      "get": {
+        "tags": [
+          "Arknights"
+        ],
+        "summary": "Get arknights operator data.",
+        "parameters": [
+          {
+            "name": "server",
+            "in": "query",
+            "description": "The server language. Could be (ignore case) Chinese, English, Japanese, Korean.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "A bad request, most cases are invalid request parameters.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "An unauthorized request, you need to login and set Authorization header at first.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "A forbidden request, you do not have permission to perform the operation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Some thing not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Some server errors happens.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "The list of operators",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetOperatorListDtoListMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetOperatorListDtoListMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetOperatorListDtoListMaaApiResponseModel"
                 }
               }
             }
@@ -785,7 +430,7 @@
           "CopilotOperation"
         ],
         "summary": "Upload a copilot operation.",
-        "description": " [AUTH REQUIRED: Uploader]",
+        "description": "This API requires \"UPLOADER\" role and \"DO NOT ALLOW\" inactivated account to access.",
         "requestBody": {
           "description": "The request body.",
           "content": {
@@ -941,7 +586,7 @@
           "CopilotOperation"
         ],
         "summary": "Delete a copilot operation.",
-        "description": " [AUTH REQUIRED: Uploader]",
+        "description": "This API requires \"UPLOADER\" role and \"DO NOT ALLOW\" inactivated account to access.",
         "requestBody": {
           "description": "The request boy.",
           "content": {
@@ -1106,6 +751,14 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "server",
+            "in": "query",
+            "description": "The server language. Could be (ignore case) Chinese (Default), English, Japanese, Korean.",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -1258,9 +911,33 @@
             }
           },
           {
-            "name": "stage_name",
+            "name": "level_cat_one",
             "in": "query",
-            "description": "The stage name to query.",
+            "description": "Level category one.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "level_cat_two",
+            "in": "query",
+            "description": "Level category two.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "level_cat_three",
+            "in": "query",
+            "description": "Level category three.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "level_name",
+            "in": "query",
+            "description": "Level name.",
             "schema": {
               "type": "string"
             }
@@ -1292,7 +969,7 @@
           {
             "name": "desc",
             "in": "query",
-            "description": "The description to query.",
+            "description": "Desc or Asc. Default is Asc. Set this value to \"true\" to sort in descending order.",
             "schema": {
               "type": "string"
             }
@@ -1300,7 +977,15 @@
           {
             "name": "order_by",
             "in": "query",
-            "description": "Orders result by a field. Only supports ordering by \"views\", \"rating\" and \"id\" (default).",
+            "description": "Orders result by a field. Only supports ordering by \"views\", \"hot\" and \"id\" (default).",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "server",
+            "in": "query",
+            "description": "The server language. Could be (ignore case) Chinese (Default), English, Japanese, Korean.",
             "schema": {
               "type": "string"
             }
@@ -1436,7 +1121,7 @@
           "CopilotOperation"
         ],
         "summary": "Update a copilot operation.",
-        "description": " [AUTH REQUIRED: Uploader]",
+        "description": "This API requires \"UPLOADER\" role and \"DO NOT ALLOW\" inactivated account to access.",
         "requestBody": {
           "description": "The request body.",
           "content": {
@@ -1592,7 +1277,7 @@
           "CopilotOperation"
         ],
         "summary": "Rate a copilot operation.",
-        "description": " [AUTH REQUIRED: User]",
+        "description": "This API requires \"USER\" role and \"DO NOT ALLOW\" inactivated account to access.",
         "requestBody": {
           "description": "The request body.",
           "content": {
@@ -1719,17 +1404,17 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/RatingCopilotOperationDtoMaaApiResponseModel"
+                  "$ref": "#/components/schemas/GetCopilotOperationQueryDtoMaaApiResponseModel"
                 }
               },
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/RatingCopilotOperationDtoMaaApiResponseModel"
+                  "$ref": "#/components/schemas/GetCopilotOperationQueryDtoMaaApiResponseModel"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/RatingCopilotOperationDtoMaaApiResponseModel"
+                  "$ref": "#/components/schemas/GetCopilotOperationQueryDtoMaaApiResponseModel"
                 }
               }
             }
@@ -1748,7 +1433,7 @@
           "CopilotUser"
         ],
         "summary": "Change the user info.",
-        "description": " [AUTH REQUIRED: Admin]",
+        "description": "This API requires \"ADMIN\" role and \"DO NOT ALLOW\" inactivated account to access.",
         "requestBody": {
           "description": "The request body.",
           "content": {
@@ -1904,7 +1589,7 @@
           "CopilotUser"
         ],
         "summary": "Create a new user.",
-        "description": " [AUTH REQUIRED: Admin]",
+        "description": "This API requires \"ADMIN\" role and \"DO NOT ALLOW\" inactivated account to access.",
         "requestBody": {
           "description": "The request body.",
           "content": {
@@ -2060,7 +1745,7 @@
           "CopilotUser"
         ],
         "summary": "Delete a user.",
-        "description": " [AUTH REQUIRED: Admin]",
+        "description": "This API requires \"ADMIN\" role and \"DO NOT ALLOW\" inactivated account to access.",
         "requestBody": {
           "description": "The request body.",
           "content": {
@@ -2366,7 +2051,7 @@
           "CopilotUser"
         ],
         "summary": "Update the user info, password not included.",
-        "description": " [AUTH REQUIRED: User]",
+        "description": "This API requires \"USER\" role and \"ALLOW\" inactivated account to access.",
         "requestBody": {
           "description": "The request body.",
           "content": {
@@ -2522,7 +2207,7 @@
           "CopilotUser"
         ],
         "summary": "Update the user password.",
-        "description": " [AUTH REQUIRED: User]",
+        "description": "This API requires \"USER\" role and \"ALLOW\" inactivated account to access.",
         "requestBody": {
           "description": "The request body.",
           "content": {
@@ -3577,7 +3262,7 @@
           "CopilotUser"
         ],
         "summary": "Request a new activation code.",
-        "description": " [AUTH REQUIRED: User]",
+        "description": "This API requires \"USER\" role and \"ALLOW\" inactivated account to access.",
         "requestBody": {
           "description": "The request body. Could be empty.",
           "content": {
@@ -3863,25 +3548,6 @@
         "additionalProperties": false,
         "description": "The DTO for the ActivateCopilotAccount command."
       },
-      "AddFavoriteCommand": {
-        "required": [
-          "favorite_list_id",
-          "operation_id"
-        ],
-        "type": "object",
-        "properties": {
-          "favorite_list_id": {
-            "type": "string",
-            "description": "The id of the favorite list."
-          },
-          "operation_id": {
-            "type": "string",
-            "description": "The operation id."
-          }
-        },
-        "additionalProperties": false,
-        "description": "The DTO for the AddFavorite command."
-      },
       "ChangeCopilotUserInfoCommand": {
         "required": [
           "user_id"
@@ -4000,68 +3666,6 @@
         "additionalProperties": false,
         "description": "The DTO for the CreateCopilotUser command."
       },
-      "CreateFavoriteListCommand": {
-        "required": [
-          "favorite_list_name"
-        ],
-        "type": "object",
-        "properties": {
-          "favorite_list_name": {
-            "type": "string",
-            "description": "The favorite list name, could be duplicated."
-          }
-        },
-        "additionalProperties": false,
-        "description": "The DTO for the CreateFavoriteList command."
-      },
-      "CreateFavoriteListDto": {
-        "required": [
-          "favorite_list_id",
-          "favorite_list_name"
-        ],
-        "type": "object",
-        "properties": {
-          "favorite_list_name": {
-            "type": "string",
-            "description": "The name of the favorite list."
-          },
-          "favorite_list_id": {
-            "type": "string",
-            "description": "The id of the favorite list. GUID format."
-          }
-        },
-        "additionalProperties": false,
-        "description": "The response to the MaaCopilotServer.Application.CopilotFavorite.Commands.CreateFavoriteList.CreateFavoriteListCommand."
-      },
-      "CreateFavoriteListDtoMaaApiResponseModel": {
-        "required": [
-          "data",
-          "message",
-          "status_code",
-          "trace_id"
-        ],
-        "type": "object",
-        "properties": {
-          "status_code": {
-            "type": "integer",
-            "description": "The status code.",
-            "format": "int32"
-          },
-          "message": {
-            "type": "string",
-            "description": "The message."
-          },
-          "trace_id": {
-            "type": "string",
-            "description": "The tracking ID."
-          },
-          "data": {
-            "$ref": "#/components/schemas/CreateFavoriteListDto"
-          }
-        },
-        "additionalProperties": false,
-        "description": "The maa server api response model."
-      },
       "DeleteCopilotOperationCommand": {
         "required": [
           "id"
@@ -4089,20 +3693,6 @@
         },
         "additionalProperties": false,
         "description": "The DTO for the DeleteCopilotUser command."
-      },
-      "DeleteFavoriteListCommand": {
-        "required": [
-          "favorite_list_id"
-        ],
-        "type": "object",
-        "properties": {
-          "favorite_list_id": {
-            "type": "string",
-            "description": "The ID of the favorite list to delete."
-          }
-        },
-        "additionalProperties": false,
-        "description": "The DTO for the DeleteFavoriteList command."
       },
       "EmptyObjectModel": {
         "type": "object",
@@ -4138,95 +3728,18 @@
         "additionalProperties": false,
         "description": "The maa server api response model."
       },
-      "FavoriteCopilotOperationsDto": {
-        "required": [
-          "deleted",
-          "detail",
-          "groups",
-          "id",
-          "minimum_required",
-          "operators",
-          "rating_ratio",
-          "stage_name",
-          "title",
-          "upload_time",
-          "uploader",
-          "views"
-        ],
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "The operation id."
-          },
-          "stage_name": {
-            "type": "string",
-            "description": "The stage name."
-          },
-          "minimum_required": {
-            "type": "string",
-            "description": "The minimum required version of MAA."
-          },
-          "upload_time": {
-            "type": "string",
-            "description": "The time when the operation was uploaded."
-          },
-          "title": {
-            "type": "string",
-            "description": "The name of the uploader."
-          },
-          "detail": {
-            "type": "string",
-            "description": "The title of the operation."
-          },
-          "uploader": {
-            "type": "string",
-            "description": "The detail of the operation."
-          },
-          "operators": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "Operators used."
-          },
-          "groups": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/MaaCopilotOperationGroupStore"
-            },
-            "description": "Groups used."
-          },
-          "views": {
-            "type": "integer",
-            "description": "The number of times of views.",
-            "format": "int32"
-          },
-          "rating_ratio": {
-            "type": "number",
-            "description": "The rating ratio.",
-            "format": "float"
-          },
-          "rating_type": {
-            "$ref": "#/components/schemas/OperationRatingType"
-          },
-          "deleted": {
-            "type": "boolean",
-            "description": "Whether this operation has been deleted or not."
-          }
-        },
-        "additionalProperties": false
-      },
       "GetCopilotOperationQueryDto": {
         "required": [
+          "available",
           "content",
           "detail",
           "groups",
+          "HotScore",
           "id",
+          "level",
           "minimum_required",
           "operators",
-          "rating_ratio",
-          "stage_name",
+          "rating_level",
           "title",
           "upload_time",
           "uploader",
@@ -4237,10 +3750,6 @@
           "id": {
             "type": "string",
             "description": "The operation id."
-          },
-          "stage_name": {
-            "type": "string",
-            "description": "The stage name."
           },
           "minimum_required": {
             "type": "string",
@@ -4281,10 +3790,22 @@
             "description": "The number of times of views.",
             "format": "int32"
           },
-          "rating_ratio": {
-            "type": "number",
-            "description": "The rating ratio.",
-            "format": "float"
+          "HotScore": {
+            "type": "integer",
+            "description": "The hot score.",
+            "format": "int64"
+          },
+          "level": {
+            "$ref": "#/components/schemas/GetLevelListDto"
+          },
+          "available": {
+            "type": "boolean",
+            "description": "The level this operation is made for is available in your region.",
+            "readOnly": true
+          },
+          "rating_level": {
+            "type": "string",
+            "description": "Current rating level, i18n string."
           },
           "rating_type": {
             "$ref": "#/components/schemas/OperationRatingType"
@@ -4329,7 +3850,6 @@
       "GetCopilotUserDto": {
         "required": [
           "activated",
-          "favorite_lists",
           "id",
           "role",
           "upload_count",
@@ -4352,13 +3872,6 @@
           "activated": {
             "type": "boolean",
             "description": "Account activation status."
-          },
-          "favorite_lists": {
-            "type": "object",
-            "additionalProperties": {
-              "type": "string"
-            },
-            "description": "User favorite lists."
           },
           "upload_count": {
             "type": "integer",
@@ -4393,57 +3906,6 @@
           },
           "data": {
             "$ref": "#/components/schemas/GetCopilotUserDto"
-          }
-        },
-        "additionalProperties": false,
-        "description": "The maa server api response model."
-      },
-      "GetCopilotUserFavoritesDto": {
-        "type": "object",
-        "properties": {
-          "favorite_list_id": {
-            "type": "string",
-            "nullable": true
-          },
-          "favorite_list_name": {
-            "type": "string",
-            "nullable": true
-          },
-          "favorite_items": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/FavoriteCopilotOperationsDto"
-            },
-            "nullable": true
-          }
-        },
-        "additionalProperties": false,
-        "description": "The response to the MaaCopilotServer.Application.CopilotFavorite.Queries.GetCopilotUserFavorites.GetCopilotUserFavoritesQuery."
-      },
-      "GetCopilotUserFavoritesDtoMaaApiResponseModel": {
-        "required": [
-          "data",
-          "message",
-          "status_code",
-          "trace_id"
-        ],
-        "type": "object",
-        "properties": {
-          "status_code": {
-            "type": "integer",
-            "description": "The status code.",
-            "format": "int32"
-          },
-          "message": {
-            "type": "string",
-            "description": "The message."
-          },
-          "trace_id": {
-            "type": "string",
-            "description": "The tracking ID."
-          },
-          "data": {
-            "$ref": "#/components/schemas/GetCopilotUserFavoritesDto"
           }
         },
         "additionalProperties": false,
@@ -4492,6 +3954,213 @@
           },
           "data": {
             "$ref": "#/components/schemas/GetCurrentVersionDto"
+          }
+        },
+        "additionalProperties": false,
+        "description": "The maa server api response model."
+      },
+      "GetDataVersionQueryDto": {
+        "required": [
+          "chinese",
+          "english",
+          "japanese",
+          "korean",
+          "level"
+        ],
+        "type": "object",
+        "properties": {
+          "level": {
+            "type": "string",
+            "description": "Level version."
+          },
+          "chinese": {
+            "type": "string",
+            "description": "Chinese (China) server data version."
+          },
+          "english": {
+            "type": "string",
+            "description": "English (Global) server data version."
+          },
+          "japanese": {
+            "type": "string",
+            "description": "Japanese (Japan) server data version."
+          },
+          "korean": {
+            "type": "string",
+            "description": "Korean (Korea) server data version."
+          }
+        },
+        "additionalProperties": false,
+        "description": "The response to the MaaCopilotServer.Application.Arknights.GetDataVersion.GetDataVersionQuery."
+      },
+      "GetDataVersionQueryDtoMaaApiResponseModel": {
+        "required": [
+          "data",
+          "message",
+          "status_code",
+          "trace_id"
+        ],
+        "type": "object",
+        "properties": {
+          "status_code": {
+            "type": "integer",
+            "description": "The status code.",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string",
+            "description": "The message."
+          },
+          "trace_id": {
+            "type": "string",
+            "description": "The tracking ID."
+          },
+          "data": {
+            "$ref": "#/components/schemas/GetDataVersionQueryDto"
+          }
+        },
+        "additionalProperties": false,
+        "description": "The maa server api response model."
+      },
+      "GetLevelListDto": {
+        "required": [
+          "cat_one",
+          "cat_three",
+          "cat_two",
+          "height",
+          "level_id",
+          "name",
+          "width"
+        ],
+        "type": "object",
+        "properties": {
+          "cat_one": {
+            "type": "string",
+            "description": "Category one of the level."
+          },
+          "cat_two": {
+            "type": "string",
+            "description": "Category two of the level."
+          },
+          "cat_three": {
+            "type": "string",
+            "description": "Category three of the level."
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the level."
+          },
+          "level_id": {
+            "type": "string",
+            "description": "The level id."
+          },
+          "width": {
+            "type": "integer",
+            "description": "The width of the level.",
+            "format": "int32"
+          },
+          "height": {
+            "type": "integer",
+            "description": "The height of the level.",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false,
+        "description": "The response of the get level list query."
+      },
+      "GetLevelListDtoListMaaApiResponseModel": {
+        "required": [
+          "data",
+          "message",
+          "status_code",
+          "trace_id"
+        ],
+        "type": "object",
+        "properties": {
+          "status_code": {
+            "type": "integer",
+            "description": "The status code.",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string",
+            "description": "The message."
+          },
+          "trace_id": {
+            "type": "string",
+            "description": "The tracking ID."
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GetLevelListDto"
+            },
+            "description": "The response data. \"{}\" means null. Because swagger could not set nullable type, we use \"{}\" instead.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "The maa server api response model."
+      },
+      "GetOperatorListDto": {
+        "required": [
+          "id",
+          "name",
+          "profession",
+          "star"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the operator."
+          },
+          "id": {
+            "type": "string",
+            "description": "The ID of the operator."
+          },
+          "profession": {
+            "type": "string",
+            "description": "The profession of the operator."
+          },
+          "star": {
+            "type": "integer",
+            "description": "The rarity of the operator.",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false,
+        "description": "The response of the MaaCopilotServer.Application.Arknights.GetOperatorList.GetOperatorListQuery."
+      },
+      "GetOperatorListDtoListMaaApiResponseModel": {
+        "required": [
+          "data",
+          "message",
+          "status_code",
+          "trace_id"
+        ],
+        "type": "object",
+        "properties": {
+          "status_code": {
+            "type": "integer",
+            "description": "The status code.",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string",
+            "description": "The message."
+          },
+          "trace_id": {
+            "type": "string",
+            "description": "The tracking ID."
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GetOperatorListDto"
+            },
+            "description": "The response data. \"{}\" means null. Because swagger could not set nullable type, we use \"{}\" instead.",
+            "nullable": true
           }
         },
         "additionalProperties": false,
@@ -4586,7 +4255,7 @@
           }
         },
         "additionalProperties": false,
-        "description": "A DTO style class for MaaCopilotServer.Application.Common.Models.MaaCopilotOperationGroup."
+        "description": "A DTO style class for MaaCopilotServer.Application.Common.Models.MaaCopilotOperationGroupStore."
       },
       "OperationRatingType": {
         "enum": [
@@ -4618,13 +4287,15 @@
       },
       "QueryCopilotOperationsQueryDto": {
         "required": [
+          "available",
           "detail",
           "groups",
+          "HotScore",
           "id",
+          "level",
           "minimum_required",
           "operators",
-          "rating_ratio",
-          "stage_name",
+          "rating_level",
           "title",
           "upload_time",
           "uploader",
@@ -4635,10 +4306,6 @@
           "id": {
             "type": "string",
             "description": "The operation id."
-          },
-          "stage_name": {
-            "type": "string",
-            "description": "The stage name."
           },
           "minimum_required": {
             "type": "string",
@@ -4679,10 +4346,22 @@
             "description": "The number of times of views.",
             "format": "int32"
           },
-          "rating_ratio": {
-            "type": "number",
-            "description": "The rating ratio.",
-            "format": "float"
+          "HotScore": {
+            "type": "integer",
+            "description": "The hot score.",
+            "format": "int64"
+          },
+          "level": {
+            "$ref": "#/components/schemas/GetLevelListDto"
+          },
+          "available": {
+            "type": "boolean",
+            "description": "The level this operation is made for is available in your region.",
+            "readOnly": true
+          },
+          "rating_level": {
+            "type": "string",
+            "description": "Current rating level, i18n string."
           },
           "rating_type": {
             "$ref": "#/components/schemas/OperationRatingType"
@@ -4850,59 +4529,6 @@
         "additionalProperties": false,
         "description": "The DTO for the RatingCopilotOperation command."
       },
-      "RatingCopilotOperationDto": {
-        "required": [
-          "id",
-          "rating",
-          "rating_ratio"
-        ],
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "The id of the operation."
-          },
-          "rating": {
-            "$ref": "#/components/schemas/OperationRatingType"
-          },
-          "rating_ratio": {
-            "type": "number",
-            "description": "The current ratio of the operation. If the operation is not rated, the value is -1. Only 4 digits at max will be kept.",
-            "format": "float"
-          }
-        },
-        "additionalProperties": false,
-        "description": "The response to a MaaCopilotServer.Application.CopilotOperation.Commands.RatingCopilotOperation.RatingCopilotOperationCommand."
-      },
-      "RatingCopilotOperationDtoMaaApiResponseModel": {
-        "required": [
-          "data",
-          "message",
-          "status_code",
-          "trace_id"
-        ],
-        "type": "object",
-        "properties": {
-          "status_code": {
-            "type": "integer",
-            "description": "The status code.",
-            "format": "int32"
-          },
-          "message": {
-            "type": "string",
-            "description": "The message."
-          },
-          "trace_id": {
-            "type": "string",
-            "description": "The tracking ID."
-          },
-          "data": {
-            "$ref": "#/components/schemas/RatingCopilotOperationDto"
-          }
-        },
-        "additionalProperties": false,
-        "description": "The maa server api response model."
-      },
       "RegisterCopilotAccountCommand": {
         "required": [
           "email",
@@ -4926,25 +4552,6 @@
         },
         "additionalProperties": false,
         "description": "The DTO for the RegisterCopilotAccount command."
-      },
-      "RemoveFavoriteCommand": {
-        "required": [
-          "favorite_list_id",
-          "operation_id"
-        ],
-        "type": "object",
-        "properties": {
-          "favorite_list_id": {
-            "type": "string",
-            "description": "The id of the favorite list."
-          },
-          "operation_id": {
-            "type": "string",
-            "description": "The id of the operation to remove."
-          }
-        },
-        "additionalProperties": false,
-        "description": "The DTO for the RemoveFavorite command."
       },
       "RequestActivationTokenCommand": {
         "type": "object",

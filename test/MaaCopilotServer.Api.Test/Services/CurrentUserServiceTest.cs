@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Security.Claims;
 using MaaCopilotServer.Api.Services;
@@ -13,9 +14,10 @@ using Microsoft.Extensions.Configuration;
 namespace MaaCopilotServer.Api.Test.Services;
 
 /// <summary>
-///     Tests for <see cref="CurrentUserService" />.
+///     Tests <see cref="CurrentUserService" />.
 /// </summary>
 [TestClass]
+[ExcludeFromCodeCoverage]
 public class CurrentUserServiceTest
 {
     /// <summary>
@@ -74,7 +76,7 @@ public class CurrentUserServiceTest
     ///     Tests <see cref="CurrentUserService.GetUserIdentity" /> with null HTTP context.
     /// </summary>
     [TestMethod]
-    public void TestGetUserIdentity_NullHttpContext()
+    public void TestGetUserIdentityNullHttpContext()
     {
         var httpContextAccessor = new Mock<IHttpContextAccessor>();
         httpContextAccessor.Setup(x => x.HttpContext).Returns((HttpContext?)null);
@@ -122,7 +124,7 @@ public class CurrentUserServiceTest
     /// Tests <see cref="CurrentUserService.GetUser"/> with invalid identity.
     /// </summary>
     [TestMethod]
-    public void TestGetUser_InvalidIdentity()
+    public void TestGetUserInvalidIdentity()
     {
         var httpContextAccessor = new Mock<IHttpContextAccessor>();
         httpContextAccessor.Setup(x => x.HttpContext).Returns(() =>
@@ -176,7 +178,7 @@ public class CurrentUserServiceTest
 
             return httpContext.Object;
         });
-        var testConfiguration = new Dictionary<string, string> { { "Switches:Apm", apmSwitch.ToString().ToLower() } };
+        var testConfiguration = new Dictionary<string, string> { { "Switches:Apm", apmSwitch.ToString().ToLowerInvariant() } };
         var configuration = new ConfigurationBuilder()
             .AddInMemoryCollection(testConfiguration)
             .Build();
@@ -193,7 +195,7 @@ public class CurrentUserServiceTest
     [DataTestMethod]
     [DataRow(false)]
     [DataRow(true)]
-    public void TestGetTrackingId_WithNullApmTraceId(bool apmSwitch)
+    public void TestGetTrackingIdWithNullApmTraceId(bool apmSwitch)
     {
         var httpContextAccessor = new Mock<IHttpContextAccessor>();
         httpContextAccessor.Setup(x => x.HttpContext).Returns(() =>
@@ -209,7 +211,7 @@ public class CurrentUserServiceTest
         });
         var testConfiguration = new Dictionary<string, string>
         {
-            { "Switches:Apm", apmSwitch.ToString().ToLower() }
+            { "Switches:Apm", apmSwitch.ToString().ToLowerInvariant() }
         };
         var configuration = new ConfigurationBuilder()
             .AddInMemoryCollection(testConfiguration)
@@ -227,12 +229,12 @@ public class CurrentUserServiceTest
     [DataTestMethod]
     [DataRow(false)]
     [DataRow(true)]
-    public void TestGetTrackingId_NullHttpContext(bool apmSwitch)
+    public void TestGetTrackingIdNullHttpContext(bool apmSwitch)
     {
         var httpContextAccessor = new Mock<IHttpContextAccessor>();
         var testConfiguration = new Dictionary<string, string>
         {
-            { "Switches:Apm", apmSwitch.ToString().ToLower() }
+            { "Switches:Apm", apmSwitch.ToString().ToLowerInvariant() }
         };
         var configuration = new ConfigurationBuilder()
             .AddInMemoryCollection(testConfiguration)

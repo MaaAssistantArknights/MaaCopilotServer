@@ -1,0 +1,41 @@
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>1.3</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="OverwhelminglyPositive" xml:space="preserve">
+    <value>Overwhelmingly Positive</value>
+  </data>
+  <data name="OverwhelminglyNegative" xml:space="preserve">
+    <value>Overwhelmingly Negtive</value>
+  </data>
+  <data name="Positive" xml:space="preserve">
+    <value>Positive</value>
+  </data>
+  <data name="Mixed" xml:space="preserve">
+    <value>Mixed</value>
+  </data>
+  <data name="MostlyNegative" xml:space="preserve">
+    <value>Mostly Negative</value>
+  </data>
+  <data name="MostlyPositive" xml:space="preserve">
+    <value>Mostly Positive</value>
+  </data>
+  <data name="Negative" xml:space="preserve">
+    <value>Negative</value>
+  </data>
+  <data name="VeryNegative" xml:space="preserve">
+    <value>Very Negative</value>
+  </data>
+  <data name="VeryPositive" xml:space="preserve">
+    <value>Very Positive</value>
+  </data>
+</root>
