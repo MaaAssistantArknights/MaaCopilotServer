@@ -6,7 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Api.Controllers;
 using MaaCopilotServer.Api.Test.TestHelpers;
 
-namespace MaaCopilotServer.Api.Test.Properties;
+namespace MaaCopilotServer.Api.Test.Controllers;
 
 /// <summary>
 ///     Tests <see cref="CopilotOperationController" />.
