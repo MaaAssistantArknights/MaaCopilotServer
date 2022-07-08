@@ -6,6 +6,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using MaaCopilotServer.Application.Common.Extensions;
 using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Domain.Options;
 using Microsoft.Extensions.Options;
@@ -53,16 +54,24 @@ public class SecretService : ISecretService
     /// <inheritdoc />
     public (string, DateTimeOffset) GenerateToken(Guid resourceId, TimeSpan validTimeSpan)
     {
-        var expireTime = DateTimeOffset.UtcNow.AddMinutes(validTimeSpan.TotalMinutes);
-        var eb = (ReadOnlySpan<byte>)BitConverter.GetBytes(expireTime.Ticks).AsSpan();
-        var rb = (ReadOnlySpan<byte>)resourceId.ToByteArray().AsSpan();
-        var span = new Span<byte>(new byte[eb.Length + rb.Length]);
-        eb.CopyTo(span);
-        rb.CopyTo(span[eb.Length..]);
-        var outputSpan = new Span<byte>(new byte[16]);
-        MD5.HashData(span, outputSpan);
-        var token = Convert.ToBase64String(outputSpan);
-        return (token, expireTime);
+        var validBefore = DateTimeOffset.UtcNow.Add(validTimeSpan);
+
+        var str = $"{resourceId}{validBefore.ToIsoString()}";
+        var md5 = MD5.Create();
+        var buff = Encoding.UTF8.GetBytes(str);
+        var hashedBytes = md5.ComputeHash(buff);
+        var hash = BitConverter.ToString(hashedBytes).Replace("-", string.Empty).ToUpper().AsSpan();
+
+        // ReSharper disable once ReplaceSliceWithRangeIndexer
+        var sec1 = hash.Slice(0, 6);
+        var sec2 = hash.Slice(6, 10);
+        var sec3 = hash.Slice(16, 4);
+        var sec4 = hash.Slice(20, 8);
+        var sec5 = hash.Slice(28, 4);
+
+        var code = $"{sec1}-{sec2}-{sec3}-{sec4}-{sec5}";
+
+        return (code, validBefore);
     }
 
     /// <inheritdoc />
