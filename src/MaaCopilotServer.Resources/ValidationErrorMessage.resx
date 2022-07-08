@@ -23,11 +23,11 @@
       PublicKeyToken=b77a5c561934e089
     </value>
   </resheader>
-  <data name="PageIsLessThenOne" xml:space="preserve">
-    <value>页码不可小于 1</value>
+  <data name="PageOutOfRange" xml:space="preserve">
+    <value>页码值越界</value>
   </data>
-  <data name="LimitIsLessThenOne" xml:space="preserve">
-    <value>每页数量不可小于 1</value>
+  <data name="LimitOutOfRange" xml:space="preserve">
+    <value>每页数量值越界</value>
   </data>
   <data name="UploaderIdIsInvalid" xml:space="preserve">
     <value>UploaderId 必须是有效的 Guid 或者 me</value>

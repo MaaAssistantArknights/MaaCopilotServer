@@ -27,14 +27,14 @@
   <data name="EmailIsInvalid" xml:space="preserve">
     <value>Invalid email address</value>
   </data>
-  <data name="LimitIsLessThenOne" xml:space="preserve">
-    <value>Limit can not be less then 1</value>
+  <data name="LimitOutOfRange" xml:space="preserve">
+    <value>Limit out of range</value>
   </data>
   <data name="LoginValidationFail" xml:space="preserve">
     <value>Email or Password can not be empty</value>
   </data>
-  <data name="PageIsLessThenOne" xml:space="preserve">
-    <value>Page can not be less then 1</value>
+  <data name="PageOutOfRange" xml:space="preserve">
+    <value>Page out of range</value>
   </data>
   <data name="PasswordIsInvalid" xml:space="preserve">
     <value>Invalid password, should have 8-32 characters</value>
