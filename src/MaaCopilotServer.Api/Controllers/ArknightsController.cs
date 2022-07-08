@@ -47,7 +47,7 @@ public class ArknightsController : MaaControllerBase
     }
 
     /// <summary>
-    ///     Update a copilot operation.
+    ///     Get arknights level data.
     /// </summary>
     /// <param name="query">The query params.</param>
     /// <response code="200">The list of levels</response>
@@ -59,7 +59,7 @@ public class ArknightsController : MaaControllerBase
     }
 
     /// <summary>
-    ///     Update a copilot operation.
+    ///     Get arknights operator data.
     /// </summary>
     /// <param name="query">The query params.</param>
     /// <response code="200">The list of operators</response>
