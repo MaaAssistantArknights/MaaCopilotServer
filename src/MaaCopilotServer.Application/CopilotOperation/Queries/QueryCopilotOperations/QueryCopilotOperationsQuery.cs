@@ -234,7 +234,9 @@ public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOp
             "hot" => string.IsNullOrEmpty(request.Desc)
                 ? queryable.OrderBy(x => x.HotScore).ThenBy(x => x.Id)
                 : queryable.OrderByDescending(x => x.HotScore).ThenByDescending(x => x.Id),
-            _ => queryable
+            _ => string.IsNullOrEmpty(request.Desc)
+                ? queryable.OrderBy(x => x.Id)
+                : queryable.OrderByDescending(x => x.Id)
         };
 
         // Build full query
