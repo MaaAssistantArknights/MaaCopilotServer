@@ -3,7 +3,6 @@
 // Licensed under the AGPL-3.0 license.
 
 using System.Text.Json;
-using Json.Schema;
 using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Application.Common.Models;
 using MaaCopilotServer.Application.Common.Operation.Model;
@@ -12,6 +11,7 @@ using MaaCopilotServer.Domain.Options;
 using MaaCopilotServer.Resources;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using NJsonSchema;
 
 namespace MaaCopilotServer.Infrastructure.Services;
 
@@ -30,7 +30,7 @@ public class OperationProcessService : IOperationProcessService
         _validationErrorMessage = validationErrorMessage;
 
         var schemaFile = Path.Combine(applicationOption.Value.AssemblyPath, SystemConstants.MaaCopilotSchemaPath);
-        _schema = JsonSchema.FromFile(schemaFile);
+        _schema = JsonSchema.FromFileAsync(schemaFile).GetAwaiter().GetResult();
     }
 
     public async Task<OperationValidationResult> Validate(string? operation)
@@ -47,9 +47,9 @@ public class OperationProcessService : IOperationProcessService
         }
 
         var schemaValidationResult = _schema.Validate(operation);
-        if (schemaValidationResult.IsValid is false)
+        if (schemaValidationResult.Any())
         {
-            var message = _validationErrorMessage.CopilotOperationJsonIsInvalid! + schemaValidationResult.Message;
+            var message = string.Join(";", schemaValidationResult);
             return new OperationValidationResult
             {
                 IsValid = false,
@@ -86,17 +86,6 @@ public class OperationProcessService : IOperationProcessService
 
         foreach (var action in operationObj.Actions)
         {
-            if (failed)
-            {
-                return new OperationValidationResult
-                {
-                    IsValid = false,
-                    Operation = null,
-                    ErrorMessages = _validationErrorMessage.CopilotOperationJsonIsInvalid!,
-                    ArkLevel = null
-                };
-            }
-
             var type = GetTypeUnifiedString(action.Type);
 
             failed = type switch
@@ -115,6 +104,17 @@ public class OperationProcessService : IOperationProcessService
                 "skilldaemon" => failed,
                 _ => true
             };
+
+            if (failed)
+            {
+                return new OperationValidationResult
+                {
+                    IsValid = false,
+                    Operation = null,
+                    ErrorMessages = _validationErrorMessage.CopilotOperationJsonIsInvalid!,
+                    ArkLevel = null
+                };
+            }
         }
 
         return new OperationValidationResult
@@ -138,7 +138,7 @@ public class OperationProcessService : IOperationProcessService
 
     private static bool DirectionIsValid(string? direction) => direction?.ToLower() switch
     {
-        "Left" or "Right" or "Up" or "Down" or "None" => true,
+        "left" or "right" or "up" or "down" or "none" => true,
         "左" or "右" or "上" or "下" or "无" => true,
         _ => false
     };
