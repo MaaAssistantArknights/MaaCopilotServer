@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Api.Constants;
 using MaaCopilotServer.Application.Common.Extensions;
 
@@ -10,6 +11,7 @@ namespace MaaCopilotServer.Api.Helper;
 /// <summary>
 ///     The helper class of database connection.
 /// </summary>
+[ExcludeFromCodeCoverage]
 public static class InitializeHelper
 {
     /// <summary>
