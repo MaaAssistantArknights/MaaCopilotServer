@@ -10,9 +10,9 @@ public class QueryCopilotUserQueryValidator : AbstractValidator<QueryCopilotUser
     {
         RuleFor(x => x.Page)
             .GreaterThanOrEqualTo(1)
-            .WithMessage(errorMessage.PageIsLessThenOne);
+            .WithMessage(errorMessage.PageOutOfRange);
         RuleFor(x => x.Limit)
-            .GreaterThanOrEqualTo(1)
-            .WithMessage(errorMessage.LimitIsLessThenOne);
+            .GreaterThanOrEqualTo(1).LessThanOrEqualTo(100)
+            .WithMessage(errorMessage.LimitOutOfRange);
     }
 }

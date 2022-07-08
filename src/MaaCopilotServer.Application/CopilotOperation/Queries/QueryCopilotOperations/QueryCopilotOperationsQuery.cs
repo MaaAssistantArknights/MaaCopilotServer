@@ -228,19 +228,16 @@ public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOp
         {
             // if views is set, order by views
             "views" => string.IsNullOrEmpty(request.Desc)
-                ? queryable.OrderBy(x => x.ViewCounts)
-                : queryable.OrderByDescending(x => x.ViewCounts),
+                ? queryable.OrderBy(x => x.ViewCounts).ThenBy(x => x.Id)
+                : queryable.OrderByDescending(x => x.ViewCounts).ThenByDescending(x => x.Id),
             // if rating is set, order by rating
             "hot" => string.IsNullOrEmpty(request.Desc)
-                ? queryable.OrderBy(x => x.HotScore)
-                : queryable.OrderByDescending(x => x.HotScore),
-            _ => queryable
+                ? queryable.OrderBy(x => x.HotScore).ThenBy(x => x.Id)
+                : queryable.OrderByDescending(x => x.HotScore).ThenByDescending(x => x.Id),
+            _ => string.IsNullOrEmpty(request.Desc)
+                ? queryable.OrderBy(x => x.Id)
+                : queryable.OrderByDescending(x => x.Id)
         };
-
-        // Always order by id at the end
-        queryable = string.IsNullOrEmpty(request.Desc)
-            ? queryable.OrderBy(x => x.Id)
-            : queryable.OrderByDescending(x => x.Id);
 
         // Build full query
         queryable = queryable.Skip(skip).Take(limit);

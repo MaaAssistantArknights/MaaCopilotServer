@@ -34,6 +34,6 @@ public static class NullableExtension
         }
 
         var typeName = typeof(T).FullName ?? "UnknownType";
-        throw new ArgumentNullException(paramName, $"从 {memberName} 请求确认的 {typeName} {paramName} 为 Null");
+        throw new ArgumentNullException(paramName, $@"Arg {paramName} with type {typeName} from {memberName} is Null");
     }
 }

@@ -17,6 +17,7 @@ namespace MaaCopilotServer.Application.CopilotOperation.Queries.QueryCopilotOper
 public class QueryCopilotOperationsQueryDto
 {
 #pragma warning disable CS8618
+    // ReSharper disable once EmptyConstructor
     public QueryCopilotOperationsQueryDto() { }
 #pragma warning restore CS8618
 

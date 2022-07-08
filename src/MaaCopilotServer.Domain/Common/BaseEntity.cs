@@ -77,7 +77,6 @@ public abstract class BaseEntity
         return $"{GetType().Name} [Id ={EntityId}]";
     }
 
-    /// <inheritdoc/>
     public static bool operator ==(BaseEntity? a, BaseEntity? b)
     {
         if (a is null && b is null)
@@ -93,7 +92,6 @@ public abstract class BaseEntity
         return a.Equals(b);
     }
 
-    /// <inheritdoc/>
     public static bool operator !=(BaseEntity? a, BaseEntity? b)
     {
         return !(a == b);

@@ -6,8 +6,10 @@ using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Application.CopilotOperation.Commands.DeleteCopilotOperation;
 using MaaCopilotServer.Application.Test.TestHelpers;
+using MaaCopilotServer.Domain.Entities;
 using MaaCopilotServer.Domain.Enums;
 using MaaCopilotServer.Domain.Options;
+using MaaCopilotServer.GameData.Entity;
 using MaaCopilotServer.Infrastructure.Services;
 using MaaCopilotServer.Resources;
 using Microsoft.AspNetCore.Http;
@@ -36,7 +38,10 @@ public class DeleteCopilotOperationCommandTest
     public void TestHandleSameUser()
     {
         var user = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, UserRole.User, Guid.Empty);
-        var entity = new Domain.Entities.CopilotOperation(1, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, user, Guid.Empty, new List<string>(), new List<string>());
+        var entity = new Domain.Entities.CopilotOperation(0, string.Empty, string.Empty,
+            string.Empty, string.Empty, user, Guid.Empty,
+            new ArkLevelData(new ArkLevelEntityGlobal()),
+            new List<string>(), new List<string>());
 
         var result = new HandlerTest()
             .SetupDatabase(db => db.CopilotUsers.Add(user))
@@ -68,7 +73,10 @@ public class DeleteCopilotOperationCommandTest
     {
         var user = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, requesterRole, Guid.Empty);
         var author = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, authorRole, Guid.Empty);
-        var entity = new Domain.Entities.CopilotOperation(1, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, author, Guid.Empty, new List<string>(), new List<string>());
+        var entity = new Domain.Entities.CopilotOperation(0, string.Empty, string.Empty,
+            string.Empty, string.Empty, author, Guid.Empty,
+            new ArkLevelData(new ArkLevelEntityGlobal()),
+            new List<string>(), new List<string>());
 
         var result = new HandlerTest()
             .SetupDatabase(db => db.CopilotUsers.Add(user))

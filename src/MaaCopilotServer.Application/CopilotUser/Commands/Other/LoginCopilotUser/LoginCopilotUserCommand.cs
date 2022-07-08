@@ -35,19 +35,16 @@ public record LoginCopilotUserCommand : IRequest<MaaApiResponse>
 public class LoginCopilotUserCommandHandler : IRequestHandler<LoginCopilotUserCommand, MaaApiResponse>
 {
     private readonly ApiErrorMessage _apiErrorMessage;
-    private readonly ICurrentUserService _currentUserService;
     private readonly IMaaCopilotDbContext _dbContext;
     private readonly ISecretService _secretService;
 
     public LoginCopilotUserCommandHandler(
         IMaaCopilotDbContext dbContext,
         ISecretService secretService,
-        ICurrentUserService currentUserService,
         ApiErrorMessage apiErrorMessage)
     {
         _dbContext = dbContext;
         _secretService = secretService;
-        _currentUserService = currentUserService;
         _apiErrorMessage = apiErrorMessage;
     }
 

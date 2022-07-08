@@ -2,7 +2,6 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
-using System.ComponentModel.DataAnnotations;
 using MaaCopilotServer.Application.Common.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -35,15 +34,12 @@ public record QueryCopilotUserQuery : IRequest<MaaApiResponse>
 
 public class QueryCopilotUserQueryHandler : IRequestHandler<QueryCopilotUserQuery, MaaApiResponse>
 {
-    private readonly ICurrentUserService _currentUserService;
     private readonly IMaaCopilotDbContext _dbContext;
 
     public QueryCopilotUserQueryHandler(
-        IMaaCopilotDbContext dbContext,
-        ICurrentUserService currentUserService)
+        IMaaCopilotDbContext dbContext)
     {
         _dbContext = dbContext;
-        _currentUserService = currentUserService;
     }
 
     public async Task<MaaApiResponse> Handle(QueryCopilotUserQuery request,

@@ -3,7 +3,6 @@
 // Licensed under the AGPL-3.0 license.
 
 using System.Globalization;
-using Elastic.Apm.Api;
 using MaaCopilotServer.Resources;
 
 namespace MaaCopilotServer.Api.Middleware;

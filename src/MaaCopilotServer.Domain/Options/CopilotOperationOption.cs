@@ -10,18 +10,6 @@ namespace MaaCopilotServer.Domain.Options;
 [OptionName("CopilotOperation")]
 public class CopilotOperationOption
 {
-    /// <summary>
-    ///     Require title filed in copilot operation is not null or empty.
-    /// </summary>
-    [JsonPropertyName("RequireTitle")]
-    public bool RequireTitle { get; set; } = false;
-
-    /// <summary>
-    ///     Require details filed in copilot operation is not null or empty.
-    /// </summary>
-    [JsonPropertyName("RequireDetails")]
-    public bool RequireDetails { get; set; } = false;
-
     // The hot score equation is:
     // 
     // HotScore =

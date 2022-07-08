@@ -35,8 +35,8 @@
   },
   "required": [
     "stage_name",
-    "doc",
-    "opers"
+    "minimum_required",
+    "doc"
   ],
   "definitions": {
     "stage_name": {
