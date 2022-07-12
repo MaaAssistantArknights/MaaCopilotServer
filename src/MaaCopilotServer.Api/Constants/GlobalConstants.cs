@@ -44,6 +44,11 @@ public static class GlobalConstants
             : new DirectoryInfo(MaaDataDirectory).EnsureCreated().FullName;
 
     /// <summary>
+    /// The static file directory.
+    /// </summary>
+    public static string StaticDirectory => new DirectoryInfo(AssemblyDirectory.CombinePath("static")).FullName;
+
+    /// <summary>
     /// The ASP.NET Core environment.
     /// </summary>
     private static string AspNetCoreEnvironment =>

@@ -6,6 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 using Elastic.Apm.Elasticsearch;
 using Elastic.Apm.EntityFrameworkCore;
 using Elastic.Apm.Extensions.Hosting;
+using MaaCopilotServer.Api.Constants;
 using MaaCopilotServer.Api.Formatter;
 using MaaCopilotServer.Api.Helper;
 using MaaCopilotServer.Api.Middleware;
@@ -15,6 +16,9 @@ using MaaCopilotServer.Application.Common.Extensions;
 using MaaCopilotServer.Domain.Options;
 using MaaCopilotServer.Infrastructure;
 using MaaCopilotServer.Resources;
+using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.Extensions.FileProviders;
 using Serilog;
 using Serilog.Debugging;
 
@@ -80,6 +84,17 @@ public static class Program
         app.UseRequestCulture();
         app.UseSystemStatus();
         app.UseAuthentication();
+
+        var fileMimeMapping = new Dictionary<string, string> { { ".json", "application/json" } };
+        app.UseStaticFiles(new StaticFileOptions
+        {
+            ContentTypeProvider = new FileExtensionContentTypeProvider(fileMimeMapping),
+            FileProvider = new PhysicalFileProvider(GlobalConstants.StaticDirectory),
+            HttpsCompression = HttpsCompressionMode.Compress,
+            RequestPath = "/static",
+            ServeUnknownFileTypes = false
+        });
+
         app.MapControllers();
 
         // Start application.
