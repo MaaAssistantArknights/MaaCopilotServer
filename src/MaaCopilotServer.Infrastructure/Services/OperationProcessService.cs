@@ -100,7 +100,7 @@ public class OperationProcessService : IOperationProcessService
                 "speedup" => failed,
                 "bullettime" => failed,
                 "skillusage" => action.SkillUsage is null,
-                "output" => failed,
+                "output" => action.Doc is null,
                 "skilldaemon" => failed,
                 _ => true
             };
