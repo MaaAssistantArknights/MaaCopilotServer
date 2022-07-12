@@ -14,7 +14,7 @@ namespace MaaCopilotServer.Application.Arknights.GetLevelList;
 public record GetLevelListQuery : IRequest<MaaApiResponse>
 {
     /// <summary>
-    ///     The server language. Could be (ignore case) Chinese, English, Japanese, Korean.
+    ///     The server language. Could be (ignore case) Chinese (cn), English (en), Japanese (ja), Korean (ko).
     /// </summary>
     [FromQuery(Name = "server")]
     public string Server { get; set; } = string.Empty;
@@ -37,28 +37,28 @@ public class GetLevelListQueryHandler : IRequestHandler<GetLevelListQuery, MaaAp
 
         switch (server)
         {
-            case "chinese":
+            case "chinese" or "cn":
                 query = query.Where(x =>
                     string.IsNullOrEmpty(x.NameCn) == false &&
                     string.IsNullOrEmpty(x.CatOneCn) == false &&
                     string.IsNullOrEmpty(x.CatTwoCn) == false &&
                     string.IsNullOrEmpty(x.CatThreeCn) == false);
                 break;
-            case "english":
+            case "english" or "en":
                 query = query.Where(x =>
                     string.IsNullOrEmpty(x.NameEn) == false &&
                     string.IsNullOrEmpty(x.CatOneEn) == false &&
                     string.IsNullOrEmpty(x.CatTwoEn) == false &&
                     string.IsNullOrEmpty(x.CatThreeEn) == false);
                 break;
-            case "japanese":
+            case "japanese" or "ja":
                 query = query.Where(x =>
                     string.IsNullOrEmpty(x.NameJp) == false &&
                     string.IsNullOrEmpty(x.CatOneJp) == false &&
                     string.IsNullOrEmpty(x.CatTwoJp) == false &&
                     string.IsNullOrEmpty(x.CatThreeJp) == false);
                 break;
-            case "korean":
+            case "korean" or "ko":
                 query = query.Where(x =>
                     string.IsNullOrEmpty(x.NameKo) == false &&
                     string.IsNullOrEmpty(x.CatOneKo) == false &&

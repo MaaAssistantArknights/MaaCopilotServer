@@ -15,7 +15,7 @@ namespace MaaCopilotServer.Application.Arknights.GetOperatorList;
 public record GetOperatorListQuery : IRequest<MaaApiResponse>
 {
     /// <summary>
-    ///     The server language. Could be (ignore case) Chinese, English, Japanese, Korean.
+    ///     The server language. Could be (ignore case) Chinese (cn), English (en), Japanese (ja), Korean (ko).
     /// </summary>
     [FromQuery(Name = "server")]
     public string Server { get; set; } = string.Empty;
@@ -77,22 +77,22 @@ public class GetOperatorListQueryHandler : IRequestHandler<GetOperatorListQuery,
 
         switch (server)
         {
-            case "chinese":
+            case "chinese" or "cn":
                 query = query.Where(x =>
                     string.IsNullOrEmpty(x.NameCn) == false);
                 mapper = _mapCn;
                 break;
-            case "english":
+            case "english" or "en":
                 query = query.Where(x =>
                     string.IsNullOrEmpty(x.NameEn) == false);
                 mapper = _mapEn;
                 break;
-            case "japanese":
+            case "japanese" or "ja":
                 query = query.Where(x =>
                     string.IsNullOrEmpty(x.NameJp) == false);
                 mapper = _mapJp;
                 break;
-            case "korean":
+            case "korean" or "ko":
                 query = query.Where(x =>
                     string.IsNullOrEmpty(x.NameKo) == false);
                 mapper = _mapKo;
