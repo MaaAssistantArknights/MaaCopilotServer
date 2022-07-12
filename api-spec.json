@@ -154,7 +154,7 @@
           {
             "name": "server",
             "in": "query",
-            "description": "The server language. Could be (ignore case) Chinese, English, Japanese, Korean.",
+            "description": "The server language. Could be (ignore case) Chinese (cn), English (en), Japanese (ja), Korean (ko).",
             "schema": {
               "type": "string"
             }
@@ -294,7 +294,7 @@
           {
             "name": "server",
             "in": "query",
-            "description": "The server language. Could be (ignore case) Chinese, English, Japanese, Korean.",
+            "description": "The server language. Could be (ignore case) Chinese (cn), English (en), Japanese (ja), Korean (ko).",
             "schema": {
               "type": "string"
             }
