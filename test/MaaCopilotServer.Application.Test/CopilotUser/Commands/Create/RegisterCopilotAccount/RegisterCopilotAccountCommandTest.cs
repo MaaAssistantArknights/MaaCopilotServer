@@ -6,6 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Application.CopilotUser.Commands.RegisterCopilotAccount;
 using MaaCopilotServer.Application.Test.TestExtensions;
 using MaaCopilotServer.Application.Test.TestHelpers;
+using MaaCopilotServer.Test.TestEntities;
 using Microsoft.AspNetCore.Http;
 
 namespace MaaCopilotServer.Application.Test.CopilotUser.Commands.Create.RegisterCopilotAccount;
@@ -24,7 +25,7 @@ public class RegisterCopilotAccountCommandHandlerTest
     [TestMethod]
     public void TestHandleEmailInUse()
     {
-        var user = new Domain.Entities.CopilotUser(HandlerTest.TestEmail, string.Empty, string.Empty, Domain.Enums.UserRole.User, null);
+        var user = new CopilotUserFactory().Build();
 
         var test = new HandlerTest();
         test.DbContext.Setup(db => db.CopilotUsers.Add(user));

@@ -6,6 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Application.CopilotUser.Commands.LoginCopilotUser;
 using MaaCopilotServer.Application.Test.TestExtensions;
 using MaaCopilotServer.Application.Test.TestHelpers;
+using MaaCopilotServer.Test.TestEntities;
 using Microsoft.AspNetCore.Http;
 
 namespace MaaCopilotServer.Application.Test.CopilotUser.Commands.Other.LoginCopilotUser;
@@ -42,7 +43,7 @@ public class LoginCopilotUserCommandHandlerTest
     [TestMethod]
     public void TestHandleWrongPassword()
     {
-        var user = new Domain.Entities.CopilotUser(HandlerTest.TestEmail, string.Empty, string.Empty, Domain.Enums.UserRole.User, null);
+        var user = new CopilotUserFactory().Build();
 
         var test = new HandlerTest();
         test.DbContext.Setup(db => db.CopilotUsers.Add(user));
@@ -63,7 +64,7 @@ public class LoginCopilotUserCommandHandlerTest
     [TestMethod]
     public void TestHandle()
     {
-        var user = new Domain.Entities.CopilotUser(HandlerTest.TestEmail, HandlerTest.TestHashedPassword, string.Empty, Domain.Enums.UserRole.User, null);
+        var user = new CopilotUserFactory().Build();
 
         var test = new HandlerTest();
         test.DbContext.Setup(db => db.CopilotUsers.Add(user));

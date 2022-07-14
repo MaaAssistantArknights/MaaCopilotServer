@@ -8,7 +8,7 @@ using MaaCopilotServer.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
-namespace MaaCopilotServer.Test.TestHelpers;
+namespace MaaCopilotServer.Test;
 
 /// <summary>
 ///     Create a new in-memory database for each test.

@@ -6,6 +6,8 @@ using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Application.CopilotUser.Commands.ChangeCopilotUserInfo;
 using MaaCopilotServer.Application.Test.TestExtensions;
 using MaaCopilotServer.Application.Test.TestHelpers;
+using MaaCopilotServer.Domain.Enums;
+using MaaCopilotServer.Test.TestEntities;
 using Microsoft.AspNetCore.Http;
 
 namespace MaaCopilotServer.Application.Test.CopilotUser.Commands.Change.ChangeCopilotUserInfo;
@@ -23,11 +25,10 @@ public class ChangeCopilotUserInfoCommandTest
     [TestMethod]
     public void TestHandleUserNotFound()
     {
-        var result = new HandlerTest()
-                    .TestChangeCopilotUserInfo(new()
-                    {
-                        UserId = Guid.Empty.ToString(),
-                    });
+        var result = new HandlerTest().TestChangeCopilotUserInfo(new()
+        {
+            UserId = Guid.Empty.ToString(),
+        });
 
         result.Response.StatusCode.Should().Be(StatusCodes.Status404NotFound);
     }
@@ -38,12 +39,12 @@ public class ChangeCopilotUserInfoCommandTest
     /// <param name="userRole">The test user role.</param>
     /// <param name="operatorRole">The test operator role.</param>
     [DataTestMethod]
-    [DataRow(Domain.Enums.UserRole.Admin, Domain.Enums.UserRole.Admin)]
-    [DataRow(Domain.Enums.UserRole.SuperAdmin, Domain.Enums.UserRole.Admin)]
-    public void TestHandleOperatorPermissionDenied(Domain.Enums.UserRole userRole, Domain.Enums.UserRole operatorRole)
+    [DataRow(UserRole.Admin, UserRole.Admin)]
+    [DataRow(UserRole.SuperAdmin, UserRole.Admin)]
+    public void TestHandleOperatorPermissionDenied(UserRole userRole, UserRole operatorRole)
     {
-        var user = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, userRole, null);
-        var @operator = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, operatorRole, null);
+        var user = new CopilotUserFactory { UserRole = userRole }.Build();
+        var @operator = new CopilotUserFactory { UserRole = operatorRole }.Build();
 
         var test = new HandlerTest();
         test.DbContext.Setup(db =>
@@ -67,8 +68,8 @@ public class ChangeCopilotUserInfoCommandTest
     [TestMethod]
     public void TestHandleSuperAdminRoleChanges()
     {
-        var user = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, Domain.Enums.UserRole.SuperAdmin, null);
-        var @operator = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, Domain.Enums.UserRole.SuperAdmin, null);
+        var user = new CopilotUserFactory { UserRole = UserRole.SuperAdmin }.Build();
+        var @operator = new CopilotUserFactory { UserRole = UserRole.SuperAdmin }.Build();
 
         var test = new HandlerTest();
         test.DbContext.Setup(db =>
@@ -81,7 +82,7 @@ public class ChangeCopilotUserInfoCommandTest
         var result = test.TestChangeCopilotUserInfo(new()
         {
             UserId = user.EntityId.ToString(),
-            Role = Domain.Enums.UserRole.Admin.ToString(),
+            Role = UserRole.Admin.ToString(),
         });
 
         result.Response.StatusCode.Should().Be(StatusCodes.Status403Forbidden);
@@ -93,8 +94,8 @@ public class ChangeCopilotUserInfoCommandTest
     [TestMethod]
     public void TestHandleEmailInUse()
     {
-        var user = new Domain.Entities.CopilotUser(HandlerTest.TestEmail, string.Empty, string.Empty, Domain.Enums.UserRole.User, null);
-        var @operator = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, Domain.Enums.UserRole.Admin, null);
+        var user = new CopilotUserFactory().Build();
+        var @operator = new CopilotUserFactory { UserRole = UserRole.Admin }.Build();
 
         var test = new HandlerTest();
         test.DbContext.Setup(db =>
@@ -119,9 +120,9 @@ public class ChangeCopilotUserInfoCommandTest
     [TestMethod]
     public void TestHandleValid()
     {
-        var user = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, Domain.Enums.UserRole.User, null);
+        var user = new CopilotUserFactory { Email = string.Empty, UserRole = UserRole.User }.Build();
         user.ActivateUser(Guid.Empty);
-        var @operator = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, Domain.Enums.UserRole.SuperAdmin, null);
+        var @operator = new CopilotUserFactory { Email = string.Empty, UserRole = UserRole.SuperAdmin }.Build();
 
         var test = new HandlerTest();
         test.DbContext.Setup(db =>
@@ -138,7 +139,7 @@ public class ChangeCopilotUserInfoCommandTest
             Email = HandlerTest.TestEmail,
             UserName = HandlerTest.TestUsername,
             Password = HandlerTest.TestPassword,
-            Role = Domain.Enums.UserRole.Uploader.ToString(),
+            Role = UserRole.Uploader.ToString(),
         });
 
         result.Response.StatusCode.Should().Be(StatusCodes.Status200OK);
@@ -146,6 +147,6 @@ public class ChangeCopilotUserInfoCommandTest
         user.Email.Should().Be(HandlerTest.TestEmail);
         user.UserName.Should().Be(HandlerTest.TestUsername);
         user.Password.Should().Be(HandlerTest.TestHashedPassword);
-        user.UserRole.Should().Be(Domain.Enums.UserRole.Uploader);
+        user.UserRole.Should().Be(UserRole.Uploader);
     }
 }

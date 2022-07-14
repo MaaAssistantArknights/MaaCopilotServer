@@ -7,6 +7,7 @@ using MaaCopilotServer.Application.Common.Models;
 using MaaCopilotServer.Application.CopilotUser.Queries.QueryCopilotUser;
 using MaaCopilotServer.Application.Test.TestExtensions;
 using MaaCopilotServer.Application.Test.TestHelpers;
+using MaaCopilotServer.Test.TestEntities;
 using Microsoft.AspNetCore.Http;
 
 namespace MaaCopilotServer.Application.Test.CopilotUser.Queries.QueryCopilotUser;
@@ -29,9 +30,7 @@ public class QueryCopilotUserQueryHandlerTest
         {
             for (var i = 0; i < 10; i++)
             {
-                db.CopilotUsers.Add(
-                    new Domain.Entities.CopilotUser(
-                        string.Empty, string.Empty, $"user{i}", Domain.Enums.UserRole.User, null));
+                db.CopilotUsers.Add(new CopilotUserFactory { UserName = $"user{i}" }.Build());
             }
         });
         return test;

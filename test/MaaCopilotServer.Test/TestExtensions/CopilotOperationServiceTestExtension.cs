@@ -5,6 +5,7 @@
 using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Application.Common.Helpers;
 using MaaCopilotServer.Application.Common.Interfaces;
+using Moq;
 
 namespace MaaCopilotServer.Application.Test.TestExtensions;
 

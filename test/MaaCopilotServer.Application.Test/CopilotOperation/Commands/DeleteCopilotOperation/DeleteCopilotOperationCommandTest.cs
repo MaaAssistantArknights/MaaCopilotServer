@@ -7,9 +7,8 @@ using MaaCopilotServer.Application.Common.Helpers;
 using MaaCopilotServer.Application.CopilotOperation.Commands.DeleteCopilotOperation;
 using MaaCopilotServer.Application.Test.TestExtensions;
 using MaaCopilotServer.Application.Test.TestHelpers;
-using MaaCopilotServer.Domain.Entities;
 using MaaCopilotServer.Domain.Enums;
-using MaaCopilotServer.GameData.Entity;
+using MaaCopilotServer.Test.TestEntities;
 using Microsoft.AspNetCore.Http;
 
 namespace MaaCopilotServer.Application.Test.CopilotOperation.Commands.DeleteCopilotOperation;
@@ -28,11 +27,8 @@ public class DeleteCopilotOperationCommandTest
     [TestMethod]
     public void TestHandleSameUser()
     {
-        var user = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, UserRole.User, Guid.Empty);
-        var entity = new Domain.Entities.CopilotOperation(0, string.Empty, string.Empty,
-            string.Empty, string.Empty, user, Guid.Empty,
-            new ArkLevelData(new ArkLevelEntityGlobal()),
-            new List<string>(), new List<string>());
+        var user = new CopilotUserFactory().Build();
+        var entity = new CopilotOperationFactory { Author = user }.Build();
 
         var test = new HandlerTest();
         test.DbContext.Setup(db =>
@@ -67,12 +63,9 @@ public class DeleteCopilotOperationCommandTest
     [DataRow(UserRole.SuperAdmin, UserRole.SuperAdmin, true)]
     public void TestHandleDifferentUsers(UserRole requesterRole, UserRole authorRole, bool expectedToSucceed)
     {
-        var user = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, requesterRole, Guid.Empty);
-        var author = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, authorRole, Guid.Empty);
-        var entity = new Domain.Entities.CopilotOperation(0, string.Empty, string.Empty,
-            string.Empty, string.Empty, author, Guid.Empty,
-            new ArkLevelData(new ArkLevelEntityGlobal()),
-            new List<string>(), new List<string>());
+        var user = new CopilotUserFactory { UserRole = requesterRole }.Build();
+        var author = new CopilotUserFactory { UserRole = authorRole }.Build();
+        var entity = new CopilotOperationFactory { Author = author }.Build();
 
         var test = new HandlerTest();
         test.DbContext.Setup(db =>
@@ -108,7 +101,7 @@ public class DeleteCopilotOperationCommandTest
     public void TestHandleOperationNotFound()
     {
         var test = new HandlerTest();
-        test.CurrentUserService.SetupGetUser(new(string.Empty, string.Empty, string.Empty, UserRole.User, null));
+        test.CurrentUserService.SetupGetUser(new CopilotUserFactory().Build());
         test.CopilotOperationService.SetupDecodeAndEncodeId();
 
         var result = test.TestDeleteCopilotOperation(new()
