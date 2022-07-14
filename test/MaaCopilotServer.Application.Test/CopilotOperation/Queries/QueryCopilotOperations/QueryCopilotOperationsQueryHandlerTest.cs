@@ -31,11 +31,11 @@ public class QueryCopilotOperationsQueryHandlerTest
     private const int HighestRateId = 8;
 
     /// <summary>
-    /// Initializes database with initial test data.
+    /// Initializes test environment with test data.
     /// </summary>
     /// <param name="test">The <see cref="HandlerTest"/> instance.</param>
     /// <returns>A list of users, and the <see cref="HandlerTest"/> instance.</returns>
-    private static (List<Domain.Entities.CopilotUser>, HandlerTest) InitializeDatabase(HandlerTest test)
+    private static (List<Domain.Entities.CopilotUser>, HandlerTest) Initialize(HandlerTest test)
     {
         List<Domain.Entities.CopilotUser> users = new()
         {
@@ -83,6 +83,8 @@ public class QueryCopilotOperationsQueryHandlerTest
             db.CopilotOperationRatings.AddRange(rating);
         });
 
+        test.CopilotOperationService.SetupDecodeAndEncodeId();
+
         return (users, test);
     }
 
@@ -95,18 +97,18 @@ public class QueryCopilotOperationsQueryHandlerTest
     [DataRow(true)]
     public void TestHandleAll(bool descending)
     {
-        var (users, test) = InitializeDatabase(new());
+        var (users, test) = Initialize(new());
         test.CurrentUserService.SetupGetUserIdentity(users[0].EntityId);
         test.CurrentUserService.SetupGetUser(users[0]);
         test.CopilotOperationService.SetupDecodeAndEncodeId();
 
-        var response = test.TestQueryCopilotOperations(new()
+        var result = test.TestQueryCopilotOperations(new()
         {
             Desc = descending ? "desc" : null,
-        }).Response;
+        });
 
-        response.Data.Should().NotBeNull();
-        var responseData = (PaginationResult<QueryCopilotOperationsQueryDto>)response.Data!;
+        result.Response.Data.Should().NotBeNull();
+        var responseData = (PaginationResult<QueryCopilotOperationsQueryDto>)result.Response.Data!;
         responseData.HasNext.Should().BeFalse();
         responseData.Page.Should().Be(1);
         responseData.Total.Should().Be(10);
@@ -127,19 +129,20 @@ public class QueryCopilotOperationsQueryHandlerTest
     [DataRow(true)]
     public void TestHandlePageAndLimit(bool descending)
     {
-        var (users, test) = InitializeDatabase(new());
+        var (users, test) = Initialize(new());
         test.CurrentUserService.SetupGetUserIdentity(users[0].EntityId);
         test.CurrentUserService.SetupGetUser(users[0]);
         test.CopilotOperationService.SetupDecodeAndEncodeId();
-        var response = test.TestQueryCopilotOperations(new()
+
+        var result = test.TestQueryCopilotOperations(new()
         {
             Desc = descending ? "desc" : null,
             Limit = 2,
             Page = 2,
-        }).Response;
+        });
 
-        response.Data.Should().NotBeNull();
-        var responseData = (PaginationResult<QueryCopilotOperationsQueryDto>)response.Data!;
+        result.Response.Data.Should().NotBeNull();
+        var responseData = (PaginationResult<QueryCopilotOperationsQueryDto>)result.Response.Data!;
         responseData.HasNext.Should().BeTrue();
         responseData.Page.Should().Be(2);
         responseData.Total.Should().Be(10);
@@ -155,17 +158,18 @@ public class QueryCopilotOperationsQueryHandlerTest
     [TestMethod]
     public void TestHandleCurrentUser()
     {
-        var (users, test) = InitializeDatabase(new());
+        var (users, test) = Initialize(new());
         test.CurrentUserService.SetupGetUserIdentity(users[0].EntityId);
         test.CurrentUserService.SetupGetUser(users[0]);
         test.CopilotOperationService.SetupDecodeAndEncodeId();
-        var response = test.TestQueryCopilotOperations(new()
+
+        var result = test.TestQueryCopilotOperations(new()
         {
             UploaderId = "me",
-        }).Response;
+        });
 
-        response.Data.Should().NotBeNull();
-        var responseData = (PaginationResult<QueryCopilotOperationsQueryDto>)response.Data!;
+        result.Response.Data.Should().NotBeNull();
+        var responseData = (PaginationResult<QueryCopilotOperationsQueryDto>)result.Response.Data!;
         responseData.HasNext.Should().BeFalse();
         responseData.Page.Should().Be(1);
         responseData.Total.Should().Be(5);
@@ -184,17 +188,18 @@ public class QueryCopilotOperationsQueryHandlerTest
     [TestMethod]
     public void TestHandleWithUploaderId()
     {
-        var (users, test) = InitializeDatabase(new());
+        var (users, test) = Initialize(new());
         test.CurrentUserService.SetupGetUserIdentity(users[0].EntityId);
         test.CurrentUserService.SetupGetUser(users[0]);
         test.CopilotOperationService.SetupDecodeAndEncodeId();
-        var response = test.TestQueryCopilotOperations(new()
+
+        var result = test.TestQueryCopilotOperations(new()
         {
             UploaderId = users[0].EntityId.ToString(),
-        }).Response;
+        });
 
-        response.Data.Should().NotBeNull();
-        var responseData = (PaginationResult<QueryCopilotOperationsQueryDto>)response.Data!;
+        result.Response.Data.Should().NotBeNull();
+        var responseData = (PaginationResult<QueryCopilotOperationsQueryDto>)result.Response.Data!;
         responseData.HasNext.Should().BeFalse();
         responseData.Page.Should().Be(1);
         responseData.Total.Should().Be(5);
@@ -214,12 +219,12 @@ public class QueryCopilotOperationsQueryHandlerTest
     public void TestHandleInvalidCurrentUser()
     {
         var test = new HandlerTest();
-        var response = test.TestQueryCopilotOperations(new QueryCopilotOperationsQuery
+        var result = test.TestQueryCopilotOperations(new QueryCopilotOperationsQuery
         {
             UploaderId = "me",
-        }).Response;
+        });
 
-        response.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
+        result.Response.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
     }
 
     /// <summary>
@@ -231,14 +236,14 @@ public class QueryCopilotOperationsQueryHandlerTest
     [DataRow(true)]
     public void TestHandleNotLoggedIn(bool descending)
     {
-        var (_, test) = InitializeDatabase(new());
-        var response = test.TestQueryCopilotOperations(new()
+        var (_, test) = Initialize(new());
+        var result = test.TestQueryCopilotOperations(new()
         {
             Desc = descending ? "desc" : null,
-        }).Response;
+        });
 
-        response.Data.Should().NotBeNull();
-        var responseData = (PaginationResult<QueryCopilotOperationsQueryDto>)response.Data!;
+        result.Response.Data.Should().NotBeNull();
+        var responseData = (PaginationResult<QueryCopilotOperationsQueryDto>)result.Response.Data!;
         responseData.HasNext.Should().BeFalse();
         responseData.Page.Should().Be(1);
         responseData.Total.Should().Be(10);
@@ -263,18 +268,19 @@ public class QueryCopilotOperationsQueryHandlerTest
     [DataRow("korean", "KO")]
     public void TestHandleWithLevelName(string language, string resultAppendix)
     {
-        var (users, test) = InitializeDatabase(new());
+        var (users, test) = Initialize(new());
         test.CurrentUserService.SetupGetUserIdentity(users[0].EntityId);
         test.CurrentUserService.SetupGetUser(users[0]);
         test.CopilotOperationService.SetupDecodeAndEncodeId();
-        var response = test.TestQueryCopilotOperations(new()
+
+        var result = test.TestQueryCopilotOperations(new()
         {
             LevelName = "level0",
             Server = language
-        }).Response;
+        });
 
-        response.Data.Should().NotBeNull();
-        var responseData = (PaginationResult<QueryCopilotOperationsQueryDto>)response.Data!;
+        result.Response.Data.Should().NotBeNull();
+        var responseData = (PaginationResult<QueryCopilotOperationsQueryDto>)result.Response.Data!;
         responseData.HasNext.Should().BeFalse();
         responseData.Page.Should().Be(1);
         responseData.Total.Should().Be(1);
@@ -291,17 +297,18 @@ public class QueryCopilotOperationsQueryHandlerTest
     [TestMethod]
     public void TestHandleWithContent()
     {
-        var (users, test) = InitializeDatabase(new());
+        var (users, test) = Initialize(new());
         test.CurrentUserService.SetupGetUserIdentity(users[0].EntityId);
         test.CurrentUserService.SetupGetUser(users[0]);
         test.CopilotOperationService.SetupDecodeAndEncodeId();
-        var response = test.TestQueryCopilotOperations(new()
+
+        var result = test.TestQueryCopilotOperations(new()
         {
             Content = "content0",
-        }).Response;
+        });
 
-        response.Data.Should().NotBeNull();
-        var responseData = (PaginationResult<QueryCopilotOperationsQueryDto>)response.Data!;
+        result.Response.Data.Should().NotBeNull();
+        var responseData = (PaginationResult<QueryCopilotOperationsQueryDto>)result.Response.Data!;
         responseData.HasNext.Should().BeFalse();
         responseData.Page.Should().Be(1);
         responseData.Total.Should().Be(1);
@@ -316,17 +323,18 @@ public class QueryCopilotOperationsQueryHandlerTest
     [TestMethod]
     public void TestHandleWithUploader()
     {
-        var (users, test) = InitializeDatabase(new());
+        var (users, test) = Initialize(new());
         test.CurrentUserService.SetupGetUserIdentity(users[0].EntityId);
         test.CurrentUserService.SetupGetUser(users[0]);
         test.CopilotOperationService.SetupDecodeAndEncodeId();
-        var response = test.TestQueryCopilotOperations(new()
+
+        var result = test.TestQueryCopilotOperations(new()
         {
             Uploader = users[0].UserName,
-        }).Response;
+        });
 
-        response.Data.Should().NotBeNull();
-        var responseData = (PaginationResult<QueryCopilotOperationsQueryDto>)response.Data!;
+        result.Response.Data.Should().NotBeNull();
+        var responseData = (PaginationResult<QueryCopilotOperationsQueryDto>)result.Response.Data!;
         responseData.HasNext.Should().BeFalse();
         responseData.Page.Should().Be(1);
         responseData.Total.Should().Be(5);
@@ -349,18 +357,19 @@ public class QueryCopilotOperationsQueryHandlerTest
     [DataRow("views", true)]
     public void TestHandleOrderBy(string orderBy, bool descending)
     {
-        var (users, test) = InitializeDatabase(new());
+        var (users, test) = Initialize(new());
         test.CurrentUserService.SetupGetUserIdentity(users[0].EntityId);
         test.CurrentUserService.SetupGetUser(users[0]);
         test.CopilotOperationService.SetupDecodeAndEncodeId();
-        var response = test.TestQueryCopilotOperations(new()
+
+        var result = test.TestQueryCopilotOperations(new()
         {
             OrderBy = orderBy,
             Desc = descending ? "true" : null,
-        }).Response;
+        });
 
-        response.Data.Should().NotBeNull();
-        var responseData = (PaginationResult<QueryCopilotOperationsQueryDto>)response.Data!;
+        result.Response.Data.Should().NotBeNull();
+        var responseData = (PaginationResult<QueryCopilotOperationsQueryDto>)result.Response.Data!;
         responseData.HasNext.Should().BeFalse();
         responseData.Page.Should().Be(1);
         responseData.Total.Should().Be(10);

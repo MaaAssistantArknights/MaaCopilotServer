@@ -228,7 +228,7 @@ public class HandlerTest
     /// <returns>The result.</returns>
     public HandlerTestResult TestGetCopilotOperation(GetCopilotOperationQuery request)
     {
-        var handler = new GetCopilotOperationQueryHandler(DbContext, CurrentUserService.Object, new CopilotOperationService(Options.Create(CopilotOperationOption), DomainString), ApiErrorMessage);
+        var handler = new GetCopilotOperationQueryHandler(DbContext, CurrentUserService.Object, CopilotOperationService.Object, ApiErrorMessage);
         return new HandlerTestResult { Response = handler.Handle(request, default).Result, DbContext = DbContext };
     }
 
@@ -239,7 +239,7 @@ public class HandlerTest
     /// <returns>The result.</returns>
     public HandlerTestResult TestQueryCopilotOperations(QueryCopilotOperationsQuery request)
     {
-        var handler = new QueryCopilotOperationsQueryHandler(DbContext, new CopilotOperationService(Options.Create(CopilotOperationOption), DomainString), CurrentUserService.Object, ApiErrorMessage);
+        var handler = new QueryCopilotOperationsQueryHandler(DbContext, CopilotOperationService.Object, CurrentUserService.Object, ApiErrorMessage);
         return new HandlerTestResult { Response = handler.Handle(request, default).Result, DbContext = DbContext };
     }
     #endregion
