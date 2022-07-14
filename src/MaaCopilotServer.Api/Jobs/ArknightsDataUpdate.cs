@@ -11,11 +11,11 @@ using MaaCopilotServer.Domain.Constants;
 using MaaCopilotServer.Domain.Entities;
 using MaaCopilotServer.Domain.Options;
 using MaaCopilotServer.GameData;
-using MaaCopilotServer.GameData.Constants;
 using MaaCopilotServer.GameData.Exceptions;
 using MaaCopilotServer.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using ArkServerLanguage = MaaCopilotServer.GameData.Constants.ArkServerLanguage;
 
 namespace MaaCopilotServer.Api.Jobs;
 
