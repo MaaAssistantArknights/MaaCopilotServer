@@ -23,12 +23,13 @@ public class LoginCopilotUserCommandHandlerTest
     [TestMethod]
     public void TestHandleUserNotFound()
     {
-        var result = new HandlerTest()
-            .TestLoginCopilotUser(new()
-            {
-                Email = HandlerTest.TestEmail,
-                Password = HandlerTest.TestPassword,
-            });
+        var test = new HandlerTest();
+
+        var result = test.TestLoginCopilotUser(new()
+        {
+            Email = HandlerTest.TestEmail,
+            Password = HandlerTest.TestPassword,
+        });
 
         result.Response.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
     }
@@ -42,14 +43,15 @@ public class LoginCopilotUserCommandHandlerTest
     {
         var user = new Domain.Entities.CopilotUser(HandlerTest.TestEmail, string.Empty, string.Empty, Domain.Enums.UserRole.User, null);
 
-        var result = new HandlerTest()
-            .SetupDatabase(db => db.CopilotUsers.Add(user))
-            .SetupVerifyPassword(string.Empty, HandlerTest.TestPassword, false)
-            .TestLoginCopilotUser(new()
-            {
-                Email = HandlerTest.TestEmail,
-                Password = HandlerTest.TestPassword,
-            });
+        var test = new HandlerTest();
+        test.DbContext.Setup(db => db.CopilotUsers.Add(user));
+        test.SecretService.SetupVerifyPassword(string.Empty, HandlerTest.TestPassword, false);
+
+        var result = test.TestLoginCopilotUser(new()
+        {
+            Email = HandlerTest.TestEmail,
+            Password = HandlerTest.TestPassword,
+        });
 
         result.Response.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
     }
@@ -62,15 +64,16 @@ public class LoginCopilotUserCommandHandlerTest
     {
         var user = new Domain.Entities.CopilotUser(HandlerTest.TestEmail, HandlerTest.TestHashedPassword, string.Empty, Domain.Enums.UserRole.User, null);
 
-        var result = new HandlerTest()
-            .SetupDatabase(db => db.CopilotUsers.Add(user))
-            .SetupVerifyPassword(HandlerTest.TestHashedPassword, HandlerTest.TestPassword, true)
-            .SetupGenerateJwtToken(user.EntityId)
-            .TestLoginCopilotUser(new()
-            {
-                Email = HandlerTest.TestEmail,
-                Password = HandlerTest.TestPassword,
-            });
+        var test = new HandlerTest();
+        test.DbContext.Setup(db => db.CopilotUsers.Add(user));
+        test.SecretService.SetupVerifyPassword(HandlerTest.TestHashedPassword, HandlerTest.TestPassword, true);
+        test.SecretService.SetupGenerateJwtToken(user.EntityId);
+
+        var result = test.TestLoginCopilotUser(new()
+        {
+            Email = HandlerTest.TestEmail,
+            Password = HandlerTest.TestPassword,
+        });
 
         result.Response.StatusCode.Should().Be(StatusCodes.Status200OK);
         ((LoginCopilotUserDto)result.Response.Data!).Token.Should().Be(HandlerTest.TestToken);

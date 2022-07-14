@@ -23,14 +23,14 @@ public class SendEmailTestCommandHandlerTest
     [TestMethod]
     public void TestHandleInvalidToken()
     {
-        var response = new HandlerTest()
-            .TestSendEmailTest(new()
-            {
-                Token = "wrong_token",
-            })
-            .Response;
+        var test = new HandlerTest();
 
-        response.StatusCode.Should().Be(StatusCodes.Status401Unauthorized);
+        var result = test.TestSendEmailTest(new()
+        {
+            Token = "wrong_token",
+        });
+
+        result.Response.StatusCode.Should().Be(StatusCodes.Status401Unauthorized);
     }
 
     /// <summary>
@@ -40,16 +40,16 @@ public class SendEmailTestCommandHandlerTest
     [TestMethod]
     public void TestHandleFailedToSend()
     {
-        var response = new HandlerTest()
-            .SetupSendEmailAsync(false)
-            .TestSendEmailTest(new()
-            {
-                Token = HandlerTest.TestToken,
-                TargetAddress = HandlerTest.TestEmail,
-            })
-            .Response;
+        var test = new HandlerTest();
+        test.MailService.SetupSendEmailAsync(false);
 
-        response.StatusCode.Should().Be(StatusCodes.Status500InternalServerError);
+        var result = test.TestSendEmailTest(new()
+        {
+            Token = HandlerTest.TestToken,
+            TargetAddress = HandlerTest.TestEmail,
+        });
+
+        result.Response.StatusCode.Should().Be(StatusCodes.Status500InternalServerError);
     }
 
     /// <summary>
@@ -58,15 +58,15 @@ public class SendEmailTestCommandHandlerTest
     [TestMethod]
     public void TestHandle()
     {
-        var response = new HandlerTest()
-            .SetupSendEmailAsync(true)
-            .TestSendEmailTest(new()
-            {
-                Token = HandlerTest.TestToken,
-                TargetAddress = HandlerTest.TestEmail,
-            })
-            .Response;
+        var test = new HandlerTest();
+        test.MailService.SetupSendEmailAsync(true);
 
-        response.StatusCode.Should().Be(StatusCodes.Status200OK);
+        var result = test.TestSendEmailTest(new()
+        {
+            Token = HandlerTest.TestToken,
+            TargetAddress = HandlerTest.TestEmail,
+        });
+
+        result.Response.StatusCode.Should().Be(StatusCodes.Status200OK);
     }
 }

@@ -23,15 +23,16 @@ public class CreateCopilotUserCommandHandlerTest
     public void TestHandleEmailInUse()
     {
         var user = new Domain.Entities.CopilotUser(HandlerTest.TestEmail, string.Empty, string.Empty, Domain.Enums.UserRole.User, null);
-        var response = new HandlerTest()
-            .SetupDatabase(db => db.CopilotUsers.Add(user))
-            .TestCreateCopilotUser(new()
-            {
-                Email = HandlerTest.TestEmail,
-            })
-            .Response;
 
-        response.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
+        var test = new HandlerTest();
+        test.DbContext.Setup(db => db.CopilotUsers.Add(user));
+
+        var result = test.TestCreateCopilotUser(new()
+        {
+            Email = HandlerTest.TestEmail,
+        });
+
+        result.Response.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
     }
 
     /// <summary>
@@ -42,16 +43,17 @@ public class CreateCopilotUserCommandHandlerTest
     {
         var adminUserEntity = Guid.NewGuid();
 
-        var result = new HandlerTest()
-            .SetupHashPassword()
-            .SetupGetUserIdentity(adminUserEntity)
-            .TestCreateCopilotUser(new()
-            {
-                Email = HandlerTest.TestEmail,
-                Password = HandlerTest.TestPassword,
-                UserName = HandlerTest.TestUsername,
-                Role = "User",
-            });
+        var test = new HandlerTest();
+        test.SecretService.SetupHashPassword();
+        test.CurrentUserService.SetupGetUserIdentity(adminUserEntity);
+
+        var result = test.TestCreateCopilotUser(new()
+        {
+            Email = HandlerTest.TestEmail,
+            Password = HandlerTest.TestPassword,
+            UserName = HandlerTest.TestUsername,
+            Role = "User",
+        });
 
         result.Response.StatusCode.Should().Be(StatusCodes.Status200OK);
         var user = result.DbContext.CopilotUsers.FirstOrDefault(x => x.Email == HandlerTest.TestEmail);

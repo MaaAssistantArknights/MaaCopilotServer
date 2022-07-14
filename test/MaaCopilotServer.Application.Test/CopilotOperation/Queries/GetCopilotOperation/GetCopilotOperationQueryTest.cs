@@ -3,6 +3,7 @@
 // Licensed under the AGPL-3.0 license.
 
 using System.Diagnostics.CodeAnalysis;
+using MaaCopilotServer.Application.Common.Helpers;
 using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Application.CopilotOperation.Queries.GetCopilotOperation;
 using MaaCopilotServer.Application.Test.TestHelpers;
@@ -47,14 +48,19 @@ public class GetCopilotOperationQueryTest
                 new ArkLevelData(new ArkLevelEntityGlobal("level1")),
                 new List<string>(), new List<string>()),
         };
-        var response = new HandlerTest()
-            .SetupDatabase(db => db.CopilotUsers.Add(user))
-            .SetupDatabase(db => db.CopilotOperations.AddRange(entities))
-            .TestGetCopilotOperation(new()
-            {
-                Id = _copilotOperationService.EncodeId(entities[0].Id),
-            })
-            .Response;
+
+        var test = new HandlerTest();
+        test.DbContext.Setup(db =>
+        {
+            db.CopilotUsers.Add(user);
+            db.CopilotOperations.AddRange(entities);
+        });
+        test.CopilotOperationService.SetupDecodeAndEncodeId();
+
+        var response = test.TestGetCopilotOperation(new()
+        {
+            Id = EntityIdHelper.EncodeId(entities[0].Id),
+        }).Response;
 
         response.StatusCode.Should().Be(StatusCodes.Status200OK);
         response.Data.Should().NotBeNull();
@@ -90,7 +96,7 @@ public class GetCopilotOperationQueryTest
         var response = new HandlerTest()
             .TestGetCopilotOperation(new()
             {
-                Id = _copilotOperationService.EncodeId(0),
+                Id = EntityIdHelper.EncodeId(0),
             })
             .Response;
 

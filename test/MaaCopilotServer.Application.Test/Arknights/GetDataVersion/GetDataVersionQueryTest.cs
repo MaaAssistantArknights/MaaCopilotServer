@@ -23,16 +23,17 @@ public class GetDataVersionQueryTest
     [TestMethod]
     public void TestHandle()
     {
-        var result = new HandlerTest()
-            .SetupDatabase(db =>
-            {
-                db.PersistStorage.Add(new(SystemConstants.ARK_ASSET_VERSION_LEVEL, $"test_{SystemConstants.ARK_ASSET_VERSION_LEVEL}"));
-                db.PersistStorage.Add(new(SystemConstants.ARK_ASSET_VERSION_CN, $"test_{SystemConstants.ARK_ASSET_VERSION_CN}"));
-                db.PersistStorage.Add(new(SystemConstants.ARK_ASSET_VERSION_EN, $"test_{SystemConstants.ARK_ASSET_VERSION_EN}"));
-                db.PersistStorage.Add(new(SystemConstants.ARK_ASSET_VERSION_JP, $"test_{SystemConstants.ARK_ASSET_VERSION_JP}"));
-                db.PersistStorage.Add(new(SystemConstants.ARK_ASSET_VERSION_KO, $"test_{SystemConstants.ARK_ASSET_VERSION_KO}"));
-            })
-            .TestGetDataVersion(new());
+        var test = new HandlerTest();
+        test.DbContext.Setup(db =>
+        {
+            db.PersistStorage.Add(new(SystemConstants.ARK_ASSET_VERSION_LEVEL, $"test_{SystemConstants.ARK_ASSET_VERSION_LEVEL}"));
+            db.PersistStorage.Add(new(SystemConstants.ARK_ASSET_VERSION_CN, $"test_{SystemConstants.ARK_ASSET_VERSION_CN}"));
+            db.PersistStorage.Add(new(SystemConstants.ARK_ASSET_VERSION_EN, $"test_{SystemConstants.ARK_ASSET_VERSION_EN}"));
+            db.PersistStorage.Add(new(SystemConstants.ARK_ASSET_VERSION_JP, $"test_{SystemConstants.ARK_ASSET_VERSION_JP}"));
+            db.PersistStorage.Add(new(SystemConstants.ARK_ASSET_VERSION_KO, $"test_{SystemConstants.ARK_ASSET_VERSION_KO}"));
+        });
+
+        var result = test.TestGetDataVersion(new());
 
         result.Response.StatusCode.Should().Be(StatusCodes.Status200OK);
         var dto = (GetDataVersionQueryDto)result.Response.Data!;

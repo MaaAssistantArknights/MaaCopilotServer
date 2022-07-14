@@ -22,15 +22,18 @@ public class GetCurrentVersionCommandHandlerTest
     [TestMethod]
     public void TestHandle()
     {
-        var response = new HandlerTest()
-            .SetupApplicationOption(new()
+        var test = new HandlerTest
+        {
+            ApplicationOption = new()
             {
                 Version = "0.0.1",
-            })
-            .TestGetCurrentVersion(new())
-            .Response;
+            }
+        };
 
-        response.StatusCode.Should().Be(StatusCodes.Status200OK);
-        ((GetCurrentVersionDto)response.Data!).Version.Should().Be("0.0.1");
+        var result = test.TestGetCurrentVersion(new());
+
+        result.Response.StatusCode.Should().Be(StatusCodes.Status200OK);
+        ((GetCurrentVersionDto)result
+            .Response.Data!).Version.Should().Be("0.0.1");
     }
 }

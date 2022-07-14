@@ -23,16 +23,17 @@ public class QueryCopilotUserQueryHandlerTest
     /// <returns>The <see cref="HandlerTest"/> instance.</returns>
     public static HandlerTest InitializeDatabase()
     {
-        return new HandlerTest()
-            .SetupDatabase(db =>
+        var test = new HandlerTest();
+        test.DbContext.Setup(db =>
+        {
+            for (var i = 0; i < 10; i++)
             {
-                for (var i = 0; i < 10; i++)
-                {
-                    db.CopilotUsers.Add(
-                        new Domain.Entities.CopilotUser(
-                            string.Empty, string.Empty, $"user{i}", Domain.Enums.UserRole.User, null));
-                }
-            });
+                db.CopilotUsers.Add(
+                    new Domain.Entities.CopilotUser(
+                        string.Empty, string.Empty, $"user{i}", Domain.Enums.UserRole.User, null));
+            }
+        });
+        return test;
     }
 
     /// <summary>
@@ -42,8 +43,7 @@ public class QueryCopilotUserQueryHandlerTest
     [TestMethod]
     public void TestHandleDefault()
     {
-        var result = InitializeDatabase()
-            .TestQueryCopilotUser(new());
+        var result = InitializeDatabase().TestQueryCopilotUser(new());
 
         result.Response.StatusCode.Should().Be(StatusCodes.Status200OK);
         var dtos = (PaginationResult<QueryCopilotUserDto>)result.Response.Data!;
@@ -60,12 +60,11 @@ public class QueryCopilotUserQueryHandlerTest
     [TestMethod]
     public void TestHandleLimitAndPage()
     {
-        var result = InitializeDatabase()
-            .TestQueryCopilotUser(new()
-            {
-                Page = 2,
-                Limit = 1,
-            });
+        var result = InitializeDatabase().TestQueryCopilotUser(new()
+        {
+            Page = 2,
+            Limit = 1,
+        });
 
         result.Response.StatusCode.Should().Be(StatusCodes.Status200OK);
         var dtos = (PaginationResult<QueryCopilotUserDto>)result.Response.Data!;
@@ -82,11 +81,10 @@ public class QueryCopilotUserQueryHandlerTest
     [TestMethod]
     public void TestHandleUsername()
     {
-        var result = InitializeDatabase()
-            .TestQueryCopilotUser(new()
-            {
-                UserName = "user2",
-            });
+        var result = InitializeDatabase().TestQueryCopilotUser(new()
+        {
+            UserName = "user2",
+        });
 
         result.Response.StatusCode.Should().Be(StatusCodes.Status200OK);
         var dtos = (PaginationResult<QueryCopilotUserDto>)result.Response.Data!;

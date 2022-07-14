@@ -111,18 +111,19 @@ public class CreateCopilotOperationCommandTest
                 DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
             });
 
-        var result = new HandlerTest()
-            .SetupValidate(testContent, new()
-            {
-                IsValid = true,
-                Operation = OperationFull,
-                ArkLevel = new(new("test_stage_name")),
-            })
-            .SetupGetUser(new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, UserRole.User, Guid.Empty))
-            .TestCreateCopilotOperation(new()
-            {
-                Content = testContent,
-            });
+        var test = new HandlerTest();
+        test.OperationProcessService.SetupValidate(testContent, new()
+        {
+            IsValid = true,
+            Operation = OperationFull,
+            ArkLevel = new(new("test_stage_name")),
+        });
+        test.CurrentUserService.SetupGetUser(new(string.Empty, string.Empty, string.Empty, UserRole.User, Guid.Empty));
+        test.CopilotOperationService.SetupDecodeAndEncodeId();
+        var result = test.TestCreateCopilotOperation(new()
+        {
+            Content = testContent,
+        });
 
         var id = ((CreateCopilotOperationDto)result.Response.Data!).Id;
         result.DbContext.CopilotOperations.Any().Should().BeTrue();
@@ -146,15 +147,15 @@ public class CreateCopilotOperationCommandTest
     [TestMethod]
     public void TestHandleInvalid()
     {
-        var result = new HandlerTest()
-            .SetupValidate(null, new()
-            {
-                IsValid = false,
-            })
-            .TestCreateCopilotOperation(new()
-            {
-                Content = null,
-            });
+        var test = new HandlerTest();
+        test.OperationProcessService.SetupValidate(null, new()
+        {
+            IsValid = false,
+        });
+        var result = test.TestCreateCopilotOperation(new()
+        {
+            Content = null,
+        });
 
         result.Response.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
         result.DbContext.CopilotOperations.Any().Should().BeFalse();
