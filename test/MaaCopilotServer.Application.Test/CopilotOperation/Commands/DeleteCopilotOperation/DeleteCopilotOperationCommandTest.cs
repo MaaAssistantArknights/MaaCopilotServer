@@ -5,6 +5,7 @@
 using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Application.Common.Helpers;
 using MaaCopilotServer.Application.CopilotOperation.Commands.DeleteCopilotOperation;
+using MaaCopilotServer.Application.Test.TestExtensions;
 using MaaCopilotServer.Application.Test.TestHelpers;
 using MaaCopilotServer.Domain.Entities;
 using MaaCopilotServer.Domain.Enums;

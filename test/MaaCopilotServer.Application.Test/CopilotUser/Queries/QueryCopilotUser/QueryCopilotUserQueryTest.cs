@@ -5,6 +5,7 @@
 using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Application.Common.Models;
 using MaaCopilotServer.Application.CopilotUser.Queries.QueryCopilotUser;
+using MaaCopilotServer.Application.Test.TestExtensions;
 using MaaCopilotServer.Application.Test.TestHelpers;
 using Microsoft.AspNetCore.Http;
 
