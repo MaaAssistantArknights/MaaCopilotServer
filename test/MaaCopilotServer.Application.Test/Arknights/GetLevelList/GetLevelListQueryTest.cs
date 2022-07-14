@@ -5,7 +5,6 @@
 using System.Diagnostics.CodeAnalysis;
 using FluentEmail.Core;
 using MaaCopilotServer.Application.Arknights.GetLevelList;
-using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Application.Test.TestExtensions;
 using MaaCopilotServer.Application.Test.TestHelpers;
 using Microsoft.AspNetCore.Http;

@@ -7,7 +7,6 @@ using FluentValidation;
 using FluentValidation.Results;
 using MaaCopilotServer.Application.Common.Behaviours;
 using MaaCopilotServer.Application.Common.Helpers;
-using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Application.Common.Models;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -21,11 +20,6 @@ namespace MaaCopilotServer.Application.Test.Common.Behaviours;
 [ExcludeFromCodeCoverage]
 public class ValidationBehaviourTest
 {
-    /// <summary>
-    ///     The service of current testUser.
-    /// </summary>
-    private readonly ICurrentUserService _currentUserService = Mock.Of<ICurrentUserService>();
-
     /// <summary>
     ///     Tests
     ///     <see

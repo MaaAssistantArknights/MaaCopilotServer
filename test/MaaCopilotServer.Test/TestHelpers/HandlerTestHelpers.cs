@@ -28,8 +28,9 @@ using MaaCopilotServer.Application.System.SendEmailTest;
 using MaaCopilotServer.Application.Test.TestExtensions;
 using MaaCopilotServer.Domain.Options;
 using MaaCopilotServer.Resources;
-using MaaCopilotServer.Test.TestHelpers;
+using MaaCopilotServer.Test;
 using Microsoft.Extensions.Options;
+using Moq;
 
 namespace MaaCopilotServer.Application.Test.TestHelpers;
 

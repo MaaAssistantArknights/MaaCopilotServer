@@ -7,7 +7,7 @@ using System.Globalization;
 using System.Security.Claims;
 using MaaCopilotServer.Api.Services;
 using MaaCopilotServer.Application.Common.Interfaces;
-using MaaCopilotServer.Test.TestHelpers;
+using MaaCopilotServer.Test;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 
