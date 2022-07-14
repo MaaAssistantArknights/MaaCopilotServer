@@ -26,7 +26,7 @@ public class GetCopilotOperationQueryTest
     [TestMethod]
     public void TestHandle()
     {
-        var user = new CopilotUserFactory { UserRole = UserRole.User }.Build();
+        var user = new CopilotUserFactory().Build();
         var entities = new Domain.Entities.CopilotOperation[]
         {
             new CopilotOperationFactory { Id = 1, Author = user }.Build(),

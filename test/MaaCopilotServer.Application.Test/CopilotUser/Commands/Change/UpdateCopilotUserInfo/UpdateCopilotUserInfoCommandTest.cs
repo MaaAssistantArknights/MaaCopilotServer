@@ -47,7 +47,7 @@ public class UpdateCopilotUserInfoCommandTest
     public void TestHandleEmailAlreadyInUse()
     {
         var user = new CopilotUserFactory().Build();
-        var user2 = new CopilotUserFactory { Email = HandlerTest.TestEmail }.Build();
+        var user2 = new CopilotUserFactory().Build();
 
         var test = new HandlerTest();
         test.DbContext.Setup(db => db.CopilotUsers.Add(user));
@@ -69,7 +69,7 @@ public class UpdateCopilotUserInfoCommandTest
     [TestMethod]
     public void TestHandleActivationEmailFailedToSend()
     {
-        var user = new CopilotUserFactory().Build();
+        var user = new CopilotUserFactory() { Email = string.Empty }.Build();
 
         var test = new HandlerTest();
         test.DbContext.Setup(db => db.CopilotUsers.Add(user));
@@ -91,7 +91,7 @@ public class UpdateCopilotUserInfoCommandTest
     [TestMethod]
     public void TestHandleChangeEmail()
     {
-        var user = new CopilotUserFactory().Build();
+        var user = new CopilotUserFactory() { Email = string.Empty }.Build();
         user.ActivateUser(Guid.Empty);
 
         var test = new HandlerTest();

@@ -3,6 +3,7 @@
 // Licensed under the AGPL-3.0 license.
 
 using System.Diagnostics.CodeAnalysis;
+using MaaCopilotServer.Application.Test.TestHelpers;
 using MaaCopilotServer.Domain.Entities;
 using MaaCopilotServer.Domain.Enums;
 
@@ -17,17 +18,17 @@ public class CopilotUserFactory : ITestEntityFactory<CopilotUser>
     /// <summary>
     ///     The email of the user.
     /// </summary>
-    public string Email { get; set; } = string.Empty;
+    public string Email { get; set; } = HandlerTest.TestEmail;
 
     /// <summary>
     ///     The password of the user.
     /// </summary>
-    public string Password { get; set; } = string.Empty;
+    public string Password { get; set; } = HandlerTest.TestHashedPassword;
 
     /// <summary>
     ///     The username of the user.
     /// </summary>
-    public string UserName { get; set; } = string.Empty;
+    public string UserName { get; set; } = HandlerTest.TestUsername;
 
     /// <summary>
     ///     The role of the user.

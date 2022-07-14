@@ -60,7 +60,7 @@ public class GetCopilotUserQueryHandlerTest
     [TestMethod]
     public void TestHandle()
     {
-        var user = new CopilotUserFactory { Email = HandlerTest.TestEmail, UserName = HandlerTest.TestUsername }.Build();
+        var user = new CopilotUserFactory().Build();
 
         var test = new HandlerTest();
         test.DbContext.Setup(db => db.CopilotUsers.Add(user));
@@ -84,7 +84,7 @@ public class GetCopilotUserQueryHandlerTest
     [TestMethod]
     public void TestHandleCurrentUser()
     {
-        var user = new CopilotUserFactory { Email = HandlerTest.TestEmail, UserName = HandlerTest.TestUsername }.Build();
+        var user = new CopilotUserFactory().Build();
 
         var test = new HandlerTest();
         test.DbContext.Setup(db => db.CopilotUsers.Add(user));

@@ -43,7 +43,7 @@ public class LoginCopilotUserCommandHandlerTest
     [TestMethod]
     public void TestHandleWrongPassword()
     {
-        var user = new CopilotUserFactory { Email = HandlerTest.TestEmail }.Build();
+        var user = new CopilotUserFactory().Build();
 
         var test = new HandlerTest();
         test.DbContext.Setup(db => db.CopilotUsers.Add(user));
@@ -64,7 +64,7 @@ public class LoginCopilotUserCommandHandlerTest
     [TestMethod]
     public void TestHandle()
     {
-        var user = new CopilotUserFactory { Email = HandlerTest.TestEmail, Password = HandlerTest.TestHashedPassword }.Build();
+        var user = new CopilotUserFactory().Build();
 
         var test = new HandlerTest();
         test.DbContext.Setup(db => db.CopilotUsers.Add(user));

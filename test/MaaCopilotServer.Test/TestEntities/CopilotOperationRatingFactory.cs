@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Domain.Entities;
 using MaaCopilotServer.Domain.Enums;
 
@@ -10,6 +11,7 @@ namespace MaaCopilotServer.Test.TestEntities;
 /// <summary>
 /// The factory class of <see cref="CopilotOperationRating"/>.
 /// </summary>
+[ExcludeFromCodeCoverage]
 public class CopilotOperationRatingFactory : ITestEntityFactory<CopilotOperationRating>
 {
     /// <summary>

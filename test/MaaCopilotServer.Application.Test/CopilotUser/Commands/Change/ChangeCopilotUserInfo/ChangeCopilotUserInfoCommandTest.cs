@@ -94,7 +94,7 @@ public class ChangeCopilotUserInfoCommandTest
     [TestMethod]
     public void TestHandleEmailInUse()
     {
-        var user = new CopilotUserFactory { Email = HandlerTest.TestEmail, UserRole = UserRole.User }.Build();
+        var user = new CopilotUserFactory().Build();
         var @operator = new CopilotUserFactory { UserRole = UserRole.Admin }.Build();
 
         var test = new HandlerTest();
@@ -120,9 +120,9 @@ public class ChangeCopilotUserInfoCommandTest
     [TestMethod]
     public void TestHandleValid()
     {
-        var user = new CopilotUserFactory { UserRole = UserRole.User }.Build();
+        var user = new CopilotUserFactory { Email = string.Empty, UserRole = UserRole.User }.Build();
         user.ActivateUser(Guid.Empty);
-        var @operator = new CopilotUserFactory { UserRole = UserRole.SuperAdmin }.Build();
+        var @operator = new CopilotUserFactory { Email = string.Empty, UserRole = UserRole.SuperAdmin }.Build();
 
         var test = new HandlerTest();
         test.DbContext.Setup(db =>

@@ -27,7 +27,7 @@ public class DeleteCopilotOperationCommandTest
     [TestMethod]
     public void TestHandleSameUser()
     {
-        var user = new CopilotUserFactory { UserRole = UserRole.User }.Build();
+        var user = new CopilotUserFactory().Build();
         var entity = new CopilotOperationFactory { Author = user }.Build();
 
         var test = new HandlerTest();
@@ -101,7 +101,7 @@ public class DeleteCopilotOperationCommandTest
     public void TestHandleOperationNotFound()
     {
         var test = new HandlerTest();
-        test.CurrentUserService.SetupGetUser(new CopilotUserFactory { UserRole = UserRole.User }.Build());
+        test.CurrentUserService.SetupGetUser(new CopilotUserFactory().Build());
         test.CopilotOperationService.SetupDecodeAndEncodeId();
 
         var result = test.TestDeleteCopilotOperation(new()

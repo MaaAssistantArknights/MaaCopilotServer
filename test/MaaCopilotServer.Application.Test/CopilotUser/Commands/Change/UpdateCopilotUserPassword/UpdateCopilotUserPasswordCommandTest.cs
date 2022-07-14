@@ -24,7 +24,7 @@ public class UpdateCopilotUserPasswordCommandTest
     [TestMethod]
     public void TestHandleOriginalPasswordWrong()
     {
-        var user = new CopilotUserFactory { Password = HandlerTest.TestHashedPassword }.Build();
+        var user = new CopilotUserFactory().Build();
 
         var test = new HandlerTest();
         test.DbContext.Setup(db => db.CopilotUsers.Add(user));
@@ -45,7 +45,7 @@ public class UpdateCopilotUserPasswordCommandTest
     [TestMethod]
     public void TestHandle()
     {
-        var user = new CopilotUserFactory { Password = HandlerTest.TestHashedPassword }.Build();
+        var user = new CopilotUserFactory().Build();
 
         var test = new HandlerTest();
         test.DbContext.Setup(db => db.CopilotUsers.Add(user));

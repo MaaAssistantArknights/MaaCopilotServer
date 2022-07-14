@@ -39,7 +39,7 @@ public class RequestPasswordResetCommandTest
     [TestMethod]
     public void TestHandleSendingEmailFailed()
     {
-        var user = new CopilotUserFactory { Email = HandlerTest.TestEmail }.Build();
+        var user = new CopilotUserFactory().Build();
 
         var test = new HandlerTest();
         test.DbContext.Setup(db => db.CopilotUsers.Add(user));
@@ -62,7 +62,7 @@ public class RequestPasswordResetCommandTest
     [DataRow(true)]
     public void TestHandleSuccessful(bool alreadyHaveToken)
     {
-        var user = new CopilotUserFactory { Email = HandlerTest.TestEmail }.Build();
+        var user = new CopilotUserFactory().Build();
 
         var test = new HandlerTest();
         test.DbContext.Setup(db => db.CopilotUsers.Add(user));

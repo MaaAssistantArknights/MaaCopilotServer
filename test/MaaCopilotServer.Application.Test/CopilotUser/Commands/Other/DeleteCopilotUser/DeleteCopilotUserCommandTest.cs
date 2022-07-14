@@ -64,7 +64,7 @@ public class DeleteCopilotUserCommandHandlerTest
     [TestMethod]
     public void TestHandle()
     {
-        var user = new CopilotUserFactory { UserRole = UserRole.User }.Build();
+        var user = new CopilotUserFactory().Build();
         var @operator = new CopilotUserFactory { UserRole = UserRole.Admin }.Build();
 
         var test = new HandlerTest();

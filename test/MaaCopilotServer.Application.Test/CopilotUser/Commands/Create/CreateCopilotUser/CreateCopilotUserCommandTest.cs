@@ -24,7 +24,7 @@ public class CreateCopilotUserCommandHandlerTest
     [TestMethod]
     public void TestHandleEmailInUse()
     {
-        var user = new CopilotUserFactory { Email = HandlerTest.TestEmail }.Build();
+        var user = new CopilotUserFactory().Build();
 
         var test = new HandlerTest();
         test.DbContext.Setup(db => db.CopilotUsers.Add(user));
