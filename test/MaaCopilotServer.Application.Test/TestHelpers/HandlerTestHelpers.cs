@@ -3,8 +3,6 @@
 // Licensed under the AGPL-3.0 license.
 
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
-using System.Reflection;
 using MaaCopilotServer.Application.Arknights.GetDataVersion;
 using MaaCopilotServer.Application.Common.Helpers;
 using MaaCopilotServer.Application.Common.Interfaces;
@@ -30,7 +28,6 @@ using MaaCopilotServer.Application.System.GetCurrentVersion;
 using MaaCopilotServer.Application.System.SendEmailTest;
 using MaaCopilotServer.Domain.Email.Models;
 using MaaCopilotServer.Domain.Options;
-using MaaCopilotServer.Infrastructure.Services;
 using MaaCopilotServer.Resources;
 using MaaCopilotServer.Test.TestHelpers;
 using Microsoft.Extensions.Options;

@@ -3,19 +3,13 @@
 // Licensed under the AGPL-3.0 license.
 
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 using MaaCopilotServer.Application.Common.Helpers;
-using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Application.CopilotOperation.Commands.DeleteCopilotOperation;
 using MaaCopilotServer.Application.Test.TestHelpers;
 using MaaCopilotServer.Domain.Entities;
 using MaaCopilotServer.Domain.Enums;
-using MaaCopilotServer.Domain.Options;
 using MaaCopilotServer.GameData.Entity;
-using MaaCopilotServer.Infrastructure.Services;
-using MaaCopilotServer.Resources;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Options;
 
 namespace MaaCopilotServer.Application.Test.CopilotOperation.Commands.DeleteCopilotOperation;
 
