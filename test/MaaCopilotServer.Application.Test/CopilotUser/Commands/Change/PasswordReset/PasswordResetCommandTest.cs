@@ -39,7 +39,7 @@ public class PasswordResetCommandTest
     [TestMethod]
     public void TestHandleExpiredToken()
     {
-        var token = new CopilotTokenFactory { Type = TokenType.UserPasswordReset, Token = HandlerTest.TestToken, ValidBefore = HandlerTest.TestTokenTimePast }.Build();
+        var token = new CopilotTokenFactory { Type = TokenType.UserPasswordReset, ValidBefore = HandlerTest.TestTokenTimePast }.Build();
         var test = new HandlerTest();
         test.DbContext.Setup(db => db.CopilotTokens.Add(token));
 
@@ -57,7 +57,7 @@ public class PasswordResetCommandTest
     [TestMethod]
     public void TestHandleWrongTypeToken()
     {
-        var token = new CopilotTokenFactory { Type = TokenType.UserActivation, Token = HandlerTest.TestToken, ValidBefore = HandlerTest.TestTokenTimePast }.Build();
+        var token = new CopilotTokenFactory { Type = TokenType.UserActivation, ValidBefore = HandlerTest.TestTokenTimePast }.Build();
         var test = new HandlerTest();
         test.DbContext.Setup(db => db.CopilotTokens.Add(token));
 
@@ -75,7 +75,7 @@ public class PasswordResetCommandTest
     [TestMethod]
     public void TestHandleInvalidUser()
     {
-        var token = new CopilotTokenFactory { Type = TokenType.UserPasswordReset, Token = HandlerTest.TestToken, ValidBefore = HandlerTest.TestTokenTimeFuture }.Build();
+        var token = new CopilotTokenFactory { Type = TokenType.UserPasswordReset }.Build();
         var test = new HandlerTest();
         test.DbContext.Setup(db => db.CopilotTokens.Add(token));
 
@@ -96,7 +96,7 @@ public class PasswordResetCommandTest
         var user = new CopilotUserFactory().Build();
         var test = new HandlerTest();
         test.DbContext.Setup(db => db.CopilotUsers.Add(user));
-        var token = new CopilotTokenFactory { ResourceId = user.EntityId, Type = TokenType.UserPasswordReset, Token = HandlerTest.TestToken, ValidBefore = HandlerTest.TestTokenTimeFuture }.Build();
+        var token = new CopilotTokenFactory { ResourceId = user.EntityId, Type = TokenType.UserPasswordReset }.Build();
         test.DbContext.Setup(db => db.CopilotTokens.Add(token));
         test.SecretService.SetupHashPassword();
 

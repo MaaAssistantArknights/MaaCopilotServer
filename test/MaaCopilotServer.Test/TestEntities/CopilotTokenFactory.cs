@@ -3,6 +3,7 @@
 // Licensed under the AGPL-3.0 license.
 
 using System.Diagnostics.CodeAnalysis;
+using MaaCopilotServer.Application.Test.TestHelpers;
 using MaaCopilotServer.Domain.Entities;
 using MaaCopilotServer.Domain.Enums;
 
@@ -27,12 +28,12 @@ public class CopilotTokenFactory : ITestEntityFactory<CopilotToken>
     /// <summary>
     ///     The token content.
     /// </summary>
-    public string Token { get; set; } = string.Empty;
+    public string Token { get; set; } = HandlerTest.TestToken;
 
     /// <summary>
     ///     The time that this token is valid before.
     /// </summary>
-    public DateTimeOffset ValidBefore { get; set; }
+    public DateTimeOffset ValidBefore { get; set; } = HandlerTest.TestTokenTimeFuture;
 
     /// <inheritdoc/>
     public CopilotToken Build()

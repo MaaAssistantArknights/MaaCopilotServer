@@ -6,6 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Application.CopilotUser.Commands.RequestActivationToken;
 using MaaCopilotServer.Application.Test.TestExtensions;
 using MaaCopilotServer.Application.Test.TestHelpers;
+using MaaCopilotServer.Domain.Enums;
 using MaaCopilotServer.Test.TestEntities;
 using Microsoft.AspNetCore.Http;
 
@@ -48,7 +49,7 @@ public class RequestActivationTokenCommandHandlerTest
 
         var test = new HandlerTest();
         test.DbContext.Setup(db => db.CopilotUsers.Add(user));
-        var token = new CopilotTokenFactory { ResourceId = user.EntityId, Type = Domain.Enums.TokenType.UserActivation, Token = HandlerTest.TestToken, ValidBefore = HandlerTest.TestTokenTimeFuture }.Build();
+        var token = new CopilotTokenFactory { ResourceId = user.EntityId, Type = TokenType.UserActivation }.Build();
         test.DbContext.Setup(db => db.CopilotTokens.Add(token));
         test.CurrentUserService.SetupGetUser(user);
 
@@ -95,7 +96,7 @@ public class RequestActivationTokenCommandHandlerTest
 
         result.Response.StatusCode.Should().Be(StatusCodes.Status200OK);
         result.DbContext.CopilotTokens
-            .Where(x => x.Type == Domain.Enums.TokenType.UserActivation)
+            .Where(x => x.Type == TokenType.UserActivation)
             .Where(x => x.ResourceId == user.EntityId)
             .Count()
             .Should()
