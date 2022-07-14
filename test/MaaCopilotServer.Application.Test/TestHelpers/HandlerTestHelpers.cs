@@ -4,6 +4,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
+using MaaCopilotServer.Application.Arknights.GetDataVersion;
 using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Application.Common.Models;
 using MaaCopilotServer.Application.CopilotOperation.Commands.CreateCopilotOperation;
@@ -26,9 +27,7 @@ using MaaCopilotServer.Application.CopilotUser.Queries.QueryCopilotUser;
 using MaaCopilotServer.Application.System.GetCurrentVersion;
 using MaaCopilotServer.Application.System.SendEmailTest;
 using MaaCopilotServer.Domain.Email.Models;
-using MaaCopilotServer.Domain.Entities;
 using MaaCopilotServer.Domain.Options;
-using MaaCopilotServer.GameData.Entity;
 using MaaCopilotServer.Infrastructure.Services;
 using MaaCopilotServer.Resources;
 using MaaCopilotServer.Test.TestHelpers;
@@ -188,7 +187,7 @@ public class HandlerTest
         }
 
         action.Invoke(DbContext);
-        DbContext.SaveChangesAsync(new CancellationToken()).Wait();
+        DbContext.SaveChangesAsync(default).Wait();
         return this;
     }
 
@@ -322,6 +321,19 @@ public class HandlerTest
     #endregion
 
     #region Testers
+    #region Arknights
+    /// <summary>
+    /// Tests <see cref="GetDataVersionQueryHandler"/>.
+    /// </summary>
+    /// <param name="request">The test request.</param>
+    /// <returns>The result.</returns>
+    public HandlerTestResult TestGetDataVersion(GetDataVersionQuery request)
+    {
+        var handler = new GetDataVersionQueryHandler(DbContext);
+        return new HandlerTestResult { Response = handler.Handle(request, default).Result, DbContext = DbContext };
+    }
+    #endregion
+    #region CopilotOperation
     /// <summary>
     /// Tests <see cref="CreateCopilotOperationCommandHandler"/>.
     /// </summary>
@@ -333,10 +345,11 @@ public class HandlerTest
             new ApplicationOption
             {
                 AssemblyPath = new FileInfo(Assembly.GetExecutingAssembly().Location).Directory!.FullName,
-                DataDirectory = string.Empty, Version = string.Empty
+                DataDirectory = string.Empty,
+                Version = string.Empty,
             }));
         var handler = new CreateCopilotOperationCommandHandler(DbContext, CurrentUserService.Object, ops, new CopilotOperationService(CopilotOperationOption, DomainString));
-        return new HandlerTestResult { Response = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult(), DbContext = DbContext };
+        return new HandlerTestResult { Response = handler.Handle(request, default).Result, DbContext = DbContext };
     }
 
     /// <summary>
@@ -347,7 +360,7 @@ public class HandlerTest
     public HandlerTestResult TestDeleteCopilotOperation(DeleteCopilotOperationCommand request)
     {
         var handler = new DeleteCopilotOperationCommandHandler(DbContext, new CopilotOperationService(CopilotOperationOption, DomainString), CurrentUserService.Object, ApiErrorMessage);
-        return new HandlerTestResult { Response = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult(), DbContext = DbContext };
+        return new HandlerTestResult { Response = handler.Handle(request, default).Result, DbContext = DbContext };
     }
 
     /// <summary>
@@ -358,7 +371,7 @@ public class HandlerTest
     public HandlerTestResult TestGetCopilotOperation(GetCopilotOperationQuery request)
     {
         var handler = new GetCopilotOperationQueryHandler(DbContext, CurrentUserService.Object, new CopilotOperationService(CopilotOperationOption, DomainString), ApiErrorMessage);
-        return new HandlerTestResult { Response = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult(), DbContext = DbContext };
+        return new HandlerTestResult { Response = handler.Handle(request, default).Result, DbContext = DbContext };
     }
 
     /// <summary>
@@ -369,9 +382,10 @@ public class HandlerTest
     public HandlerTestResult TestQueryCopilotOperations(QueryCopilotOperationsQuery request)
     {
         var handler = new QueryCopilotOperationsQueryHandler(DbContext, new CopilotOperationService(CopilotOperationOption, DomainString), CurrentUserService.Object, ApiErrorMessage);
-        return new HandlerTestResult { Response = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult(), DbContext = DbContext };
+        return new HandlerTestResult { Response = handler.Handle(request, default).Result, DbContext = DbContext };
     }
-
+    #endregion
+    #region CopilotUser
     /// <summary>
     /// Tests <see cref="ChangeCopilotUserInfoCommandHandler"/>.
     /// </summary>
@@ -380,7 +394,7 @@ public class HandlerTest
     public HandlerTestResult TestChangeCopilotUserInfo(ChangeCopilotUserInfoCommand request)
     {
         var handler = new ChangeCopilotUserInfoCommandHandler(DbContext, CurrentUserService.Object, SecretService.Object, ApiErrorMessage);
-        return new HandlerTestResult { Response = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult(), DbContext = DbContext };
+        return new HandlerTestResult { Response = handler.Handle(request, default).Result, DbContext = DbContext };
     }
 
     /// <summary>
@@ -391,7 +405,7 @@ public class HandlerTest
     public HandlerTestResult TestPasswordReset(PasswordResetCommand request)
     {
         var handler = new PasswordResetCommandHandler(SecretService.Object, DbContext, ApiErrorMessage);
-        return new HandlerTestResult { Response = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult(), DbContext = DbContext };
+        return new HandlerTestResult { Response = handler.Handle(request, default).Result, DbContext = DbContext };
     }
 
     /// <summary>
@@ -402,7 +416,7 @@ public class HandlerTest
     public HandlerTestResult TestRequestPasswordReset(RequestPasswordResetCommand request)
     {
         var handler = new RequestPasswordResetCommandHandler(TokenOption, DbContext, SecretService.Object, MailService.Object, ApiErrorMessage);
-        return new HandlerTestResult { Response = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult(), DbContext = DbContext };
+        return new HandlerTestResult { Response = handler.Handle(request, default).Result, DbContext = DbContext };
     }
 
     /// <summary>
@@ -413,7 +427,7 @@ public class HandlerTest
     public HandlerTestResult TestUpdateCopilotUserInfo(UpdateCopilotUserInfoCommand request)
     {
         var handler = new UpdateCopilotUserInfoCommandHandler(TokenOption, DbContext, MailService.Object, SecretService.Object, CurrentUserService.Object, ApiErrorMessage);
-        return new HandlerTestResult { Response = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult(), DbContext = DbContext };
+        return new HandlerTestResult { Response = handler.Handle(request, default).Result, DbContext = DbContext };
     }
 
     /// <summary>
@@ -424,7 +438,7 @@ public class HandlerTest
     public HandlerTestResult TestUpdateCopilotUserPassword(UpdateCopilotUserPasswordCommand request)
     {
         var handler = new UpdateCopilotUserPasswordCommandHandler(DbContext, SecretService.Object, CurrentUserService.Object, ApiErrorMessage);
-        return new HandlerTestResult { Response = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult(), DbContext = DbContext };
+        return new HandlerTestResult { Response = handler.Handle(request, default).Result, DbContext = DbContext };
     }
 
     /// <summary>
@@ -435,7 +449,7 @@ public class HandlerTest
     public HandlerTestResult TestActivateCopilotAccount(ActivateCopilotAccountCommand request)
     {
         var handler = new ActivateCopilotAccountCommandHandler(DbContext, ApiErrorMessage);
-        return new HandlerTestResult { Response = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult(), DbContext = DbContext };
+        return new HandlerTestResult { Response = handler.Handle(request, default).Result, DbContext = DbContext };
     }
 
     /// <summary>
@@ -446,7 +460,7 @@ public class HandlerTest
     public HandlerTestResult TestCreateCopilotUser(CreateCopilotUserCommand request)
     {
         var handler = new CreateCopilotUserCommandHandler(DbContext, SecretService.Object, CurrentUserService.Object, ApiErrorMessage);
-        return new HandlerTestResult { Response = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult(), DbContext = DbContext };
+        return new HandlerTestResult { Response = handler.Handle(request, default).Result, DbContext = DbContext };
     }
 
     /// <summary>
@@ -457,7 +471,7 @@ public class HandlerTest
     public HandlerTestResult TestRegisterCopilotAccount(RegisterCopilotAccountCommand request)
     {
         var handler = new RegisterCopilotAccountCommandHandler(TokenOption, DbContext, SecretService.Object, MailService.Object, CopilotServerOption, ApiErrorMessage);
-        return new HandlerTestResult { Response = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult(), DbContext = DbContext };
+        return new HandlerTestResult { Response = handler.Handle(request, default).Result, DbContext = DbContext };
     }
 
     /// <summary>
@@ -468,7 +482,7 @@ public class HandlerTest
     public HandlerTestResult TestDeleteCopilotUser(DeleteCopilotUserCommand request)
     {
         var handler = new DeleteCopilotUserCommandHandler(DbContext, CurrentUserService.Object, ApiErrorMessage);
-        return new HandlerTestResult { Response = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult(), DbContext = DbContext };
+        return new HandlerTestResult { Response = handler.Handle(request, default).Result, DbContext = DbContext };
     }
 
     /// <summary>
@@ -479,7 +493,7 @@ public class HandlerTest
     public HandlerTestResult TestLoginCopilotUser(LoginCopilotUserCommand request)
     {
         var handler = new LoginCopilotUserCommandHandler(DbContext, SecretService.Object, ApiErrorMessage);
-        return new HandlerTestResult { Response = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult(), DbContext = DbContext };
+        return new HandlerTestResult { Response = handler.Handle(request, default).Result, DbContext = DbContext };
     }
 
     /// <summary>
@@ -490,7 +504,7 @@ public class HandlerTest
     public HandlerTestResult TestRequestActivationToken(RequestActivationTokenCommand request)
     {
         var handler = new RequestActivationTokenCommandHandler(TokenOption, DbContext, MailService.Object, SecretService.Object, CurrentUserService.Object, ApiErrorMessage);
-        return new HandlerTestResult { Response = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult(), DbContext = DbContext };
+        return new HandlerTestResult { Response = handler.Handle(request, default).Result, DbContext = DbContext };
     }
 
     /// <summary>
@@ -501,7 +515,7 @@ public class HandlerTest
     public HandlerTestResult TestGetCopilotUser(GetCopilotUserQuery request)
     {
         var handler = new GetCopilotUserQueryHandler(DbContext, CurrentUserService.Object, ApiErrorMessage);
-        return new HandlerTestResult { Response = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult(), DbContext = DbContext };
+        return new HandlerTestResult { Response = handler.Handle(request, default).Result, DbContext = DbContext };
     }
 
     /// <summary>
@@ -512,9 +526,10 @@ public class HandlerTest
     public HandlerTestResult TestQueryCopilotUser(QueryCopilotUserQuery request)
     {
         var handler = new QueryCopilotUserQueryHandler(DbContext);
-        return new HandlerTestResult { Response = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult(), DbContext = DbContext };
+        return new HandlerTestResult { Response = handler.Handle(request, default).Result, DbContext = DbContext };
     }
-
+    #endregion
+    #region System
     /// <summary>
     /// Tests <see cref="GetCurrentVersionCommandHandler"/>.
     /// </summary>
@@ -523,7 +538,7 @@ public class HandlerTest
     public HandlerTestResult TestGetCurrentVersion(GetCurrentVersionCommand request)
     {
         var handler = new GetCurrentVersionCommandHandler(ApplicationOption);
-        return new HandlerTestResult { Response = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult(), DbContext = DbContext };
+        return new HandlerTestResult { Response = handler.Handle(request, default).Result, DbContext = DbContext };
     }
 
     /// <summary>
@@ -534,8 +549,9 @@ public class HandlerTest
     public HandlerTestResult TestSendEmailTest(SendEmailTestCommand request)
     {
         var handler = new SendEmailTestCommandHandler(MailService.Object, CopilotServerOption);
-        return new HandlerTestResult { Response = handler.Handle(request, new CancellationToken()).GetAwaiter().GetResult(), DbContext = DbContext };
+        return new HandlerTestResult { Response = handler.Handle(request, default).Result, DbContext = DbContext };
     }
+    #endregion
     #endregion
 }
 
