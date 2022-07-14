@@ -4,6 +4,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Application.CopilotUser.Queries.GetCopilotUser;
+using MaaCopilotServer.Application.Test.TestExtensions;
 using MaaCopilotServer.Application.Test.TestHelpers;
 using Microsoft.AspNetCore.Http;
 
@@ -23,12 +24,13 @@ public class GetCopilotUserQueryHandlerTest
     [TestMethod]
     public void TestHandleCurrentUserNull()
     {
-        var result = new HandlerTest()
-            .SetupGetUserIdentity(null)
-            .TestGetCopilotUser(new()
-            {
-                UserId = "me",
-            });
+        var test = new HandlerTest();
+        test.CurrentUserService.SetupGetUserIdentity(null);
+
+        var result = test.TestGetCopilotUser(new()
+        {
+            UserId = "me",
+        });
 
         result.Response.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
     }
@@ -40,12 +42,13 @@ public class GetCopilotUserQueryHandlerTest
     [TestMethod]
     public void TestHandleUserNotFound()
     {
-        var result = new HandlerTest()
-            .SetupGetUserIdentity(null)
-            .TestGetCopilotUser(new()
-            {
-                UserId = Guid.Empty.ToString(),
-            });
+        var test = new HandlerTest();
+        test.CurrentUserService.SetupGetUserIdentity(null);
+
+        var result = test.TestGetCopilotUser(new()
+        {
+            UserId = Guid.Empty.ToString(),
+        });
 
         result.Response.StatusCode.Should().Be(StatusCodes.Status404NotFound);
     }
@@ -58,12 +61,13 @@ public class GetCopilotUserQueryHandlerTest
     {
         var user = new Domain.Entities.CopilotUser(HandlerTest.TestEmail, string.Empty, HandlerTest.TestUsername, Domain.Enums.UserRole.User, null);
 
-        var result = new HandlerTest()
-            .SetupDatabase(db => db.CopilotUsers.Add(user))
-            .TestGetCopilotUser(new()
-            {
-                UserId = user.EntityId.ToString(),
-            });
+        var test = new HandlerTest();
+        test.DbContext.Setup(db => db.CopilotUsers.Add(user));
+
+        var result = test.TestGetCopilotUser(new()
+        {
+            UserId = user.EntityId.ToString(),
+        });
 
         result.Response.StatusCode.Should().Be(StatusCodes.Status200OK);
         var dto = ((GetCopilotUserDto)result.Response.Data!);
@@ -81,13 +85,14 @@ public class GetCopilotUserQueryHandlerTest
     {
         var user = new Domain.Entities.CopilotUser(HandlerTest.TestEmail, string.Empty, HandlerTest.TestUsername, Domain.Enums.UserRole.User, null);
 
-        var result = new HandlerTest()
-            .SetupDatabase(db => db.CopilotUsers.Add(user))
-            .SetupGetUserIdentity(user.EntityId)
-            .TestGetCopilotUser(new()
-            {
-                UserId = "me",
-            });
+        var test = new HandlerTest();
+        test.DbContext.Setup(db => db.CopilotUsers.Add(user));
+        test.CurrentUserService.SetupGetUserIdentity(user.EntityId);
+
+        var result = test.TestGetCopilotUser(new()
+        {
+            UserId = "me",
+        });
 
         result.Response.StatusCode.Should().Be(StatusCodes.Status200OK);
         var dto = ((GetCopilotUserDto)result.Response.Data!);

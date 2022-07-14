@@ -4,6 +4,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Application.CopilotUser.Commands.UpdateCopilotUserPassword;
+using MaaCopilotServer.Application.Test.TestExtensions;
 using MaaCopilotServer.Application.Test.TestHelpers;
 using Microsoft.AspNetCore.Http;
 
@@ -23,17 +24,18 @@ public class UpdateCopilotUserPasswordCommandTest
     public void TestHandleOriginalPasswordWrong()
     {
         var user = new Domain.Entities.CopilotUser(string.Empty, HandlerTest.TestHashedPassword, string.Empty, Domain.Enums.UserRole.User, null);
-        var response = new HandlerTest()
-            .SetupDatabase(db => db.CopilotUsers.Add(user))
-            .SetupGetUser(user)
-            .SetupVerifyPassword(HandlerTest.TestHashedPassword, "wrong_password", false)
-            .TestUpdateCopilotUserPassword(new()
-            {
-                OriginalPassword = "wrong_password",
-            })
-            .Response;
 
-        response.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
+        var test = new HandlerTest();
+        test.DbContext.Setup(db => db.CopilotUsers.Add(user));
+        test.CurrentUserService.SetupGetUser(user);
+        test.SecretService.SetupVerifyPassword(HandlerTest.TestHashedPassword, "wrong_password", false);
+
+        var result = test.TestUpdateCopilotUserPassword(new()
+        {
+            OriginalPassword = "wrong_password",
+        });
+
+        result.Response.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
     }
 
     /// <summary>
@@ -43,19 +45,20 @@ public class UpdateCopilotUserPasswordCommandTest
     public void TestHandle()
     {
         var user = new Domain.Entities.CopilotUser(string.Empty, HandlerTest.TestHashedPassword, string.Empty, Domain.Enums.UserRole.User, null);
-        var response = new HandlerTest()
-            .SetupDatabase(db => db.CopilotUsers.Add(user))
-            .SetupGetUser(user)
-            .SetupVerifyPassword(HandlerTest.TestHashedPassword, HandlerTest.TestPassword, true)
-            .SetupHashPassword("new_password", "new_password_hash")
-            .TestUpdateCopilotUserPassword(new()
-            {
-                OriginalPassword = HandlerTest.TestPassword,
-                NewPassword = "new_password",
-            })
-            .Response;
 
-        response.StatusCode.Should().Be(StatusCodes.Status200OK);
+        var test = new HandlerTest();
+        test.DbContext.Setup(db => db.CopilotUsers.Add(user));
+        test.CurrentUserService.SetupGetUser(user);
+        test.SecretService.SetupVerifyPassword(HandlerTest.TestHashedPassword, HandlerTest.TestPassword, true);
+        test.SecretService.SetupHashPassword("new_password", "new_password_hash");
+
+        var result = test.TestUpdateCopilotUserPassword(new()
+        {
+            OriginalPassword = HandlerTest.TestPassword,
+            NewPassword = "new_password",
+        });
+
+        result.Response.StatusCode.Should().Be(StatusCodes.Status200OK);
         user.Password.Should().Be("new_password_hash");
     }
 }

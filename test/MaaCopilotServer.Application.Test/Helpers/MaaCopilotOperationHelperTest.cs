@@ -3,8 +3,6 @@
 // Licensed under the AGPL-3.0 license.
 
 using System.Diagnostics.CodeAnalysis;
-using System.Text.Json;
-using MaaCopilotServer.Application.Common.Helpers;
 using MaaCopilotServer.Application.Common.Models;
 using MaaCopilotServer.Application.Common.Operation;
 

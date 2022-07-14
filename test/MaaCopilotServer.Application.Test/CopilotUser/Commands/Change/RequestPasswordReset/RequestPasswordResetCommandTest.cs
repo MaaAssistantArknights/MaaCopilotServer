@@ -4,6 +4,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Application.CopilotUser.Commands.RequestPasswordReset;
+using MaaCopilotServer.Application.Test.TestExtensions;
 using MaaCopilotServer.Application.Test.TestHelpers;
 using Microsoft.AspNetCore.Http;
 
@@ -22,14 +23,12 @@ public class RequestPasswordResetCommandTest
     [TestMethod]
     public void TestHandleUserNotFound()
     {
-        var response = new HandlerTest()
-            .TestRequestPasswordReset(new()
-            {
-                Email = HandlerTest.TestEmail,
-            })
-            .Response;
+        var result = new HandlerTest().TestRequestPasswordReset(new()
+        {
+            Email = HandlerTest.TestEmail,
+        });
 
-        response.StatusCode.Should().Be(StatusCodes.Status404NotFound);
+        result.Response.StatusCode.Should().Be(StatusCodes.Status404NotFound);
     }
 
     /// <summary>
@@ -39,17 +38,18 @@ public class RequestPasswordResetCommandTest
     public void TestHandleSendingEmailFailed()
     {
         var user = new Domain.Entities.CopilotUser(HandlerTest.TestEmail, string.Empty, string.Empty, Domain.Enums.UserRole.User, null);
-        var response = new HandlerTest()
-            .SetupDatabase(db => db.CopilotUsers.Add(user))
-            .SetupGenerateToken()
-            .SetupSendEmailAsync(false)
-            .TestRequestPasswordReset(new()
-            {
-                Email = HandlerTest.TestEmail,
-            })
-            .Response;
 
-        response.StatusCode.Should().Be(StatusCodes.Status500InternalServerError);
+        var test = new HandlerTest();
+        test.DbContext.Setup(db => db.CopilotUsers.Add(user));
+        test.SecretService.SetupGenerateToken();
+        test.MailService.SetupSendEmailAsync(false);
+
+        var result = test.TestRequestPasswordReset(new()
+        {
+            Email = HandlerTest.TestEmail,
+        });
+
+        result.Response.StatusCode.Should().Be(StatusCodes.Status500InternalServerError);
     }
 
     /// <summary>
@@ -61,21 +61,24 @@ public class RequestPasswordResetCommandTest
     public void TestHandleSuccessful(bool alreadyHaveToken)
     {
         var user = new Domain.Entities.CopilotUser(HandlerTest.TestEmail, string.Empty, string.Empty, Domain.Enums.UserRole.User, null);
-        var result = new HandlerTest()
-            .SetupDatabase(db => db.CopilotUsers.Add(user))
-            .SetupDatabase(db =>
+
+        var test = new HandlerTest();
+        test.DbContext.Setup(db => db.CopilotUsers.Add(user));
+        test.DbContext.Setup(db =>
+        {
+            if (alreadyHaveToken)
             {
-                if (alreadyHaveToken)
-                {
-                    var oldToken = new Domain.Entities.CopilotToken(user.EntityId, Domain.Enums.TokenType.UserPasswordReset, "old_token", new DateTimeOffset());
-                    db.CopilotTokens.Add(oldToken);
-                }
-            })
-            .SetupGenerateToken()
-            .SetupSendEmailAsync(true).TestRequestPasswordReset(new()
-            {
-                Email = HandlerTest.TestEmail,
-            });
+                var oldToken = new Domain.Entities.CopilotToken(user.EntityId, Domain.Enums.TokenType.UserPasswordReset, "old_token", new DateTimeOffset());
+                db.CopilotTokens.Add(oldToken);
+            }
+        });
+        test.SecretService.SetupGenerateToken();
+        test.MailService.SetupSendEmailAsync(true);
+
+        var result = test.TestRequestPasswordReset(new()
+        {
+            Email = HandlerTest.TestEmail,
+        });
 
         result.Response.StatusCode.Should().Be(StatusCodes.Status200OK);
         var token = result.DbContext.CopilotTokens.FirstOrDefault(

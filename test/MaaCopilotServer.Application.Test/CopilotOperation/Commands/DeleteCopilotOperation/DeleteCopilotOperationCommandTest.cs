@@ -3,17 +3,14 @@
 // Licensed under the AGPL-3.0 license.
 
 using System.Diagnostics.CodeAnalysis;
-using MaaCopilotServer.Application.Common.Interfaces;
+using MaaCopilotServer.Application.Common.Helpers;
 using MaaCopilotServer.Application.CopilotOperation.Commands.DeleteCopilotOperation;
+using MaaCopilotServer.Application.Test.TestExtensions;
 using MaaCopilotServer.Application.Test.TestHelpers;
 using MaaCopilotServer.Domain.Entities;
 using MaaCopilotServer.Domain.Enums;
-using MaaCopilotServer.Domain.Options;
 using MaaCopilotServer.GameData.Entity;
-using MaaCopilotServer.Infrastructure.Services;
-using MaaCopilotServer.Resources;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Options;
 
 namespace MaaCopilotServer.Application.Test.CopilotOperation.Commands.DeleteCopilotOperation;
 
@@ -24,12 +21,6 @@ namespace MaaCopilotServer.Application.Test.CopilotOperation.Commands.DeleteCopi
 [ExcludeFromCodeCoverage]
 public class DeleteCopilotOperationCommandTest
 {
-    /// <summary>
-    ///     The service for copilot operations.
-    /// </summary>
-    private readonly ICopilotOperationService _copilotOperationService
-        = new CopilotOperationService(Options.Create(new CopilotOperationOption()), new DomainString());
-
     /// <summary>
     /// Tests <see cref="DeleteCopilotOperationCommandHandler.Handle(DeleteCopilotOperationCommand, CancellationToken)"/>
     /// with the same user.
@@ -43,13 +34,18 @@ public class DeleteCopilotOperationCommandTest
             new ArkLevelData(new ArkLevelEntityGlobal()),
             new List<string>(), new List<string>());
 
-        var result = new HandlerTest()
-            .SetupDatabase(db => db.CopilotUsers.Add(user))
-            .SetupDatabase(db => db.CopilotOperations.Add(entity))
-            .SetupGetUser(user).TestDeleteCopilotOperation(new()
-            {
-                Id = _copilotOperationService.EncodeId(entity.Id)
-            });
+        var test = new HandlerTest();
+        test.DbContext.Setup(db =>
+        {
+            db.CopilotUsers.Add(user);
+            db.CopilotOperations.Add(entity);
+        });
+        test.CurrentUserService.SetupGetUser(user);
+        test.CopilotOperationService.SetupDecodeAndEncodeId();
+        var result = test.TestDeleteCopilotOperation(new()
+        {
+            Id = EntityIdHelper.EncodeId(entity.Id),
+        });
 
         result.Response.StatusCode.Should().Be(StatusCodes.Status200OK);
         result.DbContext.CopilotOperations.Any().Should().BeFalse();
@@ -78,14 +74,19 @@ public class DeleteCopilotOperationCommandTest
             new ArkLevelData(new ArkLevelEntityGlobal()),
             new List<string>(), new List<string>());
 
-        var result = new HandlerTest()
-            .SetupDatabase(db => db.CopilotUsers.Add(user))
-            .SetupDatabase(db => db.CopilotUsers.Add(author))
-            .SetupDatabase(db => db.CopilotOperations.Add(entity))
-            .SetupGetUser(user).TestDeleteCopilotOperation(new()
-            {
-                Id = _copilotOperationService.EncodeId(entity.Id)
-            });
+        var test = new HandlerTest();
+        test.DbContext.Setup(db =>
+        {
+            db.CopilotUsers.Add(user);
+            db.CopilotUsers.Add(author);
+            db.CopilotOperations.Add(entity);
+        });
+        test.CurrentUserService.SetupGetUser(user);
+        test.CopilotOperationService.SetupDecodeAndEncodeId();
+        var result = test.TestDeleteCopilotOperation(new()
+        {
+            Id = EntityIdHelper.EncodeId(entity.Id),
+        });
 
         if (expectedToSucceed)
         {
@@ -106,12 +107,14 @@ public class DeleteCopilotOperationCommandTest
     [TestMethod]
     public void TestHandleOperationNotFound()
     {
-        var result = new HandlerTest()
-            .SetupGetUser(new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, UserRole.User, null))
-            .TestDeleteCopilotOperation(new()
-            {
-                Id = _copilotOperationService.EncodeId(1),
-            });
+        var test = new HandlerTest();
+        test.CurrentUserService.SetupGetUser(new(string.Empty, string.Empty, string.Empty, UserRole.User, null));
+        test.CopilotOperationService.SetupDecodeAndEncodeId();
+
+        var result = test.TestDeleteCopilotOperation(new()
+        {
+            Id = EntityIdHelper.EncodeId(1),
+        });
 
         result.Response.StatusCode.Should().Be(StatusCodes.Status404NotFound);
     }

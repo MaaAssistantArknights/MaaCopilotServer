@@ -2,6 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
+using MaaCopilotServer.Application.Common.Helpers;
 using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Domain.Entities;
 using MaaCopilotServer.Domain.Enums;
@@ -53,24 +54,13 @@ public class CopilotOperationService : ICopilotOperationService
     /// <inheritdoc />
     public string EncodeId(long plainId)
     {
-        return (plainId + MinimumId).ToString();
+        return EntityIdHelper.EncodeId(plainId);
     }
 
     /// <inheritdoc />
     public long? DecodeId(string encodedId)
     {
-        var parsable = long.TryParse(encodedId, out var value);
-        if (parsable is false)
-        {
-            return null;
-        }
-
-        if (value < MinimumId)
-        {
-            return null;
-        }
-
-        return value - MinimumId;
+        return EntityIdHelper.DecodeId(encodedId);
     }
 
     /// <inheritdoc />

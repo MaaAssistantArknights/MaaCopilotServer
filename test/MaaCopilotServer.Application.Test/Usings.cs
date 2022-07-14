@@ -3,6 +3,6 @@
 // Licensed under the AGPL-3.0 license.
 
 global using FluentAssertions;
-global using Microsoft.VisualStudio.TestTools.UnitTesting;
 global using MaaCopilotServer.Application.Common.Operation.Model;
+global using Microsoft.VisualStudio.TestTools.UnitTesting;
 global using Moq;

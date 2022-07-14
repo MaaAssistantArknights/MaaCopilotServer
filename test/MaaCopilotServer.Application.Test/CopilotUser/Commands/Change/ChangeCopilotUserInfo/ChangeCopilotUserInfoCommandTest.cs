@@ -4,6 +4,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Application.CopilotUser.Commands.ChangeCopilotUserInfo;
+using MaaCopilotServer.Application.Test.TestExtensions;
 using MaaCopilotServer.Application.Test.TestHelpers;
 using Microsoft.AspNetCore.Http;
 
@@ -22,14 +23,13 @@ public class ChangeCopilotUserInfoCommandTest
     [TestMethod]
     public void TestHandleUserNotFound()
     {
-        var response = new HandlerTest()
-            .TestChangeCopilotUserInfo(new()
-            {
-                UserId = Guid.Empty.ToString(),
-            })
-            .Response;
+        var result = new HandlerTest()
+                    .TestChangeCopilotUserInfo(new()
+                    {
+                        UserId = Guid.Empty.ToString(),
+                    });
 
-        response.StatusCode.Should().Be(StatusCodes.Status404NotFound);
+        result.Response.StatusCode.Should().Be(StatusCodes.Status404NotFound);
     }
 
     /// <summary>
@@ -45,17 +45,20 @@ public class ChangeCopilotUserInfoCommandTest
         var user = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, userRole, null);
         var @operator = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, operatorRole, null);
 
-        var response = new HandlerTest()
-            .SetupDatabase(db => db.CopilotUsers.Add(user))
-            .SetupDatabase(db => db.CopilotUsers.Add(@operator))
-            .SetupGetUser(@operator)
-            .TestChangeCopilotUserInfo(new()
-            {
-                UserId = user.EntityId.ToString(),
-            })
-            .Response;
+        var test = new HandlerTest();
+        test.DbContext.Setup(db =>
+        {
+            db.CopilotUsers.Add(user);
+            db.CopilotUsers.Add(@operator);
+        });
+        test.CurrentUserService.SetupGetUser(@operator);
 
-        response.StatusCode.Should().Be(StatusCodes.Status403Forbidden);
+        var result = test.TestChangeCopilotUserInfo(new()
+        {
+            UserId = user.EntityId.ToString(),
+        });
+
+        result.Response.StatusCode.Should().Be(StatusCodes.Status403Forbidden);
     }
 
     /// <summary>
@@ -66,18 +69,22 @@ public class ChangeCopilotUserInfoCommandTest
     {
         var user = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, Domain.Enums.UserRole.SuperAdmin, null);
         var @operator = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, Domain.Enums.UserRole.SuperAdmin, null);
-        var response = new HandlerTest()
-            .SetupDatabase(db => db.CopilotUsers.Add(user))
-            .SetupDatabase(db => db.CopilotUsers.Add(@operator))
-            .SetupGetUser(@operator)
-            .TestChangeCopilotUserInfo(new()
-            {
-                UserId = user.EntityId.ToString(),
-                Role = Domain.Enums.UserRole.Admin.ToString(),
-            })
-            .Response;
 
-        response.StatusCode.Should().Be(StatusCodes.Status403Forbidden);
+        var test = new HandlerTest();
+        test.DbContext.Setup(db =>
+        {
+            db.CopilotUsers.Add(user);
+            db.CopilotUsers.Add(@operator);
+        });
+        test.CurrentUserService.SetupGetUser(@operator);
+
+        var result = test.TestChangeCopilotUserInfo(new()
+        {
+            UserId = user.EntityId.ToString(),
+            Role = Domain.Enums.UserRole.Admin.ToString(),
+        });
+
+        result.Response.StatusCode.Should().Be(StatusCodes.Status403Forbidden);
     }
 
     /// <summary>
@@ -89,16 +96,19 @@ public class ChangeCopilotUserInfoCommandTest
         var user = new Domain.Entities.CopilotUser(HandlerTest.TestEmail, string.Empty, string.Empty, Domain.Enums.UserRole.User, null);
         var @operator = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, Domain.Enums.UserRole.Admin, null);
 
-        var response = new HandlerTest()
-            .SetupDatabase(db => db.CopilotUsers.Add(user))
-            .SetupDatabase(db => db.CopilotUsers.Add(@operator))
-            .SetupGetUser(@operator)
-            .TestChangeCopilotUserInfo(new()
-            {
-                UserId = user.EntityId.ToString(),
-                Email = HandlerTest.TestEmail,
-            })
-            .Response;
+        var test = new HandlerTest();
+        test.DbContext.Setup(db =>
+        {
+            db.CopilotUsers.Add(user);
+            db.CopilotUsers.Add(@operator);
+        });
+        test.CurrentUserService.SetupGetUser(@operator);
+
+        var response = test.TestChangeCopilotUserInfo(new()
+        {
+            UserId = user.EntityId.ToString(),
+            Email = HandlerTest.TestEmail,
+        }).Response;
 
         response.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
     }
@@ -113,22 +123,25 @@ public class ChangeCopilotUserInfoCommandTest
         user.ActivateUser(Guid.Empty);
         var @operator = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, Domain.Enums.UserRole.SuperAdmin, null);
 
-        var response = new HandlerTest()
-            .SetupDatabase(db => db.CopilotUsers.Add(user))
-            .SetupDatabase(db => db.CopilotUsers.Add(@operator))
-            .SetupGetUser(@operator)
-            .SetupHashPassword()
-            .TestChangeCopilotUserInfo(new()
-            {
-                UserId = user.EntityId.ToString(),
-                Email = HandlerTest.TestEmail,
-                UserName = HandlerTest.TestUsername,
-                Password = HandlerTest.TestPassword,
-                Role = Domain.Enums.UserRole.Uploader.ToString(),
-            })
-            .Response;
+        var test = new HandlerTest();
+        test.DbContext.Setup(db =>
+        {
+            db.CopilotUsers.Add(user);
+            db.CopilotUsers.Add(@operator);
+        });
+        test.CurrentUserService.SetupGetUser(@operator);
+        test.SecretService.SetupHashPassword();
 
-        response.StatusCode.Should().Be(StatusCodes.Status200OK);
+        var result = test.TestChangeCopilotUserInfo(new()
+        {
+            UserId = user.EntityId.ToString(),
+            Email = HandlerTest.TestEmail,
+            UserName = HandlerTest.TestUsername,
+            Password = HandlerTest.TestPassword,
+            Role = Domain.Enums.UserRole.Uploader.ToString(),
+        });
+
+        result.Response.StatusCode.Should().Be(StatusCodes.Status200OK);
         user.UserActivated.Should().BeTrue();
         user.Email.Should().Be(HandlerTest.TestEmail);
         user.UserName.Should().Be(HandlerTest.TestUsername);

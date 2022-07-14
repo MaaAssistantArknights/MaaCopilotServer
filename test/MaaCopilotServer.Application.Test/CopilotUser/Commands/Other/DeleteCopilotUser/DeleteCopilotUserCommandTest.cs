@@ -4,6 +4,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Application.CopilotUser.Commands.DeleteCopilotUser;
+using MaaCopilotServer.Application.Test.TestExtensions;
 using MaaCopilotServer.Application.Test.TestHelpers;
 using Microsoft.AspNetCore.Http;
 
@@ -23,11 +24,12 @@ public class DeleteCopilotUserCommandHandlerTest
     [TestMethod]
     public void TestHandleUserNotFound()
     {
-        var result = new HandlerTest()
-            .TestDeleteCopilotUser(new()
-            {
-                UserId = Guid.Empty.ToString(),
-            });
+        var test = new HandlerTest();
+
+        var result = test.TestDeleteCopilotUser(new()
+        {
+            UserId = Guid.Empty.ToString(),
+        });
 
         result.Response.StatusCode.Should().Be(StatusCodes.Status404NotFound);
     }
@@ -42,13 +44,14 @@ public class DeleteCopilotUserCommandHandlerTest
         var user = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, Domain.Enums.UserRole.SuperAdmin, null);
         var @operator = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, Domain.Enums.UserRole.Admin, null);
 
-        var result = new HandlerTest()
-            .SetupDatabase(db => db.CopilotUsers.AddRange(user, @operator))
-            .SetupGetUser(@operator)
-            .TestDeleteCopilotUser(new()
-            {
-                UserId = user.EntityId.ToString(),
-            });
+        var test = new HandlerTest();
+        test.DbContext.Setup(db => db.CopilotUsers.AddRange(user, @operator));
+        test.CurrentUserService.SetupGetUser(@operator);
+
+        var result = test.TestDeleteCopilotUser(new()
+        {
+            UserId = user.EntityId.ToString(),
+        });
 
         result.Response.StatusCode.Should().Be(StatusCodes.Status403Forbidden);
     }
@@ -62,13 +65,14 @@ public class DeleteCopilotUserCommandHandlerTest
         var user = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, Domain.Enums.UserRole.User, null);
         var @operator = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, Domain.Enums.UserRole.Admin, null);
 
-        var result = new HandlerTest()
-            .SetupDatabase(db => db.CopilotUsers.AddRange(user, @operator))
-            .SetupGetUser(@operator)
-            .TestDeleteCopilotUser(new()
-            {
-                UserId = user.EntityId.ToString(),
-            });
+        var test = new HandlerTest();
+        test.DbContext.Setup(db => db.CopilotUsers.AddRange(user, @operator));
+        test.CurrentUserService.SetupGetUser(@operator);
+
+        var result = test.TestDeleteCopilotUser(new()
+        {
+            UserId = user.EntityId.ToString(),
+        });
 
         result.Response.StatusCode.Should().Be(StatusCodes.Status200OK);
         result.DbContext.CopilotUsers.Count().Should().Be(1);

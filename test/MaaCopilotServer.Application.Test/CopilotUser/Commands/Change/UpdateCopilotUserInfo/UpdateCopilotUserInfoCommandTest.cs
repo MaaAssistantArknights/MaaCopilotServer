@@ -4,6 +4,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Application.CopilotUser.Commands.UpdateCopilotUserInfo;
+using MaaCopilotServer.Application.Test.TestExtensions;
 using MaaCopilotServer.Application.Test.TestHelpers;
 using Microsoft.AspNetCore.Http;
 
@@ -23,16 +24,17 @@ public class UpdateCopilotUserInfoCommandTest
     public void TestHandleChangeUsername()
     {
         var user = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, Domain.Enums.UserRole.User, null);
-        var response = new HandlerTest()
-            .SetupDatabase(db => db.CopilotUsers.Add(user))
-            .SetupGetUser(user)
-            .TestUpdateCopilotUserInfo(new()
-            {
-                UserName = "new_username",
-            })
-            .Response;
 
-        response.StatusCode.Should().Be(StatusCodes.Status200OK);
+        var test = new HandlerTest();
+        test.DbContext.Setup(db => db.CopilotUsers.Add(user));
+        test.CurrentUserService.SetupGetUser(user);
+
+        var result = test.TestUpdateCopilotUserInfo(new()
+        {
+            UserName = "new_username",
+        });
+
+        result.Response.StatusCode.Should().Be(StatusCodes.Status200OK);
         user.UserName.Should().Be("new_username");
     }
 
@@ -45,17 +47,18 @@ public class UpdateCopilotUserInfoCommandTest
     {
         var user = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, Domain.Enums.UserRole.User, null);
         var user2 = new Domain.Entities.CopilotUser(HandlerTest.TestEmail, string.Empty, string.Empty, Domain.Enums.UserRole.User, null);
-        var response = new HandlerTest()
-            .SetupDatabase(db => db.CopilotUsers.Add(user))
-            .SetupDatabase(db => db.CopilotUsers.Add(user2))
-            .SetupGetUser(user)
-            .TestUpdateCopilotUserInfo(new()
-            {
-                Email = HandlerTest.TestEmail,
-            })
-            .Response;
 
-        response.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
+        var test = new HandlerTest();
+        test.DbContext.Setup(db => db.CopilotUsers.Add(user));
+        test.DbContext.Setup(db => db.CopilotUsers.Add(user2));
+        test.CurrentUserService.SetupGetUser(user);
+
+        var result = test.TestUpdateCopilotUserInfo(new()
+        {
+            Email = HandlerTest.TestEmail,
+        });
+
+        result.Response.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
     }
 
     /// <summary>
@@ -66,18 +69,19 @@ public class UpdateCopilotUserInfoCommandTest
     public void TestHandleActivationEmailFailedToSend()
     {
         var user = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, Domain.Enums.UserRole.User, null);
-        var response = new HandlerTest()
-            .SetupDatabase(db => db.CopilotUsers.Add(user))
-            .SetupGetUser(user)
-            .SetupGenerateToken()
-            .SetupSendEmailAsync(false)
-            .TestUpdateCopilotUserInfo(new()
-            {
-                Email = HandlerTest.TestEmail,
-            })
-            .Response;
 
-        response.StatusCode.Should().Be(StatusCodes.Status500InternalServerError);
+        var test = new HandlerTest();
+        test.DbContext.Setup(db => db.CopilotUsers.Add(user));
+        test.CurrentUserService.SetupGetUser(user);
+        test.SecretService.SetupGenerateToken();
+        test.MailService.SetupSendEmailAsync(false);
+
+        var result = test.TestUpdateCopilotUserInfo(new()
+        {
+            Email = HandlerTest.TestEmail,
+        });
+
+        result.Response.StatusCode.Should().Be(StatusCodes.Status500InternalServerError);
     }
 
     /// <summary>
@@ -88,18 +92,19 @@ public class UpdateCopilotUserInfoCommandTest
     {
         var user = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, Domain.Enums.UserRole.User, null);
         user.ActivateUser(Guid.Empty);
-        var response = new HandlerTest()
-            .SetupDatabase(db => db.CopilotUsers.Add(user))
-            .SetupGetUser(user)
-            .SetupGenerateToken()
-            .SetupSendEmailAsync(true)
-            .TestUpdateCopilotUserInfo(new()
-            {
-                Email = HandlerTest.TestEmail,
-            })
-            .Response;
 
-        response.StatusCode.Should().Be(StatusCodes.Status200OK);
+        var test = new HandlerTest();
+        test.DbContext.Setup(db => db.CopilotUsers.Add(user));
+        test.CurrentUserService.SetupGetUser(user);
+        test.SecretService.SetupGenerateToken();
+        test.MailService.SetupSendEmailAsync(true);
+
+        var result = test.TestUpdateCopilotUserInfo(new()
+        {
+            Email = HandlerTest.TestEmail,
+        });
+
+        result.Response.StatusCode.Should().Be(StatusCodes.Status200OK);
         user.Email.Should().Be(HandlerTest.TestEmail);
         user.UserActivated.Should().BeFalse();
     }

@@ -4,7 +4,9 @@
 
 using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Application.CopilotUser.Commands.RequestActivationToken;
+using MaaCopilotServer.Application.Test.TestExtensions;
 using MaaCopilotServer.Application.Test.TestHelpers;
+using MaaCopilotServer.Domain.Entities;
 using Microsoft.AspNetCore.Http;
 
 namespace MaaCopilotServer.Application.Test.CopilotUser.Commands.Other.RequestActivationToken;
@@ -26,10 +28,11 @@ public class RequestActivationTokenCommandHandlerTest
         var user = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, Domain.Enums.UserRole.User, null);
         user.ActivateUser(Guid.Empty);
 
-        var result = new HandlerTest()
-            .SetupDatabase(db => db.CopilotUsers.Add(user))
-            .SetupGetUser(user)
-            .TestRequestActivationToken(new());
+        var test = new HandlerTest();
+        test.DbContext.Setup(db => db.CopilotUsers.Add(user));
+        test.CurrentUserService.SetupGetUser(user);
+
+        var result = test.TestRequestActivationToken(new());
 
         result.Response.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
     }
@@ -43,12 +46,13 @@ public class RequestActivationTokenCommandHandlerTest
     {
         var user = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, Domain.Enums.UserRole.User, null);
 
-        var result = new HandlerTest()
-            .SetupDatabase(db => db.CopilotUsers.Add(user))
-            .SetupDatabase(db => db.CopilotTokens.Add(
-                new Domain.Entities.CopilotToken(user.EntityId, Domain.Enums.TokenType.UserActivation, HandlerTest.TestToken, HandlerTest.TestTokenTimeFuture)))
-            .SetupGetUser(user)
-            .TestRequestActivationToken(new());
+        var test = new HandlerTest();
+        test.DbContext.Setup(db => db.CopilotUsers.Add(user));
+        var token = new CopilotToken(user.EntityId, Domain.Enums.TokenType.UserActivation, HandlerTest.TestToken, HandlerTest.TestTokenTimeFuture);
+        test.DbContext.Setup(db => db.CopilotTokens.Add(token));
+        test.CurrentUserService.SetupGetUser(user);
+
+        var result = test.TestRequestActivationToken(new());
 
         result.Response.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
     }
@@ -62,12 +66,13 @@ public class RequestActivationTokenCommandHandlerTest
     {
         var user = new Domain.Entities.CopilotUser(HandlerTest.TestEmail, string.Empty, string.Empty, Domain.Enums.UserRole.User, null);
 
-        var result = new HandlerTest()
-            .SetupDatabase(db => db.CopilotUsers.Add(user))
-            .SetupGetUser(user)
-            .SetupGenerateToken()
-            .SetupSendEmailAsync(false)
-            .TestRequestActivationToken(new());
+        var test = new HandlerTest();
+        test.DbContext.Setup(db => db.CopilotUsers.Add(user));
+        test.CurrentUserService.SetupGetUser(user);
+        test.SecretService.SetupGenerateToken();
+        test.MailService.SetupSendEmailAsync(false);
+
+        var result = test.TestRequestActivationToken(new());
 
         result.Response.StatusCode.Should().Be(StatusCodes.Status500InternalServerError);
     }
@@ -80,12 +85,13 @@ public class RequestActivationTokenCommandHandlerTest
     {
         var user = new Domain.Entities.CopilotUser(HandlerTest.TestEmail, string.Empty, string.Empty, Domain.Enums.UserRole.User, null);
 
-        var result = new HandlerTest()
-            .SetupDatabase(db => db.CopilotUsers.Add(user))
-            .SetupGetUser(user)
-            .SetupGenerateToken()
-            .SetupSendEmailAsync(true)
-            .TestRequestActivationToken(new());
+        var test = new HandlerTest();
+        test.DbContext.Setup(db => db.CopilotUsers.Add(user));
+        test.CurrentUserService.SetupGetUser(user);
+        test.SecretService.SetupGenerateToken();
+        test.MailService.SetupSendEmailAsync(true);
+
+        var result = test.TestRequestActivationToken(new());
 
         result.Response.StatusCode.Should().Be(StatusCodes.Status200OK);
         result.DbContext.CopilotTokens
