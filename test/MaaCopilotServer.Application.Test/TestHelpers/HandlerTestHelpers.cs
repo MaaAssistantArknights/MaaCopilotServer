@@ -3,6 +3,7 @@
 // Licensed under the AGPL-3.0 license.
 
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Reflection;
 using MaaCopilotServer.Application.Arknights.GetDataVersion;
 using MaaCopilotServer.Application.Common.Interfaces;
@@ -105,6 +106,11 @@ public class HandlerTest
     public IMaaCopilotDbContext DbContext { get; } = new TestDbContext();
 
     /// <summary>
+    /// The copilot operation service.
+    /// </summary>
+    public Mock<ICopilotOperationService> CopilotOperationService { get; private set; } = new();
+
+    /// <summary>
     /// The current user service.
     /// </summary>
     public Mock<ICurrentUserService> CurrentUserService { get; private set; } = new();
@@ -118,6 +124,11 @@ public class HandlerTest
     /// The mail service.
     /// </summary>
     public Mock<IMailService> MailService { get; private set; } = new();
+
+    /// <summary>
+    /// The operation process service.
+    /// </summary>
+    public Mock<IOperationProcessService> OperationProcessService { get; private set; } = new();
 
     /// <summary>
     /// The token options.
@@ -333,6 +344,7 @@ public class HandlerTest
         return new HandlerTestResult { Response = handler.Handle(request, default).Result, DbContext = DbContext };
     }
     #endregion
+
     #region CopilotOperation
     /// <summary>
     /// Tests <see cref="CreateCopilotOperationCommandHandler"/>.
@@ -341,14 +353,7 @@ public class HandlerTest
     /// <returns>The result.</returns>
     public HandlerTestResult TestCreateCopilotOperation(CreateCopilotOperationCommand request)
     {
-        var ops = new OperationProcessService(DbContext, new ValidationErrorMessage(), Options.Create(
-            new ApplicationOption
-            {
-                AssemblyPath = new FileInfo(Assembly.GetExecutingAssembly().Location).Directory!.FullName,
-                DataDirectory = string.Empty,
-                Version = string.Empty,
-            }));
-        var handler = new CreateCopilotOperationCommandHandler(DbContext, CurrentUserService.Object, ops, new CopilotOperationService(CopilotOperationOption, DomainString));
+        var handler = new CreateCopilotOperationCommandHandler(DbContext, CurrentUserService.Object, OperationProcessService.Object, new CopilotOperationService(CopilotOperationOption, DomainString));
         return new HandlerTestResult { Response = handler.Handle(request, default).Result, DbContext = DbContext };
     }
 
@@ -385,6 +390,7 @@ public class HandlerTest
         return new HandlerTestResult { Response = handler.Handle(request, default).Result, DbContext = DbContext };
     }
     #endregion
+
     #region CopilotUser
     /// <summary>
     /// Tests <see cref="ChangeCopilotUserInfoCommandHandler"/>.
@@ -529,6 +535,7 @@ public class HandlerTest
         return new HandlerTestResult { Response = handler.Handle(request, default).Result, DbContext = DbContext };
     }
     #endregion
+
     #region System
     /// <summary>
     /// Tests <see cref="GetCurrentVersionCommandHandler"/>.
@@ -578,7 +585,44 @@ public record HandlerTestResult
 [ExcludeFromCodeCoverage]
 public static class HandlerTestExtension
 {
-    #region Current User Service
+    #region CopilotOperationService
+    /// <summary>
+    /// Setups <see cref="ICopilotOperationService.DecodeId(string)"/> and <see cref="ICopilotOperationService.EncodeId(long)"/>.
+    /// </summary>
+    /// <param name="test">The <see cref="HandlerTest"/> instance.</param>
+    /// <returns>The <see cref="HandlerTest"/> instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="test"/> is <c>null</c>.</exception>
+    public static HandlerTest SetupDecodeAndEncodeId(this HandlerTest test)
+    {
+        const long MinimumId = 10000;
+
+        if (test == null)
+        {
+            throw new ArgumentNullException(nameof(test));
+        }
+
+        test.CopilotOperationService.Setup(x => x.EncodeId(It.IsAny<long>())).Returns<long>(plainId => (plainId + MinimumId).ToString(CultureInfo.InvariantCulture));
+        test.CopilotOperationService.Setup(x => x.DecodeId(It.IsAny<string>())).Returns<string>(encodedId =>
+        {
+            var parsable = long.TryParse(encodedId, out var value);
+            if (parsable is false)
+            {
+                return null;
+            }
+
+            if (value < MinimumId)
+            {
+                return null;
+            }
+
+            return value - MinimumId;
+        });
+
+        return test;
+    }
+    #endregion
+
+    #region CurrentUserService
     /// <summary>
     /// Setups <see cref="ICurrentUserService.GetUserIdentity"/>
     /// </summary>
@@ -593,7 +637,8 @@ public static class HandlerTestExtension
             throw new ArgumentNullException(nameof(test));
         }
 
-        return test.SetupCurrentUserService(mock => mock.Setup(x => x.GetUserIdentity()).Returns(returns));
+        test.CurrentUserService.Setup(x => x.GetUserIdentity()).Returns(returns);
+        return test;
     }
 
     /// <summary>
@@ -610,7 +655,8 @@ public static class HandlerTestExtension
             throw new ArgumentNullException(nameof(test));
         }
 
-        return test.SetupCurrentUserService(mock => mock.Setup(x => x.GetUser().Result).Returns(returns));
+        test.CurrentUserService.Setup(x => x.GetUser().Result).Returns(returns);
+        return test;
     }
     #endregion
 
@@ -704,7 +750,29 @@ public static class HandlerTestExtension
             throw new ArgumentNullException(nameof(test));
         }
 
-        return test.SetupEmailService(mock => mock.Setup(x => x.SendEmailAsync(It.IsAny<IEmailModel>(), targetAddress).Result).Returns(success));
+        test.MailService.Setup(x => x.SendEmailAsync(It.IsAny<IEmailModel>(), targetAddress)).ReturnsAsync(success);
+        return test;
+    }
+    #endregion
+
+    #region Operation Process Service
+    /// <summary>
+    /// Setups <see cref="IOperationProcessService.Validate(string?)"/>.
+    /// </summary>
+    /// <param name="test">The <see cref="HandlerTest"/> instance.</param>
+    /// <param name="operation">The operation.</param>
+    /// <param name="result">The validation result.</param>
+    /// <returns>The <see cref="HandlerTest"/> instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="test"/> is <c>null</c>.</exception>
+    public static HandlerTest SetupValidate(this HandlerTest test, string? operation, OperationValidationResult result)
+    {
+        if (test == null)
+        {
+            throw new ArgumentNullException(nameof(test));
+        }
+
+        test.OperationProcessService.Setup(x => x.Validate(operation)).ReturnsAsync(result);
+        return test;
     }
     #endregion
 }
