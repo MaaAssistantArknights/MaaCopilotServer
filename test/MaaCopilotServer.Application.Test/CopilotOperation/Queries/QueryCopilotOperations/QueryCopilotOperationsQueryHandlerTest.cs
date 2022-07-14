@@ -9,7 +9,7 @@ using MaaCopilotServer.Application.CopilotOperation.Queries.QueryCopilotOperatio
 using MaaCopilotServer.Application.Test.TestExtensions;
 using MaaCopilotServer.Application.Test.TestHelpers;
 using MaaCopilotServer.Domain.Entities;
-using MaaCopilotServer.GameData.Entity;
+using MaaCopilotServer.Test.TestEntities;
 using Microsoft.AspNetCore.Http;
 
 namespace MaaCopilotServer.Application.Test.CopilotOperation.Queries.QueryCopilotOperations;
@@ -40,24 +40,18 @@ public class QueryCopilotOperationsQueryHandlerTest
     {
         List<Domain.Entities.CopilotUser> users = new()
         {
-            new Domain.Entities.CopilotUser(string.Empty, string.Empty, "user0", Domain.Enums.UserRole.User, null),
-            new Domain.Entities.CopilotUser(string.Empty, string.Empty, "user1", Domain.Enums.UserRole.User, null),
+            new CopilotUserFactory { UserName = "user0" }.Build(),
+            new CopilotUserFactory { UserName = "user1" }.Build(),
         };
 
         List<Domain.Entities.CopilotOperation> data = new();
         for (var i = 0; i < 5; i++)
         {
-            data.Add(new Domain.Entities.CopilotOperation(i, $"content{i}", string.Empty,
-                string.Empty, string.Empty, users[0], Guid.Empty,
-                new ArkLevelData(new ArkLevelEntityGlobal($"level{i}")),
-                new List<string>(), new List<string>()));
+            data.Add(new CopilotOperationFactory { Id = i, Content = $"content{i}", Author = users[0] }.Build());
         }
         for (var i = 5; i < 10; i++)
         {
-            data.Add(new Domain.Entities.CopilotOperation(i, $"content{i}", string.Empty,
-                string.Empty, string.Empty, users[1], Guid.Empty,
-                new ArkLevelData(new ArkLevelEntityGlobal($"level{i}")),
-                new List<string>(), new List<string>()));
+            data.Add(new CopilotOperationFactory { Id = i, Content = $"content{i}", Author = users[1] }.Build());
         }
 
         List<CopilotOperationRating> rating = new();

@@ -6,6 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Application.CopilotUser.Commands.UpdateCopilotUserInfo;
 using MaaCopilotServer.Application.Test.TestExtensions;
 using MaaCopilotServer.Application.Test.TestHelpers;
+using MaaCopilotServer.Test.TestEntities;
 using Microsoft.AspNetCore.Http;
 
 namespace MaaCopilotServer.Application.Test.CopilotUser.Commands.Change.UpdateCopilotUserInfo;
@@ -23,7 +24,7 @@ public class UpdateCopilotUserInfoCommandTest
     [TestMethod]
     public void TestHandleChangeUsername()
     {
-        var user = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, Domain.Enums.UserRole.User, null);
+        var user = new CopilotUserFactory().Build();
 
         var test = new HandlerTest();
         test.DbContext.Setup(db => db.CopilotUsers.Add(user));
@@ -45,8 +46,8 @@ public class UpdateCopilotUserInfoCommandTest
     [TestMethod]
     public void TestHandleEmailAlreadyInUse()
     {
-        var user = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, Domain.Enums.UserRole.User, null);
-        var user2 = new Domain.Entities.CopilotUser(HandlerTest.TestEmail, string.Empty, string.Empty, Domain.Enums.UserRole.User, null);
+        var user = new CopilotUserFactory().Build();
+        var user2 = new CopilotUserFactory { Email = HandlerTest.TestEmail }.Build();
 
         var test = new HandlerTest();
         test.DbContext.Setup(db => db.CopilotUsers.Add(user));
@@ -68,7 +69,7 @@ public class UpdateCopilotUserInfoCommandTest
     [TestMethod]
     public void TestHandleActivationEmailFailedToSend()
     {
-        var user = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, Domain.Enums.UserRole.User, null);
+        var user = new CopilotUserFactory().Build();
 
         var test = new HandlerTest();
         test.DbContext.Setup(db => db.CopilotUsers.Add(user));
@@ -90,7 +91,7 @@ public class UpdateCopilotUserInfoCommandTest
     [TestMethod]
     public void TestHandleChangeEmail()
     {
-        var user = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, Domain.Enums.UserRole.User, null);
+        var user = new CopilotUserFactory().Build();
         user.ActivateUser(Guid.Empty);
 
         var test = new HandlerTest();

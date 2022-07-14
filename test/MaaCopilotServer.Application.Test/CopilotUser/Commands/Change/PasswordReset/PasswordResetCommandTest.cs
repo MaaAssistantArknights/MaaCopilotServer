@@ -6,7 +6,8 @@ using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Application.CopilotUser.Commands.PasswordReset;
 using MaaCopilotServer.Application.Test.TestExtensions;
 using MaaCopilotServer.Application.Test.TestHelpers;
-using MaaCopilotServer.Domain.Entities;
+using MaaCopilotServer.Domain.Enums;
+using MaaCopilotServer.Test.TestEntities;
 using Microsoft.AspNetCore.Http;
 
 namespace MaaCopilotServer.Application.Test.CopilotUser.Commands.Change.PasswordReset;
@@ -24,11 +25,10 @@ public class PasswordResetCommandTest
     [TestMethod]
     public void TestHandleInvalidToken()
     {
-        var result = new HandlerTest()
-                    .TestPasswordReset(new()
-                    {
-                        Token = HandlerTest.TestToken,
-                    });
+        var result = new HandlerTest().TestPasswordReset(new()
+        {
+            Token = HandlerTest.TestToken,
+        });
 
         result.Response.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
     }
@@ -39,7 +39,7 @@ public class PasswordResetCommandTest
     [TestMethod]
     public void TestHandleExpiredToken()
     {
-        var token = new CopilotToken(Guid.Empty, Domain.Enums.TokenType.UserPasswordReset, HandlerTest.TestToken, HandlerTest.TestTokenTimePast);
+        var token = new CopilotTokenFactory { Type = TokenType.UserPasswordReset, Token = HandlerTest.TestToken, ValidBefore = HandlerTest.TestTokenTimePast }.Build();
         var test = new HandlerTest();
         test.DbContext.Setup(db => db.CopilotTokens.Add(token));
 
@@ -57,7 +57,7 @@ public class PasswordResetCommandTest
     [TestMethod]
     public void TestHandleWrongTypeToken()
     {
-        var token = new CopilotToken(Guid.Empty, Domain.Enums.TokenType.UserActivation, HandlerTest.TestToken, HandlerTest.TestTokenTimeFuture);
+        var token = new CopilotTokenFactory { Type = TokenType.UserActivation, Token = HandlerTest.TestToken, ValidBefore = HandlerTest.TestTokenTimePast }.Build();
         var test = new HandlerTest();
         test.DbContext.Setup(db => db.CopilotTokens.Add(token));
 
@@ -75,7 +75,7 @@ public class PasswordResetCommandTest
     [TestMethod]
     public void TestHandleInvalidUser()
     {
-        var token = new CopilotToken(Guid.Empty, Domain.Enums.TokenType.UserPasswordReset, HandlerTest.TestToken, HandlerTest.TestTokenTimeFuture);
+        var token = new CopilotTokenFactory { Type = TokenType.UserPasswordReset, Token = HandlerTest.TestToken, ValidBefore = HandlerTest.TestTokenTimeFuture }.Build();
         var test = new HandlerTest();
         test.DbContext.Setup(db => db.CopilotTokens.Add(token));
 
@@ -93,10 +93,10 @@ public class PasswordResetCommandTest
     [TestMethod]
     public void TestHandleValid()
     {
-        var user = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, Domain.Enums.UserRole.User, null);
+        var user = new CopilotUserFactory().Build();
         var test = new HandlerTest();
         test.DbContext.Setup(db => db.CopilotUsers.Add(user));
-        var token = new CopilotToken(user.EntityId, Domain.Enums.TokenType.UserPasswordReset, HandlerTest.TestToken, HandlerTest.TestTokenTimeFuture);
+        var token = new CopilotTokenFactory { ResourceId = user.EntityId, Type = TokenType.UserPasswordReset, Token = HandlerTest.TestToken, ValidBefore = HandlerTest.TestTokenTimeFuture }.Build();
         test.DbContext.Setup(db => db.CopilotTokens.Add(token));
         test.SecretService.SetupHashPassword();
 

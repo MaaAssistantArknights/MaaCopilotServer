@@ -4,17 +4,12 @@
 
 using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Application.Common.Helpers;
-using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Application.CopilotOperation.Queries.GetCopilotOperation;
 using MaaCopilotServer.Application.Test.TestExtensions;
 using MaaCopilotServer.Application.Test.TestHelpers;
-using MaaCopilotServer.Domain.Entities;
-using MaaCopilotServer.Domain.Options;
-using MaaCopilotServer.GameData.Entity;
-using MaaCopilotServer.Infrastructure.Services;
-using MaaCopilotServer.Resources;
+using MaaCopilotServer.Domain.Enums;
+using MaaCopilotServer.Test.TestEntities;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Options;
 
 namespace MaaCopilotServer.Application.Test.CopilotOperation.Queries.GetCopilotOperation;
 
@@ -26,28 +21,16 @@ namespace MaaCopilotServer.Application.Test.CopilotOperation.Queries.GetCopilotO
 public class GetCopilotOperationQueryTest
 {
     /// <summary>
-    ///     The service for copilot operations.
-    /// </summary>
-    private readonly ICopilotOperationService _copilotOperationService
-        = new CopilotOperationService(Options.Create(new CopilotOperationOption()), new DomainString());
-
-    /// <summary>
     /// Tests <see cref="GetCopilotOperationQueryHandler.Handle(GetCopilotOperationQuery, CancellationToken)"/>.
     /// </summary>
     [TestMethod]
     public void TestHandle()
     {
-        var user = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, Domain.Enums.UserRole.User, Guid.Empty);
+        var user = new CopilotUserFactory { UserRole = UserRole.User }.Build();
         var entities = new Domain.Entities.CopilotOperation[]
         {
-            new(1, string.Empty, string.Empty,
-                string.Empty, string.Empty, user, Guid.Empty,
-                new ArkLevelData(new ArkLevelEntityGlobal("level1")),
-                new List<string>(), new List<string>()),
-            new(2, string.Empty, string.Empty,
-                string.Empty, string.Empty, user, Guid.Empty,
-                new ArkLevelData(new ArkLevelEntityGlobal("level1")),
-                new List<string>(), new List<string>()),
+            new CopilotOperationFactory { Id = 1, Author = user }.Build(),
+            new CopilotOperationFactory { Id = 2, Author = user }.Build(),
         };
 
         var test = new HandlerTest();
@@ -66,7 +49,7 @@ public class GetCopilotOperationQueryTest
         response.StatusCode.Should().Be(StatusCodes.Status200OK);
         response.Data.Should().NotBeNull();
         var dto = (GetCopilotOperationQueryDto)response.Data!;
-        dto.Id.Should().Be(_copilotOperationService.EncodeId(entities[0].Id));
+        dto.Id.Should().Be(EntityIdHelper.EncodeId(entities[0].Id));
         entities[0].ViewCounts.Should().Be(1);
     }
 
@@ -77,14 +60,12 @@ public class GetCopilotOperationQueryTest
     [TestMethod]
     public void TestHandleInvalidId()
     {
-        var response = new HandlerTest()
-            .TestGetCopilotOperation(new()
-            {
-                Id = null,
-            })
-            .Response;
+        var result = new HandlerTest().TestGetCopilotOperation(new()
+        {
+            Id = null,
+        });
 
-        response.StatusCode.Should().Be(StatusCodes.Status404NotFound);
+        result.Response.StatusCode.Should().Be(StatusCodes.Status404NotFound);
     }
 
     /// <summary>
@@ -94,13 +75,11 @@ public class GetCopilotOperationQueryTest
     [TestMethod]
     public void TestHandleEntityNotFound()
     {
-        var response = new HandlerTest()
-            .TestGetCopilotOperation(new()
-            {
-                Id = EntityIdHelper.EncodeId(0),
-            })
-            .Response;
+        var result = new HandlerTest().TestGetCopilotOperation(new()
+        {
+            Id = EntityIdHelper.EncodeId(0),
+        });
 
-        response.StatusCode.Should().Be(StatusCodes.Status404NotFound);
+        result.Response.StatusCode.Should().Be(StatusCodes.Status404NotFound);
     }
 }

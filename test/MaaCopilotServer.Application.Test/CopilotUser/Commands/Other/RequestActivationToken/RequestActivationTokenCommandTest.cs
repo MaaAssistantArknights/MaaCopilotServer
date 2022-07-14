@@ -7,6 +7,7 @@ using MaaCopilotServer.Application.CopilotUser.Commands.RequestActivationToken;
 using MaaCopilotServer.Application.Test.TestExtensions;
 using MaaCopilotServer.Application.Test.TestHelpers;
 using MaaCopilotServer.Domain.Entities;
+using MaaCopilotServer.Test.TestEntities;
 using Microsoft.AspNetCore.Http;
 
 namespace MaaCopilotServer.Application.Test.CopilotUser.Commands.Other.RequestActivationToken;
@@ -25,7 +26,7 @@ public class RequestActivationTokenCommandHandlerTest
     [TestMethod]
     public void TestHandleUserAlreadyActivated()
     {
-        var user = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, Domain.Enums.UserRole.User, null);
+        var user = new CopilotUserFactory().Build();
         user.ActivateUser(Guid.Empty);
 
         var test = new HandlerTest();
@@ -44,11 +45,11 @@ public class RequestActivationTokenCommandHandlerTest
     [TestMethod]
     public void TestHandleTokenNotFound()
     {
-        var user = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, Domain.Enums.UserRole.User, null);
+        var user = new CopilotUserFactory().Build();
 
         var test = new HandlerTest();
         test.DbContext.Setup(db => db.CopilotUsers.Add(user));
-        var token = new CopilotToken(user.EntityId, Domain.Enums.TokenType.UserActivation, HandlerTest.TestToken, HandlerTest.TestTokenTimeFuture);
+        var token = new CopilotTokenFactory { ResourceId = user.EntityId, Type = Domain.Enums.TokenType.UserActivation, Token = HandlerTest.TestToken, ValidBefore = HandlerTest.TestTokenTimeFuture }.Build();
         test.DbContext.Setup(db => db.CopilotTokens.Add(token));
         test.CurrentUserService.SetupGetUser(user);
 
@@ -64,7 +65,7 @@ public class RequestActivationTokenCommandHandlerTest
     [TestMethod]
     public void TestHandleEmailFailedToSend()
     {
-        var user = new Domain.Entities.CopilotUser(HandlerTest.TestEmail, string.Empty, string.Empty, Domain.Enums.UserRole.User, null);
+        var user = new CopilotUserFactory { Email = HandlerTest.TestEmail }.Build();
 
         var test = new HandlerTest();
         test.DbContext.Setup(db => db.CopilotUsers.Add(user));
@@ -83,7 +84,7 @@ public class RequestActivationTokenCommandHandlerTest
     [TestMethod]
     public void TestHandle()
     {
-        var user = new Domain.Entities.CopilotUser(HandlerTest.TestEmail, string.Empty, string.Empty, Domain.Enums.UserRole.User, null);
+        var user = new CopilotUserFactory { Email = HandlerTest.TestEmail }.Build();
 
         var test = new HandlerTest();
         test.DbContext.Setup(db => db.CopilotUsers.Add(user));

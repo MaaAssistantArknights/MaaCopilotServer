@@ -6,6 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Application.CopilotUser.Queries.GetCopilotUser;
 using MaaCopilotServer.Application.Test.TestExtensions;
 using MaaCopilotServer.Application.Test.TestHelpers;
+using MaaCopilotServer.Test.TestEntities;
 using Microsoft.AspNetCore.Http;
 
 namespace MaaCopilotServer.Application.Test.CopilotUser.Queries.GetCopilotUser;
@@ -59,7 +60,7 @@ public class GetCopilotUserQueryHandlerTest
     [TestMethod]
     public void TestHandle()
     {
-        var user = new Domain.Entities.CopilotUser(HandlerTest.TestEmail, string.Empty, HandlerTest.TestUsername, Domain.Enums.UserRole.User, null);
+        var user = new CopilotUserFactory { Email = HandlerTest.TestEmail, UserName = HandlerTest.TestUsername }.Build();
 
         var test = new HandlerTest();
         test.DbContext.Setup(db => db.CopilotUsers.Add(user));
@@ -83,7 +84,7 @@ public class GetCopilotUserQueryHandlerTest
     [TestMethod]
     public void TestHandleCurrentUser()
     {
-        var user = new Domain.Entities.CopilotUser(HandlerTest.TestEmail, string.Empty, HandlerTest.TestUsername, Domain.Enums.UserRole.User, null);
+        var user = new CopilotUserFactory { Email = HandlerTest.TestEmail, UserName = HandlerTest.TestUsername }.Build();
 
         var test = new HandlerTest();
         test.DbContext.Setup(db => db.CopilotUsers.Add(user));

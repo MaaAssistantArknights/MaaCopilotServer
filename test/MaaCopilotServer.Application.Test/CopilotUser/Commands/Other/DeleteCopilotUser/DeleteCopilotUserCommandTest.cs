@@ -6,6 +6,8 @@ using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Application.CopilotUser.Commands.DeleteCopilotUser;
 using MaaCopilotServer.Application.Test.TestExtensions;
 using MaaCopilotServer.Application.Test.TestHelpers;
+using MaaCopilotServer.Domain.Enums;
+using MaaCopilotServer.Test.TestEntities;
 using Microsoft.AspNetCore.Http;
 
 namespace MaaCopilotServer.Application.Test.CopilotUser.Commands.Other.DeleteCopilotUser;
@@ -41,8 +43,8 @@ public class DeleteCopilotUserCommandHandlerTest
     [TestMethod]
     public void TestHandleInsufficientPermission()
     {
-        var user = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, Domain.Enums.UserRole.SuperAdmin, null);
-        var @operator = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, Domain.Enums.UserRole.Admin, null);
+        var user = new CopilotUserFactory { UserRole = UserRole.SuperAdmin }.Build();
+        var @operator = new CopilotUserFactory { UserRole = UserRole.Admin }.Build();
 
         var test = new HandlerTest();
         test.DbContext.Setup(db => db.CopilotUsers.AddRange(user, @operator));
@@ -62,8 +64,8 @@ public class DeleteCopilotUserCommandHandlerTest
     [TestMethod]
     public void TestHandle()
     {
-        var user = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, Domain.Enums.UserRole.User, null);
-        var @operator = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, Domain.Enums.UserRole.Admin, null);
+        var user = new CopilotUserFactory { UserRole = UserRole.User }.Build();
+        var @operator = new CopilotUserFactory { UserRole = UserRole.Admin }.Build();
 
         var test = new HandlerTest();
         test.DbContext.Setup(db => db.CopilotUsers.AddRange(user, @operator));
