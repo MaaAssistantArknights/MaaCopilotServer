@@ -273,7 +273,7 @@ public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOp
                     Operators = x.Operators,
                     UploadTime = x.UpdateAt.ToIsoString(),
                     ViewCounts = x.ViewCounts,
-                    Level = x.ArkLevel.MapToDto(request.Server),
+                    Level = request.Server.GetLevelMapperFunc().Invoke(x.ArkLevel),
                     RatingLevel = _copilotOperationService.GetRatingLevelString(x.RatingLevel),
                     // If the user is logged in, get the rating for the operation, default value is None
                     // If not, set to null

@@ -4,7 +4,10 @@
 
 using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Application.CopilotUser.Commands.RequestActivationToken;
+using MaaCopilotServer.Application.Test.TestExtensions;
 using MaaCopilotServer.Application.Test.TestHelpers;
+using MaaCopilotServer.Domain.Enums;
+using MaaCopilotServer.Test.TestEntities;
 using Microsoft.AspNetCore.Http;
 
 namespace MaaCopilotServer.Application.Test.CopilotUser.Commands.Other.RequestActivationToken;
@@ -23,13 +26,14 @@ public class RequestActivationTokenCommandHandlerTest
     [TestMethod]
     public void TestHandleUserAlreadyActivated()
     {
-        var user = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, Domain.Enums.UserRole.User, null);
+        var user = new CopilotUserFactory().Build();
         user.ActivateUser(Guid.Empty);
 
-        var result = new HandlerTest()
-            .SetupDatabase(db => db.CopilotUsers.Add(user))
-            .SetupGetUser(user)
-            .TestRequestActivationToken(new());
+        var test = new HandlerTest();
+        test.DbContext.Setup(db => db.CopilotUsers.Add(user));
+        test.CurrentUserService.SetupGetUser(user);
+
+        var result = test.TestRequestActivationToken(new());
 
         result.Response.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
     }
@@ -41,14 +45,15 @@ public class RequestActivationTokenCommandHandlerTest
     [TestMethod]
     public void TestHandleTokenNotFound()
     {
-        var user = new Domain.Entities.CopilotUser(string.Empty, string.Empty, string.Empty, Domain.Enums.UserRole.User, null);
+        var user = new CopilotUserFactory().Build();
 
-        var result = new HandlerTest()
-            .SetupDatabase(db => db.CopilotUsers.Add(user))
-            .SetupDatabase(db => db.CopilotTokens.Add(
-                new Domain.Entities.CopilotToken(user.EntityId, Domain.Enums.TokenType.UserActivation, HandlerTest.TestToken, HandlerTest.TestTokenTimeFuture)))
-            .SetupGetUser(user)
-            .TestRequestActivationToken(new());
+        var test = new HandlerTest();
+        test.DbContext.Setup(db => db.CopilotUsers.Add(user));
+        var token = new CopilotTokenFactory { ResourceId = user.EntityId, Type = TokenType.UserActivation }.Build();
+        test.DbContext.Setup(db => db.CopilotTokens.Add(token));
+        test.CurrentUserService.SetupGetUser(user);
+
+        var result = test.TestRequestActivationToken(new());
 
         result.Response.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
     }
@@ -60,14 +65,15 @@ public class RequestActivationTokenCommandHandlerTest
     [TestMethod]
     public void TestHandleEmailFailedToSend()
     {
-        var user = new Domain.Entities.CopilotUser(HandlerTest.TestEmail, string.Empty, string.Empty, Domain.Enums.UserRole.User, null);
+        var user = new CopilotUserFactory().Build();
 
-        var result = new HandlerTest()
-            .SetupDatabase(db => db.CopilotUsers.Add(user))
-            .SetupGetUser(user)
-            .SetupGenerateToken()
-            .SetupSendEmailAsync(false)
-            .TestRequestActivationToken(new());
+        var test = new HandlerTest();
+        test.DbContext.Setup(db => db.CopilotUsers.Add(user));
+        test.CurrentUserService.SetupGetUser(user);
+        test.SecretService.SetupGenerateToken();
+        test.MailService.SetupSendEmailAsync(false);
+
+        var result = test.TestRequestActivationToken(new());
 
         result.Response.StatusCode.Should().Be(StatusCodes.Status500InternalServerError);
     }
@@ -78,18 +84,19 @@ public class RequestActivationTokenCommandHandlerTest
     [TestMethod]
     public void TestHandle()
     {
-        var user = new Domain.Entities.CopilotUser(HandlerTest.TestEmail, string.Empty, string.Empty, Domain.Enums.UserRole.User, null);
+        var user = new CopilotUserFactory().Build();
 
-        var result = new HandlerTest()
-            .SetupDatabase(db => db.CopilotUsers.Add(user))
-            .SetupGetUser(user)
-            .SetupGenerateToken()
-            .SetupSendEmailAsync(true)
-            .TestRequestActivationToken(new());
+        var test = new HandlerTest();
+        test.DbContext.Setup(db => db.CopilotUsers.Add(user));
+        test.CurrentUserService.SetupGetUser(user);
+        test.SecretService.SetupGenerateToken();
+        test.MailService.SetupSendEmailAsync(true);
+
+        var result = test.TestRequestActivationToken(new());
 
         result.Response.StatusCode.Should().Be(StatusCodes.Status200OK);
         result.DbContext.CopilotTokens
-            .Where(x => x.Type == Domain.Enums.TokenType.UserActivation)
+            .Where(x => x.Type == TokenType.UserActivation)
             .Where(x => x.ResourceId == user.EntityId)
             .Count()
             .Should()

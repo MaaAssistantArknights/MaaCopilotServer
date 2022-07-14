@@ -4,7 +4,9 @@
 
 using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Application.CopilotUser.Commands.RegisterCopilotAccount;
+using MaaCopilotServer.Application.Test.TestExtensions;
 using MaaCopilotServer.Application.Test.TestHelpers;
+using MaaCopilotServer.Test.TestEntities;
 using Microsoft.AspNetCore.Http;
 
 namespace MaaCopilotServer.Application.Test.CopilotUser.Commands.Create.RegisterCopilotAccount;
@@ -23,17 +25,17 @@ public class RegisterCopilotAccountCommandHandlerTest
     [TestMethod]
     public void TestHandleEmailInUse()
     {
-        var user = new Domain.Entities.CopilotUser(HandlerTest.TestEmail, string.Empty, string.Empty, Domain.Enums.UserRole.User, null);
+        var user = new CopilotUserFactory().Build();
 
-        var response = new HandlerTest()
-            .SetupDatabase(db => db.CopilotUsers.Add(user))
-            .TestRegisterCopilotAccount(new()
-            {
-                Email = HandlerTest.TestEmail,
-            })
-            .Response;
+        var test = new HandlerTest();
+        test.DbContext.Setup(db => db.CopilotUsers.Add(user));
 
-        response.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
+        var result = test.TestRegisterCopilotAccount(new()
+        {
+            Email = HandlerTest.TestEmail,
+        });
+
+        result.Response.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
     }
 
     /// <summary>
@@ -43,16 +45,17 @@ public class RegisterCopilotAccountCommandHandlerTest
     [TestMethod]
     public void TestHandleEmailFailedToSend()
     {
-        var result = new HandlerTest()
-            .SetupHashPassword()
-            .SetupGenerateToken()
-            .SetupSendEmailAsync(false)
-            .TestRegisterCopilotAccount(new()
-            {
-                Email = HandlerTest.TestEmail,
-                UserName = HandlerTest.TestUsername,
-                Password = HandlerTest.TestPassword,
-            });
+        var test = new HandlerTest();
+        test.SecretService.SetupHashPassword();
+        test.SecretService.SetupGenerateToken();
+        test.MailService.SetupSendEmailAsync(false);
+
+        var result = test.TestRegisterCopilotAccount(new()
+        {
+            Email = HandlerTest.TestEmail,
+            UserName = HandlerTest.TestUsername,
+            Password = HandlerTest.TestPassword,
+        });
 
         result.Response.StatusCode.Should().Be(StatusCodes.Status500InternalServerError);
         result.DbContext.CopilotUsers.Should().BeEmpty();
@@ -64,16 +67,17 @@ public class RegisterCopilotAccountCommandHandlerTest
     [TestMethod]
     public void TestHandle()
     {
-        var result = new HandlerTest()
-            .SetupHashPassword()
-            .SetupGenerateToken()
-            .SetupSendEmailAsync(true)
-            .TestRegisterCopilotAccount(new()
-            {
-                Email = HandlerTest.TestEmail,
-                UserName = HandlerTest.TestUsername,
-                Password = HandlerTest.TestPassword,
-            });
+        var test = new HandlerTest();
+        test.SecretService.SetupHashPassword();
+        test.SecretService.SetupGenerateToken();
+        test.MailService.SetupSendEmailAsync(true);
+
+        var result = test.TestRegisterCopilotAccount(new()
+        {
+            Email = HandlerTest.TestEmail,
+            UserName = HandlerTest.TestUsername,
+            Password = HandlerTest.TestPassword,
+        });
 
         result.Response.StatusCode.Should().Be(StatusCodes.Status200OK);
 
@@ -100,20 +104,21 @@ public class RegisterCopilotAccountCommandHandlerTest
     [TestMethod]
     public void TestHandleDefaultRoleTooHigh()
     {
-        var result = new HandlerTest()
-            .SetupHashPassword()
-            .SetupGenerateToken()
-            .SetupSendEmailAsync(true)
-            .SetupCopilotServerOption(new()
-            {
-                RegisterUserDefaultRole = Domain.Enums.UserRole.Admin,
-            })
-            .TestRegisterCopilotAccount(new()
-            {
-                Email = HandlerTest.TestEmail,
-                UserName = HandlerTest.TestUsername,
-                Password = HandlerTest.TestPassword,
-            });
+        var test = new HandlerTest();
+        test.SecretService.SetupHashPassword();
+        test.SecretService.SetupGenerateToken();
+        test.MailService.SetupSendEmailAsync(true);
+        test.CopilotServerOption = new()
+        {
+            RegisterUserDefaultRole = Domain.Enums.UserRole.Admin,
+        };
+
+        var result = test.TestRegisterCopilotAccount(new()
+        {
+            Email = HandlerTest.TestEmail,
+            UserName = HandlerTest.TestUsername,
+            Password = HandlerTest.TestPassword,
+        });
 
         result.Response.StatusCode.Should().Be(StatusCodes.Status200OK);
 

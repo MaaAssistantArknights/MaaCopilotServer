@@ -31,44 +31,15 @@ public class GetLevelListQueryHandler : IRequestHandler<GetLevelListQuery, MaaAp
 
     public async Task<MaaApiResponse> Handle(GetLevelListQuery request, CancellationToken cancellationToken)
     {
-        var server = string.IsNullOrEmpty(request.Server) ? "chinese" : request.Server.ToLower();
-
         var query = _dbContext.ArkLevelData.AsQueryable();
 
-        switch (server)
-        {
-            case "chinese" or "cn":
-                query = query.Where(x =>
-                    string.IsNullOrEmpty(x.NameCn) == false &&
-                    string.IsNullOrEmpty(x.CatOneCn) == false &&
-                    string.IsNullOrEmpty(x.CatTwoCn) == false &&
-                    string.IsNullOrEmpty(x.CatThreeCn) == false);
-                break;
-            case "english" or "en":
-                query = query.Where(x =>
-                    string.IsNullOrEmpty(x.NameEn) == false &&
-                    string.IsNullOrEmpty(x.CatOneEn) == false &&
-                    string.IsNullOrEmpty(x.CatTwoEn) == false &&
-                    string.IsNullOrEmpty(x.CatThreeEn) == false);
-                break;
-            case "japanese" or "ja":
-                query = query.Where(x =>
-                    string.IsNullOrEmpty(x.NameJp) == false &&
-                    string.IsNullOrEmpty(x.CatOneJp) == false &&
-                    string.IsNullOrEmpty(x.CatTwoJp) == false &&
-                    string.IsNullOrEmpty(x.CatThreeJp) == false);
-                break;
-            case "korean" or "ko":
-                query = query.Where(x =>
-                    string.IsNullOrEmpty(x.NameKo) == false &&
-                    string.IsNullOrEmpty(x.CatOneKo) == false &&
-                    string.IsNullOrEmpty(x.CatTwoKo) == false &&
-                    string.IsNullOrEmpty(x.CatThreeKo) == false);
-                break;
-        }
+        var qFunc = request.Server.GetLevelQueryFunc();
+        var mFunc = request.Server.GetLevelMapperFunc();
+
+        query = qFunc.Invoke(query);
 
         var data = await query.ToListAsync(cancellationToken);
-        var dto = data.Select(x => x.MapToDto(server)).ToList();
+        var dto = data.Select(mFunc);
         return MaaApiResponseHelper.Ok(dto);
     }
 }
