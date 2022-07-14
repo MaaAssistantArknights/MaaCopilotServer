@@ -3,6 +3,8 @@
 // Licensed under the AGPL-3.0 license.
 
 using System.Diagnostics.CodeAnalysis;
+using Elastic.CommonSchema;
+using MaaCopilotServer.Application.Common.Exceptions;
 using MaaCopilotServer.Application.Common.Helpers;
 using MaaCopilotServer.Application.Common.Models;
 using MaaCopilotServer.Application.CopilotOperation.Queries.QueryCopilotOperations;
@@ -257,11 +259,14 @@ public class QueryCopilotOperationsQueryTest
     /// </summary>
     [TestMethod]
     [DataRow("", "CN")]
-    [DataRow("qwerty", "CN")]
     [DataRow("chinese", "CN")]
     [DataRow("english", "EN")]
     [DataRow("japanese", "JP")]
     [DataRow("korean", "KO")]
+    [DataRow("cn", "CN")]
+    [DataRow("en", "EN")]
+    [DataRow("ja", "JP")]
+    [DataRow("ko", "KO")]
     public void TestHandleWithLevelName(string language, string resultAppendix)
     {
         var (users, test) = Initialize(new());
@@ -285,6 +290,30 @@ public class QueryCopilotOperationsQueryTest
         data[0].Id.Should().Be(EntityIdHelper.EncodeId(0));
         data[0].Level.LevelId.Should().Be("level0");
         data[0].Level.Name.Should().Be($"level0{resultAppendix}");
+    }
+
+    [TestMethod]
+    [DataRow("??")]
+    [DataRow("jp")]
+    [DataRow("french")]
+    public void TestHandleWithUnknownLanguage(string language)
+    {
+        var (users, test) = Initialize(new());
+        test.CurrentUserService.SetupGetUserIdentity(users[0].EntityId);
+        test.CurrentUserService.SetupGetUser(users[0]);
+        test.CopilotOperationService.SetupDecodeAndEncodeId();
+
+        try
+        {
+            var _ = test.TestQueryCopilotOperations(new() { LevelName = "level0", Server = language });
+        }
+        catch (AggregateException e)
+        {
+            e.InnerException.Should().BeOfType<UnknownServerLanguageException>();
+            return;
+        }
+
+        Assert.Fail();
     }
 
     /// <summary>
