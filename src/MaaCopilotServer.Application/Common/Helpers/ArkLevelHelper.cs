@@ -11,10 +11,10 @@ public static class ArkLevelHelper
 {
     public static GetLevelListDto MapToDto(this ArkLevelData data, string? server) => server?.ToLower() switch
     {
-        null => s_mapCn(data),
-        "english" => s_mapEn(data),
-        "japanese" => s_mapJp(data),
-        "korean" => s_mapKo(data),
+        "chinese" or "cn" => s_mapCn(data),
+        "english" or "en" => s_mapEn(data),
+        "japanese" or "ja" => s_mapJp(data),
+        "korean" or "ko" => s_mapKo(data),
         _ => s_mapCn(data)
     };
 

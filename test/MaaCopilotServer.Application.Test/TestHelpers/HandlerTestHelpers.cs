@@ -4,6 +4,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Application.Arknights.GetDataVersion;
+using MaaCopilotServer.Application.Arknights.GetLevelList;
 using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Application.CopilotOperation.Commands.CreateCopilotOperation;
 using MaaCopilotServer.Application.CopilotOperation.Commands.DeleteCopilotOperation;
@@ -189,6 +190,17 @@ public class HandlerTest
     public HandlerTestResult TestGetDataVersion(GetDataVersionQuery request)
     {
         var handler = new GetDataVersionQueryHandler(DbContext);
+        return new HandlerTestResult { Response = handler.Handle(request, default).Result, DbContext = DbContext };
+    }
+
+    /// <summary>
+    /// Tests <see cref="GetLevelListQueryHandler"/>.
+    /// </summary>
+    /// <param name="request">The test request.</param>
+    /// <returns>The result.</returns>
+    public HandlerTestResult TestGetLevelList(GetLevelListQuery request)
+    {
+        var handler = new GetLevelListQueryHandler(DbContext);
         return new HandlerTestResult { Response = handler.Handle(request, default).Result, DbContext = DbContext };
     }
     #endregion
