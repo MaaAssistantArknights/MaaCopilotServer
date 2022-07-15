@@ -161,4 +161,48 @@ public static class ArkDataHelper
         q.Where(x => string.IsNullOrEmpty(x.NameKo) == false);
 
     #endregion
+
+    #region Level Query in Operation
+
+    public static Func<IQueryable<Domain.Entities.CopilotOperation>, string, IQueryable<Domain.Entities.CopilotOperation>>
+        GetQueryLevelNameFunc(this string? server) => ArkServerLanguage.Parse(server)
+        .GetArkServerLanguageSpecificAction
+        <Func<IQueryable<Domain.Entities.CopilotOperation>, string, IQueryable<Domain.Entities.CopilotOperation>>>(
+            (q, s) => q.Where(x => x.ArkLevel.NameCn.Contains(s)),
+            (q, s) => q.Where(x => x.ArkLevel.NameEn.Contains(s)),
+            (q, s) => q.Where(x => x.ArkLevel.NameJp.Contains(s)),
+            (q, s) => q.Where(x => x.ArkLevel.NameKo.Contains(s))
+        );
+
+    public static Func<IQueryable<Domain.Entities.CopilotOperation>, string, IQueryable<Domain.Entities.CopilotOperation>>
+        GetQueryLevelCatOneFunc(this string? server) => ArkServerLanguage.Parse(server)
+        .GetArkServerLanguageSpecificAction
+            <Func<IQueryable<Domain.Entities.CopilotOperation>, string, IQueryable<Domain.Entities.CopilotOperation>>>(
+                (q, s) => q.Where(x => x.ArkLevel.CatOneCn.Contains(s)),
+                (q, s) => q.Where(x => x.ArkLevel.CatOneEn.Contains(s)),
+                (q, s) => q.Where(x => x.ArkLevel.CatOneJp.Contains(s)),
+                (q, s) => q.Where(x => x.ArkLevel.CatOneKo.Contains(s))
+            );
+
+    public static Func<IQueryable<Domain.Entities.CopilotOperation>, string, IQueryable<Domain.Entities.CopilotOperation>>
+        GetQueryLevelCatTwoFunc(this string? server) => ArkServerLanguage.Parse(server)
+        .GetArkServerLanguageSpecificAction
+            <Func<IQueryable<Domain.Entities.CopilotOperation>, string, IQueryable<Domain.Entities.CopilotOperation>>>(
+                (q, s) => q.Where(x => x.ArkLevel.CatTwoCn.Contains(s)),
+                (q, s) => q.Where(x => x.ArkLevel.CatTwoEn.Contains(s)),
+                (q, s) => q.Where(x => x.ArkLevel.CatTwoJp.Contains(s)),
+                (q, s) => q.Where(x => x.ArkLevel.CatTwoKo.Contains(s))
+            );
+
+    public static Func<IQueryable<Domain.Entities.CopilotOperation>, string, IQueryable<Domain.Entities.CopilotOperation>>
+        GetQueryLevelCatThreeFunc(this string? server) => ArkServerLanguage.Parse(server)
+        .GetArkServerLanguageSpecificAction
+            <Func<IQueryable<Domain.Entities.CopilotOperation>, string, IQueryable<Domain.Entities.CopilotOperation>>>(
+                (q, s) => q.Where(x => x.ArkLevel.CatThreeCn.Contains(s)),
+                (q, s) => q.Where(x => x.ArkLevel.CatThreeEn.Contains(s)),
+                (q, s) => q.Where(x => x.ArkLevel.CatThreeJp.Contains(s)),
+                (q, s) => q.Where(x => x.ArkLevel.CatThreeKo.Contains(s))
+            );
+
+    #endregion
 }

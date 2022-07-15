@@ -2,9 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
-using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Application.System.GetCurrentVersion;
-using MaaCopilotServer.Application.Test.TestHelpers;
 using Microsoft.AspNetCore.Http;
 
 namespace MaaCopilotServer.Application.Test.System.GetCurrentVersion;

@@ -166,49 +166,25 @@ public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOp
         if (string.IsNullOrEmpty(request.LevelName) is false)
         {
             // if level name is set, filter by it
-            queryable = request.Server.ToLower() switch
-            {
-                "japanese" => queryable.Where(x => x.ArkLevel.NameJp.Contains(request.LevelName)),
-                "korean" => queryable.Where(x => x.ArkLevel.NameKo.Contains(request.LevelName)),
-                "english" => queryable.Where(x => x.ArkLevel.NameEn.Contains(request.LevelName)),
-                _ => queryable.Where(x => x.ArkLevel.NameCn.Contains(request.LevelName))
-            };
+            queryable = request.Server.GetQueryLevelNameFunc().Invoke(queryable, request.LevelName);
         }
 
         if (string.IsNullOrEmpty(request.LevelCatOne) is false)
         {
             // if level cat one is set, filter by it
-            queryable = request.Server.ToLower() switch
-            {
-                "japanese" => queryable.Where(x => x.ArkLevel.CatOneJp.Contains(request.LevelCatOne)),
-                "korean" => queryable.Where(x => x.ArkLevel.CatOneKo.Contains(request.LevelCatOne)),
-                "english" => queryable.Where(x => x.ArkLevel.CatOneEn.Contains(request.LevelCatOne)),
-                _ => queryable.Where(x => x.ArkLevel.CatOneCn.Contains(request.LevelCatOne))
-            };
+            queryable = request.Server.GetQueryLevelCatOneFunc().Invoke(queryable, request.LevelCatOne);
         }
 
         if (string.IsNullOrEmpty(request.LevelCatTwo) is false)
         {
             // if level cat two is set, filter by it
-            queryable = request.Server.ToLower() switch
-            {
-                "japanese" => queryable.Where(x => x.ArkLevel.CatTwoJp.Contains(request.LevelCatTwo)),
-                "korean" => queryable.Where(x => x.ArkLevel.CatTwoKo.Contains(request.LevelCatTwo)),
-                "english" => queryable.Where(x => x.ArkLevel.CatTwoEn.Contains(request.LevelCatTwo)),
-                _ => queryable.Where(x => x.ArkLevel.CatTwoCn.Contains(request.LevelCatTwo))
-            };
+            queryable = request.Server.GetQueryLevelCatTwoFunc().Invoke(queryable, request.LevelCatTwo);
         }
 
         if (string.IsNullOrEmpty(request.LevelCatThree) is false)
         {
             // if level cat three is set, filter by it
-            queryable = request.Server.ToLower() switch
-            {
-                "japanese" => queryable.Where(x => x.ArkLevel.CatThreeJp.Contains(request.LevelCatThree)),
-                "korean" => queryable.Where(x => x.ArkLevel.CatThreeKo.Contains(request.LevelCatThree)),
-                "english" => queryable.Where(x => x.ArkLevel.CatThreeEn.Contains(request.LevelCatThree)),
-                _ => queryable.Where(x => x.ArkLevel.CatThreeCn.Contains(request.LevelCatThree))
-            };
+            queryable = request.Server.GetQueryLevelCatThreeFunc().Invoke(queryable, request.LevelCatThree);
         }
 
         if (uploaderId is not null)

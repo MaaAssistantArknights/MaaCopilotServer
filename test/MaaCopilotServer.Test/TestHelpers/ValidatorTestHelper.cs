@@ -2,11 +2,9 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
-using System.Diagnostics.CodeAnalysis;
-using FluentAssertions;
 using FluentValidation;
 
-namespace MaaCopilotServer.Application.Test.TestHelpers;
+namespace MaaCopilotServer.Test.TestHelpers;
 
 /// <summary>
 /// The helper class of validator tests.

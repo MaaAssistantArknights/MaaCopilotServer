@@ -2,11 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
-using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Application.CopilotUser.Commands.LoginCopilotUser;
-using MaaCopilotServer.Application.Test.TestExtensions;
-using MaaCopilotServer.Application.Test.TestHelpers;
-using MaaCopilotServer.Test.TestEntities;
 using Microsoft.AspNetCore.Http;
 
 namespace MaaCopilotServer.Application.Test.CopilotUser.Commands.Other.LoginCopilotUser;

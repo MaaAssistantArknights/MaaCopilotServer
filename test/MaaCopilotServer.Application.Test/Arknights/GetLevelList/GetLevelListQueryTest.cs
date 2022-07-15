@@ -2,11 +2,8 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
-using System.Diagnostics.CodeAnalysis;
 using FluentEmail.Core;
 using MaaCopilotServer.Application.Arknights.GetLevelList;
-using MaaCopilotServer.Application.Test.TestExtensions;
-using MaaCopilotServer.Application.Test.TestHelpers;
 using Microsoft.AspNetCore.Http;
 
 namespace MaaCopilotServer.Application.Test.Arknights.GetLevelList;

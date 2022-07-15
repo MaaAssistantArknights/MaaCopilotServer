@@ -23,5 +23,10 @@ public class QueryCopilotOperationsQueryValidator : AbstractValidator<QueryCopil
             .NotEmpty().Equal("me")
             .When(x => x.UploaderId == "me")
             .WithMessage(errorMessage.UploaderIdIsInvalid);
+
+        RuleFor(x => x.Server)
+            .Must(x => ArkServerLanguage.Parse(x) != ArkServerLanguage.Unknown)
+            .When(x => string.IsNullOrEmpty(x.Server) is false)
+            .WithMessage(errorMessage.UnknownLanguageType);
     }
 }

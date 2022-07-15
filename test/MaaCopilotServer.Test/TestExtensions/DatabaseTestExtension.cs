@@ -2,10 +2,9 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
-using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Application.Common.Interfaces;
 
-namespace MaaCopilotServer.Application.Test.TestExtensions;
+namespace MaaCopilotServer.Test.TestExtensions;
 
 /// <summary>
 /// Test extensions for <see cref="IMaaCopilotDbContext"/>.

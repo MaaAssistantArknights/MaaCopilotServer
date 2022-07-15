@@ -2,7 +2,6 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Security.Claims;
 using MaaCopilotServer.Api.Services;
@@ -178,7 +177,7 @@ public class CurrentUserServiceTest
 
             return httpContext.Object;
         });
-        var testConfiguration = new Dictionary<string, string> { { "Switches:Apm", apmSwitch.ToString().ToLowerInvariant() } };
+        var testConfiguration = new Dictionary<string, string> { { "Switches:Apm", apmSwitch ? "true" : "false" } };
         var configuration = new ConfigurationBuilder()
             .AddInMemoryCollection(testConfiguration)
             .Build();
@@ -211,7 +210,7 @@ public class CurrentUserServiceTest
         });
         var testConfiguration = new Dictionary<string, string>
         {
-            { "Switches:Apm", apmSwitch.ToString().ToLowerInvariant() }
+            { "Switches:Apm", apmSwitch ? "true" : "false" }
         };
         var configuration = new ConfigurationBuilder()
             .AddInMemoryCollection(testConfiguration)
@@ -234,7 +233,7 @@ public class CurrentUserServiceTest
         var httpContextAccessor = new Mock<IHttpContextAccessor>();
         var testConfiguration = new Dictionary<string, string>
         {
-            { "Switches:Apm", apmSwitch.ToString().ToLowerInvariant() }
+            { "Switches:Apm", apmSwitch ? "true" : "false" }
         };
         var configuration = new ConfigurationBuilder()
             .AddInMemoryCollection(testConfiguration)
