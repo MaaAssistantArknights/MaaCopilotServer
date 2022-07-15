@@ -32,7 +32,7 @@ using MaaCopilotServer.Test;
 using Microsoft.Extensions.Options;
 using Moq;
 
-namespace MaaCopilotServer.Application.Test.TestHelpers;
+namespace MaaCopilotServer.Test.TestHelpers;
 
 /// <summary>
 /// The helper class for testing handlers.

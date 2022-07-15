@@ -4,7 +4,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Api.Controllers;
-using MaaCopilotServer.Api.Test.TestHelpers;
+using MaaCopilotServer.Test.TestHelpers;
 
 namespace MaaCopilotServer.Api.Test.Controllers;
 

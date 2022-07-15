@@ -8,7 +8,7 @@ using MaaCopilotServer.Application.Common.Helpers;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
-namespace MaaCopilotServer.Api.Test.TestHelpers;
+namespace MaaCopilotServer.Test.TestHelpers;
 
 /// <summary>
 /// The helper class for testing controllers.

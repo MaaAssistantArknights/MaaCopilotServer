@@ -4,7 +4,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Application.System.SendEmailTest;
-using MaaCopilotServer.Application.Test.TestHelpers;
+using MaaCopilotServer.Test.TestHelpers;
 
 namespace MaaCopilotServer.Application.Test.System.SendEmailTest;
 

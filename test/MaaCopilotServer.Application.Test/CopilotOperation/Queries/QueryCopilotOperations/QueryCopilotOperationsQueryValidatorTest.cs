@@ -4,7 +4,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Application.CopilotOperation.Queries.QueryCopilotOperations;
-using MaaCopilotServer.Application.Test.TestHelpers;
+using MaaCopilotServer.Test.TestHelpers;
 
 namespace MaaCopilotServer.Application.Test.CopilotOperation.Queries.QueryCopilotOperations;
 

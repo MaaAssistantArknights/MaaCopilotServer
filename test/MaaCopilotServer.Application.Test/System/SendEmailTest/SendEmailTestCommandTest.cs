@@ -5,7 +5,7 @@
 using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Application.System.SendEmailTest;
 using MaaCopilotServer.Application.Test.TestExtensions;
-using MaaCopilotServer.Application.Test.TestHelpers;
+using MaaCopilotServer.Test.TestHelpers;
 using Microsoft.AspNetCore.Http;
 
 namespace MaaCopilotServer.Application.Test.System.SendEmailTest;

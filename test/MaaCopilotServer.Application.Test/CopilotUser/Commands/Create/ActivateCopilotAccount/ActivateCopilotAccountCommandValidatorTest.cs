@@ -4,7 +4,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Application.CopilotUser.Commands.ActivateCopilotAccount;
-using MaaCopilotServer.Application.Test.TestHelpers;
+using MaaCopilotServer.Test.TestHelpers;
 
 namespace MaaCopilotServer.Application.Test.CopilotUser.Commands.Create.ActivateCopilotAccount;
 

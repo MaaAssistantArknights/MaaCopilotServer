@@ -6,7 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 using FluentAssertions;
 using FluentValidation;
 
-namespace MaaCopilotServer.Application.Test.TestHelpers;
+namespace MaaCopilotServer.Test.TestHelpers;
 
 /// <summary>
 /// The helper class of validator tests.

@@ -5,9 +5,9 @@
 using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Application.CopilotUser.Commands.PasswordReset;
 using MaaCopilotServer.Application.Test.TestExtensions;
-using MaaCopilotServer.Application.Test.TestHelpers;
 using MaaCopilotServer.Domain.Enums;
 using MaaCopilotServer.Test.TestEntities;
+using MaaCopilotServer.Test.TestHelpers;
 using Microsoft.AspNetCore.Http;
 
 namespace MaaCopilotServer.Application.Test.CopilotUser.Commands.Change.PasswordReset;

@@ -4,8 +4,8 @@
 
 using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Api.Controllers;
-using MaaCopilotServer.Api.Test.TestHelpers;
 using MaaCopilotServer.Domain.Options;
+using MaaCopilotServer.Test.TestHelpers;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;

@@ -5,8 +5,8 @@
 using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Application.CopilotUser.Commands.CreateCopilotUser;
 using MaaCopilotServer.Application.Test.TestExtensions;
-using MaaCopilotServer.Application.Test.TestHelpers;
 using MaaCopilotServer.Test.TestEntities;
+using MaaCopilotServer.Test.TestHelpers;
 using Microsoft.AspNetCore.Http;
 
 namespace MaaCopilotServer.Application.Test.CopilotUser.Commands.Create.CreateCopilotUser;
