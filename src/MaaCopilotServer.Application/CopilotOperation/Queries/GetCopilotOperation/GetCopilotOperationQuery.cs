@@ -94,7 +94,7 @@ public class
             UploadTime = entity.CreateAt.ToIsoString(),
             ViewCounts = entity.ViewCounts,
             HotScore = entity.HotScore,
-            Level = entity.ArkLevel.MapToDto(request.Server),
+            Level = request.Server.GetLevelMapperFunc().Invoke(entity.ArkLevel),
             Groups = entity.Groups.ToArray().DeserializeGroup(),
             RatingLevel = _copilotOperationService.GetRatingLevelString(entity.RatingLevel),
             RatingType = rating

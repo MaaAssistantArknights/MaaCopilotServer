@@ -26,42 +26,6 @@ public class GetOperatorListQueryHandler : IRequestHandler<GetOperatorListQuery,
 {
     private readonly IMaaCopilotDbContext _dbContext;
 
-    private readonly Func<ArkCharacterInfo, GetOperatorListDto> _mapCn = data =>
-        new GetOperatorListDto
-        {
-            Name = data.NameCn,
-            Id = data.Id,
-            Profession = data.Profession.GetCharacterProfessionCnString(),
-            Star = data.Star
-        };
-
-    private readonly Func<ArkCharacterInfo, GetOperatorListDto> _mapEn = data =>
-        new GetOperatorListDto
-        {
-            Name = data.NameEn,
-            Id = data.Id,
-            Profession = data.Profession.GetCharacterProfessionEnString(),
-            Star = data.Star
-        };
-
-    private readonly Func<ArkCharacterInfo, GetOperatorListDto> _mapJp = data =>
-        new GetOperatorListDto
-        {
-            Name = data.NameJp,
-            Id = data.Id,
-            Profession = data.Profession.GetCharacterProfessionJpString(),
-            Star = data.Star
-        };
-
-    private readonly Func<ArkCharacterInfo, GetOperatorListDto> _mapKo = data =>
-        new GetOperatorListDto
-        {
-            Name = data.NameKo,
-            Id = data.Id,
-            Profession = data.Profession.GetCharacterProfessionKoString(),
-            Star = data.Star
-        };
-
     public GetOperatorListQueryHandler(IMaaCopilotDbContext dbContext)
     {
         _dbContext = dbContext;
@@ -69,38 +33,15 @@ public class GetOperatorListQueryHandler : IRequestHandler<GetOperatorListQuery,
 
     public async Task<MaaApiResponse> Handle(GetOperatorListQuery request, CancellationToken cancellationToken)
     {
-        var server = string.IsNullOrEmpty(request.Server) ? "chinese" : request.Server.ToLower();
-
         var query = _dbContext.ArkCharacterInfos.AsQueryable();
 
-        var mapper = _mapCn;
+        var qFunc = request.Server.GetCharQueryFunc();
+        var mFunc = request.Server.GetCharMapperFunc();
 
-        switch (server)
-        {
-            case "chinese" or "cn":
-                query = query.Where(x =>
-                    string.IsNullOrEmpty(x.NameCn) == false);
-                mapper = _mapCn;
-                break;
-            case "english" or "en":
-                query = query.Where(x =>
-                    string.IsNullOrEmpty(x.NameEn) == false);
-                mapper = _mapEn;
-                break;
-            case "japanese" or "ja":
-                query = query.Where(x =>
-                    string.IsNullOrEmpty(x.NameJp) == false);
-                mapper = _mapJp;
-                break;
-            case "korean" or "ko":
-                query = query.Where(x =>
-                    string.IsNullOrEmpty(x.NameKo) == false);
-                mapper = _mapKo;
-                break;
-        }
+        query = qFunc.Invoke(query);
 
         var data = await query.ToListAsync(cancellationToken);
-        var dto = data.Select(mapper).ToList();
+        var dto = data.Select(mFunc);
         return MaaApiResponseHelper.Ok(dto);
     }
 }
