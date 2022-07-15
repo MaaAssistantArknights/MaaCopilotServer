@@ -2,9 +2,7 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
-using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Application.CopilotOperation.Commands.DeleteCopilotOperation;
-using MaaCopilotServer.Test.TestHelpers;
 
 namespace MaaCopilotServer.Application.Test.CopilotOperation.Commands.DeleteCopilotOperation;
 

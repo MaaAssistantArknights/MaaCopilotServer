@@ -2,17 +2,11 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
-using System.Diagnostics.CodeAnalysis;
-using Elastic.CommonSchema;
 using MaaCopilotServer.Application.Common.Exceptions;
 using MaaCopilotServer.Application.Common.Helpers;
 using MaaCopilotServer.Application.Common.Models;
 using MaaCopilotServer.Application.CopilotOperation.Queries.QueryCopilotOperations;
-using MaaCopilotServer.Application.Test.TestExtensions;
 using MaaCopilotServer.Domain.Entities;
-using MaaCopilotServer.GameData.Entity;
-using MaaCopilotServer.Test.TestEntities;
-using MaaCopilotServer.Test.TestHelpers;
 using Microsoft.AspNetCore.Http;
 
 namespace MaaCopilotServer.Application.Test.CopilotOperation.Queries.QueryCopilotOperations;

@@ -2,7 +2,6 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
-using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Application.Arknights.GetDataVersion;
 using MaaCopilotServer.Application.Arknights.GetLevelList;
 using MaaCopilotServer.Application.Common.Interfaces;
@@ -25,12 +24,10 @@ using MaaCopilotServer.Application.CopilotUser.Queries.GetCopilotUser;
 using MaaCopilotServer.Application.CopilotUser.Queries.QueryCopilotUser;
 using MaaCopilotServer.Application.System.GetCurrentVersion;
 using MaaCopilotServer.Application.System.SendEmailTest;
-using MaaCopilotServer.Application.Test.TestExtensions;
 using MaaCopilotServer.Domain.Options;
 using MaaCopilotServer.Resources;
-using MaaCopilotServer.Test;
+using MaaCopilotServer.Test.TestExtensions;
 using Microsoft.Extensions.Options;
-using Moq;
 
 namespace MaaCopilotServer.Test.TestHelpers;
 
