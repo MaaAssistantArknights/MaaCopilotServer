@@ -65,7 +65,7 @@ public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequ
         var elapsedMilliseconds = _timer.ElapsedMilliseconds;
 
         var requestName = typeof(TRequest).Name;
-        var userId = _currentUserService.GetUserIdentity().ToString() ?? string.Empty;
+        var userId = _currentUserService.GetUserIdentity().ToString();
         var statusCode = response.StatusCode;
 
         var level = statusCode switch

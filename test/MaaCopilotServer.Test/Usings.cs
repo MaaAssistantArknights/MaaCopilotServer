@@ -2,8 +2,6 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
-global using System.Diagnostics.CodeAnalysis;
 global using FluentAssertions;
-global using MaaCopilotServer.Test.TestHelpers;
-global using Microsoft.VisualStudio.TestTools.UnitTesting;
 global using Moq;
+global using System.Diagnostics.CodeAnalysis;

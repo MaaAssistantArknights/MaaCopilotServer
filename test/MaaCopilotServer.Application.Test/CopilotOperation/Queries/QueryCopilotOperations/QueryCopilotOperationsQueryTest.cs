@@ -2,17 +2,11 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
-using System.Diagnostics.CodeAnalysis;
-using Elastic.CommonSchema;
 using MaaCopilotServer.Application.Common.Exceptions;
 using MaaCopilotServer.Application.Common.Helpers;
 using MaaCopilotServer.Application.Common.Models;
 using MaaCopilotServer.Application.CopilotOperation.Queries.QueryCopilotOperations;
-using MaaCopilotServer.Application.Test.TestExtensions;
-using MaaCopilotServer.Application.Test.TestHelpers;
 using MaaCopilotServer.Domain.Entities;
-using MaaCopilotServer.GameData.Entity;
-using MaaCopilotServer.Test.TestEntities;
 using Microsoft.AspNetCore.Http;
 
 namespace MaaCopilotServer.Application.Test.CopilotOperation.Queries.QueryCopilotOperations;
@@ -25,14 +19,19 @@ namespace MaaCopilotServer.Application.Test.CopilotOperation.Queries.QueryCopilo
 public class QueryCopilotOperationsQueryTest
 {
     /// <summary>
-    /// The index of entity that has the highest views.
+    /// The index of entity that has the highest ID.
     /// </summary>
-    private const int HighestViewId = 9;
+    private const int HighestId = 9;
 
     /// <summary>
-    /// The index of entity that has the highest rate.
+    /// The index of entity that has the highest views.
     /// </summary>
-    private const int HighestRateId = 8;
+    private const int HighestViewId = 8;
+
+    /// <summary>
+    /// The index of entity that has the highest hot value.
+    /// </summary>
+    private const int HighestHotId = 7;
 
     /// <summary>
     /// Initializes test environment with test data.
@@ -65,14 +64,12 @@ public class QueryCopilotOperationsQueryTest
             data[i].AddLike(Guid.Empty);
         }
 
-        // Set operation[9] to have another two views
+        // Set operation[HighestViewId] to have another two views
         data[HighestViewId].AddViewCount();
-        data[HighestRateId].AddViewCount();
+        data[HighestViewId].AddViewCount();
 
-
-        // Set operation[8] to have another two like
-        data[HighestRateId].AddLike(Guid.Empty);
-        data[HighestRateId].AddLike(Guid.Empty);
+        // Set operation[HighestHotId] to have highest hot value
+        data[HighestHotId].UpdateHotScore(10000);
 
         test.DbContext.Setup(db =>
         {
@@ -277,6 +274,9 @@ public class QueryCopilotOperationsQueryTest
         var result = test.TestQueryCopilotOperations(new()
         {
             LevelName = "level0",
+            LevelCatOne = $"level0CatOne{resultAppendix}",
+            LevelCatTwo = $"level0CatTwo{resultAppendix}",
+            LevelCatThree = $"level0CatThree{resultAppendix}",
             Server = language
         });
 
@@ -290,6 +290,9 @@ public class QueryCopilotOperationsQueryTest
         data[0].Id.Should().Be(EntityIdHelper.EncodeId(0));
         data[0].Level.LevelId.Should().Be("level0");
         data[0].Level.Name.Should().Be($"level0{resultAppendix}");
+        data[0].Level.CatOne.Should().Be($"level0CatOne{resultAppendix}");
+        data[0].Level.CatTwo.Should().Be($"level0CatTwo{resultAppendix}");
+        data[0].Level.CatThree.Should().Be($"level0CatThree{resultAppendix}");
     }
 
     [TestMethod]
@@ -380,6 +383,10 @@ public class QueryCopilotOperationsQueryTest
     [DataTestMethod]
     [DataRow("views", false)]
     [DataRow("views", true)]
+    [DataRow("hot", false)]
+    [DataRow("hot", true)]
+    [DataRow("", false)]
+    [DataRow("", true)]
     public void TestHandleOrderBy(string orderBy, bool descending)
     {
         var (users, test) = Initialize(new());
@@ -400,7 +407,12 @@ public class QueryCopilotOperationsQueryTest
         responseData.Total.Should().Be(10);
         responseData.Data.Should().NotBeNull().And.HaveCount(10);
         var data = responseData.Data!;
-        var highestId = orderBy == "views" ? HighestViewId : HighestRateId;
+        var highestId = orderBy switch
+        {
+            "views" => HighestViewId,
+            "hot" => HighestHotId,
+            _ => HighestId,
+        };
         if (descending)
         {
             data[0].Id.Should().Be(EntityIdHelper.EncodeId(highestId));

@@ -2,13 +2,12 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
-using System.Diagnostics.CodeAnalysis;
 using MaaCopilotServer.Api.Controllers;
 using MaaCopilotServer.Application.Common.Helpers;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
-namespace MaaCopilotServer.Api.Test.TestHelpers;
+namespace MaaCopilotServer.Test.TestHelpers;
 
 /// <summary>
 /// The helper class for testing controllers.
