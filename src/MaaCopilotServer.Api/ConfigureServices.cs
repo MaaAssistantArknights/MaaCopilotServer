@@ -13,6 +13,7 @@ using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Domain.Attributes;
 using MaaCopilotServer.Domain.Extensions;
 using MaaCopilotServer.Domain.Options;
+using MaaCopilotServer.Infrastructure.Database;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
@@ -65,6 +66,8 @@ public static class ConfigureServices
 
                 return handler;
             });
+
+        services.AddDbContext<IMaaCopilotDbContext, MaaCopilotDbContext>();
 
         services.AddHttpContextAccessor();
         services.AddScoped<ICurrentUserService, CurrentUserService>();

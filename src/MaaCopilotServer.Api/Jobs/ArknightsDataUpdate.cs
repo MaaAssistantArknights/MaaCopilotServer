@@ -2,17 +2,16 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
-using System.Net;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using MaaCopilotServer.Api.Constants;
 using MaaCopilotServer.Application.Common.Enum;
+using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Domain.Constants;
 using MaaCopilotServer.Domain.Entities;
 using MaaCopilotServer.Domain.Options;
 using MaaCopilotServer.GameData;
 using MaaCopilotServer.GameData.Exceptions;
-using MaaCopilotServer.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using ArkServerLanguage = MaaCopilotServer.GameData.Constants.ArkServerLanguage;
@@ -23,12 +22,16 @@ public class ArknightsDataUpdate : IHostedService
 {
     private readonly ILogger<ArknightsDataUpdate> _logger;
     private readonly IOptions<CopilotServerOption> _copilotServerOptions;
-    private readonly IOptions<DatabaseOption> _dbOptions;
 
     /// <summary>
     /// The HTTP client factory.
     /// </summary>
     private readonly IHttpClientFactory _httpClientFactory;
+
+    /// <summary>
+    /// The database context.
+    /// </summary>
+    private readonly IMaaCopilotDbContext _dbContext;
 
     private readonly Action<Exception, ArkServerLanguage> _exceptionLogger;
 
@@ -43,18 +46,18 @@ public class ArknightsDataUpdate : IHostedService
     /// </summary>
     /// <param name="logger">The logger,</param>
     /// <param name="copilotServerOptions">The copilot server options.</param>
-    /// <param name="dbOptions">The database options.</param>
     /// <param name="httpClientFactory">The HTTP client factory.</param>
+    /// <param name="dbContext">The database context.</param>
     public ArknightsDataUpdate(
         ILogger<ArknightsDataUpdate> logger,
         IOptions<CopilotServerOption> copilotServerOptions,
-        IOptions<DatabaseOption> dbOptions,
-        IHttpClientFactory httpClientFactory)
+        IHttpClientFactory httpClientFactory,
+        IMaaCopilotDbContext dbContext)
     {
         _logger = logger;
         _copilotServerOptions = copilotServerOptions;
-        _dbOptions = dbOptions;
         _httpClientFactory = httpClientFactory;
+        _dbContext = dbContext;
 
         _cts = new CancellationTokenSource();
 
@@ -100,6 +103,8 @@ public class ArknightsDataUpdate : IHostedService
     {
         while (cancellationToken.IsCancellationRequested is false)
         {
+            var db = _dbContext;
+
             try
             {
                 while (SystemStatus.DatabaseInitialized is false)
@@ -107,7 +112,6 @@ public class ArknightsDataUpdate : IHostedService
                     await Task.Delay(5000, cancellationToken);
                 }
 
-                var db = new MaaCopilotDbContext(_dbOptions);
                 var versions = await GetDataVersion();
 
                 var levelVersion =
@@ -257,7 +261,6 @@ public class ArknightsDataUpdate : IHostedService
                     dbE.Update(e);
                     db.ArkCharacterInfos.Update(dbE);
                 }
-
                 db.ArkLevelData.AddRange(newLevelData);
                 db.ArkCharacterInfos.AddRange(newCharData);
 
@@ -280,8 +283,6 @@ public class ArknightsDataUpdate : IHostedService
                 }
 
                 var changes = await db.SaveChangesAsync(cancellationToken);
-
-                await db.DisposeAsync();
 
                 _logger.LogInformation("MaaCopilotServer: Type -> {LoggingType}; Name -> {Name}; Message -> {Message}",
                     LoggingType.WorkerServicesReport, nameof(ArknightsDataUpdate),
@@ -310,7 +311,6 @@ public class ArknightsDataUpdate : IHostedService
                 {
                     _disaster = false;
 
-                    var db = new MaaCopilotDbContext(_dbOptions);
                     var store = db.PersistStorage
                         .FirstOrDefault(x => x.Key == SystemConstants.ARK_ASSET_CACHE_ERROR);
 
@@ -324,11 +324,7 @@ public class ArknightsDataUpdate : IHostedService
                         store.UpdateValue(SystemConstants.ARK_ASSET_CACHE_ERROR_DISASTER);
                         db.PersistStorage.Update(store);
                     }
-
-                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                    db.SaveChanges();
-                    // ReSharper disable once MethodHasAsyncOverload
-                    db.Dispose();
+                    await db.SaveChangesAsync(cancellationToken);
                 }
             }
         }
