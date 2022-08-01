@@ -18,19 +18,13 @@ public class GetDataVersionQueryDto
     ///     The constructor of <see cref="GetDataVersionQueryDto"/>.
     /// </summary>
     /// <param name="levelVersion">Level version.</param>
-    /// <param name="cnVersion">Chinese (China Mainland) server data version.</param>
-    /// <param name="twVersion">Chinese (Taiwan, China) server data version.</param>
-    /// <param name="enVersion">English (Global) server data version.</param>
-    /// <param name="jpVersion">Japanese (Japan) server data version.</param>
-    /// <param name="koVersion">Korean (Korea) server data version.</param>
-    public GetDataVersionQueryDto(string levelVersion, string cnVersion, string twVersion, string enVersion, string jpVersion, string koVersion)
+    /// <param name="serverVersion">Server data version.</param>
+    /// <param name="serverSyncStatus">Server data sync status.</param>
+    public GetDataVersionQueryDto(string levelVersion, ServerStatusDto serverVersion, ServerStatusDto serverSyncStatus)
     {
         LevelVersion = levelVersion;
-        CnVersion = cnVersion;
-        TwVersion = twVersion;
-        EnVersion = enVersion;
-        JpVersion = jpVersion;
-        KoVersion = koVersion;
+        ServerVersion = serverVersion;
+        ServerSyncStatus = serverSyncStatus;
     }
 
 #pragma warning disable CS8618
@@ -43,39 +37,89 @@ public class GetDataVersionQueryDto
     [Required]
     [JsonPropertyName("level")]
     public string LevelVersion { get; set; }
+    
+    /// <summary>
+    ///     Server data version.
+    /// </summary>
+    [Required]
+    [JsonPropertyName("version")]
+    public ServerStatusDto ServerVersion { get; set; }
+    
+    /// <summary>
+    ///     Server data sync status.
+    /// </summary>
+    [Required]
+    [JsonPropertyName("status")]
+    public ServerStatusDto ServerSyncStatus { get; set; }
+}
+
+/// <summary>
+///     Server specific data.
+/// </summary>
+public record ServerStatusDto
+{
+    /// <summary>
+    ///     The constructor of <see cref="ServerStatusDto"/>.
+    /// </summary>
+    /// <param name="chineseSimplified">CN Mainland</param>
+    /// <param name="chineseTraditional">CN TW</param>
+    /// <param name="english">EN Global</param>
+    /// <param name="japanese">JA Japan</param>
+    /// <param name="korean">KO Korea</param>
+    public ServerStatusDto(string chineseSimplified, string chineseTraditional, string english, string japanese, string korean)
+    {
+        ChineseSimplified = chineseSimplified;
+        ChineseTraditional = chineseTraditional;
+        English = english;
+        Japanese = japanese;
+        Korean = korean;
+    }
 
     /// <summary>
-    ///     Chinese (China Mainland) server data version.
+    ///     The constructor of <see cref="ServerStatusDto"/>.
+    /// </summary>
+    /// <param name="same">Same string for every properties.</param>
+    public ServerStatusDto(string same)
+    {
+        ChineseSimplified = same;
+        ChineseTraditional = same;
+        English = same;
+        Japanese = same;
+        Korean = same;
+    }
+
+    /// <summary>
+    ///     Chinese (China Mainland) server info.
     /// </summary>
     [Required]
     [JsonPropertyName("chinese_simplified")]
-    public string CnVersion { get; set; }
+    public string ChineseSimplified { get; set; }
     
     /// <summary>
-    ///     Chinese (Taiwan, China) server data version.
+    ///     Chinese (Taiwan, China) server info.
     /// </summary>
     [Required]
     [JsonPropertyName("chinese_traditional")]
-    public string TwVersion { get; set; }
+    public string ChineseTraditional { get; set; }
 
     /// <summary>
-    ///     English (Global) server data version.
+    ///     English (Global) server info.
     /// </summary>
     [Required]
     [JsonPropertyName("english")]
-    public string EnVersion { get; set; }
+    public string English { get; set; }
 
     /// <summary>
-    ///     Japanese (Japan) server data version.
+    ///     Japanese (Japan) server info.
     /// </summary>
     [Required]
     [JsonPropertyName("japanese")]
-    public string JpVersion { get; set; }
+    public string Japanese { get; set; }
 
     /// <summary>
-    ///     Korean (Korea) server data version.
+    ///     Korean (Korea) server info.
     /// </summary>
     [Required]
     [JsonPropertyName("korean")]
-    public string KoVersion { get; set; }
+    public string Korean { get; set; }
 }

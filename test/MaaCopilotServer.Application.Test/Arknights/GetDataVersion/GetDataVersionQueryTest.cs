@@ -38,10 +38,10 @@ public class GetDataVersionQueryTest
         var dto = (GetDataVersionQueryDto)result.Response.Data!;
         dto.Should().NotBeNull();
         dto.LevelVersion.Should().Be($"test_{SystemConstants.ARK_ASSET_VERSION_LEVEL}");
-        dto.CnVersion.Should().Be($"test_{SystemConstants.ARK_ASSET_VERSION_CN}");
-        dto.TwVersion.Should().Be($"test_{SystemConstants.ARK_ASSET_VERSION_TW}");
-        dto.EnVersion.Should().Be($"test_{SystemConstants.ARK_ASSET_VERSION_EN}");
-        dto.JpVersion.Should().Be($"test_{SystemConstants.ARK_ASSET_VERSION_JP}");
-        dto.KoVersion.Should().Be($"test_{SystemConstants.ARK_ASSET_VERSION_KO}");
+        dto.ServerVersion.ChineseSimplified.Should().Be($"test_{SystemConstants.ARK_ASSET_VERSION_CN}");
+        dto.ServerVersion.ChineseTraditional.Should().Be($"test_{SystemConstants.ARK_ASSET_VERSION_TW}");
+        dto.ServerVersion.English.Should().Be($"test_{SystemConstants.ARK_ASSET_VERSION_EN}");
+        dto.ServerVersion.Japanese.Should().Be($"test_{SystemConstants.ARK_ASSET_VERSION_JP}");
+        dto.ServerVersion.Korean.Should().Be($"test_{SystemConstants.ARK_ASSET_VERSION_KO}");
     }
 }

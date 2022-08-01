@@ -76,7 +76,7 @@ public static class GameDataParser
     /// <param name="ko">ArkData Korea server.</param>
     /// <param name="loggerCallback">A logger to log exceptions.</param>
     /// <returns></returns>
-    public static ArkDataParsed Parse(ArkDataSource cn, ArkDataSource cnT, ArkDataSource en, ArkDataSource jp, ArkDataSource ko, Action<Exception>? loggerCallback)
+    public static ArkDataParsed Parse(ArkDataSource cn, ArkDataSource cnT, ArkDataSource en, ArkDataSource jp, ArkDataSource ko, Action<Exception, ArkServerLanguage>? loggerCallback)
     {
         var cnGd = cn.ParseToGameDataModel(loggerCallback);
         var cnTGd = cnT.ParseToGameDataModel(loggerCallback);
@@ -115,7 +115,7 @@ public static class GameDataParser
         };
     }
 
-    private static IEnumerable<ArkLevelEntity> ParseToEntitySingleLanguage(this ArkGameData gd, ArkServerLanguage language, Action<Exception>? loggerCallback)
+    private static IEnumerable<ArkLevelEntity> ParseToEntitySingleLanguage(this ArkGameData gd, ArkServerLanguage language, Action<Exception, ArkServerLanguage>? loggerCallback)
     {
         var es = new List<ArkLevelEntity>();
 
@@ -171,12 +171,11 @@ public static class GameDataParser
             }
             catch (GameDataParseException e)
             {
-                loggerCallback?.Invoke(e);
+                loggerCallback?.Invoke(e, language);
             }
             catch (Exception e)
             {
-                loggerCallback?.Invoke(e);
-                throw;
+                loggerCallback?.Invoke(e, language);
             }
         }
 
@@ -210,12 +209,11 @@ public static class GameDataParser
             }
             catch (GameDataParseException e)
             {
-                loggerCallback?.Invoke(e);
+                loggerCallback?.Invoke(e, language);
             }
             catch (Exception e)
             {
-                loggerCallback?.Invoke(e);
-                throw;
+                loggerCallback?.Invoke(e, language);
             }
         }
 
@@ -258,12 +256,11 @@ public static class GameDataParser
             }
             catch (GameDataParseException e)
             {
-                loggerCallback?.Invoke(e);
+                loggerCallback?.Invoke(e, language);
             }
             catch (Exception e)
             {
-                loggerCallback?.Invoke(e);
-                throw;
+                loggerCallback?.Invoke(e, language);
             }
         }
 
@@ -304,19 +301,18 @@ public static class GameDataParser
             }
             catch (GameDataParseException e)
             {
-                loggerCallback?.Invoke(e);
+                loggerCallback?.Invoke(e, language);
             }
             catch (Exception e)
             {
-                loggerCallback?.Invoke(e);
-                throw;
+                loggerCallback?.Invoke(e, language);
             }
         }
 
         return es;
     }
 
-    private static ArkGameData ParseToGameDataModel(this ArkDataSource dataSource, Action<Exception>? loggerCallback)
+    private static ArkGameData ParseToGameDataModel(this ArkDataSource dataSource, Action<Exception, ArkServerLanguage>? loggerCallback)
     {
         try
         {
@@ -347,7 +343,7 @@ public static class GameDataParser
         }
         catch (Exception e)
         {
-            loggerCallback?.Invoke(e);
+            loggerCallback?.Invoke(e, dataSource.Language);
         }
 
         return new ArkGameData();

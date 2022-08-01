@@ -26,6 +26,10 @@ public static class SystemConstants
     public const string ARK_ASSET_VERSION_EN = "ark.asset.version.en";
     public const string ARK_ASSET_VERSION_JP = "ark.asset.version.jp";
     public const string ARK_ASSET_VERSION_KO = "ark.asset.version.ko";
+    public const string ARK_ASSET_CACHE_ERROR = "ark.asset.cache.error";
+
+    public const string ARK_ASSET_CACHE_ERROR_NORMAL = "ERROR";
+    public const string ARK_ASSET_CACHE_ERROR_DISASTER = "DISASTER";
 
     public const string MaaCopilotSchemaPath = "static/maa-copilot-schema.json";
 

@@ -25,7 +25,10 @@ public class ArknightsDataUpdate : IHostedService
     private readonly IOptions<CopilotServerOption> _copilotServerOptions;
     private readonly IOptions<DatabaseOption> _dbOptions;
 
-    private readonly Action<Exception> _exceptionLogger;
+    private readonly Action<Exception, ArkServerLanguage> _exceptionLogger;
+
+    private readonly List<ArkServerLanguage> _syncErrors = new();
+    private bool _disaster;
 
     private Task? _timedTask;
     private CancellationTokenSource? _cts;
@@ -41,13 +44,18 @@ public class ArknightsDataUpdate : IHostedService
 
         _cts = new CancellationTokenSource();
 
-        _exceptionLogger = ex =>
+        _exceptionLogger = (ex, lang) =>
         {
             if (ex is GameDataParseException)
             {
                 return;
             }
 
+            if (_syncErrors.Contains(lang) is false)
+            {
+                _syncErrors.Add(lang);
+            }
+            
             _logger.LogError(ex,
                 "MaaCopilotServer: Type -> {LoggingType}; Name -> {Name}; ExceptionName -> {ExceptionName}",
                 LoggingType.WorkerServicesException, nameof(TokenValidationCheck), ex.GetType().Name);
@@ -76,9 +84,9 @@ public class ArknightsDataUpdate : IHostedService
 
     private async Task RunJob(CancellationToken cancellationToken)
     {
-        try
+        while (cancellationToken.IsCancellationRequested is false)
         {
-            while (cancellationToken.IsCancellationRequested is false)
+            try
             {
                 while (SystemStatus.DatabaseInitialized is false)
                 {
@@ -100,8 +108,10 @@ public class ArknightsDataUpdate : IHostedService
                     db.PersistStorage.FirstOrDefault(x => x.Key == SystemConstants.ARK_ASSET_VERSION_JP);
                 var koVersion =
                     db.PersistStorage.FirstOrDefault(x => x.Key == SystemConstants.ARK_ASSET_VERSION_KO);
+                var error =
+                    db.PersistStorage.FirstOrDefault(x => x.Key == SystemConstants.ARK_ASSET_CACHE_ERROR);
 
-                var updateRequired = false;
+                var updateRequired = string.IsNullOrEmpty(error?.Value);
 
                 #region Check if update is required or not
 
@@ -130,7 +140,7 @@ public class ArknightsDataUpdate : IHostedService
                     db.PersistStorage.Update(cnVersion);
                     updateRequired = true;
                 }
-                
+
                 if (twVersion is null)
                 {
                     twVersion = new PersistStorage(SystemConstants.ARK_ASSET_VERSION_TW, versions.Tw);
@@ -236,7 +246,25 @@ public class ArknightsDataUpdate : IHostedService
 
                 db.ArkLevelData.AddRange(newLevelData);
                 db.ArkCharacterInfos.AddRange(newCharData);
+                
+                var errorStr = string.Join(";", _syncErrors.Select(x => x.ToString()));
 
+                _syncErrors.Clear();
+                
+                var store = db.PersistStorage
+                    .FirstOrDefault(x => x.Key == SystemConstants.ARK_ASSET_CACHE_ERROR);
+
+                if (store is null)
+                {
+                    store = new PersistStorage(SystemConstants.ARK_ASSET_CACHE_ERROR, errorStr);
+                    db.PersistStorage.Add(store);
+                }
+                else
+                {
+                    store.UpdateValue(errorStr);
+                    db.PersistStorage.Update(store);
+                }
+                
                 var changes = await db.SaveChangesAsync(cancellationToken);
 
                 await db.DisposeAsync();
@@ -249,16 +277,46 @@ public class ArknightsDataUpdate : IHostedService
 
                 await Task.Delay(TimeSpan.FromHours(1), cancellationToken);
             }
-        }
-        catch (TaskCanceledException)
-        {
-            // Ignore
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex,
-                "MaaCopilotServer: Type -> {LoggingType}; Name -> {Name}; ExceptionName -> {ExceptionName}",
-                LoggingType.WorkerServicesException, nameof(ArknightsDataUpdate), ex.GetType().Name);
+            catch (TaskCanceledException)
+            {
+                // Ignore
+            }
+            catch (Exception ex)
+            {
+                _disaster = true;
+                
+                _logger.LogCritical(ex,
+                    "MaaCopilotServer: Type -> {LoggingType}; Name -> {Name}; ExceptionName -> {ExceptionName}",
+                    LoggingType.WorkerServicesException, nameof(ArknightsDataUpdate), ex.GetType().Name);
+            }
+            finally
+            {
+                // ReSharper disable once InvertIf
+                if (_disaster)
+                {
+                    _disaster = false;
+                
+                    var db = new MaaCopilotDbContext(_dbOptions);
+                    var store = db.PersistStorage
+                        .FirstOrDefault(x => x.Key == SystemConstants.ARK_ASSET_CACHE_ERROR);
+
+                    if (store is null)
+                    {
+                        store = new PersistStorage(SystemConstants.ARK_ASSET_CACHE_ERROR, SystemConstants.ARK_ASSET_CACHE_ERROR_DISASTER);
+                        db.PersistStorage.Add(store);
+                    }
+                    else
+                    {
+                        store.UpdateValue(SystemConstants.ARK_ASSET_CACHE_ERROR_DISASTER);
+                        db.PersistStorage.Update(store);
+                    }
+                
+                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                    db.SaveChanges();
+                    // ReSharper disable once MethodHasAsyncOverload
+                    db.Dispose();
+                }
+            }
         }
     }
 
