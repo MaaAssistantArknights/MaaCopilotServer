@@ -122,7 +122,7 @@
             }
           },
           "200": {
-            "description": "The version info.",
+            "description": "The version and sync status info. Note that the status could be `ERROR` or `DISASTER`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -3961,12 +3961,9 @@
       },
       "GetDataVersionQueryDto": {
         "required": [
-          "chinese_simplified",
-          "chinese_traditional",
-          "english",
-          "japanese",
-          "korean",
-          "level"
+          "level",
+          "status",
+          "version"
         ],
         "type": "object",
         "properties": {
@@ -3974,25 +3971,11 @@
             "type": "string",
             "description": "Level version."
           },
-          "chinese_simplified": {
-            "type": "string",
-            "description": "Chinese (China Mainland) server data version."
+          "version": {
+            "$ref": "#/components/schemas/ServerStatusDto"
           },
-          "chinese_traditional": {
-            "type": "string",
-            "description": "Chinese (Taiwan, China) server data version."
-          },
-          "english": {
-            "type": "string",
-            "description": "English (Global) server data version."
-          },
-          "japanese": {
-            "type": "string",
-            "description": "Japanese (Japan) server data version."
-          },
-          "korean": {
-            "type": "string",
-            "description": "Korean (Korea) server data version."
+          "status": {
+            "$ref": "#/components/schemas/ServerStatusDto"
           }
         },
         "additionalProperties": false,
@@ -4576,6 +4559,40 @@
         },
         "additionalProperties": false,
         "description": "The DTO for the request password reset command."
+      },
+      "ServerStatusDto": {
+        "required": [
+          "chinese_simplified",
+          "chinese_traditional",
+          "english",
+          "japanese",
+          "korean"
+        ],
+        "type": "object",
+        "properties": {
+          "chinese_simplified": {
+            "type": "string",
+            "description": "Chinese (China Mainland) server info."
+          },
+          "chinese_traditional": {
+            "type": "string",
+            "description": "Chinese (Taiwan, China) server info."
+          },
+          "english": {
+            "type": "string",
+            "description": "English (Global) server info."
+          },
+          "japanese": {
+            "type": "string",
+            "description": "Japanese (Japan) server info."
+          },
+          "korean": {
+            "type": "string",
+            "description": "Korean (Korea) server info."
+          }
+        },
+        "additionalProperties": false,
+        "description": "Server specific data."
       },
       "UpdateCopilotOperationCommand": {
         "required": [
