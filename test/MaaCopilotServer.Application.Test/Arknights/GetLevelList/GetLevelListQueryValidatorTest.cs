@@ -16,19 +16,26 @@ public class GetLevelListQueryValidatorTest
     /// <summary>
     /// Tests <see cref="GetLevelListQueryValidator"/>.
     /// </summary>
-    /// <param name="server">The server name.</param>
+    /// <param name="language">The server language.</param>
     /// <param name="expected">The expected result.</param>
     [DataTestMethod]
     [DataRow("cn", true)]
+    [DataRow("tw", true)]
     [DataRow("en", true)]
     [DataRow("ja", true)]
     [DataRow("ko", true)]
+    [DataRow("zh_cn", true)]
+    [DataRow("zh_tw", true)]
+    [DataRow("en_us", true)]
+    [DataRow("ja_jp", true)]
+    [DataRow("ko_kr", true)]
+    [DataRow("", true)]
     [DataRow("??", false)]
-    public void Test(string server, bool expected)
+    public void Test(string language, bool expected)
     {
         ValidatorTestHelper.Test<GetLevelListQueryValidator, GetLevelListQuery>(new()
         {
-            Server = server,
+            Language = language,
         }, expected);
     }
 }

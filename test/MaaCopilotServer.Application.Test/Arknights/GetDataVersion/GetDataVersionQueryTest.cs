@@ -26,6 +26,7 @@ public class GetDataVersionQueryTest
         {
             db.PersistStorage.Add(new(SystemConstants.ARK_ASSET_VERSION_LEVEL, $"test_{SystemConstants.ARK_ASSET_VERSION_LEVEL}"));
             db.PersistStorage.Add(new(SystemConstants.ARK_ASSET_VERSION_CN, $"test_{SystemConstants.ARK_ASSET_VERSION_CN}"));
+            db.PersistStorage.Add(new(SystemConstants.ARK_ASSET_VERSION_TW, $"test_{SystemConstants.ARK_ASSET_VERSION_TW}"));
             db.PersistStorage.Add(new(SystemConstants.ARK_ASSET_VERSION_EN, $"test_{SystemConstants.ARK_ASSET_VERSION_EN}"));
             db.PersistStorage.Add(new(SystemConstants.ARK_ASSET_VERSION_JP, $"test_{SystemConstants.ARK_ASSET_VERSION_JP}"));
             db.PersistStorage.Add(new(SystemConstants.ARK_ASSET_VERSION_KO, $"test_{SystemConstants.ARK_ASSET_VERSION_KO}"));
@@ -38,6 +39,7 @@ public class GetDataVersionQueryTest
         dto.Should().NotBeNull();
         dto.LevelVersion.Should().Be($"test_{SystemConstants.ARK_ASSET_VERSION_LEVEL}");
         dto.CnVersion.Should().Be($"test_{SystemConstants.ARK_ASSET_VERSION_CN}");
+        dto.TwVersion.Should().Be($"test_{SystemConstants.ARK_ASSET_VERSION_TW}");
         dto.EnVersion.Should().Be($"test_{SystemConstants.ARK_ASSET_VERSION_EN}");
         dto.JpVersion.Should().Be($"test_{SystemConstants.ARK_ASSET_VERSION_JP}");
         dto.KoVersion.Should().Be($"test_{SystemConstants.ARK_ASSET_VERSION_KO}");

@@ -21,13 +21,15 @@ public class GetLevelListQueryTest
     /// <param name="requestServer">The server value in the request.</param>
     /// <param name="server">The server suffix that should be attached in the test response.</param>
     [DataTestMethod]
-    [DataRow("chinese", "cn")]
+    [DataRow("zh_cn", "cn")]
     [DataRow("cn", "cn")]
-    [DataRow("english", "en")]
+    [DataRow("zh_tw", "tw")]
+    [DataRow("tw", "tw")]
+    [DataRow("en_us", "en")]
     [DataRow("en", "en")]
-    [DataRow("japanese", "jp")]
+    [DataRow("ja_jp", "jp")]
     [DataRow("ja", "jp")]
-    [DataRow("korean", "ko")]
+    [DataRow("ko_kr", "ko")]
     [DataRow("ko", "ko")]
     [DataRow("", "cn")]
     public void TestHandle(string requestServer, string server)
@@ -37,7 +39,7 @@ public class GetLevelListQueryTest
 
         var result = test.TestGetLevelList(new()
         {
-            Server = requestServer,
+            Language = requestServer,
         });
 
         result.Response.StatusCode.Should().Be(StatusCodes.Status200OK);
