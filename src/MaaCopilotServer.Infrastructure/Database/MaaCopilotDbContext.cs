@@ -34,6 +34,9 @@ public class MaaCopilotDbContext : DbContext, IMaaCopilotDbContext
     }
 
     /// <inheritdoc />
+    public DbSet<ArkI18N> ArkI18Ns { get; set; } = null!;
+
+    /// <inheritdoc />
     public DbSet<CopilotOperation> CopilotOperations { get; set; } = null!;
 
     /// <inheritdoc />

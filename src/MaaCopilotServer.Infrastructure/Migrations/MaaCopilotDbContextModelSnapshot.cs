@@ -98,7 +98,7 @@ namespace MaaCopilotServer.Infrastructure.Migrations
 
                     b.HasKey("EntityId");
 
-                    b.ToTable("ArkI18N");
+                    b.ToTable("ArkI18Ns");
                 });
 
             modelBuilder.Entity("MaaCopilotServer.Domain.Entities.ArkLevelData", b =>

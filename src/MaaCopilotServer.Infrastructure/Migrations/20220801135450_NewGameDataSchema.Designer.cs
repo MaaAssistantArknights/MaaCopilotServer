@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MaaCopilotServer.Infrastructure.Migrations
 {
     [DbContext(typeof(MaaCopilotDbContext))]
-    [Migration("20220801035133_NewArkDataSchema")]
-    partial class NewArkDataSchema
+    [Migration("20220801135450_NewGameDataSchema")]
+    partial class NewGameDataSchema
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -100,7 +100,7 @@ namespace MaaCopilotServer.Infrastructure.Migrations
 
                     b.HasKey("EntityId");
 
-                    b.ToTable("ArkI18N");
+                    b.ToTable("ArkI18Ns");
                 });
 
             modelBuilder.Entity("MaaCopilotServer.Domain.Entities.ArkLevelData", b =>
