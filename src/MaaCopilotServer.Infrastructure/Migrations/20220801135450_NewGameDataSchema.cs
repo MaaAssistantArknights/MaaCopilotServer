@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace MaaCopilotServer.Infrastructure.Migrations
 {
-    public partial class NewArkDataSchema : Migration
+    public partial class NewGameDataSchema : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -125,7 +125,7 @@ namespace MaaCopilotServer.Infrastructure.Migrations
                 defaultValue: new Guid("00000000-0000-0000-0000-000000000000"));
 
             migrationBuilder.CreateTable(
-                name: "ArkI18N",
+                name: "ArkI18Ns",
                 columns: table => new
                 {
                     EntityId = table.Column<Guid>(type: "uuid", nullable: false),
@@ -141,7 +141,7 @@ namespace MaaCopilotServer.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ArkI18N", x => x.EntityId);
+                    table.PrimaryKey("PK_ArkI18Ns", x => x.EntityId);
                 });
 
             migrationBuilder.CreateIndex(
@@ -170,42 +170,42 @@ namespace MaaCopilotServer.Infrastructure.Migrations
                 column: "NameEntityId");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_ArkCharacterInfos_ArkI18N_NameEntityId",
+                name: "FK_ArkCharacterInfos_ArkI18Ns_NameEntityId",
                 table: "ArkCharacterInfos",
                 column: "NameEntityId",
-                principalTable: "ArkI18N",
+                principalTable: "ArkI18Ns",
                 principalColumn: "EntityId",
                 onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_ArkLevelData_ArkI18N_CatOneEntityId",
+                name: "FK_ArkLevelData_ArkI18Ns_CatOneEntityId",
                 table: "ArkLevelData",
                 column: "CatOneEntityId",
-                principalTable: "ArkI18N",
+                principalTable: "ArkI18Ns",
                 principalColumn: "EntityId",
                 onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_ArkLevelData_ArkI18N_CatThreeEntityId",
+                name: "FK_ArkLevelData_ArkI18Ns_CatThreeEntityId",
                 table: "ArkLevelData",
                 column: "CatThreeEntityId",
-                principalTable: "ArkI18N",
+                principalTable: "ArkI18Ns",
                 principalColumn: "EntityId",
                 onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_ArkLevelData_ArkI18N_CatTwoEntityId",
+                name: "FK_ArkLevelData_ArkI18Ns_CatTwoEntityId",
                 table: "ArkLevelData",
                 column: "CatTwoEntityId",
-                principalTable: "ArkI18N",
+                principalTable: "ArkI18Ns",
                 principalColumn: "EntityId",
                 onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_ArkLevelData_ArkI18N_NameEntityId",
+                name: "FK_ArkLevelData_ArkI18Ns_NameEntityId",
                 table: "ArkLevelData",
                 column: "NameEntityId",
-                principalTable: "ArkI18N",
+                principalTable: "ArkI18Ns",
                 principalColumn: "EntityId",
                 onDelete: ReferentialAction.Cascade);
         }
@@ -213,27 +213,27 @@ namespace MaaCopilotServer.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_ArkCharacterInfos_ArkI18N_NameEntityId",
+                name: "FK_ArkCharacterInfos_ArkI18Ns_NameEntityId",
                 table: "ArkCharacterInfos");
 
             migrationBuilder.DropForeignKey(
-                name: "FK_ArkLevelData_ArkI18N_CatOneEntityId",
+                name: "FK_ArkLevelData_ArkI18Ns_CatOneEntityId",
                 table: "ArkLevelData");
 
             migrationBuilder.DropForeignKey(
-                name: "FK_ArkLevelData_ArkI18N_CatThreeEntityId",
+                name: "FK_ArkLevelData_ArkI18Ns_CatThreeEntityId",
                 table: "ArkLevelData");
 
             migrationBuilder.DropForeignKey(
-                name: "FK_ArkLevelData_ArkI18N_CatTwoEntityId",
+                name: "FK_ArkLevelData_ArkI18Ns_CatTwoEntityId",
                 table: "ArkLevelData");
 
             migrationBuilder.DropForeignKey(
-                name: "FK_ArkLevelData_ArkI18N_NameEntityId",
+                name: "FK_ArkLevelData_ArkI18Ns_NameEntityId",
                 table: "ArkLevelData");
 
             migrationBuilder.DropTable(
-                name: "ArkI18N");
+                name: "ArkI18Ns");
 
             migrationBuilder.DropIndex(
                 name: "IX_ArkLevelData_CatOneEntityId",

@@ -13,6 +13,11 @@ namespace MaaCopilotServer.Application.Common.Interfaces;
 public interface IMaaCopilotDbContext
 {
     /// <summary>
+    ///     The DB set of ark i18n strings.
+    /// </summary>
+    DbSet<ArkI18N> ArkI18Ns { get; }
+
+    /// <summary>
     ///     The DB set of operations.
     /// </summary>
     DbSet<Domain.Entities.CopilotOperation> CopilotOperations { get; }
