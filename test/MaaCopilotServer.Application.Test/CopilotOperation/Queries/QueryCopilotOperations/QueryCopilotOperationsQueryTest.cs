@@ -279,7 +279,7 @@ public class QueryCopilotOperationsQueryTest
             LevelCatOne = $"level0CatOne{resultAppendix}",
             LevelCatTwo = $"level0CatTwo{resultAppendix}",
             LevelCatThree = $"level0CatThree{resultAppendix}",
-            Server = language
+            Language = language
         });
 
         result.Response.Data.Should().NotBeNull();
@@ -310,7 +310,7 @@ public class QueryCopilotOperationsQueryTest
 
         try
         {
-            var _ = test.TestQueryCopilotOperations(new() { LevelName = "level0", Server = language });
+            var _ = test.TestQueryCopilotOperations(new() { LevelName = "level0", Language = language });
         }
         catch (AggregateException e)
         {

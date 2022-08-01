@@ -22,9 +22,15 @@ public record GetCopilotOperationQuery : IRequest<MaaApiResponse>
     public string? Id { get; set; }
 
     /// <summary>
-    ///     The arknights server language.
+    ///     The server language.
+    /// <para>Options: </para>
+    /// <para>Chinese (China Mainland) - zh_cn, cn</para>
+    /// <para>Chinese (Taiwan, China) - zh_tw, tw</para>
+    /// <para>English (Global) - en_us, en</para>
+    /// <para>Japanese (Japan) - ja_jp, ja</para>
+    /// <para>Korean (South Korea) - ko_kr, ko</para>
     /// </summary>
-    public string? Server { get; set; }
+    public string? Language { get; set; } = string.Empty;
 }
 
 public class
@@ -94,7 +100,7 @@ public class
             UploadTime = entity.CreateAt.ToIsoString(),
             ViewCounts = entity.ViewCounts,
             HotScore = entity.HotScore,
-            Level = request.Server.GetLevelMapperFunc().Invoke(entity.ArkLevel),
+            Level = request.Language.GetLevelMapperFunc().Invoke(entity.ArkLevel),
             Groups = entity.Groups.ToArray().DeserializeGroup(),
             RatingLevel = _copilotOperationService.GetRatingLevelString(entity.RatingLevel),
             RatingType = rating
