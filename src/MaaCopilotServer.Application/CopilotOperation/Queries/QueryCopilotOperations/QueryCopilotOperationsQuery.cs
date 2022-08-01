@@ -83,10 +83,16 @@ public record QueryCopilotOperationsQuery : IRequest<MaaApiResponse>
     public string? OrderBy { get; set; } = null;
 
     /// <summary>
-    ///     The server language. Could be (ignore case) Chinese (Default), English, Japanese, Korean.
+    ///     The server language.
+    /// <para>Options: </para>
+    /// <para>Chinese (China Mainland) - zh_cn, cn</para>
+    /// <para>Chinese (Taiwan, China) - zh_tw, tw</para>
+    /// <para>English (Global) - en_us, en</para>
+    /// <para>Japanese (Japan) - ja_jp, ja</para>
+    /// <para>Korean (South Korea) - ko_kr, ko</para>
     /// </summary>
-    [FromQuery(Name = "server")]
-    public string Server { get; set; } = string.Empty;
+    [FromQuery(Name = "language")]
+    public string Language { get; set; } = string.Empty;
 }
 
 public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOperationsQuery,
@@ -166,25 +172,25 @@ public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOp
         if (string.IsNullOrEmpty(request.LevelName) is false)
         {
             // if level name is set, filter by it
-            queryable = request.Server.GetQueryLevelNameFunc().Invoke(queryable, request.LevelName);
+            queryable = request.Language.GetQueryLevelNameFunc().Invoke(queryable, request.LevelName);
         }
 
         if (string.IsNullOrEmpty(request.LevelCatOne) is false)
         {
             // if level cat one is set, filter by it
-            queryable = request.Server.GetQueryLevelCatOneFunc().Invoke(queryable, request.LevelCatOne);
+            queryable = request.Language.GetQueryLevelCatOneFunc().Invoke(queryable, request.LevelCatOne);
         }
 
         if (string.IsNullOrEmpty(request.LevelCatTwo) is false)
         {
             // if level cat two is set, filter by it
-            queryable = request.Server.GetQueryLevelCatTwoFunc().Invoke(queryable, request.LevelCatTwo);
+            queryable = request.Language.GetQueryLevelCatTwoFunc().Invoke(queryable, request.LevelCatTwo);
         }
 
         if (string.IsNullOrEmpty(request.LevelCatThree) is false)
         {
             // if level cat three is set, filter by it
-            queryable = request.Server.GetQueryLevelCatThreeFunc().Invoke(queryable, request.LevelCatThree);
+            queryable = request.Language.GetQueryLevelCatThreeFunc().Invoke(queryable, request.LevelCatThree);
         }
 
         if (uploaderId is not null)
@@ -249,7 +255,7 @@ public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOp
                     Operators = x.Operators,
                     UploadTime = x.UpdateAt.ToIsoString(),
                     ViewCounts = x.ViewCounts,
-                    Level = request.Server.GetLevelMapperFunc().Invoke(x.ArkLevel),
+                    Level = request.Language.GetLevelMapperFunc().Invoke(x.ArkLevel),
                     RatingLevel = _copilotOperationService.GetRatingLevelString(x.RatingLevel),
                     // If the user is logged in, get the rating for the operation, default value is None
                     // If not, set to null

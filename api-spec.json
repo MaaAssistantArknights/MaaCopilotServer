@@ -753,9 +753,8 @@
             }
           },
           {
-            "name": "server",
+            "name": "language",
             "in": "query",
-            "description": "The server language. Could be (ignore case) Chinese (Default), English, Japanese, Korean.",
             "schema": {
               "type": "string"
             }
@@ -983,9 +982,9 @@
             }
           },
           {
-            "name": "server",
+            "name": "language",
             "in": "query",
-            "description": "The server language. Could be (ignore case) Chinese (Default), English, Japanese, Korean.",
+            "description": "    The server language.\r\n<br>Options: <br>Chinese (China Mainland) - zh_cn, cn<br>Chinese (Taiwan, China) - zh_tw, tw<br>English (Global) - en_us, en<br>Japanese (Japan) - ja_jp, ja<br>Korean (South Korea) - ko_kr, ko",
             "schema": {
               "type": "string"
             }

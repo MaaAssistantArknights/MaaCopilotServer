@@ -71,9 +71,9 @@ public class CopilotOperationController : MaaControllerBase
     /// <response code="200">The operation JSON and related metadata.</response>
     [HttpGet("get/{id}")]
     [ProducesResponseType(typeof(MaaApiResponseModel<GetCopilotOperationQueryDto>), StatusCodes.Status200OK)]
-    public async Task<ActionResult> GetCopilotOperation(string id, [FromQuery(Name = "server")] string? server)
+    public async Task<ActionResult> GetCopilotOperation(string id, [FromQuery(Name = "language")] string? language)
     {
-        var request = new GetCopilotOperationQuery { Id = id, Server = server };
+        var request = new GetCopilotOperationQuery { Id = id, Language = language };
         return await GetResponse(request);
     }
 
