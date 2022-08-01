@@ -305,7 +305,7 @@ public class ArknightsDataUpdate : IHostedService
             ? new WebProxy(_copilotServerOptions.Value.GitHubApiRequestProxyAddress,
                 _copilotServerOptions.Value.GitHubApiRequestProxyPort)
             : null;
-        var client = new HttpClient();
+        var client = new HttpClient(handler);
         client.DefaultRequestHeaders.Add("User-Agent", _copilotServerOptions.Value.GitHubApiRequestUserAgent);
 
         var level = await client.GetStringAsync(new Uri(SystemConstants.ArkLevelCommit)).ConfigureAwait(true);
