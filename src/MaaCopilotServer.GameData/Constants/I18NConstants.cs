@@ -33,17 +33,16 @@ internal static class I18NConstants
         _ => throw new ArgumentOutOfRangeException(nameof(professions), professions, null)
     };
     
-    // TODO:
     private static string GetCharacterProfessionCnTString(this CharacterProfessions professions) => professions switch
     {
-        CharacterProfessions.Medic => "医疗",
-        CharacterProfessions.Special => "特种",
-        CharacterProfessions.Warrior => "近卫",
-        CharacterProfessions.Sniper => "狙击",
+        CharacterProfessions.Medic => "醫療",
+        CharacterProfessions.Special => "特種",
+        CharacterProfessions.Warrior => "近衛",
+        CharacterProfessions.Sniper => "狙撃",
         CharacterProfessions.Tank => "重装",
-        CharacterProfessions.Caster => "术士",
-        CharacterProfessions.Pioneer => "先锋",
-        CharacterProfessions.Support => "辅助",
+        CharacterProfessions.Caster => "術師",
+        CharacterProfessions.Pioneer => "先鋒",
+        CharacterProfessions.Support => "輔助",
         CharacterProfessions.Unknown => "未知",
         _ => throw new ArgumentOutOfRangeException(nameof(professions), professions, null)
     };
@@ -111,18 +110,17 @@ internal static class I18NConstants
         ZoneTypes.Weekly => "物资筹备 & 芯片搜索",
         ZoneTypes.Activity => "活动关卡",
         ZoneTypes.Campaign => "剿灭作战",
-        ZoneTypes.Memory => "悖论模拟",
+        ZoneTypes.Memory => "悖論模擬",
         _ => throw new ArgumentOutOfRangeException(nameof(zoneTypes), zoneTypes, null)
     };
     
-    // TODO:
     private static string GetZoneTypeCnTString(this ZoneTypes zoneTypes) => zoneTypes switch
     {
-        ZoneTypes.MainLine => "主题曲",
-        ZoneTypes.Weekly => "物资筹备 & 芯片搜索",
-        ZoneTypes.Activity => "活动关卡",
-        ZoneTypes.Campaign => "剿灭作战",
-        ZoneTypes.Memory => "悖论模拟",
+        ZoneTypes.MainLine => "主題曲",
+        ZoneTypes.Weekly => "物資籌備 & 芯片搜索",
+        ZoneTypes.Activity => "活動關卡",
+        ZoneTypes.Campaign => "剿滅作戰",
+        ZoneTypes.Memory => "悖論模擬",
         _ => throw new ArgumentOutOfRangeException(nameof(zoneTypes), zoneTypes, null)
     };
 
@@ -180,13 +178,12 @@ internal static class I18NConstants
         _ => throw new ArgumentOutOfRangeException(nameof(difficulty), difficulty, null)
     };
     
-    // TODO:
     private static string GetMainLineLevelDifficultyCnTString(this MainLineLevelDifficulty difficulty) => difficulty switch
     {
-        MainLineLevelDifficulty.Easy => "简单",
-        MainLineLevelDifficulty.Main => "标准",
-        MainLineLevelDifficulty.Tough => "磨难",
-        MainLineLevelDifficulty.Unknown => "标准",
+        MainLineLevelDifficulty.Easy => "簡單",
+        MainLineLevelDifficulty.Main => "標準",
+        MainLineLevelDifficulty.Tough => "磨難",
+        MainLineLevelDifficulty.Unknown => "標準",
         _ => throw new ArgumentOutOfRangeException(nameof(difficulty), difficulty, null)
     };
 
