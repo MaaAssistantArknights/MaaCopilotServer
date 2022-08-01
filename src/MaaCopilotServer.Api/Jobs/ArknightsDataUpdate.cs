@@ -25,6 +25,11 @@ public class ArknightsDataUpdate : IHostedService
     private readonly IOptions<CopilotServerOption> _copilotServerOptions;
     private readonly IOptions<DatabaseOption> _dbOptions;
 
+    /// <summary>
+    /// The HTTP client factory.
+    /// </summary>
+    private readonly IHttpClientFactory _httpClientFactory;
+
     private readonly Action<Exception, ArkServerLanguage> _exceptionLogger;
 
     private readonly List<ArkServerLanguage> _syncErrors = new();
@@ -33,14 +38,23 @@ public class ArknightsDataUpdate : IHostedService
     private Task? _timedTask;
     private CancellationTokenSource? _cts;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ArknightsDataUpdate"/> class.
+    /// </summary>
+    /// <param name="logger">The logger,</param>
+    /// <param name="copilotServerOptions">The copilot server options.</param>
+    /// <param name="dbOptions">The database options.</param>
+    /// <param name="httpClientFactory">The HTTP client factory.</param>
     public ArknightsDataUpdate(
         ILogger<ArknightsDataUpdate> logger,
         IOptions<CopilotServerOption> copilotServerOptions,
-        IOptions<DatabaseOption> dbOptions)
+        IOptions<DatabaseOption> dbOptions,
+        IHttpClientFactory httpClientFactory)
     {
         _logger = logger;
         _copilotServerOptions = copilotServerOptions;
         _dbOptions = dbOptions;
+        _httpClientFactory = httpClientFactory;
 
         _cts = new CancellationTokenSource();
 
@@ -55,7 +69,7 @@ public class ArknightsDataUpdate : IHostedService
             {
                 _syncErrors.Add(lang);
             }
-            
+
             _logger.LogError(ex,
                 "MaaCopilotServer: Type -> {LoggingType}; Name -> {Name}; ExceptionName -> {ExceptionName}",
                 LoggingType.WorkerServicesException, nameof(TokenValidationCheck), ex.GetType().Name);
@@ -246,11 +260,11 @@ public class ArknightsDataUpdate : IHostedService
 
                 db.ArkLevelData.AddRange(newLevelData);
                 db.ArkCharacterInfos.AddRange(newCharData);
-                
+
                 var errorStr = string.Join(";", _syncErrors.Select(x => x.ToString()));
 
                 _syncErrors.Clear();
-                
+
                 var store = db.PersistStorage
                     .FirstOrDefault(x => x.Key == SystemConstants.ARK_ASSET_CACHE_ERROR);
 
@@ -264,7 +278,7 @@ public class ArknightsDataUpdate : IHostedService
                     store.UpdateValue(errorStr);
                     db.PersistStorage.Update(store);
                 }
-                
+
                 var changes = await db.SaveChangesAsync(cancellationToken);
 
                 await db.DisposeAsync();
@@ -284,7 +298,7 @@ public class ArknightsDataUpdate : IHostedService
             catch (Exception ex)
             {
                 _disaster = true;
-                
+
                 _logger.LogCritical(ex,
                     "MaaCopilotServer: Type -> {LoggingType}; Name -> {Name}; ExceptionName -> {ExceptionName}",
                     LoggingType.WorkerServicesException, nameof(ArknightsDataUpdate), ex.GetType().Name);
@@ -295,7 +309,7 @@ public class ArknightsDataUpdate : IHostedService
                 if (_disaster)
                 {
                     _disaster = false;
-                
+
                     var db = new MaaCopilotDbContext(_dbOptions);
                     var store = db.PersistStorage
                         .FirstOrDefault(x => x.Key == SystemConstants.ARK_ASSET_CACHE_ERROR);
@@ -310,7 +324,7 @@ public class ArknightsDataUpdate : IHostedService
                         store.UpdateValue(SystemConstants.ARK_ASSET_CACHE_ERROR_DISASTER);
                         db.PersistStorage.Update(store);
                     }
-                
+
                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                     db.SaveChanges();
                     // ReSharper disable once MethodHasAsyncOverload
@@ -322,13 +336,7 @@ public class ArknightsDataUpdate : IHostedService
 
     private async Task<ArkDataParsed> GetParsedData()
     {
-        var handler = new HttpClientHandler();
-        handler.AllowAutoRedirect = true;
-        handler.UseProxy = _copilotServerOptions.Value.GitHubApiRequestProxyEnable;
-        handler.Proxy = handler.UseProxy
-            ? new WebProxy(_copilotServerOptions.Value.GitHubApiRequestProxyAddress, _copilotServerOptions.Value.GitHubApiRequestProxyPort)
-            : null;
-        var client = new HttpClient(handler);
+        using var client = _httpClientFactory.CreateClient(GlobalConstants.GitHubApiProxiedHttpClient);
         client.DefaultRequestHeaders.Add("User-Agent", _copilotServerOptions.Value.GitHubApiRequestUserAgent);
         client.DefaultRequestHeaders.Add("Accept", "application/vnd.github.v3+json");
         client.DefaultRequestHeaders.Add("Accept-Charset", "utf-8");
@@ -359,9 +367,6 @@ public class ArknightsDataUpdate : IHostedService
             });
         }
 
-        handler.Dispose();
-        client.Dispose();
-
         var cnS = ds.First(x => x.Language == ArkServerLanguage.ChineseSimplified);
         var cnTs = ds.First(x => x.Language == ArkServerLanguage.ChineseTraditional);
         var enS = ds.First(x => x.Language == ArkServerLanguage.English);
@@ -374,14 +379,7 @@ public class ArknightsDataUpdate : IHostedService
 
     private async Task<ArkDataVersions> GetDataVersion()
     {
-        var handler = new HttpClientHandler();
-        handler.AllowAutoRedirect = true;
-        handler.UseProxy = _copilotServerOptions.Value.GitHubApiRequestProxyEnable;
-        handler.Proxy = handler.UseProxy
-            ? new WebProxy(_copilotServerOptions.Value.GitHubApiRequestProxyAddress,
-                _copilotServerOptions.Value.GitHubApiRequestProxyPort)
-            : null;
-        var client = new HttpClient(handler);
+        using var client = _httpClientFactory.CreateClient(GlobalConstants.GitHubApiProxiedHttpClient);
         client.DefaultRequestHeaders.Add("User-Agent", _copilotServerOptions.Value.GitHubApiRequestUserAgent);
 
         var level = await client.GetStringAsync(new Uri(SystemConstants.ArkLevelCommit)).ConfigureAwait(true);
@@ -419,9 +417,6 @@ public class ArknightsDataUpdate : IHostedService
                     throw new ArgumentOutOfRangeException();
             }
         }
-
-        handler.Dispose();
-        client.Dispose();
 
         return new ArkDataVersions(cnSha, twSha, enSha, jpSha, koSha, levelSha);
     }
