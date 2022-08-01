@@ -30,7 +30,7 @@ public record GetCopilotOperationQuery : IRequest<MaaApiResponse>
     /// <para>Japanese (Japan) - ja_jp, ja</para>
     /// <para>Korean (South Korea) - ko_kr, ko</para>
     /// </summary>
-    public string Language { get; set; } = string.Empty;
+    public string? Language { get; set; } = string.Empty;
 }
 
 public class
