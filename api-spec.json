@@ -152,9 +152,9 @@
         "summary": "Get arknights level data.",
         "parameters": [
           {
-            "name": "server",
+            "name": "language",
             "in": "query",
-            "description": "The server language. Could be (ignore case) Chinese (cn), English (en), Japanese (ja), Korean (ko).",
+            "description": "    The server language.\r\n<br>Options: <br>Chinese (China Mainland) - zh_cn, cn<br>Chinese (Taiwan, China) - zh_tw, tw<br>English (Global) - en_us, en<br>Japanese (Japan) - ja_jp, ja<br>Korean (South Korea) - ko_kr, ko",
             "schema": {
               "type": "string"
             }
@@ -292,9 +292,9 @@
         "summary": "Get arknights operator data.",
         "parameters": [
           {
-            "name": "server",
+            "name": "language",
             "in": "query",
-            "description": "The server language. Could be (ignore case) Chinese (cn), English (en), Japanese (ja), Korean (ko).",
+            "description": "    The server language.\r\n<br>Options: <br>Chinese (China Mainland) - zh_cn, cn<br>Chinese (Taiwan, China) - zh_tw, tw<br>English (Global) - en_us, en<br>Japanese (Japan) - ja_jp, ja<br>Korean (South Korea) - ko_kr, ko",
             "schema": {
               "type": "string"
             }
@@ -3961,7 +3961,8 @@
       },
       "GetDataVersionQueryDto": {
         "required": [
-          "chinese",
+          "chinese_simplified",
+          "chinese_traditional",
           "english",
           "japanese",
           "korean",
@@ -3973,9 +3974,13 @@
             "type": "string",
             "description": "Level version."
           },
-          "chinese": {
+          "chinese_simplified": {
             "type": "string",
-            "description": "Chinese (China) server data version."
+            "description": "Chinese (China Mainland) server data version."
+          },
+          "chinese_traditional": {
+            "type": "string",
+            "description": "Chinese (Taiwan, China) server data version."
           },
           "english": {
             "type": "string",
