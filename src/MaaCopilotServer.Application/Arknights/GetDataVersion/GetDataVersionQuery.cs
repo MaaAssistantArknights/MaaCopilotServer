@@ -28,6 +28,8 @@ public class GetDataVersionQueryHandler : IRequestHandler<GetDataVersionQuery, M
             .FirstOrDefaultAsync(x => x.Key == SystemConstants.ARK_ASSET_VERSION_LEVEL, cancellationToken);
         var cnVersion = await _dbContext.PersistStorage
             .FirstOrDefaultAsync(x => x.Key == SystemConstants.ARK_ASSET_VERSION_CN, cancellationToken);
+        var twVersion = await _dbContext.PersistStorage
+            .FirstOrDefaultAsync(x => x.Key == SystemConstants.ARK_ASSET_VERSION_TW, cancellationToken);
         var enVersion = await _dbContext.PersistStorage
             .FirstOrDefaultAsync(x => x.Key == SystemConstants.ARK_ASSET_VERSION_EN, cancellationToken);
         var jpVersion = await _dbContext.PersistStorage
@@ -39,6 +41,7 @@ public class GetDataVersionQueryHandler : IRequestHandler<GetDataVersionQuery, M
         {
             LevelVersion = levelVersion.IsNotNull().Value,
             CnVersion = cnVersion.IsNotNull().Value,
+            TwVersion = twVersion.IsNotNull().Value,
             EnVersion = enVersion.IsNotNull().Value,
             JpVersion = jpVersion.IsNotNull().Value,
             KoVersion = koVersion.IsNotNull().Value

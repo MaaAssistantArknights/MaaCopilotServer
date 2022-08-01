@@ -18,14 +18,16 @@ public class GetDataVersionQueryDto
     ///     The constructor of <see cref="GetDataVersionQueryDto"/>.
     /// </summary>
     /// <param name="levelVersion">Level version.</param>
-    /// <param name="cnVersion">Chinese (China) server data version.</param>
+    /// <param name="cnVersion">Chinese (China Mainland) server data version.</param>
+    /// <param name="twVersion">Chinese (Taiwan, China) server data version.</param>
     /// <param name="enVersion">English (Global) server data version.</param>
     /// <param name="jpVersion">Japanese (Japan) server data version.</param>
     /// <param name="koVersion">Korean (Korea) server data version.</param>
-    public GetDataVersionQueryDto(string levelVersion, string cnVersion, string enVersion, string jpVersion, string koVersion)
+    public GetDataVersionQueryDto(string levelVersion, string cnVersion, string twVersion, string enVersion, string jpVersion, string koVersion)
     {
         LevelVersion = levelVersion;
         CnVersion = cnVersion;
+        TwVersion = twVersion;
         EnVersion = enVersion;
         JpVersion = jpVersion;
         KoVersion = koVersion;
@@ -43,11 +45,18 @@ public class GetDataVersionQueryDto
     public string LevelVersion { get; set; }
 
     /// <summary>
-    ///     Chinese (China) server data version.
+    ///     Chinese (China Mainland) server data version.
     /// </summary>
     [Required]
-    [JsonPropertyName("chinese")]
+    [JsonPropertyName("chinese_simplified")]
     public string CnVersion { get; set; }
+    
+    /// <summary>
+    ///     Chinese (Taiwan, China) server data version.
+    /// </summary>
+    [Required]
+    [JsonPropertyName("chinese_traditional")]
+    public string TwVersion { get; set; }
 
     /// <summary>
     ///     English (Global) server data version.

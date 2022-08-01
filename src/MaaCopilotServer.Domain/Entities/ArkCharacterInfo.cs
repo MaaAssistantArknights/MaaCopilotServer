@@ -25,10 +25,9 @@ public class ArkCharacterInfo : BaseEntity
     private ArkCharacterInfo() { }
 #pragma warning restore CS8618
 
-    public string NameCn { get; private set; }
-    public string NameEn { get; private set; }
-    public string NameJp { get; private set; }
-    public string NameKo { get; private set; }
+    // ReSharper disable AutoPropertyCanBeMadeGetOnly.Local
+    
+    public ArkI18N Name { get; private set; } = new();
 
     public string Id { get; private set; }
     public string Profession { get; private set; }
@@ -36,10 +35,7 @@ public class ArkCharacterInfo : BaseEntity
 
     public void Update(ArkCharacterInfoGlobal ch)
     {
-        NameCn = ch.NameCn;
-        NameEn = ch.NameEn;
-        NameJp = ch.NameJp;
-        NameKo = ch.NameKo;
+        Name.Update(ch.Name);
 
         Id = ch.Id;
         Profession = ch.Profession;
@@ -48,10 +44,7 @@ public class ArkCharacterInfo : BaseEntity
 
     public bool IsEqual(ArkCharacterInfoGlobal ch)
     {
-        return NameCn == ch.NameCn &&
-               NameEn == ch.NameEn &&
-               NameJp == ch.NameJp &&
-               NameKo == ch.NameKo &&
+        return Name.IsEqual(ch.Name) &&
                Id == ch.Id &&
                Profession == ch.Profession &&
                Star == ch.Star;

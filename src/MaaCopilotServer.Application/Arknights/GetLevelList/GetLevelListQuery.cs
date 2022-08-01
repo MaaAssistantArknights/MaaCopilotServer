@@ -14,7 +14,7 @@ namespace MaaCopilotServer.Application.Arknights.GetLevelList;
 public record GetLevelListQuery : IRequest<MaaApiResponse>
 {
     /// <summary>
-    ///     The server language. Could be (ignore case) Chinese (cn), English (en), Japanese (ja), Korean (ko).
+    ///     The server language. Could be (ignore case) Chinese (cn), Chinese Traditional (cn_tw), English (en), Japanese (ja), Korean (ko).
     /// </summary>
     [FromQuery(Name = "server")]
     public string Server { get; set; } = string.Empty;
@@ -31,7 +31,12 @@ public class GetLevelListQueryHandler : IRequestHandler<GetLevelListQuery, MaaAp
 
     public async Task<MaaApiResponse> Handle(GetLevelListQuery request, CancellationToken cancellationToken)
     {
-        var query = _dbContext.ArkLevelData.AsQueryable();
+        var query = _dbContext.ArkLevelData
+            .Include(x => x.Name)
+            .Include(x => x.CatOne)
+            .Include(x => x.CatTwo)
+            .Include(x => x.CatThree)
+            .AsQueryable();
 
         var qFunc = request.Server.GetLevelQueryFunc();
         var mFunc = request.Server.GetLevelMapperFunc();

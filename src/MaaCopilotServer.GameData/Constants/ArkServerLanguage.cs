@@ -6,7 +6,8 @@ namespace MaaCopilotServer.GameData.Constants;
 
 public enum ArkServerLanguage
 {
-    Chinese,
+    ChineseSimplified,
+    ChineseTraditional,
     Korean,
     English,
     Japanese,

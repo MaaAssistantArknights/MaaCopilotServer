@@ -25,25 +25,12 @@ public class ArkLevelData : BaseEntity
     private ArkLevelData() { }
 #pragma warning restore CS8618
 
-    public string NameCn { get; private set; }
-    public string NameKo { get; private set; }
-    public string NameJp { get; private set; }
-    public string NameEn { get; private set; }
+    // ReSharper disable AutoPropertyCanBeMadeGetOnly.Local
 
-    public string CatOneCn { get; private set; }
-    public string CatOneKo { get; private set; }
-    public string CatOneJp { get; private set; }
-    public string CatOneEn { get; private set; }
-
-    public string CatTwoCn { get; private set; }
-    public string CatTwoKo { get; private set; }
-    public string CatTwoJp { get; private set; }
-    public string CatTwoEn { get; private set; }
-
-    public string CatThreeCn { get; private set; }
-    public string CatThreeKo { get; private set; }
-    public string CatThreeJp { get; private set; }
-    public string CatThreeEn { get; private set; }
+    public ArkI18N Name { get; private set; } = new();
+    public ArkI18N CatOne { get; private set; } = new();
+    public ArkI18N CatTwo { get; private set; } = new();
+    public ArkI18N CatThree { get; private set; } = new();
 
     public string LevelId { get; private set; }
     public int Width { get; private set; }
@@ -51,25 +38,10 @@ public class ArkLevelData : BaseEntity
 
     public void Update(ArkLevelEntityGlobal level)
     {
-        NameCn = level.NameCn;
-        NameEn = level.NameEn;
-        NameJp = level.NameJp;
-        NameKo = level.NameKo;
-
-        CatOneCn = level.CatOneCn;
-        CatOneEn = level.CatOneEn;
-        CatOneJp = level.CatOneJp;
-        CatOneKo = level.CatOneKo;
-
-        CatTwoCn = level.CatTwoCn;
-        CatTwoEn = level.CatTwoEn;
-        CatTwoJp = level.CatTwoJp;
-        CatTwoKo = level.CatTwoKo;
-
-        CatThreeCn = level.CatThreeCn;
-        CatThreeEn = level.CatThreeEn;
-        CatThreeJp = level.CatThreeJp;
-        CatThreeKo = level.CatThreeKo;
+        Name.Update(level.Name);
+        CatOne.Update(level.CatOne);
+        CatTwo.Update(level.CatTwo);
+        CatThree.Update(level.CatThree);
 
         LevelId = level.LevelId;
         Width = level.Width;
@@ -78,22 +50,7 @@ public class ArkLevelData : BaseEntity
 
     public bool IsEqual(ArkLevelEntityGlobal level)
     {
-        return NameCn == level.NameCn &&
-               NameEn == level.NameEn &&
-               NameJp == level.NameJp &&
-               NameKo == level.NameKo &&
-               CatOneCn == level.CatOneCn &&
-               CatOneEn == level.CatOneEn &&
-               CatOneJp == level.CatOneJp &&
-               CatOneKo == level.CatOneKo &&
-               CatTwoCn == level.CatTwoCn &&
-               CatTwoEn == level.CatTwoEn &&
-               CatTwoJp == level.CatTwoJp &&
-               CatTwoKo == level.CatTwoKo &&
-               CatThreeCn == level.CatThreeCn &&
-               CatThreeEn == level.CatThreeEn &&
-               CatThreeJp == level.CatThreeJp &&
-               CatThreeKo == level.CatThreeKo &&
+        return Name.IsEqual(level.Name) &&
                LevelId == level.LevelId &&
                Width == level.Width &&
                Height == level.Height;

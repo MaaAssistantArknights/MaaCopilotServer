@@ -33,7 +33,10 @@ public class GetOperatorListQueryHandler : IRequestHandler<GetOperatorListQuery,
 
     public async Task<MaaApiResponse> Handle(GetOperatorListQuery request, CancellationToken cancellationToken)
     {
-        var query = _dbContext.ArkCharacterInfos.AsQueryable();
+        var query = _dbContext
+            .ArkCharacterInfos
+            .Include(x => x.Name)
+            .AsQueryable();
 
         var qFunc = request.Server.GetCharQueryFunc();
         var mFunc = request.Server.GetCharMapperFunc();

@@ -92,6 +92,8 @@ public class ArknightsDataUpdate : IHostedService
                     db.PersistStorage.FirstOrDefault(x => x.Key == SystemConstants.ARK_ASSET_VERSION_LEVEL);
                 var cnVersion =
                     db.PersistStorage.FirstOrDefault(x => x.Key == SystemConstants.ARK_ASSET_VERSION_CN);
+                var twVersion =
+                    db.PersistStorage.FirstOrDefault(x => x.Key == SystemConstants.ARK_ASSET_VERSION_TW);
                 var enVersion =
                     db.PersistStorage.FirstOrDefault(x => x.Key == SystemConstants.ARK_ASSET_VERSION_EN);
                 var jpVersion =
@@ -126,6 +128,19 @@ public class ArknightsDataUpdate : IHostedService
                 {
                     cnVersion.UpdateValue(versions.Cn);
                     db.PersistStorage.Update(cnVersion);
+                    updateRequired = true;
+                }
+                
+                if (twVersion is null)
+                {
+                    twVersion = new PersistStorage(SystemConstants.ARK_ASSET_VERSION_TW, versions.Tw);
+                    db.PersistStorage.Add(twVersion);
+                    updateRequired = true;
+                }
+                else if (twVersion.Value != versions.Tw)
+                {
+                    twVersion.UpdateValue(versions.Tw);
+                    db.PersistStorage.Update(twVersion);
                     updateRequired = true;
                 }
 
@@ -257,6 +272,8 @@ public class ArknightsDataUpdate : IHostedService
             : null;
         var client = new HttpClient(handler);
         client.DefaultRequestHeaders.Add("User-Agent", _copilotServerOptions.Value.GitHubApiRequestUserAgent);
+        client.DefaultRequestHeaders.Add("Accept", "application/vnd.github.v3+json");
+        client.DefaultRequestHeaders.Add("Accept-Charset", "utf-8");
 
         var level = await client.GetStringAsync(new Uri(SystemConstants.LevelUrl)).ConfigureAwait(true);
 
@@ -287,11 +304,12 @@ public class ArknightsDataUpdate : IHostedService
         handler.Dispose();
         client.Dispose();
 
-        var cnS = ds.First(x => x.Language == ArkServerLanguage.Chinese);
+        var cnS = ds.First(x => x.Language == ArkServerLanguage.ChineseSimplified);
+        var cnTs = ds.First(x => x.Language == ArkServerLanguage.ChineseTraditional);
         var enS = ds.First(x => x.Language == ArkServerLanguage.English);
         var jpS = ds.First(x => x.Language == ArkServerLanguage.Japanese);
         var koS = ds.First(x => x.Language == ArkServerLanguage.Korean);
-        var p = GameDataParser.Parse(cnS, enS, jpS, koS, _exceptionLogger);
+        var p = GameDataParser.Parse(cnS, cnTs, enS, jpS, koS, _exceptionLogger);
 
         return p;
     }
@@ -312,6 +330,7 @@ public class ArknightsDataUpdate : IHostedService
 
         var levelSha = GetCommitSha(level);
         var cnSha = "";
+        var twSha = "";
         var enSha = "";
         var jpSha = "";
         var koSha = "";
@@ -323,8 +342,11 @@ public class ArknightsDataUpdate : IHostedService
 
             switch (language)
             {
-                case ArkServerLanguage.Chinese:
+                case ArkServerLanguage.ChineseSimplified:
                     cnSha = GetCommitSha(data);
+                    break;
+                case ArkServerLanguage.ChineseTraditional:
+                    twSha = GetCommitSha(data);
                     break;
                 case ArkServerLanguage.Korean:
                     koSha = GetCommitSha(data);
@@ -343,7 +365,7 @@ public class ArknightsDataUpdate : IHostedService
         handler.Dispose();
         client.Dispose();
 
-        return new ArkDataVersions(cnSha, enSha, jpSha, koSha, levelSha);
+        return new ArkDataVersions(cnSha, twSha, enSha, jpSha, koSha, levelSha);
     }
 
     private static string GetCommitSha(string str)
@@ -357,7 +379,7 @@ public class ArknightsDataUpdate : IHostedService
         return obj.First().Sha;
     }
 
-    private record ArkDataVersions(string Cn, string En, string Jp, string Ko, string Level);
+    private record ArkDataVersions(string Cn, string Tw, string En, string Jp, string Ko, string Level);
 
     private record GitHubCommitApiResponse
     {
