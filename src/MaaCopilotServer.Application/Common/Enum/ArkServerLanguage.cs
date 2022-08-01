@@ -17,42 +17,48 @@ namespace MaaCopilotServer.Application.Common.Enum;
 public readonly struct ArkServerLanguage
 {
     /// <summary>
-    ///     Language full name.
+    ///     Language names.
     /// </summary>
-    private readonly string _fullName;
+    private readonly string[] _names;
+    
     /// <summary>
-    ///     Language short name.
+    ///     Language identifier.
     /// </summary>
-    private readonly string _abbr;
+    private readonly string _identifiers;
+
 
     /// <summary>
     ///     Check if the input string is this language or not.
     /// </summary>
     /// <param name="lang">Input language string.</param>
     /// <returns></returns>
-    private bool Is(string lang) => _fullName == lang || _abbr == lang;
-
+    private bool Is(string lang) => _names.Contains(lang.ToLowerInvariant());
+    
     /// <summary>
     ///     Constructor of <see cref="ArkServerLanguage"/>.
     /// </summary>
     /// <param name="fullName">Language full name.</param>
-    /// <param name="abbr">Language short name.</param>
-    private ArkServerLanguage(string fullName, string abbr)
+    /// <param name="names">Language other names</param>
+    private ArkServerLanguage(string fullName, params string[] names)
     {
-        _fullName = fullName;
-        _abbr = abbr;
+        var arr = new[] { fullName.ToLowerInvariant() }.Concat(names.Select(x => x.ToLowerInvariant()));
+        _names = arr.ToArray();
+
+        _identifiers = string.Join("|", _names);
     }
 
-    public static readonly ArkServerLanguage Chinese = new("chinese", "cn");
-    public static readonly ArkServerLanguage English = new("english", "en");
-    public static readonly ArkServerLanguage Japanese = new("japanese", "ja");
-    public static readonly ArkServerLanguage Korean = new("korean", "ko");
+    public static readonly ArkServerLanguage ChineseSimplified = new("zh_cn", "cn");
+    public static readonly ArkServerLanguage ChineseTraditional = new("zh_tw", "tw");
+    public static readonly ArkServerLanguage English = new("en_us", "en");
+    public static readonly ArkServerLanguage Japanese = new("ja_jp", "ja");
+    public static readonly ArkServerLanguage Korean = new("ko_kr", "ko");
 
     public static readonly ArkServerLanguage Unknown = new("unknown", "???");
 
     public static readonly ArkServerLanguage[] SupportedLanguages =
     {
-        Chinese,
+        ChineseSimplified,
+        ChineseTraditional,
         English,
         Japanese,
         Korean
@@ -61,21 +67,43 @@ public readonly struct ArkServerLanguage
     /// <summary>
     ///     Get language specific actions.
     /// </summary>
-    /// <param name="cn">Operator to do when language is <see cref="Chinese"/>.</param>
+    /// <param name="cn">Operator to do when language is <see cref="ChineseSimplified"/>.</param>
+    /// <param name="tw">Operator to do when language is <see cref="ChineseTraditional"/>.</param>
     /// <param name="en">Operator to do when language is <see cref="English"/>.</param>
     /// <param name="ja">Operator to do when language is <see cref="Japanese"/>.</param>
     /// <param name="ko">Operator to do when language is <see cref="Korean"/>.</param>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
     /// <exception cref="ArgumentException"></exception>
-    public T GetArkServerLanguageSpecificAction<T>(T cn, T en, T ja, T ko) => _abbr switch
+    public T GetArkServerLanguageSpecificAction<T>(T cn, T tw, T en, T ja, T ko)
     {
-        "cn" => cn,
-        "en" => en,
-        "ja" => ja,
-        "ko" => ko,
-        _ => throw new UnknownServerLanguageException()
-    };
+        if (this == ChineseSimplified)
+        {
+            return cn;
+        }
+        
+        if (this == ChineseTraditional)
+        {
+            return tw;
+        }
+        
+        if (this == English)
+        {
+            return en;
+        }
+        
+        if (this == Japanese)
+        {
+            return ja;
+        }
+        
+        if (this == Korean)
+        {
+            return ko;
+        }
+
+        throw new UnknownServerLanguageException();
+    }
 
     /// <summary>
     ///     Parse the input string to <see cref="ArkServerLanguage"/>.
@@ -83,13 +111,13 @@ public readonly struct ArkServerLanguage
     /// <param name="language">Input language string.</param>
     /// <returns>
     ///     If the input string is one of the supported languages, return the corresponding <see cref="ArkServerLanguage"/>.
-    /// If the input string is null, return <see cref="Chinese"/>. Otherwise, return <see cref="Unknown"/>.
+    /// If the input string is null, return <see cref="ChineseSimplified"/>. Otherwise, return <see cref="Unknown"/>.
     /// </returns>
     public static ArkServerLanguage Parse(string? language)
     {
         if (string.IsNullOrEmpty(language))
         {
-            return Chinese;
+            return ChineseSimplified;
         }
 
         var lang = language.ToLower(CultureInfo.InvariantCulture);
@@ -107,7 +135,7 @@ public readonly struct ArkServerLanguage
 
     public bool Equals(ArkServerLanguage other)
     {
-        return _fullName == other._fullName && _abbr == other._abbr;
+        return _identifiers == other._identifiers;
     }
 
     public override bool Equals(object? obj)
@@ -117,7 +145,7 @@ public readonly struct ArkServerLanguage
 
     public override int GetHashCode()
     {
-        return HashCode.Combine(_fullName, _abbr);
+        return _identifiers.GetHashCode();
     }
 
     public static bool operator==(ArkServerLanguage left, ArkServerLanguage right) => left.Equals(right);

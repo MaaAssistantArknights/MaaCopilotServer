@@ -15,10 +15,16 @@ namespace MaaCopilotServer.Application.Arknights.GetOperatorList;
 public record GetOperatorListQuery : IRequest<MaaApiResponse>
 {
     /// <summary>
-    ///     The server language. Could be (ignore case) Chinese (cn), English (en), Japanese (ja), Korean (ko).
+    ///     The server language.
+    /// <para>Options: </para>
+    /// <para>Chinese (China Mainland) - zh_cn, cn</para>
+    /// <para>Chinese (Taiwan, China) - zh_tw, tw</para>
+    /// <para>English (Global) - en_us, en</para>
+    /// <para>Japanese (Japan) - ja_jp, ja</para>
+    /// <para>Korean (South Korea) - ko_kr, ko</para>
     /// </summary>
-    [FromQuery(Name = "server")]
-    public string Server { get; set; } = string.Empty;
+    [FromQuery(Name = "language")]
+    public string Language { get; set; } = string.Empty;
 }
 
 
@@ -33,10 +39,13 @@ public class GetOperatorListQueryHandler : IRequestHandler<GetOperatorListQuery,
 
     public async Task<MaaApiResponse> Handle(GetOperatorListQuery request, CancellationToken cancellationToken)
     {
-        var query = _dbContext.ArkCharacterInfos.AsQueryable();
+        var query = _dbContext
+            .ArkCharacterInfos
+            .Include(x => x.Name)
+            .AsQueryable();
 
-        var qFunc = request.Server.GetCharQueryFunc();
-        var mFunc = request.Server.GetCharMapperFunc();
+        var qFunc = request.Language.GetCharQueryFunc();
+        var mFunc = request.Language.GetCharMapperFunc();
 
         query = qFunc.Invoke(query);
 

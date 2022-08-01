@@ -11,7 +11,8 @@ internal static class I18NConstants
     public static string GetCharacterProfessionI18NString(this CharacterProfessions professions, ArkServerLanguage language)
         => language switch
     {
-        ArkServerLanguage.Chinese => professions.GetCharacterProfessionCnString(),
+        ArkServerLanguage.ChineseSimplified => professions.GetCharacterProfessionCnString(),
+        ArkServerLanguage.ChineseTraditional => professions.GetCharacterProfessionCnTString(),
         ArkServerLanguage.Korean => professions.GetCharacterProfessionKoString(),
         ArkServerLanguage.English => professions.GetCharacterProfessionEnString(),
         ArkServerLanguage.Japanese => professions.GetCharacterProfessionJpString(),
@@ -28,6 +29,20 @@ internal static class I18NConstants
         CharacterProfessions.Caster => "术士",
         CharacterProfessions.Pioneer => "先锋",
         CharacterProfessions.Support => "辅助",
+        CharacterProfessions.Unknown => "未知",
+        _ => throw new ArgumentOutOfRangeException(nameof(professions), professions, null)
+    };
+    
+    private static string GetCharacterProfessionCnTString(this CharacterProfessions professions) => professions switch
+    {
+        CharacterProfessions.Medic => "醫療",
+        CharacterProfessions.Special => "特種",
+        CharacterProfessions.Warrior => "近衛",
+        CharacterProfessions.Sniper => "狙撃",
+        CharacterProfessions.Tank => "重装",
+        CharacterProfessions.Caster => "術師",
+        CharacterProfessions.Pioneer => "先鋒",
+        CharacterProfessions.Support => "輔助",
         CharacterProfessions.Unknown => "未知",
         _ => throw new ArgumentOutOfRangeException(nameof(professions), professions, null)
     };
@@ -81,7 +96,8 @@ internal static class I18NConstants
     public static string GetZoneTypeI18NString(this ZoneTypes zoneTypes, ArkServerLanguage language)
         => language switch
         {
-            ArkServerLanguage.Chinese => zoneTypes.GetZoneTypeCnString(),
+            ArkServerLanguage.ChineseSimplified => zoneTypes.GetZoneTypeCnString(),
+            ArkServerLanguage.ChineseTraditional => zoneTypes.GetZoneTypeCnTString(),
             ArkServerLanguage.Korean => zoneTypes.GetZoneTypeKoString(),
             ArkServerLanguage.English => zoneTypes.GetZoneTypeEnString(),
             ArkServerLanguage.Japanese => zoneTypes.GetZoneTypeJpString(),
@@ -94,7 +110,17 @@ internal static class I18NConstants
         ZoneTypes.Weekly => "物资筹备 & 芯片搜索",
         ZoneTypes.Activity => "活动关卡",
         ZoneTypes.Campaign => "剿灭作战",
-        ZoneTypes.Memory => "悖论模拟",
+        ZoneTypes.Memory => "悖論模擬",
+        _ => throw new ArgumentOutOfRangeException(nameof(zoneTypes), zoneTypes, null)
+    };
+    
+    private static string GetZoneTypeCnTString(this ZoneTypes zoneTypes) => zoneTypes switch
+    {
+        ZoneTypes.MainLine => "主題曲",
+        ZoneTypes.Weekly => "物資籌備 & 芯片搜索",
+        ZoneTypes.Activity => "活動關卡",
+        ZoneTypes.Campaign => "剿滅作戰",
+        ZoneTypes.Memory => "悖論模擬",
         _ => throw new ArgumentOutOfRangeException(nameof(zoneTypes), zoneTypes, null)
     };
 
@@ -135,7 +161,8 @@ internal static class I18NConstants
     public static string GetMainLineLevelDifficultyI18NString(this MainLineLevelDifficulty difficulty, ArkServerLanguage language)
         => language switch
         {
-            ArkServerLanguage.Chinese => difficulty.GetMainLineLevelDifficultyCnString(),
+            ArkServerLanguage.ChineseSimplified => difficulty.GetMainLineLevelDifficultyCnString(),
+            ArkServerLanguage.ChineseTraditional => difficulty.GetMainLineLevelDifficultyCnTString(),
             ArkServerLanguage.Korean => difficulty.GetMainLineLevelDifficultyKoString(),
             ArkServerLanguage.English => difficulty.GetMainLineLevelDifficultyEnString(),
             ArkServerLanguage.Japanese => difficulty.GetMainLineLevelDifficultyJpString(),
@@ -148,6 +175,15 @@ internal static class I18NConstants
         MainLineLevelDifficulty.Main => "标准",
         MainLineLevelDifficulty.Tough => "磨难",
         MainLineLevelDifficulty.Unknown => "标准",
+        _ => throw new ArgumentOutOfRangeException(nameof(difficulty), difficulty, null)
+    };
+    
+    private static string GetMainLineLevelDifficultyCnTString(this MainLineLevelDifficulty difficulty) => difficulty switch
+    {
+        MainLineLevelDifficulty.Easy => "簡單",
+        MainLineLevelDifficulty.Main => "標準",
+        MainLineLevelDifficulty.Tough => "磨難",
+        MainLineLevelDifficulty.Unknown => "標準",
         _ => throw new ArgumentOutOfRangeException(nameof(difficulty), difficulty, null)
     };
 

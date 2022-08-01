@@ -10,9 +10,9 @@ public class GetLevelListQueryValidator : AbstractValidator<GetLevelListQuery>
 {
     public GetLevelListQueryValidator(ValidationErrorMessage errorMessage)
     {
-        RuleFor(x => x.Server)
+        RuleFor(x => x.Language)
             .Must(x => ArkServerLanguage.Parse(x) != ArkServerLanguage.Unknown)
-            .When(x => string.IsNullOrEmpty(x.Server) is false)
+            .When(x => string.IsNullOrEmpty(x.Language) is false)
             .WithMessage(errorMessage.UnknownLanguageType);
     }
 }

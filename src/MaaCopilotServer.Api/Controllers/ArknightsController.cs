@@ -38,7 +38,7 @@ public class ArknightsController : MaaControllerBase
     /// <summary>
     ///     Get arknights data version.
     /// </summary>
-    /// <response code="200">The version info.</response>
+    /// <response code="200">The version and sync status info. Note that the status could be <c>ERROR</c> or <c>DISASTER</c>.</response>
     [HttpGet("version")]
     [ProducesResponseType(typeof(MaaApiResponseModel<GetDataVersionQueryDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult> GetArkDataVersion()

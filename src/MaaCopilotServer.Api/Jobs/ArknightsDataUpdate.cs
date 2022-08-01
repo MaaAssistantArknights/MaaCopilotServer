@@ -25,7 +25,10 @@ public class ArknightsDataUpdate : IHostedService
     private readonly IOptions<CopilotServerOption> _copilotServerOptions;
     private readonly IOptions<DatabaseOption> _dbOptions;
 
-    private readonly Action<Exception> _exceptionLogger;
+    private readonly Action<Exception, ArkServerLanguage> _exceptionLogger;
+
+    private readonly List<ArkServerLanguage> _syncErrors = new();
+    private bool _disaster;
 
     private Task? _timedTask;
     private CancellationTokenSource? _cts;
@@ -41,13 +44,18 @@ public class ArknightsDataUpdate : IHostedService
 
         _cts = new CancellationTokenSource();
 
-        _exceptionLogger = ex =>
+        _exceptionLogger = (ex, lang) =>
         {
             if (ex is GameDataParseException)
             {
                 return;
             }
 
+            if (_syncErrors.Contains(lang) is false)
+            {
+                _syncErrors.Add(lang);
+            }
+            
             _logger.LogError(ex,
                 "MaaCopilotServer: Type -> {LoggingType}; Name -> {Name}; ExceptionName -> {ExceptionName}",
                 LoggingType.WorkerServicesException, nameof(TokenValidationCheck), ex.GetType().Name);
@@ -76,9 +84,9 @@ public class ArknightsDataUpdate : IHostedService
 
     private async Task RunJob(CancellationToken cancellationToken)
     {
-        try
+        while (cancellationToken.IsCancellationRequested is false)
         {
-            while (cancellationToken.IsCancellationRequested is false)
+            try
             {
                 while (SystemStatus.DatabaseInitialized is false)
                 {
@@ -92,14 +100,18 @@ public class ArknightsDataUpdate : IHostedService
                     db.PersistStorage.FirstOrDefault(x => x.Key == SystemConstants.ARK_ASSET_VERSION_LEVEL);
                 var cnVersion =
                     db.PersistStorage.FirstOrDefault(x => x.Key == SystemConstants.ARK_ASSET_VERSION_CN);
+                var twVersion =
+                    db.PersistStorage.FirstOrDefault(x => x.Key == SystemConstants.ARK_ASSET_VERSION_TW);
                 var enVersion =
                     db.PersistStorage.FirstOrDefault(x => x.Key == SystemConstants.ARK_ASSET_VERSION_EN);
                 var jpVersion =
                     db.PersistStorage.FirstOrDefault(x => x.Key == SystemConstants.ARK_ASSET_VERSION_JP);
                 var koVersion =
                     db.PersistStorage.FirstOrDefault(x => x.Key == SystemConstants.ARK_ASSET_VERSION_KO);
+                var error =
+                    db.PersistStorage.FirstOrDefault(x => x.Key == SystemConstants.ARK_ASSET_CACHE_ERROR);
 
-                var updateRequired = false;
+                var updateRequired = string.IsNullOrEmpty(error?.Value);
 
                 #region Check if update is required or not
 
@@ -126,6 +138,19 @@ public class ArknightsDataUpdate : IHostedService
                 {
                     cnVersion.UpdateValue(versions.Cn);
                     db.PersistStorage.Update(cnVersion);
+                    updateRequired = true;
+                }
+
+                if (twVersion is null)
+                {
+                    twVersion = new PersistStorage(SystemConstants.ARK_ASSET_VERSION_TW, versions.Tw);
+                    db.PersistStorage.Add(twVersion);
+                    updateRequired = true;
+                }
+                else if (twVersion.Value != versions.Tw)
+                {
+                    twVersion.UpdateValue(versions.Tw);
+                    db.PersistStorage.Update(twVersion);
                     updateRequired = true;
                 }
 
@@ -221,7 +246,25 @@ public class ArknightsDataUpdate : IHostedService
 
                 db.ArkLevelData.AddRange(newLevelData);
                 db.ArkCharacterInfos.AddRange(newCharData);
+                
+                var errorStr = string.Join(";", _syncErrors.Select(x => x.ToString()));
 
+                _syncErrors.Clear();
+                
+                var store = db.PersistStorage
+                    .FirstOrDefault(x => x.Key == SystemConstants.ARK_ASSET_CACHE_ERROR);
+
+                if (store is null)
+                {
+                    store = new PersistStorage(SystemConstants.ARK_ASSET_CACHE_ERROR, errorStr);
+                    db.PersistStorage.Add(store);
+                }
+                else
+                {
+                    store.UpdateValue(errorStr);
+                    db.PersistStorage.Update(store);
+                }
+                
                 var changes = await db.SaveChangesAsync(cancellationToken);
 
                 await db.DisposeAsync();
@@ -234,16 +277,46 @@ public class ArknightsDataUpdate : IHostedService
 
                 await Task.Delay(TimeSpan.FromHours(1), cancellationToken);
             }
-        }
-        catch (TaskCanceledException)
-        {
-            // Ignore
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex,
-                "MaaCopilotServer: Type -> {LoggingType}; Name -> {Name}; ExceptionName -> {ExceptionName}",
-                LoggingType.WorkerServicesException, nameof(ArknightsDataUpdate), ex.GetType().Name);
+            catch (TaskCanceledException)
+            {
+                // Ignore
+            }
+            catch (Exception ex)
+            {
+                _disaster = true;
+                
+                _logger.LogCritical(ex,
+                    "MaaCopilotServer: Type -> {LoggingType}; Name -> {Name}; ExceptionName -> {ExceptionName}",
+                    LoggingType.WorkerServicesException, nameof(ArknightsDataUpdate), ex.GetType().Name);
+            }
+            finally
+            {
+                // ReSharper disable once InvertIf
+                if (_disaster)
+                {
+                    _disaster = false;
+                
+                    var db = new MaaCopilotDbContext(_dbOptions);
+                    var store = db.PersistStorage
+                        .FirstOrDefault(x => x.Key == SystemConstants.ARK_ASSET_CACHE_ERROR);
+
+                    if (store is null)
+                    {
+                        store = new PersistStorage(SystemConstants.ARK_ASSET_CACHE_ERROR, SystemConstants.ARK_ASSET_CACHE_ERROR_DISASTER);
+                        db.PersistStorage.Add(store);
+                    }
+                    else
+                    {
+                        store.UpdateValue(SystemConstants.ARK_ASSET_CACHE_ERROR_DISASTER);
+                        db.PersistStorage.Update(store);
+                    }
+                
+                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                    db.SaveChanges();
+                    // ReSharper disable once MethodHasAsyncOverload
+                    db.Dispose();
+                }
+            }
         }
     }
 
@@ -257,6 +330,8 @@ public class ArknightsDataUpdate : IHostedService
             : null;
         var client = new HttpClient(handler);
         client.DefaultRequestHeaders.Add("User-Agent", _copilotServerOptions.Value.GitHubApiRequestUserAgent);
+        client.DefaultRequestHeaders.Add("Accept", "application/vnd.github.v3+json");
+        client.DefaultRequestHeaders.Add("Accept-Charset", "utf-8");
 
         var level = await client.GetStringAsync(new Uri(SystemConstants.LevelUrl)).ConfigureAwait(true);
 
@@ -287,11 +362,12 @@ public class ArknightsDataUpdate : IHostedService
         handler.Dispose();
         client.Dispose();
 
-        var cnS = ds.First(x => x.Language == ArkServerLanguage.Chinese);
+        var cnS = ds.First(x => x.Language == ArkServerLanguage.ChineseSimplified);
+        var cnTs = ds.First(x => x.Language == ArkServerLanguage.ChineseTraditional);
         var enS = ds.First(x => x.Language == ArkServerLanguage.English);
         var jpS = ds.First(x => x.Language == ArkServerLanguage.Japanese);
         var koS = ds.First(x => x.Language == ArkServerLanguage.Korean);
-        var p = GameDataParser.Parse(cnS, enS, jpS, koS, _exceptionLogger);
+        var p = GameDataParser.Parse(cnS, cnTs, enS, jpS, koS, _exceptionLogger);
 
         return p;
     }
@@ -305,13 +381,14 @@ public class ArknightsDataUpdate : IHostedService
             ? new WebProxy(_copilotServerOptions.Value.GitHubApiRequestProxyAddress,
                 _copilotServerOptions.Value.GitHubApiRequestProxyPort)
             : null;
-        var client = new HttpClient();
+        var client = new HttpClient(handler);
         client.DefaultRequestHeaders.Add("User-Agent", _copilotServerOptions.Value.GitHubApiRequestUserAgent);
 
         var level = await client.GetStringAsync(new Uri(SystemConstants.ArkLevelCommit)).ConfigureAwait(true);
 
         var levelSha = GetCommitSha(level);
         var cnSha = "";
+        var twSha = "";
         var enSha = "";
         var jpSha = "";
         var koSha = "";
@@ -323,8 +400,11 @@ public class ArknightsDataUpdate : IHostedService
 
             switch (language)
             {
-                case ArkServerLanguage.Chinese:
+                case ArkServerLanguage.ChineseSimplified:
                     cnSha = GetCommitSha(data);
+                    break;
+                case ArkServerLanguage.ChineseTraditional:
+                    twSha = GetCommitSha(data);
                     break;
                 case ArkServerLanguage.Korean:
                     koSha = GetCommitSha(data);
@@ -343,7 +423,7 @@ public class ArknightsDataUpdate : IHostedService
         handler.Dispose();
         client.Dispose();
 
-        return new ArkDataVersions(cnSha, enSha, jpSha, koSha, levelSha);
+        return new ArkDataVersions(cnSha, twSha, enSha, jpSha, koSha, levelSha);
     }
 
     private static string GetCommitSha(string str)
@@ -357,7 +437,7 @@ public class ArknightsDataUpdate : IHostedService
         return obj.First().Sha;
     }
 
-    private record ArkDataVersions(string Cn, string En, string Jp, string Ko, string Level);
+    private record ArkDataVersions(string Cn, string Tw, string En, string Jp, string Ko, string Level);
 
     private record GitHubCommitApiResponse
     {

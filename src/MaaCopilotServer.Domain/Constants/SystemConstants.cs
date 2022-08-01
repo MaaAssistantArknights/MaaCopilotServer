@@ -22,9 +22,14 @@ public static class SystemConstants
 
     public const string ARK_ASSET_VERSION_LEVEL = "ark.asset.version.level";
     public const string ARK_ASSET_VERSION_CN = "ark.asset.version.cn";
+    public const string ARK_ASSET_VERSION_TW = "ark.asset.version.tw";
     public const string ARK_ASSET_VERSION_EN = "ark.asset.version.en";
     public const string ARK_ASSET_VERSION_JP = "ark.asset.version.jp";
     public const string ARK_ASSET_VERSION_KO = "ark.asset.version.ko";
+    public const string ARK_ASSET_CACHE_ERROR = "ark.asset.cache.error";
+
+    public const string ARK_ASSET_CACHE_ERROR_NORMAL = "ERROR";
+    public const string ARK_ASSET_CACHE_ERROR_DISASTER = "DISASTER";
 
     public const string MaaCopilotSchemaPath = "static/maa-copilot-schema.json";
 
@@ -39,7 +44,8 @@ public static class SystemConstants
 
     public static readonly Dictionary<string, ArkServerLanguage> ArkServerRegions = new()
     {
-        { "zh_CN", ArkServerLanguage.Chinese },
+        { "zh_CN", ArkServerLanguage.ChineseSimplified },
+        { "zh_TW", ArkServerLanguage.ChineseTraditional},
         { "en_US", ArkServerLanguage.English },
         { "ja_JP", ArkServerLanguage.Japanese },
         { "ko_KR", ArkServerLanguage.Korean },
