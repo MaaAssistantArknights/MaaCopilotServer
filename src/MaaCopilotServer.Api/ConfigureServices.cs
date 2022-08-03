@@ -8,6 +8,7 @@ using System.Text;
 using MaaCopilotServer.Api.Constants;
 using MaaCopilotServer.Api.Jobs;
 using MaaCopilotServer.Api.Services;
+using MaaCopilotServer.Api.Wrappers;
 using MaaCopilotServer.Application.Common.Extensions;
 using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Domain.Attributes;
@@ -46,6 +47,8 @@ public static class ConfigureServices
             .AddOption<TokenOption>()
             .AddOption<CopilotServerOption>()
             .AddOption<CopilotOperationOption>();
+
+        services.AddSingleton<IElasticApmAgentWrapper, ElasticApmAgentWrapper>();
 
         var copilotServerOption = configuration.GetOption<CopilotServerOption>();
 
