@@ -60,7 +60,7 @@ public class UpdateCopilotOperationCommandHandler : IRequestHandler<UpdateCopilo
         var user = (await _currentUserService.GetUser()).IsNotNull();
 
         // Get operation
-        var operationId = _copilotOperationService.DecodeId(request.Id!);
+        var operationId = EntityIdHelper.DecodeId(request.Id!);
         var operation = await _dbContext.CopilotOperations
             .Include(x => x.ArkLevel)
             .Include(x => x.Author)

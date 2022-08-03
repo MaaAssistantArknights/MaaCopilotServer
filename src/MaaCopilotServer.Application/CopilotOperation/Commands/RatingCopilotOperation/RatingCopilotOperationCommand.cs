@@ -60,7 +60,7 @@ public class RatingCopilotOperationCommandHandler : IRequestHandler<RatingCopilo
         var ratingType = Enum.Parse<OperationRatingType>(request.RatingType!);
 
         // Get operations
-        var operationId = _copilotOperationService.DecodeId(request.Id!);
+        var operationId = EntityIdHelper.DecodeId(request.Id!);
         var operation = await _dbContext.CopilotOperations
             .FirstOrDefaultAsync(x => x.Id == operationId, cancellationToken);
         if (operation is null)

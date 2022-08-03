@@ -245,7 +245,7 @@ public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOp
         var dtos = result.Select(x =>
                 new QueryCopilotOperationsQueryDto
                 {
-                    Id = _copilotOperationService.EncodeId(x.Id),
+                    Id = EntityIdHelper.EncodeId(x.Id),
                     Detail = x.Details,
                     MinimumRequired = x.MinimumRequired,
                     Title = x.Title,

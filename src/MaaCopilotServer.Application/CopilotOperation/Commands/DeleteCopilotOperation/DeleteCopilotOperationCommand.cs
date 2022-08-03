@@ -50,7 +50,7 @@ public class DeleteCopilotOperationCommandHandler : IRequestHandler<DeleteCopilo
         var user = (await _currentUserService.GetUser()).IsNotNull();
 
         // Get operation
-        var id = _copilotOperationService.DecodeId(request.Id!);
+        var id = EntityIdHelper.DecodeId(request.Id!);
         var entity = await _dbContext.CopilotOperations
             .Include(x => x.Author)
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);

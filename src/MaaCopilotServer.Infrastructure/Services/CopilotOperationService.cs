@@ -18,15 +18,6 @@ namespace MaaCopilotServer.Infrastructure.Services;
 public class CopilotOperationService : ICopilotOperationService
 {
     private readonly DomainString _domainString;
-
-    /// <summary>
-    ///     The minimum ID value. Other IDs should be calculated based on this value.
-    /// </summary>
-    // 不准改这个值!
-    // DO NOT CHANGE THIS VALUE!
-    // この値は変更しないでください!
-    private const long MinimumId = 10000;
-
     private readonly Func<int, int, int, long> _hotScoreCalculator;
 
     public CopilotOperationService(
@@ -49,18 +40,6 @@ public class CopilotOperationService : ICopilotOperationService
             var scoreNorm = Math.Max(0, scoreRounded);
             return scoreNorm;
         };
-    }
-
-    /// <inheritdoc />
-    public string EncodeId(long plainId)
-    {
-        return EntityIdHelper.EncodeId(plainId);
-    }
-
-    /// <inheritdoc />
-    public long? DecodeId(string encodedId)
-    {
-        return EntityIdHelper.DecodeId(encodedId);
     }
 
     /// <inheritdoc />

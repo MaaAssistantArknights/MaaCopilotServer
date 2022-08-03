@@ -62,7 +62,7 @@ public class
         var isLoggedIn = user is not null;
 
         // Get operation
-        var id = _copilotOperationService.DecodeId(request.Id!);
+        var id = EntityIdHelper.DecodeId(request.Id!);
         var entity = await _dbContext.CopilotOperations
             .Include(x => x.Author)
             .Include(x => x.ArkLevel)

@@ -74,7 +74,7 @@ public class CreateCopilotOperationCommandHandler : IRequestHandler<CreateCopilo
         await _dbContext.SaveChangesAsync(cancellationToken);
 
         // Build response.
-        var id = _copilotOperationService.EncodeId(entity.Id);
+        var id = EntityIdHelper.EncodeId(entity.Id);
         return MaaApiResponseHelper.Ok(new CreateCopilotOperationDto()
         {
             Id = id,

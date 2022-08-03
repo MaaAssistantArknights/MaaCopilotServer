@@ -34,7 +34,6 @@ public class GetCopilotOperationQueryTest
             db.CopilotUsers.Add(user);
             db.CopilotOperations.AddRange(entities);
         });
-        test.CopilotOperationService.SetupDecodeAndEncodeId();
 
         var response = test.TestGetCopilotOperation(new()
         {
