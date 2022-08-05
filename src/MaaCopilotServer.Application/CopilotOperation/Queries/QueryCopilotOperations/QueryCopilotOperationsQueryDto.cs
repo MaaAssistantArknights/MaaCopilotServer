@@ -118,4 +118,10 @@ public class QueryCopilotOperationsQueryDto
     [JsonPropertyName("rating_type")]
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public OperationRatingType? RatingType { get; set; }
+
+    /// <summary>
+    /// The level difficulty.
+    /// </summary>
+    [JsonPropertyName("difficulty")]
+    public DifficultyType Difficulty { get; set; }
 }

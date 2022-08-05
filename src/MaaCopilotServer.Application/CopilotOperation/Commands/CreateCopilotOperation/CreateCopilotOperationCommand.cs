@@ -66,7 +66,8 @@ public class CreateCopilotOperationCommandHandler : IRequestHandler<CreateCopilo
             user.EntityId,
             validationResult.ArkLevel!,
             obj.SerializeOperator(),
-            obj.SerializeGroup());
+            obj.SerializeGroup(),
+            obj.Difficulty ?? DifficultyType.Unknown);
         entity.UpdateHotScore(_copilotOperationService.CalculateHotScore(entity));
 
         // Add entity to database.

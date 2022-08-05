@@ -262,7 +262,8 @@ public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOp
                     RatingType = isLoggedIn
                         ? rating.FirstOrDefault(y => y.OperationId == x.EntityId)?
                               .RatingType ?? OperationRatingType.None
-                        : null
+                        : null,
+                    Difficulty = x.Difficulty,
                 })
             .ToList();
         // Build pagination response

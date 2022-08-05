@@ -189,8 +189,9 @@ public sealed class CopilotOperation : EditableEntity
     /// <param name="operators">The operators in the operation.</param>
     /// <param name="groups">The groups in the operation.</param>
     /// <param name="operator">The one who call this method.</param>
+    /// <param name="difficulty">The difficulty of the operation.</param>
     public void UpdateOperation(string content, string minimumRequired, string title, string details,
-        IEnumerable<string> operators, IEnumerable<string> groups, Guid @operator)
+        IEnumerable<string> operators, IEnumerable<string> groups, Guid @operator, DifficultyType difficulty = DifficultyType.Unknown)
     {
         Content = content;
         MinimumRequired = minimumRequired;
@@ -198,6 +199,11 @@ public sealed class CopilotOperation : EditableEntity
         Details = details;
         Operators = operators.ToList();
         Groups = groups.ToList();
+
+        if (difficulty != DifficultyType.Unknown)
+        {
+            Difficulty = difficulty;
+        }
 
         Update(@operator);
     }

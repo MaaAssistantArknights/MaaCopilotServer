@@ -3,6 +3,7 @@
 // Licensed under the AGPL-3.0 license.
 
 using System.Text.Json.Serialization;
+using MaaCopilotServer.Domain.Enums;
 
 namespace MaaCopilotServer.Application.Common.Operation.Model;
 
@@ -10,6 +11,8 @@ public record Operation
 {
     [JsonPropertyName("stage_name")]
     public string? StageName { get; set; }
+    [JsonPropertyName("difficulty")]
+    public DifficultyType? Difficulty { get; set; }
     [JsonPropertyName("minimum_required")]
     public string? MinimumRequired { get; set; }
     [JsonPropertyName("doc")]

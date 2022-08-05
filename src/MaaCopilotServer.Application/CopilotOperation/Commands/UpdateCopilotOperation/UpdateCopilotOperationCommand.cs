@@ -101,7 +101,8 @@ public class UpdateCopilotOperationCommandHandler : IRequestHandler<UpdateCopilo
             obj.Doc!.Details!,
             obj.SerializeOperator(),
             obj.SerializeGroup(),
-            user.EntityId);
+            user.EntityId,
+            obj.Difficulty ?? DifficultyType.Unknown);
         _dbContext.CopilotOperations.Update(operation);
         await _dbContext.SaveChangesAsync(cancellationToken);
 

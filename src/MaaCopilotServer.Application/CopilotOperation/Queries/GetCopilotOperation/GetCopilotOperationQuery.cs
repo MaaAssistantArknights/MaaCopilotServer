@@ -103,7 +103,8 @@ public class
             Level = request.Language.GetLevelMapperFunc().Invoke(entity.ArkLevel),
             Groups = entity.Groups.ToArray().DeserializeGroup(),
             RatingLevel = _copilotOperationService.GetRatingLevelString(entity.RatingLevel),
-            RatingType = rating
+            RatingType = rating,
+            Difficulty = entity.Difficulty,
         };
 
         // Add an view count to the operation and update it in the database
