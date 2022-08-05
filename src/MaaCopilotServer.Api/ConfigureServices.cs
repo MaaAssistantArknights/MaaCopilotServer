@@ -70,8 +70,6 @@ public static class ConfigureServices
                 return handler;
             });
 
-        services.AddDbContext<IMaaCopilotDbContext, MaaCopilotDbContext>();
-
         services.AddHttpContextAccessor();
         services.AddScoped<ICurrentUserService, CurrentUserService>();
 
