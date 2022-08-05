@@ -27,8 +27,9 @@ public sealed class CopilotOperation : EditableEntity
     /// <param name="level">The level this operation is made for.</param>
     /// <param name="operators">The operators in the operation.</param>
     /// <param name="groups">The groups in the operation.</param>
+    /// <param name="difficulty">The difficulty of the operation.</param>
     public CopilotOperation(string content, string minimumRequired, string title, string details,
-        CopilotUser author, Guid createBy, ArkLevelData level, IEnumerable<string> operators, IEnumerable<string> groups)
+        CopilotUser author, Guid createBy, ArkLevelData level, IEnumerable<string> operators, IEnumerable<string> groups, DifficultyType difficulty = DifficultyType.Unknown)
     {
         Content = content;
         MinimumRequired = minimumRequired;
@@ -40,6 +41,7 @@ public sealed class CopilotOperation : EditableEntity
         Groups = groups.ToList();
         CreateBy = createBy;
         UpdateBy = createBy;
+        Difficulty = difficulty;
     }
 
     /// <summary>
@@ -58,6 +60,7 @@ public sealed class CopilotOperation : EditableEntity
     /// <param name="level">The level this operation is made for.</param>
     /// <param name="operators">The operators in the operation.</param>
     /// <param name="groups">The groups in the operation.</param>
+    /// <param name="difficulty">The difficulty of the operation.</param>
     public CopilotOperation(
         long id,
         string content,
@@ -68,8 +71,9 @@ public sealed class CopilotOperation : EditableEntity
         Guid createBy,
         ArkLevelData level,
         IEnumerable<string> operators,
-        IEnumerable<string> groups)
-        : this(content, minimumRequired, title, details, author, createBy, level, operators, groups)
+        IEnumerable<string> groups,
+        DifficultyType difficulty = DifficultyType.Unknown)
+        : this(content, minimumRequired, title, details, author, createBy, level, operators, groups, difficulty)
     {
         Id = id;
     }
@@ -159,6 +163,11 @@ public sealed class CopilotOperation : EditableEntity
     ///     Current rating level.
     /// </summary>
     public RatingLevel RatingLevel { get; private set; } = RatingLevel.Mixed;
+
+    /// <summary>
+    /// The difficulty.
+    /// </summary>
+    public DifficultyType Difficulty { get; private set; } = DifficultyType.Unknown;
 
     /// <summary>
     ///     Increases view count by 1, and updates last updated time.
