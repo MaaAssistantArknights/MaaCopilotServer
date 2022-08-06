@@ -41,11 +41,15 @@ docker buildx build --platform linux/arm64 -t maa-copilot-server:latest .
 
 若要在本机进行开发，可以使用以下命令，请复制一份 `appsettings.json`，命名为 `appsettings.Development.json`，并修改相关配置。
 
+如果使用 Docker 配置本机运行环境，在配置中可以使用 `host.docker.internal` 代替 `127.0.0.1` 来连接到宿主机。
+
 你需要运行有以下服务：
 
 1. 数据库（必须）：Postgres 数据库，v14.x 版本
 2. SMTP 服务器（必须）：推荐使用 [rnwood/smtp4dev](https://github.com/rnwood/smtp4dev) 在本地启动一个测试 SMTP 服务器
 3. ELK Stack + APM（可选）：v8.x.x 版本，请参考 [LiamSho/docker-compose#elk-apm](https://github.com/LiamSho/docker-compose/tree/main/elk-apm)
+
+可以使用 `localtest-docker.ps1` 一键构建并运行 Docker 镜像。
 
 数据库与 SMTP 服务器开发时使用参考 docker compose 文件：
 

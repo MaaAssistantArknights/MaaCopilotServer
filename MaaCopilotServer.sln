@@ -43,6 +43,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{E3AD1038-CD00-4615-9AEE-5F89A882C448}"
 	ProjectSection(SolutionItems) = preProject
 		build-docker.sh = build-docker.sh
+		localtest-docker.ps1 = localtest-docker.ps1
 		publish-api.ps1 = publish-api.ps1
 		publish-api.sh = publish-api.sh
 		push-docker.sh = push-docker.sh
