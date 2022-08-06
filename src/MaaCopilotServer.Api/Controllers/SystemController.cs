@@ -3,6 +3,7 @@
 // Licensed under the AGPL-3.0 license.
 
 using MaaCopilotServer.Api.Swagger;
+using MaaCopilotServer.Application.System.Echo;
 using MaaCopilotServer.Application.System.GetCurrentVersion;
 using MaaCopilotServer.Application.System.SendEmailTest;
 using MaaCopilotServer.Domain.Options;
@@ -31,6 +32,16 @@ public class SystemController : MaaControllerBase
     public SystemController(IMediator mediator, IOptions<CopilotServerOption> options) : base(mediator)
     {
         _options = options;
+    }
+
+    /// <summary>
+    /// Tests if the server is ready.
+    /// </summary>
+    /// <returns>The task indicating the result.</returns>
+    [HttpGet("")]
+    public async Task<ActionResult> Echo()
+    {
+        return await GetResponse(new EchoCommand());
     }
 
     /// <summary>
