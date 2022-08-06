@@ -28,18 +28,15 @@ public class DeleteCopilotOperationCommandHandler : IRequestHandler<DeleteCopilo
     MaaApiResponse>
 {
     private readonly ApiErrorMessage _apiErrorMessage;
-    private readonly ICopilotOperationService _copilotOperationService;
     private readonly ICurrentUserService _currentUserService;
     private readonly IMaaCopilotDbContext _dbContext;
 
     public DeleteCopilotOperationCommandHandler(
         IMaaCopilotDbContext dbContext,
-        ICopilotOperationService copilotOperationService,
         ICurrentUserService currentUserService,
         ApiErrorMessage apiErrorMessage)
     {
         _dbContext = dbContext;
-        _copilotOperationService = copilotOperationService;
         _currentUserService = currentUserService;
         _apiErrorMessage = apiErrorMessage;
     }

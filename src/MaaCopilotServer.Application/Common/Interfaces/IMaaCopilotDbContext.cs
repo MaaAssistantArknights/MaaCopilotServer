@@ -18,7 +18,7 @@ public interface IMaaCopilotDbContext
     ///     The DB set of ark i18n strings.
     /// </summary>
     DbSet<ArkI18N> ArkI18Ns { get; }
-    
+
     /// <summary>
     ///     Provides access to database related information and operations for this context.
     /// </summary>

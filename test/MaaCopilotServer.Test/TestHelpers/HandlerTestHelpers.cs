@@ -222,7 +222,7 @@ public class HandlerTest
     /// <returns>The result.</returns>
     public HandlerTestResult TestDeleteCopilotOperation(DeleteCopilotOperationCommand request)
     {
-        var handler = new DeleteCopilotOperationCommandHandler(DbContext, CopilotOperationService.Object, CurrentUserService.Object, ApiErrorMessage);
+        var handler = new DeleteCopilotOperationCommandHandler(DbContext, CurrentUserService.Object, ApiErrorMessage);
         return new HandlerTestResult { Response = handler.Handle(request, default).Result, DbContext = DbContext };
     }
 

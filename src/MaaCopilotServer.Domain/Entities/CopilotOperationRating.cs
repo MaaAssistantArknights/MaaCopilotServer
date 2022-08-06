@@ -30,10 +30,8 @@ public class CopilotOperationRating : BaseEntity
         CreateBy = userId;
     }
 
-#pragma warning disable CS8618
     // ReSharper disable once UnusedMember.Local
     private CopilotOperationRating() { }
-#pragma warning restore CS8618
 
     // WARNING:
     // YOU SHOULD NEVER EXPOSE SETTER TO PUBLIC SCOPE.

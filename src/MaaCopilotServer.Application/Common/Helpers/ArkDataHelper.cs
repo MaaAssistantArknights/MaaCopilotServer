@@ -35,7 +35,7 @@ public static class ArkDataHelper
                 Height = data.Height,
                 Width = data.Width
             };
-    
+
     private static readonly Func<ArkLevelData, GetLevelListDto> s_levelMapTw = data =>
         new GetLevelListDto
         {
@@ -96,7 +96,7 @@ public static class ArkDataHelper
             Profession = data.Profession.GetCharacterProfessionCnString(),
             Star = data.Star
         };
-    
+
     private static readonly Func<ArkCharacterInfo, GetOperatorListDto> s_charMapTw = data =>
         new GetOperatorListDto
         {
@@ -143,7 +143,7 @@ public static class ArkDataHelper
             string.IsNullOrEmpty(x.CatOne.ChineseSimplified) == false &&
             string.IsNullOrEmpty(x.CatTwo.ChineseSimplified) == false &&
             string.IsNullOrEmpty(x.CatThree.ChineseSimplified) == false);
-    
+
     private static readonly Func<IQueryable<ArkLevelData>, IQueryable<ArkLevelData>> s_levelQueryTw = q =>
         q.Where(x =>
             string.IsNullOrEmpty(x.Name.ChineseTraditional) == false &&
@@ -181,7 +181,7 @@ public static class ArkDataHelper
 
     private static readonly Func<IQueryable<ArkCharacterInfo>, IQueryable<ArkCharacterInfo>> s_charQueryTw = q =>
         q.Where(x => string.IsNullOrEmpty(x.Name.ChineseTraditional) == false);
-    
+
     private static readonly Func<IQueryable<ArkCharacterInfo>, IQueryable<ArkCharacterInfo>> s_charQueryEn = q =>
         q.Where(x => string.IsNullOrEmpty(x.Name.English) == false);
 

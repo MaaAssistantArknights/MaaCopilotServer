@@ -24,7 +24,7 @@ public class ArkLevelEntityGlobal
     {
         var id = levelId ?? string.Empty;
         LevelId = id;
-        Name = new ArkI18N($"{id}CN", $"{id}TW",$"{id}EN", $"{id}JP", $"{id}KO");
+        Name = new ArkI18N($"{id}CN", $"{id}TW", $"{id}EN", $"{id}JP", $"{id}KO");
         CatOne = new ArkI18N($"{id}CatOneCN", $"{id}CatOneTW", $"{id}CatOneEN", $"{id}CatOneJP", $"{id}CatOneKO");
         CatTwo = new ArkI18N($"{id}CatTwoCN", $"{id}CatTwoTW", $"{id}CatTwoEN", $"{id}CatTwoJP", $"{id}CatTwoKO");
         CatThree = new ArkI18N($"{id}CatThreeCN", $"{id}CatThreeTW", $"{id}CatThreeEN", $"{id}CatThreeJP", $"{id}CatThreeKO");

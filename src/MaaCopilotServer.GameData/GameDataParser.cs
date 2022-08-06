@@ -1,4 +1,8 @@
-﻿using System.Text.Json;
+// This file is a part of MaaCopilotServer project.
+// MaaCopilotServer belongs to the MAA organization.
+// Licensed under the AGPL-3.0 license.
+
+using System.Text.Json;
 using MaaCopilotServer.GameData.Constants;
 using MaaCopilotServer.GameData.Entity;
 using MaaCopilotServer.GameData.Exceptions;
@@ -105,7 +109,7 @@ public static class GameDataParser
                 let enC = enGd.ArkCharacters.FirstOrDefault(x => x.Id == cnC.Id)
                 let jpC = jpGd.ArkCharacters.FirstOrDefault(x => x.Id == cnC.Id)
                 let koC = koGd.ArkCharacters.FirstOrDefault(x => x.Id == cnC.Id)
-                select new ArkCharacterInfoGlobal(cnC,  cnTc, enC, jpC, koC)
+                select new ArkCharacterInfoGlobal(cnC, cnTc, enC, jpC, koC)
             ).ToList();
 
         return new ArkDataParsed
@@ -266,11 +270,11 @@ public static class GameDataParser
 
         // Campaign
         es.AddRange(from level in levelCampaign
-            select new ArkLevelEntity(
-                ZoneTypes.Campaign.GetZoneTypeI18NString(language),
-                level.Code,
-                level.Name,
-                level));
+                    select new ArkLevelEntity(
+                        ZoneTypes.Campaign.GetZoneTypeI18NString(language),
+                        level.Code,
+                        level.Name,
+                        level));
 
         // Memory
         foreach (var level in levelMemory)

@@ -274,7 +274,7 @@ public sealed class CopilotOperation : EditableEntity
             return;
         }
 
-        var ratio = this.LikeCount / (double) total;
+        var ratio = this.LikeCount / (double)total;
 
         this.RatingLevel = ratio switch
         {

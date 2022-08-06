@@ -10,14 +10,14 @@ internal static class I18NConstants
 
     public static string GetCharacterProfessionI18NString(this CharacterProfessions professions, ArkServerLanguage language)
         => language switch
-    {
-        ArkServerLanguage.ChineseSimplified => professions.GetCharacterProfessionCnString(),
-        ArkServerLanguage.ChineseTraditional => professions.GetCharacterProfessionCnTString(),
-        ArkServerLanguage.Korean => professions.GetCharacterProfessionKoString(),
-        ArkServerLanguage.English => professions.GetCharacterProfessionEnString(),
-        ArkServerLanguage.Japanese => professions.GetCharacterProfessionJpString(),
-        _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
-    };
+        {
+            ArkServerLanguage.ChineseSimplified => professions.GetCharacterProfessionCnString(),
+            ArkServerLanguage.ChineseTraditional => professions.GetCharacterProfessionCnTString(),
+            ArkServerLanguage.Korean => professions.GetCharacterProfessionKoString(),
+            ArkServerLanguage.English => professions.GetCharacterProfessionEnString(),
+            ArkServerLanguage.Japanese => professions.GetCharacterProfessionJpString(),
+            _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+        };
 
     private static string GetCharacterProfessionCnString(this CharacterProfessions professions) => professions switch
     {
@@ -32,7 +32,7 @@ internal static class I18NConstants
         CharacterProfessions.Unknown => "未知",
         _ => throw new ArgumentOutOfRangeException(nameof(professions), professions, null)
     };
-    
+
     private static string GetCharacterProfessionCnTString(this CharacterProfessions professions) => professions switch
     {
         CharacterProfessions.Medic => "醫療",
@@ -113,7 +113,7 @@ internal static class I18NConstants
         ZoneTypes.Memory => "悖論模擬",
         _ => throw new ArgumentOutOfRangeException(nameof(zoneTypes), zoneTypes, null)
     };
-    
+
     private static string GetZoneTypeCnTString(this ZoneTypes zoneTypes) => zoneTypes switch
     {
         ZoneTypes.MainLine => "主題曲",
@@ -177,7 +177,7 @@ internal static class I18NConstants
         MainLineLevelDifficulty.Unknown => "标准",
         _ => throw new ArgumentOutOfRangeException(nameof(difficulty), difficulty, null)
     };
-    
+
     private static string GetMainLineLevelDifficultyCnTString(this MainLineLevelDifficulty difficulty) => difficulty switch
     {
         MainLineLevelDifficulty.Easy => "簡單",

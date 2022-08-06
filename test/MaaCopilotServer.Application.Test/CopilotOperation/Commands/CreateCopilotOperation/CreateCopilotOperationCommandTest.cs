@@ -25,12 +25,6 @@ namespace MaaCopilotServer.Application.Test.CopilotOperation.Commands.CreateCopi
 [ExcludeFromCodeCoverage]
 public class CreateCopilotOperationCommandTest
 {
-    /// <summary>
-    ///     The service for processing copilot ID.
-    /// </summary>
-    private readonly ICopilotOperationService _copilotOperationService =
-        new CopilotOperationService(Options.Create(new CopilotOperationOption()), new DomainString());
-
     private static Operation OperationFull => new()
     {
         StageName = "test_stage_name",

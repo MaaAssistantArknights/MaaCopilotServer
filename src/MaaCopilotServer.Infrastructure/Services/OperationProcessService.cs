@@ -80,7 +80,10 @@ public class OperationProcessService : IOperationProcessService
         {
             return new OperationValidationResult
             {
-                IsValid = true, Operation = operationObj, ErrorMessages = string.Empty, ArkLevel = level
+                IsValid = true,
+                Operation = operationObj,
+                ErrorMessages = string.Empty,
+                ArkLevel = level
             };
         }
 
@@ -119,7 +122,10 @@ public class OperationProcessService : IOperationProcessService
 
         return new OperationValidationResult
         {
-            IsValid = true, Operation = operationObj, ErrorMessages = string.Empty, ArkLevel = level
+            IsValid = true,
+            Operation = operationObj,
+            ErrorMessages = string.Empty,
+            ArkLevel = level
         };
     }
 

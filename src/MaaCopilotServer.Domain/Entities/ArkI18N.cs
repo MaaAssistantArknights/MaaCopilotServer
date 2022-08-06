@@ -9,10 +9,10 @@ namespace MaaCopilotServer.Domain.Entities;
 public class ArkI18N : BaseEntity
 {
     public string ChineseSimplified { get; internal set; } = string.Empty;
-    public string ChineseTraditional { get; internal set;  } = string.Empty;
-    public string English { get; internal set;  } = string.Empty;
-    public string Japanese { get; internal set;  } = string.Empty;
-    public string Korean { get; internal set;  } = string.Empty;
+    public string ChineseTraditional { get; internal set; } = string.Empty;
+    public string English { get; internal set; } = string.Empty;
+    public string Japanese { get; internal set; } = string.Empty;
+    public string Korean { get; internal set; } = string.Empty;
 
     internal void Update(GameData.Entity.ArkI18N i18N)
     {

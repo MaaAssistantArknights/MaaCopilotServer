@@ -36,20 +36,17 @@ public class UpdateCopilotOperationCommandHandler : IRequestHandler<UpdateCopilo
 {
     private readonly IMaaCopilotDbContext _dbContext;
     private readonly ICurrentUserService _currentUserService;
-    private readonly ICopilotOperationService _copilotOperationService;
     private readonly IOperationProcessService _operationProcessService;
     private readonly ApiErrorMessage _apiErrorMessage;
 
     public UpdateCopilotOperationCommandHandler(
         IMaaCopilotDbContext dbContext,
         ICurrentUserService currentUserService,
-        ICopilotOperationService copilotOperationService,
         IOperationProcessService operationProcessService,
         ApiErrorMessage apiErrorMessage)
     {
         _dbContext = dbContext;
         _currentUserService = currentUserService;
-        _copilotOperationService = copilotOperationService;
         _operationProcessService = operationProcessService;
         _apiErrorMessage = apiErrorMessage;
     }

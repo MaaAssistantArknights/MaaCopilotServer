@@ -67,7 +67,7 @@ public class CopilotOperationController : MaaControllerBase
     ///     Get a copilot operation by its id.
     /// </summary>
     /// <param name="id">The operation id.</param>
-    /// <param name="server">The server language. Could be (ignore case) Chinese (Default), English, Japanese, Korean.</param>
+    /// <param name="language">The server language. Could be (ignore case) Chinese (Default), English, Japanese, Korean.</param>
     /// <response code="200">The operation JSON and related metadata.</response>
     [HttpGet("get/{id}")]
     [ProducesResponseType(typeof(MaaApiResponseModel<GetCopilotOperationQueryDto>), StatusCodes.Status200OK)]
