@@ -27,8 +27,12 @@ public class SystemControllerTest
         {
             EnableTestEmailApi = true,
         });
-        ControllerTestHelper.Test(m => new SystemController(m, options), c => c.GetVersion());
-        ControllerTestHelper.Test(m => new SystemController(m, options), c => c.SendEmailTest(new()));
+
+        SystemController SystemControllerConstructor(IMediator m) => new(m, options);
+
+        ControllerTestHelper.Test(SystemControllerConstructor, c => c.Echo());
+        ControllerTestHelper.Test(SystemControllerConstructor, c => c.GetVersion());
+        ControllerTestHelper.Test(SystemControllerConstructor, c => c.SendEmailTest(new()));
     }
 
     /// <summary>
