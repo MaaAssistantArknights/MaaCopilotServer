@@ -19,10 +19,10 @@
         "tags": [
           "Arknights"
         ],
-        "summary": "Get arknights data version.",
+        "summary": "Gets arknights data version.",
         "responses": {
           "400": {
-            "description": "A bad request, most cases are invalid request parameters.",
+            "description": "Bad Request",
             "content": {
               "application/json": {
                 "schema": {
@@ -42,7 +42,7 @@
             }
           },
           "401": {
-            "description": "An unauthorized request, you need to login and set Authorization header at first.",
+            "description": "Unauthorized",
             "content": {
               "application/json": {
                 "schema": {
@@ -62,7 +62,7 @@
             }
           },
           "403": {
-            "description": "A forbidden request, you do not have permission to perform the operation.",
+            "description": "Forbidden",
             "content": {
               "application/json": {
                 "schema": {
@@ -82,7 +82,7 @@
             }
           },
           "404": {
-            "description": "Some thing not found.",
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -102,7 +102,7 @@
             }
           },
           "500": {
-            "description": "Some server errors happens.",
+            "description": "Server Error",
             "content": {
               "application/json": {
                 "schema": {
@@ -122,7 +122,7 @@
             }
           },
           "200": {
-            "description": "The version and sync status info. Note that the status could be `ERROR` or `DISASTER`.",
+            "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
@@ -149,7 +149,7 @@
         "tags": [
           "Arknights"
         ],
-        "summary": "Get arknights level data.",
+        "summary": "Gets arknights level data.",
         "parameters": [
           {
             "name": "language",
@@ -162,7 +162,7 @@
         ],
         "responses": {
           "400": {
-            "description": "A bad request, most cases are invalid request parameters.",
+            "description": "Bad Request",
             "content": {
               "application/json": {
                 "schema": {
@@ -182,7 +182,7 @@
             }
           },
           "401": {
-            "description": "An unauthorized request, you need to login and set Authorization header at first.",
+            "description": "Unauthorized",
             "content": {
               "application/json": {
                 "schema": {
@@ -202,7 +202,7 @@
             }
           },
           "403": {
-            "description": "A forbidden request, you do not have permission to perform the operation.",
+            "description": "Forbidden",
             "content": {
               "application/json": {
                 "schema": {
@@ -222,7 +222,7 @@
             }
           },
           "404": {
-            "description": "Some thing not found.",
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -242,7 +242,7 @@
             }
           },
           "500": {
-            "description": "Some server errors happens.",
+            "description": "Server Error",
             "content": {
               "application/json": {
                 "schema": {
@@ -262,7 +262,7 @@
             }
           },
           "200": {
-            "description": "The list of levels",
+            "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
@@ -289,7 +289,8 @@
         "tags": [
           "Arknights"
         ],
-        "summary": "Get arknights operator data.",
+        "summary": "Gets arknights operator data.",
+        "description": "<list type=\"bullet\">\r\n  <item>\r\n    <term>200</term>\r\n    <description>\r\n                        The list of operators.\r\n                    </description>\r\n  </item>\r\n</list>",
         "parameters": [
           {
             "name": "language",
@@ -302,7 +303,7 @@
         ],
         "responses": {
           "400": {
-            "description": "A bad request, most cases are invalid request parameters.",
+            "description": "Bad Request",
             "content": {
               "application/json": {
                 "schema": {
@@ -322,7 +323,7 @@
             }
           },
           "401": {
-            "description": "An unauthorized request, you need to login and set Authorization header at first.",
+            "description": "Unauthorized",
             "content": {
               "application/json": {
                 "schema": {
@@ -342,7 +343,7 @@
             }
           },
           "403": {
-            "description": "A forbidden request, you do not have permission to perform the operation.",
+            "description": "Forbidden",
             "content": {
               "application/json": {
                 "schema": {
@@ -362,7 +363,7 @@
             }
           },
           "404": {
-            "description": "Some thing not found.",
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -382,7 +383,7 @@
             }
           },
           "500": {
-            "description": "Some server errors happens.",
+            "description": "Server Error",
             "content": {
               "application/json": {
                 "schema": {
@@ -402,7 +403,7 @@
             }
           },
           "200": {
-            "description": "The list of operators",
+            "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
@@ -429,7 +430,7 @@
         "tags": [
           "CopilotOperation"
         ],
-        "summary": "Upload a copilot operation.",
+        "summary": "Uploads a copilot operation.",
         "description": "This API requires \"UPLOADER\" role and \"DO NOT ALLOW\" inactivated account to access.",
         "requestBody": {
           "description": "The request body.",
@@ -453,7 +454,7 @@
         },
         "responses": {
           "400": {
-            "description": "A bad request, most cases are invalid request parameters.",
+            "description": "Bad Request",
             "content": {
               "application/json": {
                 "schema": {
@@ -473,7 +474,7 @@
             }
           },
           "401": {
-            "description": "An unauthorized request, you need to login and set Authorization header at first.",
+            "description": "Unauthorized",
             "content": {
               "application/json": {
                 "schema": {
@@ -493,7 +494,7 @@
             }
           },
           "403": {
-            "description": "A forbidden request, you do not have permission to perform the operation.",
+            "description": "Forbidden",
             "content": {
               "application/json": {
                 "schema": {
@@ -513,7 +514,7 @@
             }
           },
           "404": {
-            "description": "Some thing not found.",
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -533,7 +534,7 @@
             }
           },
           "500": {
-            "description": "Some server errors happens.",
+            "description": "Server Error",
             "content": {
               "application/json": {
                 "schema": {
@@ -553,7 +554,7 @@
             }
           },
           "200": {
-            "description": "The operation is successfully uploaded.",
+            "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
@@ -585,10 +586,10 @@
         "tags": [
           "CopilotOperation"
         ],
-        "summary": "Delete a copilot operation.",
+        "summary": "Deletes a copilot operation.",
         "description": "This API requires \"UPLOADER\" role and \"DO NOT ALLOW\" inactivated account to access.",
         "requestBody": {
-          "description": "The request boy.",
+          "description": "The request body.",
           "content": {
             "application/json": {
               "schema": {
@@ -609,7 +610,7 @@
         },
         "responses": {
           "400": {
-            "description": "A bad request, most cases are invalid request parameters.",
+            "description": "Bad Request",
             "content": {
               "application/json": {
                 "schema": {
@@ -629,7 +630,7 @@
             }
           },
           "401": {
-            "description": "An unauthorized request, you need to login and set Authorization header at first.",
+            "description": "Unauthorized",
             "content": {
               "application/json": {
                 "schema": {
@@ -649,7 +650,7 @@
             }
           },
           "403": {
-            "description": "A forbidden request, you do not have permission to perform the operation.",
+            "description": "Forbidden",
             "content": {
               "application/json": {
                 "schema": {
@@ -669,7 +670,7 @@
             }
           },
           "404": {
-            "description": "Some thing not found.",
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -689,7 +690,7 @@
             }
           },
           "500": {
-            "description": "Some server errors happens.",
+            "description": "Server Error",
             "content": {
               "application/json": {
                 "schema": {
@@ -709,7 +710,7 @@
             }
           },
           "200": {
-            "description": "The operation was successfully deleted.",
+            "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
@@ -741,7 +742,7 @@
         "tags": [
           "CopilotOperation"
         ],
-        "summary": "Get a copilot operation by its id.",
+        "summary": "Gets a copilot operation by its id.",
         "parameters": [
           {
             "name": "id",
@@ -755,6 +756,7 @@
           {
             "name": "language",
             "in": "query",
+            "description": "The server language.\r\n\r\n<br>List of available languages (case-insensitive):<list type=\"bullet\"><item>Chinese (Default)</item><item>English</item><item>Japanese</item><item>Korean</item></list>",
             "schema": {
               "type": "string"
             }
@@ -762,7 +764,7 @@
         ],
         "responses": {
           "400": {
-            "description": "A bad request, most cases are invalid request parameters.",
+            "description": "Bad Request",
             "content": {
               "application/json": {
                 "schema": {
@@ -782,7 +784,7 @@
             }
           },
           "401": {
-            "description": "An unauthorized request, you need to login and set Authorization header at first.",
+            "description": "Unauthorized",
             "content": {
               "application/json": {
                 "schema": {
@@ -802,7 +804,7 @@
             }
           },
           "403": {
-            "description": "A forbidden request, you do not have permission to perform the operation.",
+            "description": "Forbidden",
             "content": {
               "application/json": {
                 "schema": {
@@ -822,7 +824,7 @@
             }
           },
           "404": {
-            "description": "Some thing not found.",
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -842,7 +844,7 @@
             }
           },
           "500": {
-            "description": "Some server errors happens.",
+            "description": "Server Error",
             "content": {
               "application/json": {
                 "schema": {
@@ -862,7 +864,7 @@
             }
           },
           "200": {
-            "description": "The operation JSON and related metadata.",
+            "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
@@ -889,7 +891,7 @@
         "tags": [
           "CopilotOperation"
         ],
-        "summary": "Query copilot operations.",
+        "summary": "Queries copilot operations.",
         "parameters": [
           {
             "name": "page",
@@ -992,7 +994,7 @@
         ],
         "responses": {
           "400": {
-            "description": "A bad request, most cases are invalid request parameters.",
+            "description": "Bad Request",
             "content": {
               "application/json": {
                 "schema": {
@@ -1012,7 +1014,7 @@
             }
           },
           "401": {
-            "description": "An unauthorized request, you need to login and set Authorization header at first.",
+            "description": "Unauthorized",
             "content": {
               "application/json": {
                 "schema": {
@@ -1032,7 +1034,7 @@
             }
           },
           "403": {
-            "description": "A forbidden request, you do not have permission to perform the operation.",
+            "description": "Forbidden",
             "content": {
               "application/json": {
                 "schema": {
@@ -1052,7 +1054,7 @@
             }
           },
           "404": {
-            "description": "Some thing not found.",
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -1072,7 +1074,7 @@
             }
           },
           "500": {
-            "description": "Some server errors happens.",
+            "description": "Server Error",
             "content": {
               "application/json": {
                 "schema": {
@@ -1092,7 +1094,7 @@
             }
           },
           "200": {
-            "description": "A list of query results with operation metadata.",
+            "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
@@ -1119,7 +1121,7 @@
         "tags": [
           "CopilotOperation"
         ],
-        "summary": "Update a copilot operation.",
+        "summary": "Updates a copilot operation.",
         "description": "This API requires \"UPLOADER\" role and \"DO NOT ALLOW\" inactivated account to access.",
         "requestBody": {
           "description": "The request body.",
@@ -1143,7 +1145,7 @@
         },
         "responses": {
           "400": {
-            "description": "A bad request, most cases are invalid request parameters.",
+            "description": "Bad Request",
             "content": {
               "application/json": {
                 "schema": {
@@ -1163,7 +1165,7 @@
             }
           },
           "401": {
-            "description": "An unauthorized request, you need to login and set Authorization header at first.",
+            "description": "Unauthorized",
             "content": {
               "application/json": {
                 "schema": {
@@ -1183,7 +1185,7 @@
             }
           },
           "403": {
-            "description": "A forbidden request, you do not have permission to perform the operation.",
+            "description": "Forbidden",
             "content": {
               "application/json": {
                 "schema": {
@@ -1203,7 +1205,7 @@
             }
           },
           "404": {
-            "description": "Some thing not found.",
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -1223,7 +1225,7 @@
             }
           },
           "500": {
-            "description": "Some server errors happens.",
+            "description": "Server Error",
             "content": {
               "application/json": {
                 "schema": {
@@ -1243,7 +1245,7 @@
             }
           },
           "200": {
-            "description": "The operation was successfully updated.",
+            "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
@@ -1275,7 +1277,7 @@
         "tags": [
           "CopilotOperation"
         ],
-        "summary": "Rate a copilot operation.",
+        "summary": "Rates a copilot operation.",
         "description": "This API requires \"USER\" role and \"DO NOT ALLOW\" inactivated account to access.",
         "requestBody": {
           "description": "The request body.",
@@ -1299,7 +1301,7 @@
         },
         "responses": {
           "400": {
-            "description": "A bad request, most cases are invalid request parameters.",
+            "description": "Bad Request",
             "content": {
               "application/json": {
                 "schema": {
@@ -1319,7 +1321,7 @@
             }
           },
           "401": {
-            "description": "An unauthorized request, you need to login and set Authorization header at first.",
+            "description": "Unauthorized",
             "content": {
               "application/json": {
                 "schema": {
@@ -1339,7 +1341,7 @@
             }
           },
           "403": {
-            "description": "A forbidden request, you do not have permission to perform the operation.",
+            "description": "Forbidden",
             "content": {
               "application/json": {
                 "schema": {
@@ -1359,7 +1361,7 @@
             }
           },
           "404": {
-            "description": "Some thing not found.",
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -1379,7 +1381,7 @@
             }
           },
           "500": {
-            "description": "Some server errors happens.",
+            "description": "Server Error",
             "content": {
               "application/json": {
                 "schema": {
@@ -1399,7 +1401,7 @@
             }
           },
           "200": {
-            "description": "The rating was successfully added to the operation.",
+            "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
@@ -1431,7 +1433,7 @@
         "tags": [
           "CopilotUser"
         ],
-        "summary": "Change the user info.",
+        "summary": "Changes the user info.",
         "description": "This API requires \"ADMIN\" role and \"DO NOT ALLOW\" inactivated account to access.",
         "requestBody": {
           "description": "The request body.",
@@ -1455,7 +1457,7 @@
         },
         "responses": {
           "400": {
-            "description": "A bad request, most cases are invalid request parameters.",
+            "description": "Bad Request",
             "content": {
               "application/json": {
                 "schema": {
@@ -1475,7 +1477,7 @@
             }
           },
           "401": {
-            "description": "An unauthorized request, you need to login and set Authorization header at first.",
+            "description": "Unauthorized",
             "content": {
               "application/json": {
                 "schema": {
@@ -1495,7 +1497,7 @@
             }
           },
           "403": {
-            "description": "A forbidden request, you do not have permission to perform the operation.",
+            "description": "Forbidden",
             "content": {
               "application/json": {
                 "schema": {
@@ -1515,7 +1517,7 @@
             }
           },
           "404": {
-            "description": "Some thing not found.",
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -1535,7 +1537,7 @@
             }
           },
           "500": {
-            "description": "Some server errors happens.",
+            "description": "Server Error",
             "content": {
               "application/json": {
                 "schema": {
@@ -1555,7 +1557,7 @@
             }
           },
           "200": {
-            "description": "The changes has benn applied successfully.",
+            "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
@@ -1587,7 +1589,7 @@
         "tags": [
           "CopilotUser"
         ],
-        "summary": "Create a new user.",
+        "summary": "Creates a new user.",
         "description": "This API requires \"ADMIN\" role and \"DO NOT ALLOW\" inactivated account to access.",
         "requestBody": {
           "description": "The request body.",
@@ -1611,7 +1613,7 @@
         },
         "responses": {
           "400": {
-            "description": "A bad request, most cases are invalid request parameters.",
+            "description": "Bad Request",
             "content": {
               "application/json": {
                 "schema": {
@@ -1631,7 +1633,7 @@
             }
           },
           "401": {
-            "description": "An unauthorized request, you need to login and set Authorization header at first.",
+            "description": "Unauthorized",
             "content": {
               "application/json": {
                 "schema": {
@@ -1651,7 +1653,7 @@
             }
           },
           "403": {
-            "description": "A forbidden request, you do not have permission to perform the operation.",
+            "description": "Forbidden",
             "content": {
               "application/json": {
                 "schema": {
@@ -1671,7 +1673,7 @@
             }
           },
           "404": {
-            "description": "Some thing not found.",
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -1691,7 +1693,7 @@
             }
           },
           "500": {
-            "description": "Some server errors happens.",
+            "description": "Server Error",
             "content": {
               "application/json": {
                 "schema": {
@@ -1711,7 +1713,7 @@
             }
           },
           "200": {
-            "description": "The copilot user has been created successfully.",
+            "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
@@ -1743,7 +1745,7 @@
         "tags": [
           "CopilotUser"
         ],
-        "summary": "Delete a user.",
+        "summary": "Deletes a user.",
         "description": "This API requires \"ADMIN\" role and \"DO NOT ALLOW\" inactivated account to access.",
         "requestBody": {
           "description": "The request body.",
@@ -1767,7 +1769,7 @@
         },
         "responses": {
           "400": {
-            "description": "A bad request, most cases are invalid request parameters.",
+            "description": "Bad Request",
             "content": {
               "application/json": {
                 "schema": {
@@ -1787,7 +1789,7 @@
             }
           },
           "401": {
-            "description": "An unauthorized request, you need to login and set Authorization header at first.",
+            "description": "Unauthorized",
             "content": {
               "application/json": {
                 "schema": {
@@ -1807,7 +1809,7 @@
             }
           },
           "403": {
-            "description": "A forbidden request, you do not have permission to perform the operation.",
+            "description": "Forbidden",
             "content": {
               "application/json": {
                 "schema": {
@@ -1827,7 +1829,7 @@
             }
           },
           "404": {
-            "description": "Some thing not found.",
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -1847,7 +1849,7 @@
             }
           },
           "500": {
-            "description": "Some server errors happens.",
+            "description": "Server Error",
             "content": {
               "application/json": {
                 "schema": {
@@ -1867,7 +1869,7 @@
             }
           },
           "200": {
-            "description": "The copilot user has been deleted successfully.",
+            "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
@@ -1899,7 +1901,7 @@
         "tags": [
           "CopilotUser"
         ],
-        "summary": "Login a user.",
+        "summary": "User login.",
         "requestBody": {
           "description": "The request body.",
           "content": {
@@ -1922,7 +1924,7 @@
         },
         "responses": {
           "400": {
-            "description": "A bad request, most cases are invalid request parameters.",
+            "description": "Bad Request",
             "content": {
               "application/json": {
                 "schema": {
@@ -1942,7 +1944,7 @@
             }
           },
           "401": {
-            "description": "An unauthorized request, you need to login and set Authorization header at first.",
+            "description": "Unauthorized",
             "content": {
               "application/json": {
                 "schema": {
@@ -1962,7 +1964,7 @@
             }
           },
           "403": {
-            "description": "A forbidden request, you do not have permission to perform the operation.",
+            "description": "Forbidden",
             "content": {
               "application/json": {
                 "schema": {
@@ -1982,7 +1984,7 @@
             }
           },
           "404": {
-            "description": "Some thing not found.",
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -2002,7 +2004,7 @@
             }
           },
           "500": {
-            "description": "Some server errors happens.",
+            "description": "Server Error",
             "content": {
               "application/json": {
                 "schema": {
@@ -2022,7 +2024,7 @@
             }
           },
           "200": {
-            "description": "Login successfully.",
+            "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
@@ -2049,7 +2051,7 @@
         "tags": [
           "CopilotUser"
         ],
-        "summary": "Update the user info, password not included.",
+        "summary": "Updates the user info, except the password.",
         "description": "This API requires \"USER\" role and \"ALLOW\" inactivated account to access.",
         "requestBody": {
           "description": "The request body.",
@@ -2073,7 +2075,7 @@
         },
         "responses": {
           "400": {
-            "description": "A bad request, most cases are invalid request parameters.",
+            "description": "Bad Request",
             "content": {
               "application/json": {
                 "schema": {
@@ -2093,7 +2095,7 @@
             }
           },
           "401": {
-            "description": "An unauthorized request, you need to login and set Authorization header at first.",
+            "description": "Unauthorized",
             "content": {
               "application/json": {
                 "schema": {
@@ -2113,7 +2115,7 @@
             }
           },
           "403": {
-            "description": "A forbidden request, you do not have permission to perform the operation.",
+            "description": "Forbidden",
             "content": {
               "application/json": {
                 "schema": {
@@ -2133,7 +2135,7 @@
             }
           },
           "404": {
-            "description": "Some thing not found.",
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -2153,7 +2155,7 @@
             }
           },
           "500": {
-            "description": "Some server errors happens.",
+            "description": "Server Error",
             "content": {
               "application/json": {
                 "schema": {
@@ -2205,7 +2207,7 @@
         "tags": [
           "CopilotUser"
         ],
-        "summary": "Update the user password.",
+        "summary": "Updates the user password.",
         "description": "This API requires \"USER\" role and \"ALLOW\" inactivated account to access.",
         "requestBody": {
           "description": "The request body.",
@@ -2229,7 +2231,7 @@
         },
         "responses": {
           "400": {
-            "description": "A bad request, most cases are invalid request parameters.",
+            "description": "Bad Request",
             "content": {
               "application/json": {
                 "schema": {
@@ -2249,7 +2251,7 @@
             }
           },
           "401": {
-            "description": "An unauthorized request, you need to login and set Authorization header at first.",
+            "description": "Unauthorized",
             "content": {
               "application/json": {
                 "schema": {
@@ -2269,7 +2271,7 @@
             }
           },
           "403": {
-            "description": "A forbidden request, you do not have permission to perform the operation.",
+            "description": "Forbidden",
             "content": {
               "application/json": {
                 "schema": {
@@ -2289,7 +2291,7 @@
             }
           },
           "404": {
-            "description": "Some thing not found.",
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -2309,7 +2311,7 @@
             }
           },
           "500": {
-            "description": "Some server errors happens.",
+            "description": "Server Error",
             "content": {
               "application/json": {
                 "schema": {
@@ -2329,7 +2331,7 @@
             }
           },
           "200": {
-            "description": "The changes has benn applied successfully.",
+            "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
@@ -2361,12 +2363,12 @@
         "tags": [
           "CopilotUser"
         ],
-        "summary": "Get the user info by id.",
+        "summary": "Gets the user info by ID.",
         "parameters": [
           {
             "name": "id",
             "in": "path",
-            "description": "The user id, or placeholders like me.",
+            "description": "The user ID, or placeholders like `me`.",
             "required": true,
             "schema": {
               "type": "string"
@@ -2375,7 +2377,7 @@
         ],
         "responses": {
           "400": {
-            "description": "A bad request, most cases are invalid request parameters.",
+            "description": "Bad Request",
             "content": {
               "application/json": {
                 "schema": {
@@ -2395,7 +2397,7 @@
             }
           },
           "401": {
-            "description": "An unauthorized request, you need to login and set Authorization header at first.",
+            "description": "Unauthorized",
             "content": {
               "application/json": {
                 "schema": {
@@ -2415,7 +2417,7 @@
             }
           },
           "403": {
-            "description": "A forbidden request, you do not have permission to perform the operation.",
+            "description": "Forbidden",
             "content": {
               "application/json": {
                 "schema": {
@@ -2435,7 +2437,7 @@
             }
           },
           "404": {
-            "description": "Some thing not found.",
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -2455,7 +2457,7 @@
             }
           },
           "500": {
-            "description": "Some server errors happens.",
+            "description": "Server Error",
             "content": {
               "application/json": {
                 "schema": {
@@ -2475,7 +2477,7 @@
             }
           },
           "200": {
-            "description": "The user info in detail.",
+            "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
@@ -2502,7 +2504,7 @@
         "tags": [
           "CopilotUser"
         ],
-        "summary": "Query users.",
+        "summary": "Queries users.",
         "parameters": [
           {
             "name": "page",
@@ -2533,7 +2535,7 @@
         ],
         "responses": {
           "400": {
-            "description": "A bad request, most cases are invalid request parameters.",
+            "description": "Bad Request",
             "content": {
               "application/json": {
                 "schema": {
@@ -2553,7 +2555,7 @@
             }
           },
           "401": {
-            "description": "An unauthorized request, you need to login and set Authorization header at first.",
+            "description": "Unauthorized",
             "content": {
               "application/json": {
                 "schema": {
@@ -2573,7 +2575,7 @@
             }
           },
           "403": {
-            "description": "A forbidden request, you do not have permission to perform the operation.",
+            "description": "Forbidden",
             "content": {
               "application/json": {
                 "schema": {
@@ -2593,7 +2595,7 @@
             }
           },
           "404": {
-            "description": "Some thing not found.",
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -2613,7 +2615,7 @@
             }
           },
           "500": {
-            "description": "Some server errors happens.",
+            "description": "Server Error",
             "content": {
               "application/json": {
                 "schema": {
@@ -2633,7 +2635,7 @@
             }
           },
           "200": {
-            "description": "The brief user info list.",
+            "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
@@ -2660,7 +2662,7 @@
         "tags": [
           "CopilotUser"
         ],
-        "summary": "Register a user.",
+        "summary": "Registers a user.",
         "requestBody": {
           "description": "The request body.",
           "content": {
@@ -2683,7 +2685,7 @@
         },
         "responses": {
           "400": {
-            "description": "A bad request, most cases are invalid request parameters.",
+            "description": "Bad Request",
             "content": {
               "application/json": {
                 "schema": {
@@ -2703,7 +2705,7 @@
             }
           },
           "401": {
-            "description": "An unauthorized request, you need to login and set Authorization header at first.",
+            "description": "Unauthorized",
             "content": {
               "application/json": {
                 "schema": {
@@ -2723,7 +2725,7 @@
             }
           },
           "403": {
-            "description": "A forbidden request, you do not have permission to perform the operation.",
+            "description": "Forbidden",
             "content": {
               "application/json": {
                 "schema": {
@@ -2743,7 +2745,7 @@
             }
           },
           "404": {
-            "description": "Some thing not found.",
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -2763,7 +2765,7 @@
             }
           },
           "500": {
-            "description": "Some server errors happens.",
+            "description": "Server Error",
             "content": {
               "application/json": {
                 "schema": {
@@ -2783,7 +2785,7 @@
             }
           },
           "200": {
-            "description": "The copilot user has been created successfully and an activation code has been sent to the email address.",
+            "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
@@ -2810,7 +2812,7 @@
         "tags": [
           "CopilotUser"
         ],
-        "summary": "Activate a user account.",
+        "summary": "Activates a user account.",
         "requestBody": {
           "description": "The request body.",
           "content": {
@@ -2833,7 +2835,7 @@
         },
         "responses": {
           "400": {
-            "description": "A bad request, most cases are invalid request parameters.",
+            "description": "Bad Request",
             "content": {
               "application/json": {
                 "schema": {
@@ -2853,7 +2855,7 @@
             }
           },
           "401": {
-            "description": "An unauthorized request, you need to login and set Authorization header at first.",
+            "description": "Unauthorized",
             "content": {
               "application/json": {
                 "schema": {
@@ -2873,7 +2875,7 @@
             }
           },
           "403": {
-            "description": "A forbidden request, you do not have permission to perform the operation.",
+            "description": "Forbidden",
             "content": {
               "application/json": {
                 "schema": {
@@ -2893,7 +2895,7 @@
             }
           },
           "404": {
-            "description": "Some thing not found.",
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -2913,7 +2915,7 @@
             }
           },
           "500": {
-            "description": "Some server errors happens.",
+            "description": "Server Error",
             "content": {
               "application/json": {
                 "schema": {
@@ -2933,7 +2935,7 @@
             }
           },
           "200": {
-            "description": "The account has been activated successfully.",
+            "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
@@ -2960,7 +2962,7 @@
         "tags": [
           "CopilotUser"
         ],
-        "summary": "Request a password reset.",
+        "summary": "Requests a password reset.",
         "requestBody": {
           "description": "The request body.",
           "content": {
@@ -2983,7 +2985,7 @@
         },
         "responses": {
           "400": {
-            "description": "A bad request, most cases are invalid request parameters.",
+            "description": "Bad Request",
             "content": {
               "application/json": {
                 "schema": {
@@ -3003,7 +3005,7 @@
             }
           },
           "401": {
-            "description": "An unauthorized request, you need to login and set Authorization header at first.",
+            "description": "Unauthorized",
             "content": {
               "application/json": {
                 "schema": {
@@ -3023,7 +3025,7 @@
             }
           },
           "403": {
-            "description": "A forbidden request, you do not have permission to perform the operation.",
+            "description": "Forbidden",
             "content": {
               "application/json": {
                 "schema": {
@@ -3043,7 +3045,7 @@
             }
           },
           "404": {
-            "description": "Some thing not found.",
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -3063,7 +3065,7 @@
             }
           },
           "500": {
-            "description": "Some server errors happens.",
+            "description": "Server Error",
             "content": {
               "application/json": {
                 "schema": {
@@ -3083,7 +3085,7 @@
             }
           },
           "200": {
-            "description": "The password reset token has been sent to the email address.",
+            "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
@@ -3110,7 +3112,7 @@
         "tags": [
           "CopilotUser"
         ],
-        "summary": "Reset password.",
+        "summary": "Resets password.",
         "requestBody": {
           "description": "The request body.",
           "content": {
@@ -3133,7 +3135,7 @@
         },
         "responses": {
           "400": {
-            "description": "A bad request, most cases are invalid request parameters.",
+            "description": "Bad Request",
             "content": {
               "application/json": {
                 "schema": {
@@ -3153,7 +3155,7 @@
             }
           },
           "401": {
-            "description": "An unauthorized request, you need to login and set Authorization header at first.",
+            "description": "Unauthorized",
             "content": {
               "application/json": {
                 "schema": {
@@ -3173,7 +3175,7 @@
             }
           },
           "403": {
-            "description": "A forbidden request, you do not have permission to perform the operation.",
+            "description": "Forbidden",
             "content": {
               "application/json": {
                 "schema": {
@@ -3193,7 +3195,7 @@
             }
           },
           "404": {
-            "description": "Some thing not found.",
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -3213,7 +3215,7 @@
             }
           },
           "500": {
-            "description": "Some server errors happens.",
+            "description": "Server Error",
             "content": {
               "application/json": {
                 "schema": {
@@ -3233,7 +3235,7 @@
             }
           },
           "200": {
-            "description": "The password has been reset successfully.",
+            "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
@@ -3260,10 +3262,10 @@
         "tags": [
           "CopilotUser"
         ],
-        "summary": "Request a new activation code.",
+        "summary": "Requests a new activation code.",
         "description": "This API requires \"USER\" role and \"ALLOW\" inactivated account to access.",
         "requestBody": {
-          "description": "The request body. Could be empty.",
+          "description": "The request body, which could be empty.",
           "content": {
             "application/json": {
               "schema": {
@@ -3284,7 +3286,7 @@
         },
         "responses": {
           "400": {
-            "description": "A bad request, most cases are invalid request parameters.",
+            "description": "Bad Request",
             "content": {
               "application/json": {
                 "schema": {
@@ -3304,7 +3306,7 @@
             }
           },
           "401": {
-            "description": "An unauthorized request, you need to login and set Authorization header at first.",
+            "description": "Unauthorized",
             "content": {
               "application/json": {
                 "schema": {
@@ -3324,7 +3326,7 @@
             }
           },
           "403": {
-            "description": "A forbidden request, you do not have permission to perform the operation.",
+            "description": "Forbidden",
             "content": {
               "application/json": {
                 "schema": {
@@ -3344,7 +3346,7 @@
             }
           },
           "404": {
-            "description": "Some thing not found.",
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -3364,7 +3366,7 @@
             }
           },
           "500": {
-            "description": "Some server errors happens.",
+            "description": "Server Error",
             "content": {
               "application/json": {
                 "schema": {
@@ -3384,7 +3386,7 @@
             }
           },
           "200": {
-            "description": "The activation code has been sent to the email address.",
+            "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
@@ -3411,15 +3413,45 @@
         ]
       }
     },
+    "/": {
+      "get": {
+        "tags": [
+          "System"
+        ],
+        "summary": "Tests if the server is ready.",
+        "responses": {
+          "500": {
+            "description": "Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/version": {
       "get": {
         "tags": [
           "System"
         ],
-        "summary": "Get the current version of the server.",
+        "summary": "Gets the current version of the server.",
         "responses": {
           "500": {
-            "description": "Some server errors happens.",
+            "description": "Server Error",
             "content": {
               "application/json": {
                 "schema": {
@@ -3439,7 +3471,7 @@
             }
           },
           "200": {
-            "description": "The current version of the server.",
+            "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
@@ -3466,8 +3498,8 @@
         "tags": [
           "System"
         ],
-        "summary": "Send a test email.",
-        "description": "This API only available when EnableTestEmailApi settings in appsettings.json is true. Otherwise, this API will return a 404 error.",
+        "summary": "Sends a test email.",
+        "description": "This API only available when `EnableTestEmailApi` settings in `appsettings.json` is `true`.\r\nOtherwise, this API will return a 404 error.",
         "parameters": [
           {
             "name": "to",
@@ -3488,7 +3520,7 @@
         ],
         "responses": {
           "500": {
-            "description": "Some server errors happens.",
+            "description": "Server Error",
             "content": {
               "application/json": {
                 "schema": {
@@ -3508,7 +3540,7 @@
             }
           },
           "200": {
-            "description": "The email was sent successfully.",
+            "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
@@ -3693,6 +3725,15 @@
         "additionalProperties": false,
         "description": "The DTO for the DeleteCopilotUser command."
       },
+      "DifficultyType": {
+        "enum": [
+          0,
+          1,
+          2
+        ],
+        "type": "integer",
+        "format": "int32"
+      },
       "EmptyObjectModel": {
         "type": "object",
         "additionalProperties": false,
@@ -3733,12 +3774,14 @@
           "content",
           "detail",
           "groups",
-          "HotScore",
+          "hot_score",
           "id",
+          "is_not_enough_rating",
           "level",
           "minimum_required",
           "operators",
           "rating_level",
+          "rating_ratio",
           "title",
           "upload_time",
           "uploader",
@@ -3789,7 +3832,7 @@
             "description": "The number of times of views.",
             "format": "int32"
           },
-          "HotScore": {
+          "hot_score": {
             "type": "integer",
             "description": "The hot score.",
             "format": "int64"
@@ -3803,11 +3846,22 @@
             "readOnly": true
           },
           "rating_level": {
-            "type": "string",
-            "description": "Current rating level, i18n string."
+            "$ref": "#/components/schemas/RatingLevel"
+          },
+          "rating_ratio": {
+            "type": "number",
+            "description": "Current rating ratio.",
+            "format": "double"
+          },
+          "is_not_enough_rating": {
+            "type": "boolean",
+            "description": "Is total rating count enough or not."
           },
           "rating_type": {
             "$ref": "#/components/schemas/OperationRatingType"
+          },
+          "difficulty": {
+            "$ref": "#/components/schemas/DifficultyType"
           },
           "content": {
             "type": "string",
@@ -4277,12 +4331,14 @@
           "available",
           "detail",
           "groups",
-          "HotScore",
+          "hot_score",
           "id",
+          "is_not_enough_rating",
           "level",
           "minimum_required",
           "operators",
           "rating_level",
+          "rating_ratio",
           "title",
           "upload_time",
           "uploader",
@@ -4333,7 +4389,7 @@
             "description": "The number of times of views.",
             "format": "int32"
           },
-          "HotScore": {
+          "hot_score": {
             "type": "integer",
             "description": "The hot score.",
             "format": "int64"
@@ -4347,11 +4403,22 @@
             "readOnly": true
           },
           "rating_level": {
-            "type": "string",
-            "description": "Current rating level, i18n string."
+            "$ref": "#/components/schemas/RatingLevel"
+          },
+          "rating_ratio": {
+            "type": "number",
+            "description": "Current rating ratio.",
+            "format": "double"
+          },
+          "is_not_enough_rating": {
+            "type": "boolean",
+            "description": "Is total rating count enough or not."
           },
           "rating_type": {
             "$ref": "#/components/schemas/OperationRatingType"
+          },
+          "difficulty": {
+            "$ref": "#/components/schemas/DifficultyType"
           }
         },
         "additionalProperties": false,
@@ -4515,6 +4582,21 @@
         },
         "additionalProperties": false,
         "description": "The DTO for the RatingCopilotOperation command."
+      },
+      "RatingLevel": {
+        "enum": [
+          10,
+          20,
+          30,
+          40,
+          50,
+          60,
+          70,
+          80,
+          90
+        ],
+        "type": "integer",
+        "format": "int32"
       },
       "RegisterCopilotAccountCommand": {
         "required": [
