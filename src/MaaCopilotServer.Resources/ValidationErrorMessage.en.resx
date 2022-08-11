@@ -69,4 +69,7 @@
   <data name="CopilotOperationUnknownLevel" xml:space="preserve">
     <value>Unknown level</value>
   </data>
+  <data name="CopilotOperationTitleOrDetailIsEmpty" xml:space="preserve">
+    <value>Operation title or details is empty</value>
+  </data>
 </root>

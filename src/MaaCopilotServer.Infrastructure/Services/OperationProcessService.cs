@@ -61,6 +61,18 @@ public class OperationProcessService : IOperationProcessService
 
         var operationObj = JsonSerializer.Deserialize<Operation>(operation);
 
+        if (string.IsNullOrEmpty(operationObj?.Doc?.Title?.Trim()) ||
+            string.IsNullOrEmpty(operationObj.Doc?.Details?.Trim()))
+        {
+            return new OperationValidationResult
+            {
+                IsValid = false,
+                Operation = null,
+                ErrorMessages = _validationErrorMessage.CopilotOperationTitleOrDetailIsEmpty!,
+                ArkLevel = null
+            };
+        }
+
         var levelId = operationObj!.StageName;
         var level = await _dbContext.ArkLevelData.FirstOrDefaultAsync(x => x.LevelId == levelId);
         if (level is null)
