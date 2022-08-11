@@ -77,4 +77,7 @@
   <data name="CopilotOperationUnknownLevel" xml:space="preserve">
     <value>未知的关卡</value>
   </data>
+  <data name="CopilotOperationTitleOrDetailIsEmpty" xml:space="preserve">
+    <value>作业标题或简介为空</value>
+  </data>
 </root>

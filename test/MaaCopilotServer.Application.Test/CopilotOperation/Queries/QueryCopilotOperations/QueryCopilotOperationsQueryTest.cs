@@ -78,8 +78,6 @@ public class QueryCopilotOperationsQueryTest
             db.CopilotOperationRatings.AddRange(rating);
         });
 
-        test.CopilotOperationService.SetupDecodeAndEncodeId();
-
         return (users, test);
     }
 
@@ -95,7 +93,6 @@ public class QueryCopilotOperationsQueryTest
         var (users, test) = Initialize(new());
         test.CurrentUserService.SetupGetUserIdentity(users[0].EntityId);
         test.CurrentUserService.SetupGetUser(users[0]);
-        test.CopilotOperationService.SetupDecodeAndEncodeId();
 
         var result = test.TestQueryCopilotOperations(new()
         {
@@ -127,7 +124,6 @@ public class QueryCopilotOperationsQueryTest
         var (users, test) = Initialize(new());
         test.CurrentUserService.SetupGetUserIdentity(users[0].EntityId);
         test.CurrentUserService.SetupGetUser(users[0]);
-        test.CopilotOperationService.SetupDecodeAndEncodeId();
 
         var result = test.TestQueryCopilotOperations(new()
         {
@@ -156,7 +152,6 @@ public class QueryCopilotOperationsQueryTest
         var (users, test) = Initialize(new());
         test.CurrentUserService.SetupGetUserIdentity(users[0].EntityId);
         test.CurrentUserService.SetupGetUser(users[0]);
-        test.CopilotOperationService.SetupDecodeAndEncodeId();
 
         var result = test.TestQueryCopilotOperations(new()
         {
@@ -186,7 +181,6 @@ public class QueryCopilotOperationsQueryTest
         var (users, test) = Initialize(new());
         test.CurrentUserService.SetupGetUserIdentity(users[0].EntityId);
         test.CurrentUserService.SetupGetUser(users[0]);
-        test.CopilotOperationService.SetupDecodeAndEncodeId();
 
         var result = test.TestQueryCopilotOperations(new()
         {
@@ -271,7 +265,6 @@ public class QueryCopilotOperationsQueryTest
         var (users, test) = Initialize(new());
         test.CurrentUserService.SetupGetUserIdentity(users[0].EntityId);
         test.CurrentUserService.SetupGetUser(users[0]);
-        test.CopilotOperationService.SetupDecodeAndEncodeId();
 
         var result = test.TestQueryCopilotOperations(new()
         {
@@ -306,7 +299,6 @@ public class QueryCopilotOperationsQueryTest
         var (users, test) = Initialize(new());
         test.CurrentUserService.SetupGetUserIdentity(users[0].EntityId);
         test.CurrentUserService.SetupGetUser(users[0]);
-        test.CopilotOperationService.SetupDecodeAndEncodeId();
 
         try
         {
@@ -330,7 +322,6 @@ public class QueryCopilotOperationsQueryTest
         var (users, test) = Initialize(new());
         test.CurrentUserService.SetupGetUserIdentity(users[0].EntityId);
         test.CurrentUserService.SetupGetUser(users[0]);
-        test.CopilotOperationService.SetupDecodeAndEncodeId();
 
         var result = test.TestQueryCopilotOperations(new()
         {
@@ -356,7 +347,6 @@ public class QueryCopilotOperationsQueryTest
         var (users, test) = Initialize(new());
         test.CurrentUserService.SetupGetUserIdentity(users[0].EntityId);
         test.CurrentUserService.SetupGetUser(users[0]);
-        test.CopilotOperationService.SetupDecodeAndEncodeId();
 
         var result = test.TestQueryCopilotOperations(new()
         {
@@ -394,7 +384,6 @@ public class QueryCopilotOperationsQueryTest
         var (users, test) = Initialize(new());
         test.CurrentUserService.SetupGetUserIdentity(users[0].EntityId);
         test.CurrentUserService.SetupGetUser(users[0]);
-        test.CopilotOperationService.SetupDecodeAndEncodeId();
 
         var result = test.TestQueryCopilotOperations(new()
         {

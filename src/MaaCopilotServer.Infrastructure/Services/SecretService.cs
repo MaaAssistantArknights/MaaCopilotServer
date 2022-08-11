@@ -63,7 +63,9 @@ public class SecretService : ISecretService
         var hash = BitConverter.ToString(hashedBytes).Replace("-", string.Empty).ToUpper().AsSpan();
 
         // ReSharper disable once ReplaceSliceWithRangeIndexer
+#pragma warning disable IDE0057
         var sec1 = hash.Slice(0, 6);
+#pragma warning restore IDE0057
         var sec2 = hash.Slice(6, 10);
         var sec3 = hash.Slice(16, 4);
         var sec4 = hash.Slice(20, 8);

@@ -26,7 +26,7 @@ public class ArkCharacterInfo : BaseEntity
 #pragma warning restore CS8618
 
     // ReSharper disable AutoPropertyCanBeMadeGetOnly.Local
-    
+
     public ArkI18N Name { get; private set; } = new();
 
     public string Id { get; private set; }

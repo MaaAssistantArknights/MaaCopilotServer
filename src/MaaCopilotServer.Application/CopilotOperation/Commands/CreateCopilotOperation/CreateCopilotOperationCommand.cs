@@ -66,7 +66,8 @@ public class CreateCopilotOperationCommandHandler : IRequestHandler<CreateCopilo
             user.EntityId,
             validationResult.ArkLevel!,
             obj.SerializeOperator(),
-            obj.SerializeGroup());
+            obj.SerializeGroup(),
+            obj.Difficulty ?? DifficultyType.Unknown);
         entity.UpdateHotScore(_copilotOperationService.CalculateHotScore(entity));
 
         // Add entity to database.
@@ -74,7 +75,7 @@ public class CreateCopilotOperationCommandHandler : IRequestHandler<CreateCopilo
         await _dbContext.SaveChangesAsync(cancellationToken);
 
         // Build response.
-        var id = _copilotOperationService.EncodeId(entity.Id);
+        var id = EntityIdHelper.EncodeId(entity.Id);
         return MaaApiResponseHelper.Ok(new CreateCopilotOperationDto()
         {
             Id = id,

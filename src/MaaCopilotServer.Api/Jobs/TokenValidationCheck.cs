@@ -4,25 +4,32 @@
 
 using MaaCopilotServer.Api.Constants;
 using MaaCopilotServer.Application.Common.Enum;
-using MaaCopilotServer.Domain.Options;
-using MaaCopilotServer.Infrastructure.Database;
+using MaaCopilotServer.Application.Common.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 
 namespace MaaCopilotServer.Api.Jobs;
 
 public class TokenValidationCheck : IHostedService
 {
-    private readonly IOptions<DatabaseOption> _dbOptions;
     private readonly ILogger<TokenValidationCheck> _logger;
 
     private Task? _timedTask;
     private CancellationTokenSource? _cts;
 
-    public TokenValidationCheck(IOptions<DatabaseOption> dbOptions, ILogger<TokenValidationCheck> logger)
+    /// <summary>
+    /// The database context.
+    /// </summary>
+    private readonly IMaaCopilotDbContext _dbContext;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="TokenValidationCheck"/> class.
+    /// </summary>
+    /// <param name="logger">The logger.</param>
+    /// <param name="dbContext">The database context.</param>
+    public TokenValidationCheck(ILogger<TokenValidationCheck> logger, IMaaCopilotDbContext dbContext)
     {
-        _dbOptions = dbOptions;
         _logger = logger;
+        _dbContext = dbContext;
     }
 
     public Task StartAsync(CancellationToken cancellationToken)
@@ -57,7 +64,7 @@ public class TokenValidationCheck : IHostedService
                     continue;
                 }
 
-                var db = new MaaCopilotDbContext(_dbOptions);
+                var db = _dbContext;
 
                 var currentTime = DateTimeOffset.UtcNow;
                 await Task.Delay(TimeSpan.FromSeconds(1), cancellationToken);
@@ -73,8 +80,6 @@ public class TokenValidationCheck : IHostedService
 
                 db.CopilotTokens.RemoveRange(expiredTokens);
                 await db.SaveChangesAsync(cancellationToken);
-
-                await db.DisposeAsync();
 
                 _logger.LogInformation("MaaCopilotServer: Type -> {LoggingType}; Name -> {Name}; Message -> {Message}",
                     LoggingType.WorkerServicesReport, nameof(TokenValidationCheck), $"{expiredTokens.Count} expired tokens removed");

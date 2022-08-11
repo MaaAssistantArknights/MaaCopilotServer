@@ -60,8 +60,13 @@ public class RatingCopilotOperationCommandHandler : IRequestHandler<RatingCopilo
         var ratingType = Enum.Parse<OperationRatingType>(request.RatingType!);
 
         // Get operations
-        var operationId = _copilotOperationService.DecodeId(request.Id!);
+        var operationId = EntityIdHelper.DecodeId(request.Id!);
         var operation = await _dbContext.CopilotOperations
+            .Include(x => x.ArkLevel).ThenInclude(x => x.Name)
+            .Include(x => x.ArkLevel).ThenInclude(x => x.CatOne)
+            .Include(x => x.ArkLevel).ThenInclude(x => x.CatTwo)
+            .Include(x => x.ArkLevel).ThenInclude(x => x.CatThree)
+            .Include(x => x.Author)
             .FirstOrDefaultAsync(x => x.Id == operationId, cancellationToken);
         if (operation is null)
         {
@@ -142,8 +147,10 @@ public class RatingCopilotOperationCommandHandler : IRequestHandler<RatingCopilo
             ViewCounts = operation.ViewCounts,
             HotScore = operation.HotScore,
             Groups = operation.Groups.ToArray().DeserializeGroup(),
-            RatingLevel = _copilotOperationService.GetRatingLevelString(operation.RatingLevel),
-            RatingType = currentRating
+            RatingLevel = operation.RatingLevel,
+            RatingRatio = operation.RatingRatio,
+            RatingType = currentRating,
+            IsNotEnoughRating = operation.IsNotEnoughRating
         };
         return MaaApiResponseHelper.Ok(dto);
     }

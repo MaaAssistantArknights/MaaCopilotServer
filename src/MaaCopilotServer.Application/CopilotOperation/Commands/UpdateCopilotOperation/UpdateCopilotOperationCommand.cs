@@ -36,20 +36,17 @@ public class UpdateCopilotOperationCommandHandler : IRequestHandler<UpdateCopilo
 {
     private readonly IMaaCopilotDbContext _dbContext;
     private readonly ICurrentUserService _currentUserService;
-    private readonly ICopilotOperationService _copilotOperationService;
     private readonly IOperationProcessService _operationProcessService;
     private readonly ApiErrorMessage _apiErrorMessage;
 
     public UpdateCopilotOperationCommandHandler(
         IMaaCopilotDbContext dbContext,
         ICurrentUserService currentUserService,
-        ICopilotOperationService copilotOperationService,
         IOperationProcessService operationProcessService,
         ApiErrorMessage apiErrorMessage)
     {
         _dbContext = dbContext;
         _currentUserService = currentUserService;
-        _copilotOperationService = copilotOperationService;
         _operationProcessService = operationProcessService;
         _apiErrorMessage = apiErrorMessage;
     }
@@ -60,7 +57,7 @@ public class UpdateCopilotOperationCommandHandler : IRequestHandler<UpdateCopilo
         var user = (await _currentUserService.GetUser()).IsNotNull();
 
         // Get operation
-        var operationId = _copilotOperationService.DecodeId(request.Id!);
+        var operationId = EntityIdHelper.DecodeId(request.Id!);
         var operation = await _dbContext.CopilotOperations
             .Include(x => x.ArkLevel)
             .Include(x => x.Author)
@@ -101,7 +98,8 @@ public class UpdateCopilotOperationCommandHandler : IRequestHandler<UpdateCopilo
             obj.Doc!.Details!,
             obj.SerializeOperator(),
             obj.SerializeGroup(),
-            user.EntityId);
+            user.EntityId,
+            obj.Difficulty ?? DifficultyType.Unknown);
         _dbContext.CopilotOperations.Update(operation);
         await _dbContext.SaveChangesAsync(cancellationToken);
 

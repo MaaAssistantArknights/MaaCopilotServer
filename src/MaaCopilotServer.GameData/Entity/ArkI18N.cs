@@ -15,7 +15,7 @@ public class ArkI18N
         Korean = korean ?? string.Empty;
     }
 
-    public string ChineseSimplified { get;  }
+    public string ChineseSimplified { get; }
     public string ChineseTraditional { get; }
     public string English { get; }
     public string Japanese { get; }

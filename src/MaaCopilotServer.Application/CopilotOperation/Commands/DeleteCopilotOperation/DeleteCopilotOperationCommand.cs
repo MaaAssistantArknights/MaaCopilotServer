@@ -28,18 +28,15 @@ public class DeleteCopilotOperationCommandHandler : IRequestHandler<DeleteCopilo
     MaaApiResponse>
 {
     private readonly ApiErrorMessage _apiErrorMessage;
-    private readonly ICopilotOperationService _copilotOperationService;
     private readonly ICurrentUserService _currentUserService;
     private readonly IMaaCopilotDbContext _dbContext;
 
     public DeleteCopilotOperationCommandHandler(
         IMaaCopilotDbContext dbContext,
-        ICopilotOperationService copilotOperationService,
         ICurrentUserService currentUserService,
         ApiErrorMessage apiErrorMessage)
     {
         _dbContext = dbContext;
-        _copilotOperationService = copilotOperationService;
         _currentUserService = currentUserService;
         _apiErrorMessage = apiErrorMessage;
     }
@@ -50,7 +47,7 @@ public class DeleteCopilotOperationCommandHandler : IRequestHandler<DeleteCopilo
         var user = (await _currentUserService.GetUser()).IsNotNull();
 
         // Get operation
-        var id = _copilotOperationService.DecodeId(request.Id!);
+        var id = EntityIdHelper.DecodeId(request.Id!);
         var entity = await _dbContext.CopilotOperations
             .Include(x => x.Author)
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);

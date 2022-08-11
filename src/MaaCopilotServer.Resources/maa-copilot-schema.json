@@ -55,11 +55,13 @@
       "properties": {
         "title": {
           "type": "string",
-          "description": "Operation title"
+          "description": "Operation title",
+          "minLength": 1
         },
         "details": {
           "type": "string",
-          "description": "Operation description"
+          "description": "Operation description",
+          "minLength": 1
         },
         "title_color": {
           "type": "string",
@@ -82,7 +84,8 @@
       "properties": {
         "name": {
           "type": "string",
-          "description": "The official full name of the operator in your language. If this operation has been uploaded to the server, it will be replaced by the name in the request language. If you use an operator that is not available in other servers, it will fallback to operator name in Chinese and be tagged as not available for your region."
+          "description": "The official full name of the operator in your language. If this operation has been uploaded to the server, it will be replaced by the name in the request language. If you use an operator that is not available in other servers, it will fallback to operator name in Chinese and be tagged as not available for your region.",
+          "minLength": 1
         },
         "skill": {
           "type": "integer",
@@ -153,7 +156,8 @@
       "properties": {
         "name": {
           "type": "string",
-          "description": "Any name is accepted as long as it matches the `name` field in `deploy` below."
+          "description": "Any name is accepted as long as it matches the `name` field in `deploy` below.",
+          "minLength": 1
         },
         "opers": {
           "type": "array",
@@ -162,7 +166,11 @@
             "$ref": "#/definitions/operator"
           }
         }
-      }
+      },
+      "required": [
+        "name",
+        "opers"
+      ]
     },
     "action": {
       "type": "object",

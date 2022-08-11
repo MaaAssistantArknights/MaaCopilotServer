@@ -5,6 +5,7 @@
 using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using MaaCopilotServer.Application.Common.Helpers;
 using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Application.CopilotOperation.Commands.CreateCopilotOperation;
 using MaaCopilotServer.Domain.Enums;
@@ -24,12 +25,6 @@ namespace MaaCopilotServer.Application.Test.CopilotOperation.Commands.CreateCopi
 [ExcludeFromCodeCoverage]
 public class CreateCopilotOperationCommandTest
 {
-    /// <summary>
-    ///     The service for processing copilot ID.
-    /// </summary>
-    private readonly ICopilotOperationService _copilotOperationService =
-        new CopilotOperationService(Options.Create(new CopilotOperationOption()), new DomainString());
-
     private static Operation OperationFull => new()
     {
         StageName = "test_stage_name",
@@ -117,7 +112,6 @@ public class CreateCopilotOperationCommandTest
             ArkLevel = new(new("test_stage_name")),
         });
         test.CurrentUserService.SetupGetUser(new(string.Empty, string.Empty, string.Empty, UserRole.User, Guid.Empty));
-        test.CopilotOperationService.SetupDecodeAndEncodeId();
         var result = test.TestCreateCopilotOperation(new()
         {
             Content = testContent,
@@ -127,7 +121,7 @@ public class CreateCopilotOperationCommandTest
         result.DbContext.CopilotOperations.Any().Should().BeTrue();
         var entity = result.DbContext.CopilotOperations.FirstOrDefault();
         entity.Should().NotBeNull();
-        entity!.Id.Should().Be(_copilotOperationService.DecodeId(id));
+        entity!.Id.Should().Be(EntityIdHelper.DecodeId(id));
         entity.Content.Should().Be(testContent);
         entity.ArkLevel.LevelId.Should().Be(OperationFull.StageName);
         entity.MinimumRequired.Should().Be(OperationFull.MinimumRequired);

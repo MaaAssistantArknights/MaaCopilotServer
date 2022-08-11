@@ -16,14 +16,34 @@ using Microsoft.AspNetCore.Mvc;
 namespace MaaCopilotServer.Api.Controllers;
 
 /// <summary>
-///     The controller of copilot operations under "copilot" endpoint.
-/// Include operations related to copilot operations.
+///     The controller of copilot operations under <c>/copilot</c> endpoint,
+///     including operations related to copilot operations.
 /// </summary>
-/// <response code="400">A bad request, most cases are invalid request parameters.</response>
-/// <response code="401">An unauthorized request, you need to login and set Authorization header at first.</response>
-/// <response code="403">A forbidden request, you do not have permission to perform the operation.</response>
-/// <response code="404">Some thing not found.</response>
-/// <response code="500">Some server errors happens.</response>
+/// <remarks>
+/// Response codes:
+/// <list type="bullet">
+///     <item>
+///         <term>400</term>
+///         <description>A bad request. Most cases are invalid request parameters.</description>
+///     </item>
+///     <item>
+///         <term>401</term>
+///         <description>An unauthorized request. You need to login and set Authorization header at first.</description>
+///     </item>
+///     <item>
+///         <term>403</term>
+///         <description>A forbidden request. You do not have permission to perform the operation.</description>
+///     </item>
+///     <item>
+///         <term>404</term>
+///         <description>Something is not found.</description>
+///     </item>
+///     <item>
+///         <term>500</term>
+///         <description>Some server errors happens.</description>
+///     </item>
+/// </list>
+/// </remarks>
 [ApiController]
 [Route("copilot")]
 [ProducesResponseType(typeof(MaaApiResponseModel<EmptyObjectModel>), StatusCodes.Status400BadRequest)]
@@ -40,10 +60,25 @@ public class CopilotOperationController : MaaControllerBase
     public CopilotOperationController(IMediator mediator) : base(mediator) { }
 
     /// <summary>
-    ///     Upload a copilot operation.
+    ///     Uploads a copilot operation.
     /// </summary>
     /// <param name="command">The request body.</param>
-    /// <response code="200">The operation is successfully uploaded.</response>
+    /// <returns>
+    /// <list type="bullet">
+    ///     <item>
+    ///         <term>200</term>
+    ///         <description>
+    ///             The operation has been uploaded successfully.
+    ///         </description>
+    ///     </item>
+    ///     <item>
+    ///         <term>400</term>
+    ///         <description>
+    ///             The JSON format is incorrect.
+    ///         </description>
+    ///     </item>
+    /// </list>
+    /// </returns>
     [HttpPost("upload")]
     [ProducesResponseType(typeof(MaaApiResponseModel<CreateCopilotOperationDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult> CreateCopilotOperation([FromBody] CreateCopilotOperationCommand command)
@@ -52,10 +87,31 @@ public class CopilotOperationController : MaaControllerBase
     }
 
     /// <summary>
-    ///     Delete a copilot operation.
+    ///     Deletes a copilot operation.
     /// </summary>
-    /// <param name="command">The request boy.</param>
-    /// <response code="200">The operation was successfully deleted.</response>
+    /// <param name="command">The request body.</param>
+    /// <returns>
+    /// <list type="bullet">
+    ///     <item>
+    ///         <term>200</term>
+    ///         <description>
+    ///             The operation has been successfully deleted.
+    ///         </description>
+    ///     </item>
+    ///     <item>
+    ///         <term>403</term>
+    ///         <description>
+    ///             The user is not allowed to delete this operation.
+    ///         </description>
+    ///     </item>
+    ///     <item>
+    ///         <term>404</term>
+    ///         <description>
+    ///             The operation specified is not found.
+    ///         </description>
+    ///     </item>
+    /// </list>
+    /// </returns>
     [HttpPost("delete")]
     [ProducesResponseType(typeof(MaaApiResponseModel<EmptyObjectModel>), StatusCodes.Status200OK)]
     public async Task<ActionResult> DeleteCopilotOperation([FromBody] DeleteCopilotOperationCommand command)
@@ -64,11 +120,36 @@ public class CopilotOperationController : MaaControllerBase
     }
 
     /// <summary>
-    ///     Get a copilot operation by its id.
+    ///     Gets a copilot operation by its id.
     /// </summary>
     /// <param name="id">The operation id.</param>
-    /// <param name="server">The server language. Could be (ignore case) Chinese (Default), English, Japanese, Korean.</param>
-    /// <response code="200">The operation JSON and related metadata.</response>
+    /// <param name="language">
+    ///     The server language.
+    ///     
+    ///     <para>List of available languages (case-insensitive):</para>
+    ///     <list type="bullet">
+    ///         <item>Chinese (Default)</item>
+    ///         <item>English</item>
+    ///         <item>Japanese</item>
+    ///         <item>Korean</item>
+    ///     </list>
+    /// </param>
+    /// <returns>
+    /// <list type="bullet">
+    ///     <item>
+    ///         <term>200</term>
+    ///         <description>
+    ///             The operation JSON and related metadata.
+    ///         </description>
+    ///     </item>
+    ///     <item>
+    ///         <term>404</term>
+    ///         <description>
+    ///             The operation specified is not found.
+    ///         </description>
+    ///     </item>
+    /// </list>
+    /// </returns>
     [HttpGet("get/{id}")]
     [ProducesResponseType(typeof(MaaApiResponseModel<GetCopilotOperationQueryDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult> GetCopilotOperation(string id, [FromQuery(Name = "language")] string? language)
@@ -78,10 +159,25 @@ public class CopilotOperationController : MaaControllerBase
     }
 
     /// <summary>
-    ///     Query copilot operations.
+    ///     Queries copilot operations.
     /// </summary>
     /// <param name="query">The request body.</param>
-    /// <response code="200">A list of query results with operation metadata.</response>
+    /// <returns>
+    /// <list type="bullet">
+    ///     <item>
+    ///         <term>200</term>
+    ///         <description>
+    ///             A list of query results with operation metadata.
+    ///         </description>
+    ///     </item>
+    ///     <item>
+    ///         <term>400</term>
+    ///         <description>
+    ///             The uploader ID is set to <c>me</c>, but the requester has not logged in.
+    ///         </description>
+    ///     </item>
+    /// </list>
+    /// </returns>
     [HttpGet("query")]
     [ProducesResponseType(typeof(MaaApiResponseModel<PaginationResult<QueryCopilotOperationsQueryDto>>), StatusCodes.Status200OK)]
     public async Task<ActionResult> QueryCopilotOperation([FromQuery] QueryCopilotOperationsQuery query)
@@ -90,10 +186,37 @@ public class CopilotOperationController : MaaControllerBase
     }
 
     /// <summary>
-    ///     Update a copilot operation.
+    ///     Updates a copilot operation.
     /// </summary>
     /// <param name="command">The request body.</param>
-    /// <response code="200">The operation was successfully updated.</response>
+    /// <returns>
+    /// <list type="bullet">
+    ///     <item>
+    ///         <term>200</term>
+    ///         <description>
+    ///             The operation has been successfully updated.
+    ///         </description>
+    ///     </item>
+    ///     <item>
+    ///         <term>400</term>
+    ///         <description>
+    ///             The JSON format is incorrect, or the stage is inconsistent.
+    ///         </description>
+    ///     </item>
+    ///     <item>
+    ///         <term>403</term>
+    ///         <description>
+    ///             The user is not allowed to update this operation.
+    ///         </description>
+    ///     </item>
+    ///     <item>
+    ///         <term>404</term>
+    ///         <description>
+    ///             The operation specified is not found.
+    ///         </description>
+    ///     </item>
+    /// </list>
+    /// </returns>
     [HttpPost("update")]
     [ProducesResponseType(typeof(MaaApiResponseModel<EmptyObjectModel>), StatusCodes.Status200OK)]
     public async Task<ActionResult> UpdateCopilotOperation([FromBody] UpdateCopilotOperationCommand command)
@@ -102,10 +225,25 @@ public class CopilotOperationController : MaaControllerBase
     }
 
     /// <summary>
-    ///     Rate a copilot operation.
+    ///     Rates a copilot operation.
     /// </summary>
     /// <param name="command">The request body.</param>
-    /// <response code="200">The rating was successfully added to the operation.</response>
+    /// <returns>
+    /// <list type="bullet">
+    ///     <item>
+    ///         <term>200</term>
+    ///         <description>
+    ///             The rating has been successfully added to the operation.
+    ///         </description>
+    ///     </item>
+    ///     <item>
+    ///         <term>404</term>
+    ///         <description>
+    ///             The operation specified is not found.
+    ///         </description>
+    ///     </item>
+    /// </list>
+    /// </returns>
     [HttpPost("rating")]
     [ProducesResponseType(typeof(MaaApiResponseModel<GetCopilotOperationQueryDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult> RatingCopilotOperation([FromBody] RatingCopilotOperationCommand command)

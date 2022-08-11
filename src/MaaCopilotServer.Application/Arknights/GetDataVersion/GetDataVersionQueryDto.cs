@@ -37,14 +37,14 @@ public class GetDataVersionQueryDto
     [Required]
     [JsonPropertyName("level")]
     public string LevelVersion { get; set; }
-    
+
     /// <summary>
     ///     Server data version.
     /// </summary>
     [Required]
     [JsonPropertyName("version")]
     public ServerStatusDto ServerVersion { get; set; }
-    
+
     /// <summary>
     ///     Server data sync status.
     /// </summary>
@@ -94,7 +94,7 @@ public record ServerStatusDto
     [Required]
     [JsonPropertyName("chinese_simplified")]
     public string ChineseSimplified { get; set; }
-    
+
     /// <summary>
     ///     Chinese (Taiwan, China) server info.
     /// </summary>

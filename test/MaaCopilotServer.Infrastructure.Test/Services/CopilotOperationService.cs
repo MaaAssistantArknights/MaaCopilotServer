@@ -3,6 +3,7 @@
 // Licensed under the AGPL-3.0 license.
 
 using System.Diagnostics.CodeAnalysis;
+using MaaCopilotServer.Application.Common.Helpers;
 using MaaCopilotServer.Domain.Entities;
 using MaaCopilotServer.Domain.Enums;
 using MaaCopilotServer.Domain.Options;
@@ -28,42 +29,6 @@ public class CopilotIdServiceTest
             LikeMultiplier = 10,
             InitialHotScore = 100
         }), new DomainString());
-
-    /// <summary>
-    /// Tests <see cref="CopilotOperationService.EncodeId(long)"/>.
-    /// </summary>
-    [TestMethod]
-    public void TestEncodeId()
-    {
-        _copilotOperationService.EncodeId(42).Should().Be("10042");
-    }
-
-    /// <summary>
-    /// Tests <see cref="CopilotOperationService.DecodeId(string)"/> with invalid ID.
-    /// </summary>
-    [TestMethod]
-    public void TestDecodeIdInvalid()
-    {
-        _copilotOperationService.DecodeId("invalid").Should().BeNull();
-    }
-
-    /// <summary>
-    /// Tests <see cref="CopilotOperationService.DecodeId(string)"/> with ID out of range.
-    /// </summary>
-    [TestMethod]
-    public void TestDecodeIdOutOfRange()
-    {
-        _copilotOperationService.DecodeId("9999").Should().BeNull();
-    }
-
-    /// <summary>
-    /// Tests <see cref="CopilotOperationService.DecodeId(string)"/>.
-    /// </summary>
-    [TestMethod]
-    public void TestDecodeId()
-    {
-        _copilotOperationService.DecodeId("10042").Should().Be(42);
-    }
 
     /// <summary>
     /// Tests <see cref="CopilotOperationService.CalculateHotScore(CopilotOperation)"/>.

@@ -155,7 +155,10 @@ public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOp
 
         // Build queryable
         var queryable = _dbContext.CopilotOperations
-            .Include(x => x.ArkLevel)
+            .Include(x => x.ArkLevel).ThenInclude(x => x.Name)
+            .Include(x => x.ArkLevel).ThenInclude(x => x.CatOne)
+            .Include(x => x.ArkLevel).ThenInclude(x => x.CatTwo)
+            .Include(x => x.ArkLevel).ThenInclude(x => x.CatThree)
             .Include(x => x.Author)
             .AsQueryable();
         if (string.IsNullOrEmpty(request.Content) is false)
@@ -245,7 +248,7 @@ public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOp
         var dtos = result.Select(x =>
                 new QueryCopilotOperationsQueryDto
                 {
-                    Id = _copilotOperationService.EncodeId(x.Id),
+                    Id = EntityIdHelper.EncodeId(x.Id),
                     Detail = x.Details,
                     MinimumRequired = x.MinimumRequired,
                     Title = x.Title,
@@ -256,13 +259,16 @@ public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOp
                     UploadTime = x.UpdateAt.ToIsoString(),
                     ViewCounts = x.ViewCounts,
                     Level = request.Language.GetLevelMapperFunc().Invoke(x.ArkLevel),
-                    RatingLevel = _copilotOperationService.GetRatingLevelString(x.RatingLevel),
+                    RatingLevel = x.RatingLevel,
+                    RatingRatio = x.RatingRatio,
+                    IsNotEnoughRating = x.IsNotEnoughRating,
                     // If the user is logged in, get the rating for the operation, default value is None
                     // If not, set to null
                     RatingType = isLoggedIn
                         ? rating.FirstOrDefault(y => y.OperationId == x.EntityId)?
                               .RatingType ?? OperationRatingType.None
-                        : null
+                        : null,
+                    Difficulty = x.Difficulty,
                 })
             .ToList();
         // Build pagination response

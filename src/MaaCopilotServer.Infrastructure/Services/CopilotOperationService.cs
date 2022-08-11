@@ -18,15 +18,6 @@ namespace MaaCopilotServer.Infrastructure.Services;
 public class CopilotOperationService : ICopilotOperationService
 {
     private readonly DomainString _domainString;
-
-    /// <summary>
-    ///     The minimum ID value. Other IDs should be calculated based on this value.
-    /// </summary>
-    // 不准改这个值!
-    // DO NOT CHANGE THIS VALUE!
-    // この値は変更しないでください!
-    private const long MinimumId = 10000;
-
     private readonly Func<int, int, int, long> _hotScoreCalculator;
 
     public CopilotOperationService(
@@ -52,18 +43,6 @@ public class CopilotOperationService : ICopilotOperationService
     }
 
     /// <inheritdoc />
-    public string EncodeId(long plainId)
-    {
-        return EntityIdHelper.EncodeId(plainId);
-    }
-
-    /// <inheritdoc />
-    public long? DecodeId(string encodedId)
-    {
-        return EntityIdHelper.DecodeId(encodedId);
-    }
-
-    /// <inheritdoc />
     public long CalculateHotScore(CopilotOperation operation)
     {
         return this.CalculateHotScore(operation.LikeCount, operation.DislikeCount, operation.ViewCounts);
@@ -73,30 +52,5 @@ public class CopilotOperationService : ICopilotOperationService
     public long CalculateHotScore(int likes, int dislikes, int views)
     {
         return _hotScoreCalculator.Invoke(likes, dislikes, views);
-    }
-
-    /// <inheritdoc />
-    public string GetRatingLevelString(RatingLevel ratingLevel)
-    {
-        var value = ratingLevel switch
-        {
-            RatingLevel.OverwhelminglyPositive => _domainString.OverwhelminglyPositive,
-            RatingLevel.VeryPositive => _domainString.VeryPositive,
-            RatingLevel.Positive => _domainString.Positive,
-            RatingLevel.MostlyPositive => _domainString.MostlyPositive,
-            RatingLevel.Mixed => _domainString.Mixed,
-            RatingLevel.MostlyNegative => _domainString.MostlyNegative,
-            RatingLevel.Negative => _domainString.Negative,
-            RatingLevel.VeryNegative => _domainString.VeryNegative,
-            RatingLevel.OverwhelminglyNegative => _domainString.OverwhelminglyNegative,
-            _ => null
-        };
-
-        if (value is null)
-        {
-            throw new ArgumentOutOfRangeException(nameof(ratingLevel), ratingLevel, null);
-        }
-
-        return value;
     }
 }

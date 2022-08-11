@@ -3,6 +3,7 @@ using System;
 using MaaCopilotServer.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MaaCopilotServer.Infrastructure.Migrations
 {
     [DbContext(typeof(MaaCopilotDbContext))]
-    partial class MaaCopilotDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220805131519_AddOperationDifficulty")]
+    partial class AddOperationDifficulty
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -203,9 +205,6 @@ namespace MaaCopilotServer.Infrastructure.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
-                    b.Property<bool>("IsNotEnoughRating")
-                        .HasColumnType("boolean");
-
                     b.Property<int>("LikeCount")
                         .HasColumnType("integer");
 
@@ -220,9 +219,6 @@ namespace MaaCopilotServer.Infrastructure.Migrations
                     b.Property<string>("RatingLevel")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<double>("RatingRatio")
-                        .HasColumnType("double precision");
 
                     b.Property<string>("Title")
                         .IsRequired()

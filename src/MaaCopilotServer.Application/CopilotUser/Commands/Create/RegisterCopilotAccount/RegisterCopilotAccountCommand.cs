@@ -82,7 +82,7 @@ public class RegisterCopilotAccountCommandHandler : IRequestHandler<RegisterCopi
             ? UserRole.Uploader
             : _copilotServerOption.Value.RegisterUserDefaultRole;
 
-            // Build new user entity and add to database
+        // Build new user entity and add to database
         var user = new Domain.Entities.CopilotUser(request.Email!, _secretService.HashPassword(request.Password!),
             request.UserName!, defaultRole, null);
         _dbContext.CopilotUsers.Add(user);

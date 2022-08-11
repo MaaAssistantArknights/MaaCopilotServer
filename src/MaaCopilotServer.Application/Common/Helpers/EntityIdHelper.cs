@@ -14,6 +14,11 @@ public static class EntityIdHelper
     /// <summary>
     ///     The minimum ID value. Other IDs should be calculated based on this value.
     /// </summary>
+    /// <remarks>
+    /// <para>不准改这个值!</para>
+    /// <para>DO NOT CHANGE THIS VALUE!</para>
+    /// <para>この値は変更しないでください!</para>
+    /// </remarks>
     private const long MinimumId = 10000;
 
     /// <summary>

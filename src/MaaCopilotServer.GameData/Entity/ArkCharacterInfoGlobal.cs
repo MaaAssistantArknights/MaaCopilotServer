@@ -11,7 +11,7 @@ public class ArkCharacterInfoGlobal
     internal ArkCharacterInfoGlobal(ArkCharacter cn, ArkCharacter? cnT, ArkCharacter? en, ArkCharacter? jp, ArkCharacter? ko)
     {
         Name = new ArkI18N(cn.Name, cnT?.Name, en?.Name, jp?.Name, ko?.Name);
-        
+
         Id = cn.Id;
         Profession = cn.Profession;
         Star = cn.Rarity + 1;

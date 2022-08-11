@@ -20,7 +20,7 @@ public readonly struct ArkServerLanguage
     ///     Language names.
     /// </summary>
     private readonly string[] _names;
-    
+
     /// <summary>
     ///     Language identifier.
     /// </summary>
@@ -33,7 +33,7 @@ public readonly struct ArkServerLanguage
     /// <param name="lang">Input language string.</param>
     /// <returns></returns>
     private bool Is(string lang) => _names.Contains(lang.ToLowerInvariant());
-    
+
     /// <summary>
     ///     Constructor of <see cref="ArkServerLanguage"/>.
     /// </summary>
@@ -81,22 +81,22 @@ public readonly struct ArkServerLanguage
         {
             return cn;
         }
-        
+
         if (this == ChineseTraditional)
         {
             return tw;
         }
-        
+
         if (this == English)
         {
             return en;
         }
-        
+
         if (this == Japanese)
         {
             return ja;
         }
-        
+
         if (this == Korean)
         {
             return ko;
@@ -148,6 +148,6 @@ public readonly struct ArkServerLanguage
         return _identifiers.GetHashCode();
     }
 
-    public static bool operator==(ArkServerLanguage left, ArkServerLanguage right) => left.Equals(right);
-    public static bool operator!=(ArkServerLanguage left, ArkServerLanguage right) => !left.Equals(right);
+    public static bool operator ==(ArkServerLanguage left, ArkServerLanguage right) => left.Equals(right);
+    public static bool operator !=(ArkServerLanguage left, ArkServerLanguage right) => !left.Equals(right);
 }

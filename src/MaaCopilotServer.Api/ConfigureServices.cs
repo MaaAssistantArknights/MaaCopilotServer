@@ -3,14 +3,18 @@
 // Licensed under the AGPL-3.0 license.
 
 using System.Diagnostics.CodeAnalysis;
+using System.Net;
 using System.Text;
+using MaaCopilotServer.Api.Constants;
 using MaaCopilotServer.Api.Jobs;
 using MaaCopilotServer.Api.Services;
+using MaaCopilotServer.Api.Wrappers;
 using MaaCopilotServer.Application.Common.Extensions;
 using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Domain.Attributes;
 using MaaCopilotServer.Domain.Extensions;
 using MaaCopilotServer.Domain.Options;
+using MaaCopilotServer.Infrastructure.Database;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
@@ -43,6 +47,28 @@ public static class ConfigureServices
             .AddOption<TokenOption>()
             .AddOption<CopilotServerOption>()
             .AddOption<CopilotOperationOption>();
+
+        services.AddSingleton<IElasticApmAgentWrapper, ElasticApmAgentWrapper>();
+
+        var copilotServerOption = configuration.GetOption<CopilotServerOption>();
+
+        services.AddHttpClient(GlobalConstants.GitHubApiProxiedHttpClient)
+            .ConfigurePrimaryHttpMessageHandler(() =>
+            {
+                var handler = new HttpClientHandler
+                {
+                    AllowAutoRedirect = true,
+                    UseProxy = copilotServerOption.GitHubApiRequestProxyEnable,
+                };
+                if (handler.UseProxy)
+                {
+                    handler.Proxy = new WebProxy(
+                        copilotServerOption.GitHubApiRequestProxyAddress,
+                        copilotServerOption.GitHubApiRequestProxyPort);
+                }
+
+                return handler;
+            });
 
         services.AddHttpContextAccessor();
         services.AddScoped<ICurrentUserService, CurrentUserService>();

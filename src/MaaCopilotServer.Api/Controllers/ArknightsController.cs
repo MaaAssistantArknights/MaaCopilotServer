@@ -12,14 +12,34 @@ using Microsoft.AspNetCore.Mvc;
 namespace MaaCopilotServer.Api.Controllers;
 
 /// <summary>
-///     The controller of copilot operations under "copilot" endpoint.
-/// Include operations related to copilot operations.
+///     The controller of copilot operations under <c>/arknights</c> endpoint,
+///     including operations related to copilot operations.
 /// </summary>
-/// <response code="400">A bad request, most cases are invalid request parameters.</response>
-/// <response code="401">An unauthorized request, you need to login and set Authorization header at first.</response>
-/// <response code="403">A forbidden request, you do not have permission to perform the operation.</response>
-/// <response code="404">Some thing not found.</response>
-/// <response code="500">Some server errors happens.</response>
+/// <remarks>
+/// Response codes:
+/// <list type="bullet">
+///     <item>
+///         <term>400</term>
+///         <description>A bad request. Most cases are invalid request parameters.</description>
+///     </item>
+///     <item>
+///         <term>401</term>
+///         <description>An unauthorized request. You need to login and set Authorization header at first.</description>
+///     </item>
+///     <item>
+///         <term>403</term>
+///         <description>A forbidden request. You do not have permission to perform the operation.</description>
+///     </item>
+///     <item>
+///         <term>404</term>
+///         <description>Something is not found.</description>
+///     </item>
+///     <item>
+///         <term>500</term>
+///         <description>Some server errors happens.</description>
+///     </item>
+/// </list>
+/// </remarks>
 [ApiController]
 [Route("arknights")]
 [ProducesResponseType(typeof(MaaApiResponseModel<EmptyObjectModel>), StatusCodes.Status400BadRequest)]
@@ -36,9 +56,19 @@ public class ArknightsController : MaaControllerBase
     public ArknightsController(IMediator mediator) : base(mediator) { }
 
     /// <summary>
-    ///     Get arknights data version.
+    ///     Gets arknights data version.
     /// </summary>
-    /// <response code="200">The version and sync status info. Note that the status could be <c>ERROR</c> or <c>DISASTER</c>.</response>
+    /// <returns>
+    /// <list type="bullet">
+    ///     <item>
+    ///         <term>200</term>
+    ///         <description>
+    ///             The version and sync status info.
+    ///             Note that the status could be <c>ERROR</c> or <c>DISASTER</c>.
+    ///         </description>
+    ///     </item>
+    /// </list>
+    /// </returns>
     [HttpGet("version")]
     [ProducesResponseType(typeof(MaaApiResponseModel<GetDataVersionQueryDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult> GetArkDataVersion()
@@ -47,10 +77,19 @@ public class ArknightsController : MaaControllerBase
     }
 
     /// <summary>
-    ///     Get arknights level data.
+    ///     Gets arknights level data.
     /// </summary>
     /// <param name="query">The query params.</param>
-    /// <response code="200">The list of levels</response>
+    /// <returns>
+    /// <list type="bullet">
+    ///     <item>
+    ///         <term>200</term>
+    ///         <description>
+    ///             The list of levels.
+    ///         </description>
+    ///     </item>
+    /// </list>
+    /// </returns>
     [HttpGet("level")]
     [ProducesResponseType(typeof(MaaApiResponseModel<List<GetLevelListDto>>), StatusCodes.Status200OK)]
     public async Task<ActionResult> GetArkLevelList([FromQuery] GetLevelListQuery query)
@@ -59,10 +98,20 @@ public class ArknightsController : MaaControllerBase
     }
 
     /// <summary>
-    ///     Get arknights operator data.
+    ///     Gets arknights operator data.
     /// </summary>
     /// <param name="query">The query params.</param>
-    /// <response code="200">The list of operators</response>
+    /// <returns>An asynchronous operation representing the response.</returns>
+    /// <remarks>
+    /// <list type="bullet">
+    ///     <item>
+    ///         <term>200</term>
+    ///         <description>
+    ///             The list of operators.
+    ///         </description>
+    ///     </item>
+    /// </list>
+    /// </remarks>
     [HttpGet("operator")]
     [ProducesResponseType(typeof(MaaApiResponseModel<List<GetOperatorListDto>>), StatusCodes.Status200OK)]
     public async Task<ActionResult> GetArkOperatorList([FromQuery] GetOperatorListQuery query)

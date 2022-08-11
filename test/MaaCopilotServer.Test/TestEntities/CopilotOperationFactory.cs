@@ -3,6 +3,7 @@
 // Licensed under the AGPL-3.0 license.
 
 using MaaCopilotServer.Domain.Entities;
+using MaaCopilotServer.Domain.Enums;
 
 namespace MaaCopilotServer.Test.TestEntities;
 
@@ -62,9 +63,14 @@ public class CopilotOperationFactory : ITestEntityFactory<CopilotOperation>
     /// </summary>
     public IEnumerable<string> Groups { get; set; } = Array.Empty<string>();
 
+    /// <summary>
+    /// The difficulty.
+    /// </summary>
+    public DifficultyType Difficulty { get; set; } = DifficultyType.Unknown;
+
     /// <inheritdoc/>
     public CopilotOperation Build()
     {
-        return new CopilotOperation(Id, Content, MinimumRequired, Title, Details, Author, CreateBy, ArkLevel, Operators, Groups);
+        return new CopilotOperation(Id, Content, MinimumRequired, Title, Details, Author, CreateBy, ArkLevel, Operators, Groups, Difficulty);
     }
 }

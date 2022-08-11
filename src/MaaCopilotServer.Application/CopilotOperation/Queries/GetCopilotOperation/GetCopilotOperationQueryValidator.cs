@@ -11,7 +11,7 @@ public class GetCopilotOperationQueryValidator : AbstractValidator<GetCopilotOpe
         RuleFor(x => x.Id)
             .NotEmpty()
             .WithMessage(errorMessage.CopilotOperationIdIsEmpty);
-        
+
         RuleFor(x => x.Language)
             .Must(x => ArkServerLanguage.Parse(x) != ArkServerLanguage.Unknown)
             .When(x => string.IsNullOrEmpty(x.Language) is false)

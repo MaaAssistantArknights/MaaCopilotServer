@@ -33,7 +33,6 @@ public class DeleteCopilotOperationCommandTest
             db.CopilotOperations.Add(entity);
         });
         test.CurrentUserService.SetupGetUser(user);
-        test.CopilotOperationService.SetupDecodeAndEncodeId();
         var result = test.TestDeleteCopilotOperation(new()
         {
             Id = EntityIdHelper.EncodeId(entity.Id),
@@ -71,7 +70,6 @@ public class DeleteCopilotOperationCommandTest
             db.CopilotOperations.Add(entity);
         });
         test.CurrentUserService.SetupGetUser(user);
-        test.CopilotOperationService.SetupDecodeAndEncodeId();
         var result = test.TestDeleteCopilotOperation(new()
         {
             Id = EntityIdHelper.EncodeId(entity.Id),
@@ -98,7 +96,6 @@ public class DeleteCopilotOperationCommandTest
     {
         var test = new HandlerTest();
         test.CurrentUserService.SetupGetUser(new CopilotUserFactory().Build());
-        test.CopilotOperationService.SetupDecodeAndEncodeId();
 
         var result = test.TestDeleteCopilotOperation(new()
         {

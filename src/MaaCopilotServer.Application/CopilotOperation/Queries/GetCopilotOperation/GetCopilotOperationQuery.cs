@@ -62,10 +62,13 @@ public class
         var isLoggedIn = user is not null;
 
         // Get operation
-        var id = _copilotOperationService.DecodeId(request.Id!);
+        var id = EntityIdHelper.DecodeId(request.Id!);
         var entity = await _dbContext.CopilotOperations
             .Include(x => x.Author)
-            .Include(x => x.ArkLevel)
+            .Include(x => x.ArkLevel).ThenInclude(x => x.Name)
+            .Include(x => x.ArkLevel).ThenInclude(x => x.CatOne)
+            .Include(x => x.ArkLevel).ThenInclude(x => x.CatTwo)
+            .Include(x => x.ArkLevel).ThenInclude(x => x.CatThree)
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
         if (entity is null)
         {
@@ -102,8 +105,11 @@ public class
             HotScore = entity.HotScore,
             Level = request.Language.GetLevelMapperFunc().Invoke(entity.ArkLevel),
             Groups = entity.Groups.ToArray().DeserializeGroup(),
-            RatingLevel = _copilotOperationService.GetRatingLevelString(entity.RatingLevel),
-            RatingType = rating
+            RatingLevel = entity.RatingLevel,
+            RatingRatio = entity.RatingRatio,
+            IsNotEnoughRating = entity.IsNotEnoughRating,
+            RatingType = rating,
+            Difficulty = entity.Difficulty,
         };
 
         // Add an view count to the operation and update it in the database

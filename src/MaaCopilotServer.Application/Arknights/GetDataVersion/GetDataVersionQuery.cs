@@ -77,7 +77,7 @@ public class GetDataVersionQueryHandler : IRequestHandler<GetDataVersionQuery, M
 
         var error = await _dbContext.PersistStorage
             .FirstOrDefaultAsync(x => x.Key == SystemConstants.ARK_ASSET_CACHE_ERROR, cancellationToken);
-        
+
         var dto = new GetDataVersionQueryDto
         {
             LevelVersion = levelVersion.IsNotNull().Value,

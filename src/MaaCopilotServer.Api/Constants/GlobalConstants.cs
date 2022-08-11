@@ -120,4 +120,9 @@ public static class GlobalConstants
     /// The default username.
     /// </summary>
     public static string DefaultUsername => Environment.GetEnvironmentVariable("MAA_DEFAULT_USER_NAME") ?? "Maa";
+
+    /// <summary>
+    /// The logical name of HTTP client for GitHub API.
+    /// </summary>
+    public const string GitHubApiProxiedHttpClient = nameof(GitHubApiProxiedHttpClient);
 }

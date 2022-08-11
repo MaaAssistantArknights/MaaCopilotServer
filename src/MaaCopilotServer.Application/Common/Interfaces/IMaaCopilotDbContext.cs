@@ -4,6 +4,8 @@
 
 using MaaCopilotServer.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace MaaCopilotServer.Application.Common.Interfaces;
 
@@ -16,6 +18,11 @@ public interface IMaaCopilotDbContext
     ///     The DB set of ark i18n strings.
     /// </summary>
     DbSet<ArkI18N> ArkI18Ns { get; }
+
+    /// <summary>
+    ///     Provides access to database related information and operations for this context.
+    /// </summary>
+    DatabaseFacade Database { get; }
 
     /// <summary>
     ///     The DB set of operations.
@@ -58,4 +65,16 @@ public interface IMaaCopilotDbContext
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>A task with the number of state entries written to the database.</returns>
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
+
+    /// <summary>
+    /// See <see cref="DbContext.Update{TEntity}(TEntity)"/>.
+    /// </summary>
+    /// <typeparam name="TEntity">The type of the entity.</typeparam>
+    /// <param name="entity">The entity to update.</param>
+    /// <returns>
+    /// The <see cref="EntityEntry{TEntity}" /> for the entity. The entry provides
+    /// access to change tracking information and operations for the entity.
+    /// </returns>
+    EntityEntry<TEntity> Update<TEntity>(TEntity entity)
+        where TEntity : class;
 }

@@ -27,8 +27,9 @@ public sealed class CopilotOperation : EditableEntity
     /// <param name="level">The level this operation is made for.</param>
     /// <param name="operators">The operators in the operation.</param>
     /// <param name="groups">The groups in the operation.</param>
+    /// <param name="difficulty">The difficulty of the operation.</param>
     public CopilotOperation(string content, string minimumRequired, string title, string details,
-        CopilotUser author, Guid createBy, ArkLevelData level, IEnumerable<string> operators, IEnumerable<string> groups)
+        CopilotUser author, Guid createBy, ArkLevelData level, IEnumerable<string> operators, IEnumerable<string> groups, DifficultyType difficulty = DifficultyType.Unknown)
     {
         Content = content;
         MinimumRequired = minimumRequired;
@@ -40,6 +41,7 @@ public sealed class CopilotOperation : EditableEntity
         Groups = groups.ToList();
         CreateBy = createBy;
         UpdateBy = createBy;
+        Difficulty = difficulty;
     }
 
     /// <summary>
@@ -58,6 +60,7 @@ public sealed class CopilotOperation : EditableEntity
     /// <param name="level">The level this operation is made for.</param>
     /// <param name="operators">The operators in the operation.</param>
     /// <param name="groups">The groups in the operation.</param>
+    /// <param name="difficulty">The difficulty of the operation.</param>
     public CopilotOperation(
         long id,
         string content,
@@ -68,8 +71,9 @@ public sealed class CopilotOperation : EditableEntity
         Guid createBy,
         ArkLevelData level,
         IEnumerable<string> operators,
-        IEnumerable<string> groups)
-        : this(content, minimumRequired, title, details, author, createBy, level, operators, groups)
+        IEnumerable<string> groups,
+        DifficultyType difficulty = DifficultyType.Unknown)
+        : this(content, minimumRequired, title, details, author, createBy, level, operators, groups, difficulty)
     {
         Id = id;
     }
@@ -161,6 +165,21 @@ public sealed class CopilotOperation : EditableEntity
     public RatingLevel RatingLevel { get; private set; } = RatingLevel.Mixed;
 
     /// <summary>
+    ///     Current rating ratio.
+    /// </summary>
+    public double RatingRatio { get; private set; }
+
+    /// <summary>
+    ///     Is not enough rating.
+    /// </summary>
+    public bool IsNotEnoughRating { get; private set; } = true;
+
+    /// <summary>
+    /// The difficulty.
+    /// </summary>
+    public DifficultyType Difficulty { get; private set; } = DifficultyType.Unknown;
+
+    /// <summary>
     ///     Increases view count by 1, and updates last updated time.
     /// </summary>
     /// <remarks>This API is reachable anonymously, so the update will not be recorded.</remarks>
@@ -180,8 +199,9 @@ public sealed class CopilotOperation : EditableEntity
     /// <param name="operators">The operators in the operation.</param>
     /// <param name="groups">The groups in the operation.</param>
     /// <param name="operator">The one who call this method.</param>
+    /// <param name="difficulty">The difficulty of the operation.</param>
     public void UpdateOperation(string content, string minimumRequired, string title, string details,
-        IEnumerable<string> operators, IEnumerable<string> groups, Guid @operator)
+        IEnumerable<string> operators, IEnumerable<string> groups, Guid @operator, DifficultyType difficulty = DifficultyType.Unknown)
     {
         Content = content;
         MinimumRequired = minimumRequired;
@@ -189,6 +209,11 @@ public sealed class CopilotOperation : EditableEntity
         Details = details;
         Operators = operators.ToList();
         Groups = groups.ToList();
+
+        if (difficulty != DifficultyType.Unknown)
+        {
+            Difficulty = difficulty;
+        }
 
         Update(@operator);
     }
@@ -253,24 +278,27 @@ public sealed class CopilotOperation : EditableEntity
     private void UpdateRatingLevel()
     {
         var total = this.LikeCount + this.DislikeCount;
+        
+        // TODO: Extract to Environment Variable
         if (total < 5)
         {
+            this.IsNotEnoughRating = true;
             this.RatingLevel = RatingLevel.Mixed;
             return;
         }
 
-        var ratio = this.LikeCount / (double) total;
+        this.RatingRatio = Math.Round(this.LikeCount / (double)total, 2);
 
-        this.RatingLevel = ratio switch
+        this.RatingLevel = this.RatingRatio switch
         {
-            >= 0.9 => RatingLevel.OverwhelminglyPositive,
-            >= 0.8 => RatingLevel.VeryPositive,
-            >= 0.7 => RatingLevel.Positive,
-            >= 0.6 => RatingLevel.MostlyPositive,
-            >= 0.5 => RatingLevel.Mixed,
-            >= 0.4 => RatingLevel.Negative,
-            >= 0.3 => RatingLevel.MostlyNegative,
-            >= 0.2 => RatingLevel.VeryNegative,
+            >= 0.9f => RatingLevel.OverwhelminglyPositive,
+            >= 0.8f => RatingLevel.VeryPositive,
+            >= 0.7f => RatingLevel.Positive,
+            >= 0.6f => RatingLevel.MostlyPositive,
+            >= 0.5f => RatingLevel.Mixed,
+            >= 0.4f => RatingLevel.Negative,
+            >= 0.3f => RatingLevel.MostlyNegative,
+            >= 0.2f => RatingLevel.VeryNegative,
             _ => RatingLevel.OverwhelminglyNegative
         };
     }

@@ -3,6 +3,7 @@
 // Licensed under the AGPL-3.0 license.
 
 using Elastic.Apm.Api;
+using MaaCopilotServer.Api.Wrappers;
 using MaaCopilotServer.Application.Common.Enum;
 using MaaCopilotServer.Application.Common.Helpers;
 using Microsoft.AspNetCore.Http.Extensions;
@@ -21,7 +22,7 @@ public class ApmTransactionMiddleware
         _next = next;
     }
 
-    public async Task InvokeAsync(HttpContext context, ILogger<ApmTransactionMiddleware> logger)
+    public async Task InvokeAsync(HttpContext context, ILogger<ApmTransactionMiddleware> logger, IElasticApmAgentWrapper elasticApmAgentWrapper)
     {
         var routerValues = context.Request.RouteValues;
         var routerName = routerValues.ContainsKey("controller") ? routerValues["controller"]!.ToString() : "UnknownRouter";
@@ -44,7 +45,7 @@ public class ApmTransactionMiddleware
             Search = context.Request.QueryString.ToString()
         };
 
-        var transaction = Elastic.Apm.Agent.Tracer.StartTransaction(name, ApiConstants.TypeRequest);
+        var transaction = elasticApmAgentWrapper.Tracer.StartTransaction(name, ApiConstants.TypeRequest);
         transaction.Context.Request = new Request(context.Request.Method, url)
         {
             Headers = context.Request.Headers
