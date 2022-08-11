@@ -62,6 +62,11 @@ public class RatingCopilotOperationCommandHandler : IRequestHandler<RatingCopilo
         // Get operations
         var operationId = EntityIdHelper.DecodeId(request.Id!);
         var operation = await _dbContext.CopilotOperations
+            .Include(x => x.ArkLevel).ThenInclude(x => x.Name)
+            .Include(x => x.ArkLevel).ThenInclude(x => x.CatOne)
+            .Include(x => x.ArkLevel).ThenInclude(x => x.CatTwo)
+            .Include(x => x.ArkLevel).ThenInclude(x => x.CatThree)
+            .Include(x => x.Author)
             .FirstOrDefaultAsync(x => x.Id == operationId, cancellationToken);
         if (operation is null)
         {

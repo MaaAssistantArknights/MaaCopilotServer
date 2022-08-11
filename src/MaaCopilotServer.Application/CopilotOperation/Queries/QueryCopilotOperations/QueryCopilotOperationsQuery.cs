@@ -155,7 +155,10 @@ public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOp
 
         // Build queryable
         var queryable = _dbContext.CopilotOperations
-            .Include(x => x.ArkLevel)
+            .Include(x => x.ArkLevel).ThenInclude(x => x.Name)
+            .Include(x => x.ArkLevel).ThenInclude(x => x.CatOne)
+            .Include(x => x.ArkLevel).ThenInclude(x => x.CatTwo)
+            .Include(x => x.ArkLevel).ThenInclude(x => x.CatThree)
             .Include(x => x.Author)
             .AsQueryable();
         if (string.IsNullOrEmpty(request.Content) is false)
