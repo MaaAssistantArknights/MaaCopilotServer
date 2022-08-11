@@ -287,8 +287,8 @@ public sealed class CopilotOperation : EditableEntity
             return;
         }
 
+        this.IsNotEnoughRating = false;
         this.RatingRatio = Math.Round(this.LikeCount / (double)total, 2);
-
         this.RatingLevel = this.RatingRatio switch
         {
             >= 0.9f => RatingLevel.OverwhelminglyPositive,
