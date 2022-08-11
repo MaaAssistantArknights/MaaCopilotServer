@@ -256,7 +256,9 @@ public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOp
                     UploadTime = x.UpdateAt.ToIsoString(),
                     ViewCounts = x.ViewCounts,
                     Level = request.Language.GetLevelMapperFunc().Invoke(x.ArkLevel),
-                    RatingLevel = _copilotOperationService.GetRatingLevelString(x.RatingLevel),
+                    RatingLevel = x.RatingLevel,
+                    RatingRatio = x.RatingRatio,
+                    IsNotEnoughRating = x.IsNotEnoughRating,
                     // If the user is logged in, get the rating for the operation, default value is None
                     // If not, set to null
                     RatingType = isLoggedIn

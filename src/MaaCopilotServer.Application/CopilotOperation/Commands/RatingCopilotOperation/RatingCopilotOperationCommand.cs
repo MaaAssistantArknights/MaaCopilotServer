@@ -142,8 +142,10 @@ public class RatingCopilotOperationCommandHandler : IRequestHandler<RatingCopilo
             ViewCounts = operation.ViewCounts,
             HotScore = operation.HotScore,
             Groups = operation.Groups.ToArray().DeserializeGroup(),
-            RatingLevel = _copilotOperationService.GetRatingLevelString(operation.RatingLevel),
-            RatingType = currentRating
+            RatingLevel = operation.RatingLevel,
+            RatingRatio = operation.RatingRatio,
+            RatingType = currentRating,
+            IsNotEnoughRating = operation.IsNotEnoughRating
         };
         return MaaApiResponseHelper.Ok(dto);
     }

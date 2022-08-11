@@ -165,6 +165,16 @@ public sealed class CopilotOperation : EditableEntity
     public RatingLevel RatingLevel { get; private set; } = RatingLevel.Mixed;
 
     /// <summary>
+    ///     Current rating ratio.
+    /// </summary>
+    public double RatingRatio { get; private set; }
+
+    /// <summary>
+    ///     Is not enough rating.
+    /// </summary>
+    public bool IsNotEnoughRating { get; private set; } = true;
+
+    /// <summary>
     /// The difficulty.
     /// </summary>
     public DifficultyType Difficulty { get; private set; } = DifficultyType.Unknown;
@@ -268,24 +278,27 @@ public sealed class CopilotOperation : EditableEntity
     private void UpdateRatingLevel()
     {
         var total = this.LikeCount + this.DislikeCount;
+        
+        // TODO: Extract to Environment Variable
         if (total < 5)
         {
+            this.IsNotEnoughRating = true;
             this.RatingLevel = RatingLevel.Mixed;
             return;
         }
 
-        var ratio = this.LikeCount / (double)total;
+        this.RatingRatio = Math.Round(this.LikeCount / (double)total, 2);
 
-        this.RatingLevel = ratio switch
+        this.RatingLevel = this.RatingRatio switch
         {
-            >= 0.9 => RatingLevel.OverwhelminglyPositive,
-            >= 0.8 => RatingLevel.VeryPositive,
-            >= 0.7 => RatingLevel.Positive,
-            >= 0.6 => RatingLevel.MostlyPositive,
-            >= 0.5 => RatingLevel.Mixed,
-            >= 0.4 => RatingLevel.Negative,
-            >= 0.3 => RatingLevel.MostlyNegative,
-            >= 0.2 => RatingLevel.VeryNegative,
+            >= 0.9f => RatingLevel.OverwhelminglyPositive,
+            >= 0.8f => RatingLevel.VeryPositive,
+            >= 0.7f => RatingLevel.Positive,
+            >= 0.6f => RatingLevel.MostlyPositive,
+            >= 0.5f => RatingLevel.Mixed,
+            >= 0.4f => RatingLevel.Negative,
+            >= 0.3f => RatingLevel.MostlyNegative,
+            >= 0.2f => RatingLevel.VeryNegative,
             _ => RatingLevel.OverwhelminglyNegative
         };
     }

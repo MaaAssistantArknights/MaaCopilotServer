@@ -26,11 +26,4 @@ public interface ICopilotOperationService
     /// <param name="views">The views count.</param>
     /// <returns></returns>
     long CalculateHotScore(int likes, int dislikes, int views);
-
-    /// <summary>
-    ///     Get rating level string, i18n.
-    /// </summary>
-    /// <param name="ratingLevel">Current rating level.</param>
-    /// <returns>An i18n string.</returns>
-    string GetRatingLevelString(RatingLevel ratingLevel);
 }

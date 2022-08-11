@@ -64,11 +64,9 @@ public class DatabaseInitializer : IHostedService
 
     private void Initialize()
     {
-        var db = _dbContext;
-
-        InitializeMigration(db, _cancellationToken).GetAwaiter().GetResult();
-        InitializeDefaultUser(db, _cancellationToken).GetAwaiter().GetResult();
-        InitializeCheckOperation(db, _cancellationToken).GetAwaiter().GetResult();
+        InitializeMigration(_dbContext, _cancellationToken).GetAwaiter().GetResult();
+        InitializeDefaultUser(_dbContext, _cancellationToken).GetAwaiter().GetResult();
+        InitializeCheckOperation(_dbContext, _cancellationToken).GetAwaiter().GetResult();
 
         _logger.LogInformation("Database initialization finished");
         SystemStatus.DatabaseInitialized = true;

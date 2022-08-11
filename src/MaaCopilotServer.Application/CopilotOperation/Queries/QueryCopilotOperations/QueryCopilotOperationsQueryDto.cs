@@ -88,7 +88,7 @@ public class QueryCopilotOperationsQueryDto
     ///     The hot score.
     /// </summary>
     [Required]
-    [JsonPropertyName("HotScore")]
+    [JsonPropertyName("hot_score")]
     public long HotScore { get; set; }
 
     /// <summary>
@@ -106,11 +106,26 @@ public class QueryCopilotOperationsQueryDto
     public bool Available => string.IsNullOrEmpty(Level.Name) is false;
 
     /// <summary>
-    ///     Current rating level, i18n string.
+    ///     Current rating level.
     /// </summary>
     [Required]
     [JsonPropertyName("rating_level")]
-    public string RatingLevel { get; set; }
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public RatingLevel RatingLevel { get; set; }
+    
+    /// <summary>
+    ///     Current rating ratio.
+    /// </summary>
+    [Required]
+    [JsonPropertyName("rating_ratio")]
+    public double RatingRatio { get; set; }
+    
+    /// <summary>
+    ///     Is total rating count enough or not.
+    /// </summary>
+    [Required]
+    [JsonPropertyName("is_not_enough_rating")]
+    public bool IsNotEnoughRating { get; set; }
 
     /// <summary>
     ///     The rating type for this operation by current user. It will be null for anonymous user.

@@ -102,7 +102,9 @@ public class
             HotScore = entity.HotScore,
             Level = request.Language.GetLevelMapperFunc().Invoke(entity.ArkLevel),
             Groups = entity.Groups.ToArray().DeserializeGroup(),
-            RatingLevel = _copilotOperationService.GetRatingLevelString(entity.RatingLevel),
+            RatingLevel = entity.RatingLevel,
+            RatingRatio = entity.RatingRatio,
+            IsNotEnoughRating = entity.IsNotEnoughRating,
             RatingType = rating,
             Difficulty = entity.Difficulty,
         };
