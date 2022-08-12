@@ -20,6 +20,7 @@ namespace MaaCopilotServer.Api.Jobs;
 
 public class ArknightsDataUpdate : IHostedService
 {
+    private readonly IServiceProvider _serviceProvider;
     private readonly ILogger<ArknightsDataUpdate> _logger;
     private readonly IOptions<CopilotServerOption> _copilotServerOptions;
 
@@ -27,11 +28,6 @@ public class ArknightsDataUpdate : IHostedService
     /// The HTTP client factory.
     /// </summary>
     private readonly IHttpClientFactory _httpClientFactory;
-
-    /// <summary>
-    /// The database context.
-    /// </summary>
-    private readonly IMaaCopilotDbContext _dbContext;
 
     private readonly Action<Exception, ArkServerLanguage> _exceptionLogger;
 
@@ -44,20 +40,20 @@ public class ArknightsDataUpdate : IHostedService
     /// <summary>
     /// Initializes a new instance of the <see cref="ArknightsDataUpdate"/> class.
     /// </summary>
+    /// <param name="serviceProvider"></param>
     /// <param name="logger">The logger,</param>
     /// <param name="copilotServerOptions">The copilot server options.</param>
     /// <param name="httpClientFactory">The HTTP client factory.</param>
-    /// <param name="dbContext">The database context.</param>
     public ArknightsDataUpdate(
+        IServiceProvider serviceProvider,
         ILogger<ArknightsDataUpdate> logger,
         IOptions<CopilotServerOption> copilotServerOptions,
-        IHttpClientFactory httpClientFactory,
-        IMaaCopilotDbContext dbContext)
+        IHttpClientFactory httpClientFactory)
     {
+        _serviceProvider = serviceProvider;
         _logger = logger;
         _copilotServerOptions = copilotServerOptions;
         _httpClientFactory = httpClientFactory;
-        _dbContext = dbContext;
 
         _cts = new CancellationTokenSource();
 
@@ -103,7 +99,8 @@ public class ArknightsDataUpdate : IHostedService
     {
         while (cancellationToken.IsCancellationRequested is false)
         {
-            var db = _dbContext;
+            var scope = _serviceProvider.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<IMaaCopilotDbContext>();
 
             try
             {
@@ -326,6 +323,8 @@ public class ArknightsDataUpdate : IHostedService
                     }
                     await db.SaveChangesAsync(cancellationToken);
                 }
+                
+                scope.Dispose();
             }
         }
     }

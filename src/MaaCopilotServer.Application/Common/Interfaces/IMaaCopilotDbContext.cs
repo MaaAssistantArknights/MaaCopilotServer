@@ -20,11 +20,6 @@ public interface IMaaCopilotDbContext
     DbSet<ArkI18N> ArkI18Ns { get; }
 
     /// <summary>
-    ///     Provides access to database related information and operations for this context.
-    /// </summary>
-    DatabaseFacade Database { get; }
-
-    /// <summary>
     ///     The DB set of operations.
     /// </summary>
     DbSet<Domain.Entities.CopilotOperation> CopilotOperations { get; }
