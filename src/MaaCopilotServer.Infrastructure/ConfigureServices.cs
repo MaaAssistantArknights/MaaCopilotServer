@@ -30,7 +30,7 @@ public static class ConfigureServices
     {
         var emailOption = configuration.GetOption<EmailOption>();
 
-        services.AddDbContext<IMaaCopilotDbContext, MaaCopilotDbContext>(ServiceLifetime.Singleton);
+        services.AddDbContext<IMaaCopilotDbContext, MaaCopilotDbContext>();
 
         services.AddScoped<ICopilotOperationService, CopilotOperationService>();
 

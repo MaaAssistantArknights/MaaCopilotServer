@@ -10,6 +10,7 @@ using MaaCopilotServer.Domain.Constants;
 using MaaCopilotServer.Domain.Entities;
 using MaaCopilotServer.Domain.Enums;
 using MaaCopilotServer.Domain.Options;
+using MaaCopilotServer.Infrastructure.Database;
 using MaaCopilotServer.Infrastructure.Services;
 using MaaCopilotServer.Resources;
 using Microsoft.EntityFrameworkCore;
@@ -22,23 +23,19 @@ namespace MaaCopilotServer.Api.Jobs;
 /// </summary>
 public class DatabaseInitializer : IHostedService
 {
+    private readonly IOptions<DatabaseOption> _dbOptions;
     private readonly IOptions<CopilotOperationOption> _copilotOperationOptions;
     private readonly IHostApplicationLifetime _hostApplicationLifetime;
     private readonly ICopilotOperationService _copilotOperationService;
     private readonly ILogger<DatabaseInitializer> _logger;
 
-    /// <summary>
-    /// The database context.
-    /// </summary>
-    private readonly IMaaCopilotDbContext _dbContext;
-
     public DatabaseInitializer(
-        IMaaCopilotDbContext dbContext,
+        IOptions<DatabaseOption> dbOptions,
         IOptions<CopilotOperationOption> copilotOperationOptions,
         IHostApplicationLifetime hostApplicationLifetime,
         ILogger<DatabaseInitializer> logger)
     {
-        _dbContext = dbContext;
+        _dbOptions = dbOptions;
         _copilotOperationOptions = copilotOperationOptions;
         _hostApplicationLifetime = hostApplicationLifetime;
         _logger = logger;
@@ -64,9 +61,9 @@ public class DatabaseInitializer : IHostedService
 
     private void Initialize()
     {
-        InitializeMigration(_dbContext, _cancellationToken).GetAwaiter().GetResult();
-        InitializeDefaultUser(_dbContext, _cancellationToken).GetAwaiter().GetResult();
-        InitializeCheckOperation(_dbContext, _cancellationToken).GetAwaiter().GetResult();
+        InitializeMigration(_cancellationToken).GetAwaiter().GetResult();
+        InitializeDefaultUser(_cancellationToken).GetAwaiter().GetResult();
+        InitializeCheckOperation(_cancellationToken).GetAwaiter().GetResult();
 
         _logger.LogInformation("Database initialization finished");
         SystemStatus.DatabaseInitialized = true;
@@ -85,8 +82,10 @@ public class DatabaseInitializer : IHostedService
         return builder.ToString();
     }
 
-    private async Task InitializeMigration(IMaaCopilotDbContext dbContext, CancellationToken cancellationToken)
+    private async Task InitializeMigration(CancellationToken cancellationToken)
     {
+        var dbContext = new MaaCopilotDbContext(_dbOptions);
+        
         var pendingMigrations = (await dbContext.Database.GetPendingMigrationsAsync(cancellationToken)).Count();
         if (pendingMigrations > 0)
         {
@@ -94,10 +93,14 @@ public class DatabaseInitializer : IHostedService
             _logger.LogInformation("Database migration completed, applied {PendingMigrations} migrations",
                 pendingMigrations);
         }
+
+        await dbContext.DisposeAsync();
     }
 
-    private async Task InitializeDefaultUser(IMaaCopilotDbContext dbContext, CancellationToken cancellationToken)
+    private async Task InitializeDefaultUser(CancellationToken cancellationToken)
     {
+        var dbContext = new MaaCopilotDbContext(_dbOptions);
+        
         var haveUser = dbContext.CopilotUsers.Any();
         if (haveUser is false)
         {
@@ -123,10 +126,14 @@ public class DatabaseInitializer : IHostedService
             dbContext.CopilotUsers.Add(user);
             await dbContext.SaveChangesAsync(cancellationToken);
         }
+        
+        await dbContext.DisposeAsync();
     }
 
-    private async Task InitializeCheckOperation(IMaaCopilotDbContext dbContext, CancellationToken cancellationToken)
+    private async Task InitializeCheckOperation(CancellationToken cancellationToken)
     {
+        var dbContext = new MaaCopilotDbContext(_dbOptions);
+        
         var likeMultiplier = await dbContext.PersistStorage
             .FirstOrDefaultAsync(x => x.Key == SystemConstants.HOT_LIKE_MULTIPLIER, cancellationToken);
         var dislikeMultiplier = await dbContext.PersistStorage
@@ -227,6 +234,8 @@ public class DatabaseInitializer : IHostedService
             page++;
         }
 
+        await dbContext.DisposeAsync();
+        
         _logger.LogInformation("InitializeCheckOperation completed, total changes: {DbInitializeChanges}", changes);
     }
 }

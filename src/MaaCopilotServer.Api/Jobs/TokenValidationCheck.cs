@@ -12,24 +12,20 @@ namespace MaaCopilotServer.Api.Jobs;
 public class TokenValidationCheck : IHostedService
 {
     private readonly ILogger<TokenValidationCheck> _logger;
+    private readonly IServiceProvider _serviceProvider;
 
     private Task? _timedTask;
     private CancellationTokenSource? _cts;
 
     /// <summary>
-    /// The database context.
-    /// </summary>
-    private readonly IMaaCopilotDbContext _dbContext;
-
-    /// <summary>
     /// Initializes a new instance of the <see cref="TokenValidationCheck"/> class.
     /// </summary>
     /// <param name="logger">The logger.</param>
-    /// <param name="dbContext">The database context.</param>
-    public TokenValidationCheck(ILogger<TokenValidationCheck> logger, IMaaCopilotDbContext dbContext)
+    /// <param name="serviceProvider"></param>
+    public TokenValidationCheck(ILogger<TokenValidationCheck> logger, IServiceProvider serviceProvider)
     {
         _logger = logger;
-        _dbContext = dbContext;
+        _serviceProvider = serviceProvider;
     }
 
     public Task StartAsync(CancellationToken cancellationToken)
@@ -54,17 +50,17 @@ public class TokenValidationCheck : IHostedService
 
     private async Task RunJob(CancellationToken cancellationToken)
     {
-        try
+        while (cancellationToken.IsCancellationRequested is false)
         {
-            while (cancellationToken.IsCancellationRequested is false)
+            var scope = _serviceProvider.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<IMaaCopilotDbContext>();
+
+            try
             {
-                if (SystemStatus.IsOk is false)
+                while (SystemStatus.IsOk is false)
                 {
                     await Task.Delay(TimeSpan.FromMinutes(1), cancellationToken);
-                    continue;
                 }
-
-                var db = _dbContext;
 
                 var currentTime = DateTimeOffset.UtcNow;
                 await Task.Delay(TimeSpan.FromSeconds(1), cancellationToken);
@@ -82,20 +78,25 @@ public class TokenValidationCheck : IHostedService
                 await db.SaveChangesAsync(cancellationToken);
 
                 _logger.LogInformation("MaaCopilotServer: Type -> {LoggingType}; Name -> {Name}; Message -> {Message}",
-                    LoggingType.WorkerServicesReport, nameof(TokenValidationCheck), $"{expiredTokens.Count} expired tokens removed");
+                    LoggingType.WorkerServicesReport, nameof(TokenValidationCheck),
+                    $"{expiredTokens.Count} expired tokens removed");
 
                 await Task.Delay(TimeSpan.FromHours(1), cancellationToken);
             }
-        }
-        catch (TaskCanceledException)
-        {
-            // Ignore
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex,
-                "MaaCopilotServer: Type -> {LoggingType}; Name -> {Name}; ExceptionName -> {ExceptionName}",
-                LoggingType.WorkerServicesException, nameof(TokenValidationCheck), ex.GetType().Name);
+            catch (TaskCanceledException)
+            {
+                // Ignore
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex,
+                    "MaaCopilotServer: Type -> {LoggingType}; Name -> {Name}; ExceptionName -> {ExceptionName}",
+                    LoggingType.WorkerServicesException, nameof(TokenValidationCheck), ex.GetType().Name);
+            }
+            finally
+            {
+                scope.Dispose();
+            }
         }
     }
 }
