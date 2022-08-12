@@ -1405,17 +1405,17 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GetCopilotOperationQueryDtoMaaApiResponseModel"
+                  "$ref": "#/components/schemas/RatingCopilotOperationDtoMaaApiResponseModel"
                 }
               },
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/GetCopilotOperationQueryDtoMaaApiResponseModel"
+                  "$ref": "#/components/schemas/RatingCopilotOperationDtoMaaApiResponseModel"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GetCopilotOperationQueryDtoMaaApiResponseModel"
+                  "$ref": "#/components/schemas/RatingCopilotOperationDtoMaaApiResponseModel"
                 }
               }
             }
@@ -4582,6 +4582,74 @@
         },
         "additionalProperties": false,
         "description": "The DTO for the RatingCopilotOperation command."
+      },
+      "RatingCopilotOperationDto": {
+        "required": [
+          "hot_score",
+          "is_not_enough_rating",
+          "rating_level",
+          "rating_ratio",
+          "views"
+        ],
+        "type": "object",
+        "properties": {
+          "views": {
+            "type": "integer",
+            "description": "The number of times of views.",
+            "format": "int32"
+          },
+          "hot_score": {
+            "type": "integer",
+            "description": "The hot score.",
+            "format": "int64"
+          },
+          "rating_level": {
+            "$ref": "#/components/schemas/RatingLevel"
+          },
+          "rating_ratio": {
+            "type": "number",
+            "description": "Current rating ratio.",
+            "format": "double"
+          },
+          "is_not_enough_rating": {
+            "type": "boolean",
+            "description": "Is total rating count enough or not."
+          },
+          "rating_type": {
+            "$ref": "#/components/schemas/OperationRatingType"
+          }
+        },
+        "additionalProperties": false,
+        "description": "The response of the MaaCopilotServer.Application.CopilotOperation.Commands.RatingCopilotOperation.RatingCopilotOperationCommand."
+      },
+      "RatingCopilotOperationDtoMaaApiResponseModel": {
+        "required": [
+          "data",
+          "message",
+          "status_code",
+          "trace_id"
+        ],
+        "type": "object",
+        "properties": {
+          "status_code": {
+            "type": "integer",
+            "description": "The status code.",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string",
+            "description": "The message."
+          },
+          "trace_id": {
+            "type": "string",
+            "description": "The tracking ID."
+          },
+          "data": {
+            "$ref": "#/components/schemas/RatingCopilotOperationDto"
+          }
+        },
+        "additionalProperties": false,
+        "description": "The maa server api response model."
       },
       "RatingLevel": {
         "enum": [

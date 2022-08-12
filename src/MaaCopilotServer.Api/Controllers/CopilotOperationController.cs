@@ -245,7 +245,7 @@ public class CopilotOperationController : MaaControllerBase
     /// </list>
     /// </returns>
     [HttpPost("rating")]
-    [ProducesResponseType(typeof(MaaApiResponseModel<GetCopilotOperationQueryDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(MaaApiResponseModel<RatingCopilotOperationDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult> RatingCopilotOperation([FromBody] RatingCopilotOperationCommand command)
     {
         return await GetResponse(command);
