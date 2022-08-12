@@ -50,17 +50,16 @@ public class TokenValidationCheck : IHostedService
 
     private async Task RunJob(CancellationToken cancellationToken)
     {
-        try
+        while (cancellationToken.IsCancellationRequested is false)
         {
-            while (cancellationToken.IsCancellationRequested is false)
+            var scope = _serviceProvider.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<IMaaCopilotDbContext>();
+
+            try
             {
-                var scope = _serviceProvider.CreateScope();
-                var db = scope.ServiceProvider.GetRequiredService<IMaaCopilotDbContext>();
-                    
-                if (SystemStatus.IsOk is false)
+                while (SystemStatus.IsOk is false)
                 {
                     await Task.Delay(TimeSpan.FromMinutes(1), cancellationToken);
-                    continue;
                 }
 
                 var currentTime = DateTimeOffset.UtcNow;
@@ -79,22 +78,25 @@ public class TokenValidationCheck : IHostedService
                 await db.SaveChangesAsync(cancellationToken);
 
                 _logger.LogInformation("MaaCopilotServer: Type -> {LoggingType}; Name -> {Name}; Message -> {Message}",
-                    LoggingType.WorkerServicesReport, nameof(TokenValidationCheck), $"{expiredTokens.Count} expired tokens removed");
+                    LoggingType.WorkerServicesReport, nameof(TokenValidationCheck),
+                    $"{expiredTokens.Count} expired tokens removed");
 
                 await Task.Delay(TimeSpan.FromHours(1), cancellationToken);
-                
+            }
+            catch (TaskCanceledException)
+            {
+                // Ignore
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex,
+                    "MaaCopilotServer: Type -> {LoggingType}; Name -> {Name}; ExceptionName -> {ExceptionName}",
+                    LoggingType.WorkerServicesException, nameof(TokenValidationCheck), ex.GetType().Name);
+            }
+            finally
+            {
                 scope.Dispose();
             }
-        }
-        catch (TaskCanceledException)
-        {
-            // Ignore
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex,
-                "MaaCopilotServer: Type -> {LoggingType}; Name -> {Name}; ExceptionName -> {ExceptionName}",
-                LoggingType.WorkerServicesException, nameof(TokenValidationCheck), ex.GetType().Name);
         }
     }
 }
