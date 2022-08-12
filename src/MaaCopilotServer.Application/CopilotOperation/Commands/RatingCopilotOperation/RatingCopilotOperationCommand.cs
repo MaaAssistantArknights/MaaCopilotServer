@@ -4,6 +4,7 @@
 
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+using MaaCopilotServer.Application.Arknights.GetLevelList;
 using MaaCopilotServer.Application.Common.Helpers;
 using MaaCopilotServer.Application.Common.Operation;
 using MaaCopilotServer.Application.CopilotOperation.Queries.GetCopilotOperation;
@@ -134,23 +135,14 @@ public class RatingCopilotOperationCommandHandler : IRequestHandler<RatingCopilo
         await _dbContext.SaveChangesAsync(cancellationToken);
 
         // Return response
-        var dto = new GetCopilotOperationQueryDto
+        var dto = new RatingCopilotOperationDto
         {
-            Id = request.Id!,
-            MinimumRequired = operation.MinimumRequired,
-            Content = operation.Content,
-            Detail = operation.Details,
-            Operators = operation.Operators,
-            Title = operation.Title,
-            Uploader = operation.Author.UserName,
-            UploadTime = operation.CreateAt.ToIsoString(),
-            ViewCounts = operation.ViewCounts,
             HotScore = operation.HotScore,
-            Groups = operation.Groups.ToArray().DeserializeGroup(),
+            IsNotEnoughRating = operation.IsNotEnoughRating,
             RatingLevel = operation.RatingLevel,
             RatingRatio = operation.RatingRatio,
             RatingType = currentRating,
-            IsNotEnoughRating = operation.IsNotEnoughRating
+            ViewCounts = operation.ViewCounts
         };
         return MaaApiResponseHelper.Ok(dto);
     }
