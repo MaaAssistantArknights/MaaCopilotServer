@@ -26,10 +26,11 @@ public class CopilotUserRefreshToken : BaseEntity
         Expires = expires;
     }
     
-    
+#pragma warning disable CS8618  
     // ReSharper disable once UnusedMember.Local
     private CopilotUserRefreshToken() { }
-
+#pragma warning restore CS8618
+    
     // WARNING:
     // YOU SHOULD NEVER EXPOSE SETTER TO PUBLIC SCOPE.
     // YOU SHOULD NEVER EXPOSE DEFAULT CONSTRUCTOR TO PUBLIC SCOPE.
