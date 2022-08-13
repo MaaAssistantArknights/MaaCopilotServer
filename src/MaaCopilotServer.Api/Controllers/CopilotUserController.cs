@@ -10,6 +10,7 @@ using MaaCopilotServer.Application.CopilotUser.Commands.CreateCopilotUser;
 using MaaCopilotServer.Application.CopilotUser.Commands.DeleteCopilotUser;
 using MaaCopilotServer.Application.CopilotUser.Commands.LoginCopilotUser;
 using MaaCopilotServer.Application.CopilotUser.Commands.PasswordReset;
+using MaaCopilotServer.Application.CopilotUser.Commands.RefreshUserAccessToken;
 using MaaCopilotServer.Application.CopilotUser.Commands.RegisterCopilotAccount;
 using MaaCopilotServer.Application.CopilotUser.Commands.RequestActivationToken;
 using MaaCopilotServer.Application.CopilotUser.Commands.RequestPasswordReset;
@@ -480,5 +481,32 @@ public class CopilotUserController : MaaControllerBase
     public async Task<ActionResult> RequestActivationCode(RequestActivationTokenCommand? command = null)
     {
         return await GetResponse(command ?? new RequestActivationTokenCommand());
+    }
+
+    /// <summary>
+    ///     Refresh user access token with a refresh token.
+    /// </summary>
+    /// <param name="command">The request body.</param>
+    /// <returns>
+    /// <list type="bullet">
+    ///     <item>
+    ///         <term>200</term>
+    ///         <description>
+    ///             The access token has been refreshed successfully.
+    ///         </description>
+    ///     </item>
+    ///     <item>
+    ///         <term>400</term>
+    ///         <description>
+    ///             The refresh token is incorrect, or has expired. Or the user to whom the token belongs is missing.
+    ///         </description>
+    ///     </item>
+    /// </list>
+    /// </returns>
+    [HttpPost("refresh")]
+    [ProducesResponseType(typeof(MaaApiResponseModel<LoginCopilotUserDto>), StatusCodes.Status200OK)]
+    public async Task<ActionResult> RefreshAccessToken([FromBody] RefreshUserAccessTokenCommand command)
+    {
+        return await GetResponse(command);
     }
 }

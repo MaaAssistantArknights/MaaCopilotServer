@@ -28,6 +28,11 @@ public interface IMaaCopilotDbContext
     ///     The DB set of users.
     /// </summary>
     DbSet<Domain.Entities.CopilotUser> CopilotUsers { get; }
+    
+    /// <summary>
+    ///     The DB set of refresh tokens.
+    /// </summary>
+    DbSet<CopilotUserRefreshToken> CopilotUserRefreshTokens { get; }
 
     /// <summary>
     ///     The DB set of tokens.

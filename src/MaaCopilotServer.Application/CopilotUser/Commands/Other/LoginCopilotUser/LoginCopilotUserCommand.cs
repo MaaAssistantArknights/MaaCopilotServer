@@ -7,6 +7,7 @@ using System.Text.Json.Serialization;
 using Destructurama.Attributed;
 using MaaCopilotServer.Application.Common.Helpers;
 using MaaCopilotServer.Application.CopilotUser.Queries.GetCopilotUser;
+using MaaCopilotServer.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace MaaCopilotServer.Application.CopilotUser.Commands.LoginCopilotUser;
@@ -71,11 +72,17 @@ public class LoginCopilotUserCommandHandler : IRequestHandler<LoginCopilotUserCo
             .Where(x => x.Author.EntityId == user.EntityId)
             .CountAsync(cancellationToken);
 
-        // Generate JWT token
+        // Generate JWT token and refresh token
         var (token, expire) = _secretService.GenerateJwtToken(user.EntityId);
+        var (refreshToken, refreshExpire) = _secretService.GenerateRefreshToken();
 
+        // Add refresh token to the database
+        var entity = new CopilotUserRefreshToken(user.EntityId, refreshToken, refreshExpire);
+        await _dbContext.CopilotUserRefreshTokens.AddAsync(entity, cancellationToken);
+        await _dbContext.SaveChangesAsync(cancellationToken);
+        
         // Build DTO
-        var dto = new LoginCopilotUserDto(token, expire.ToIsoString(),
+        var dto = new LoginCopilotUserDto(token, expire.ToIsoString(), refreshToken, refreshExpire.ToIsoString(),
             new GetCopilotUserDto(user.EntityId, user.UserName, user.UserRole, uploadCount, user.UserActivated));
         return MaaApiResponseHelper.Ok(dto);
     }
