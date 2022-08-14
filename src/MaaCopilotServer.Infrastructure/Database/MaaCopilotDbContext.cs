@@ -46,6 +46,9 @@ public class MaaCopilotDbContext : DbContext, IMaaCopilotDbContext
     public DbSet<CopilotUser> CopilotUsers { get; set; } = null!;
 
     /// <inheritdoc />
+    public DbSet<CopilotUserRefreshToken> CopilotUserRefreshTokens { get; set; } = null!;
+
+    /// <inheritdoc />
     public DbSet<CopilotToken> CopilotTokens { get; set; } = null!;
 
     /// <inheritdoc />

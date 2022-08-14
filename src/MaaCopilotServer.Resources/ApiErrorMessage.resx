@@ -71,4 +71,10 @@
   <data name="ServerNotReady" xml:space="preserve">
     <value>服务器启动中</value>
   </data>
+  <data name="AccessTokenInvalid" xml:space="preserve">
+    <value>Access Token 解析失败</value>
+  </data>
+  <data name="RefreshTokenInvalid" xml:space="preserve">
+    <value>未知的 Refresh Token</value>
+  </data>
 </root>

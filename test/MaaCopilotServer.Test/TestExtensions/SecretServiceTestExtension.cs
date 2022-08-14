@@ -46,6 +46,23 @@ public static class SecretServiceTestExtension
 
         mock.Setup(x => x.GenerateToken(It.IsAny<Guid>(), It.IsAny<TimeSpan>())).Returns((returnedToken, HandlerTest.TestTokenTime));
     }
+    
+    /// <summary>
+    /// Setups <see cref="ISecretService.GenerateRefreshToken()"/>.
+    /// </summary>
+    /// <param name="mock">The mock object.</param>
+    /// <param name="returnedToken">The returned token.</param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="mock"/> is <c>null</c>.</exception>
+    public static void SetupGenerateRefreshToken(this Mock<ISecretService> mock, string returnedToken = HandlerTest.TestToken)
+    {
+        if (mock == null)
+        {
+            throw new ArgumentNullException(nameof(mock));
+        }
+
+        mock.Setup(x => x.GenerateRefreshToken()).Returns((returnedToken, HandlerTest.TestTokenTime));
+    }
+    
     /// <summary>
     /// Setups <see cref="ISecretService.HashPassword(string)"/>.
     /// </summary>

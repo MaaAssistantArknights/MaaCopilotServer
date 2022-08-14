@@ -20,12 +20,16 @@ public class LoginCopilotUserDto
     /// </summary>
     /// <param name="token">The user token.</param>
     /// <param name="validBefore">The token expiration time.</param>
+    /// <param name="refreshToken">The refresh token string.</param>
+    /// <param name="refreshTokenValidBefore">The refresh token expire time.</param>
     /// <param name="userInfo">The user information.</param>
-    public LoginCopilotUserDto(string token, string validBefore, GetCopilotUserDto userInfo)
+    public LoginCopilotUserDto(string token, string validBefore, string refreshToken, string refreshTokenValidBefore, GetCopilotUserDto userInfo)
     {
         Token = token;
         ValidBefore = validBefore;
         UserInfo = userInfo;
+        RefreshToken = refreshToken;
+        RefreshTokenValidBefore = refreshTokenValidBefore;
     }
 
 #pragma warning disable CS8618
@@ -46,6 +50,20 @@ public class LoginCopilotUserDto
     [JsonPropertyName("valid_before")]
     public string ValidBefore { get; set; }
 
+    /// <summary>
+    ///     The refresh token.
+    /// </summary>
+    [Required]
+    [JsonPropertyName("refresh_token")]
+    public string RefreshToken { get; set; }
+    
+    /// <summary>
+    ///     The refresh token expiration time.
+    /// </summary>
+    [Required]
+    [JsonPropertyName("refresh_token_valid_before")]
+    public string RefreshTokenValidBefore { get; set; }
+    
     /// <summary>
     ///     The user information. Same as <see cref="GetCopilotUserDto"/>.
     /// </summary>

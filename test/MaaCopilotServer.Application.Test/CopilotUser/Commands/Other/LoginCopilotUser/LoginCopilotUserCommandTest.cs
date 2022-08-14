@@ -66,6 +66,7 @@ public class LoginCopilotUserCommandHandlerTest
         test.DbContext.Setup(db => db.CopilotUsers.Add(user));
         test.SecretService.SetupVerifyPassword(HandlerTest.TestHashedPassword, HandlerTest.TestPassword, true);
         test.SecretService.SetupGenerateJwtToken(user.EntityId);
+        test.SecretService.SetupGenerateRefreshToken();
 
         var result = test.TestLoginCopilotUser(new()
         {

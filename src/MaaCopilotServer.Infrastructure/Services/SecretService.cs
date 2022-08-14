@@ -52,6 +52,18 @@ public class SecretService : ISecretService
     }
 
     /// <inheritdoc />
+    public (string, DateTimeOffset) GenerateRefreshToken()
+    {
+        var expires = DateTimeOffset.UtcNow.AddHours(_jwtOption.Value.RefreshExpireTime);
+        
+        var randomNumber = new byte[32];
+        using var rng = RandomNumberGenerator.Create();
+        rng.GetBytes(randomNumber);
+
+        return (Convert.ToBase64String(randomNumber), expires);
+    }
+
+    /// <inheritdoc />
     public (string, DateTimeOffset) GenerateToken(Guid resourceId, TimeSpan validTimeSpan)
     {
         var validBefore = DateTimeOffset.UtcNow.Add(validTimeSpan);
@@ -74,6 +86,35 @@ public class SecretService : ISecretService
         var code = $"{sec1}-{sec2}-{sec3}-{sec4}-{sec5}";
 
         return (code, validBefore);
+    }
+
+    /// <inheritdoc />
+    public Guid? GetUserIdFromAccessToken(string accessToken)
+    {
+        var tokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = _jwtOption.Value.Issuer,
+            ValidAudience = _jwtOption.Value.Audience,
+            ValidateLifetime = false,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOption.Value.Secret))
+        };
+
+        var handler = new JwtSecurityTokenHandler();
+        var principal = handler.ValidateToken(accessToken, tokenValidationParameters, out var securityToken);
+        if (securityToken is not JwtSecurityToken token ||
+            token.Header.Alg.Equals(SecurityAlgorithms.HmacSha256,
+                StringComparison.InvariantCultureIgnoreCase) is false)
+        {
+            return null;
+        }
+
+        var id = principal.FindFirst("id")?.Value;
+        var canParse = Guid.TryParse(id, out var guid);
+
+        return canParse ? guid : null;
     }
 
     /// <inheritdoc />

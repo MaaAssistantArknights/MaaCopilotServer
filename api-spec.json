@@ -3413,6 +3413,156 @@
         ]
       }
     },
+    "/user/refresh": {
+      "post": {
+        "tags": [
+          "CopilotUser"
+        ],
+        "summary": "Refresh user access token with a refresh token.",
+        "requestBody": {
+          "description": "The request body.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshUserAccessTokenCommand"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshUserAccessTokenCommand"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshUserAccessTokenCommand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginCopilotUserDtoMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginCopilotUserDtoMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginCopilotUserDtoMaaApiResponseModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/": {
       "get": {
         "tags": [
@@ -4228,6 +4378,8 @@
       },
       "LoginCopilotUserDto": {
         "required": [
+          "refresh_token",
+          "refresh_token_valid_before",
           "token",
           "user_info",
           "valid_before"
@@ -4241,6 +4393,14 @@
           "valid_before": {
             "type": "string",
             "description": "The token expiration time."
+          },
+          "refresh_token": {
+            "type": "string",
+            "description": "The refresh token."
+          },
+          "refresh_token_valid_before": {
+            "type": "string",
+            "description": "The refresh token expiration time."
           },
           "user_info": {
             "$ref": "#/components/schemas/GetCopilotUserDto"
@@ -4665,6 +4825,25 @@
         ],
         "type": "integer",
         "format": "int32"
+      },
+      "RefreshUserAccessTokenCommand": {
+        "required": [
+          "access_token",
+          "refresh_token"
+        ],
+        "type": "object",
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "description": "Expired access token."
+          },
+          "refresh_token": {
+            "type": "string",
+            "description": "Refresh token."
+          }
+        },
+        "additionalProperties": false,
+        "description": "The DTO for refreshing the access token of a copilot user command."
       },
       "RegisterCopilotAccountCommand": {
         "required": [

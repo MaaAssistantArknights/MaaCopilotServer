@@ -38,4 +38,10 @@ public class JwtOption
     /// </summary>
     [JsonPropertyName("ExpireTime")]
     public int ExpireTime { get; set; }
+    
+    /// <summary>
+    ///     The time of refresh token expiration.
+    /// </summary>
+    [JsonPropertyName("RefreshExpireTime")]
+    public int RefreshExpireTime { get; set; }
 }

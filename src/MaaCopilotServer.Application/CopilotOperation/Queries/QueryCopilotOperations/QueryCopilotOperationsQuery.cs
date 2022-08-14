@@ -256,7 +256,7 @@ public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOp
                     HotScore = x.HotScore,
                     Groups = x.Groups.ToArray().DeserializeGroup(),
                     Operators = x.Operators,
-                    UploadTime = x.UpdateAt.ToIsoString(),
+                    UploadTime = x.CreateAt.ToIsoString(),
                     ViewCounts = x.ViewCounts,
                     Level = request.Language.GetLevelMapperFunc().Invoke(x.ArkLevel),
                     RatingLevel = x.RatingLevel,
