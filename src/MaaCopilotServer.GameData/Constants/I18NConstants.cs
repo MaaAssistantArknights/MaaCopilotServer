@@ -110,7 +110,7 @@ internal static class I18NConstants
         ZoneTypes.Weekly => "物资筹备 & 芯片搜索",
         ZoneTypes.Activity => "活动关卡",
         ZoneTypes.Campaign => "剿灭作战",
-        ZoneTypes.Memory => "悖論模擬",
+        ZoneTypes.Memory => "悖论模拟",
         _ => throw new ArgumentOutOfRangeException(nameof(zoneTypes), zoneTypes, null)
     };
 
