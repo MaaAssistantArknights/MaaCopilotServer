@@ -3,6 +3,7 @@
 // Licensed under the AGPL-3.0 license.
 
 using System.Text.Json;
+using Json.Schema;
 using System.Text.Json.Serialization;
 using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Application.Common.Models;
@@ -12,7 +13,6 @@ using MaaCopilotServer.Domain.Options;
 using MaaCopilotServer.Resources;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using NJsonSchema;
 using Action = MaaCopilotServer.Application.Common.Operation.Model.Action;
 
 namespace MaaCopilotServer.Infrastructure.Services;
@@ -22,6 +22,7 @@ public class OperationProcessService : IOperationProcessService
     private readonly IMaaCopilotDbContext _dbContext;
     private readonly ValidationErrorMessage _validationErrorMessage;
     private readonly JsonSchema _schema;
+    private readonly ValidationOptions _validationOptions;
 
     private static readonly JsonSerializerOptions s_failedSerializerOptions = new()
     {
@@ -37,7 +38,9 @@ public class OperationProcessService : IOperationProcessService
         _validationErrorMessage = validationErrorMessage;
 
         var schemaFile = Path.Combine(applicationOption.Value.AssemblyPath, SystemConstants.MaaCopilotSchemaPath);
-        _schema = JsonSchema.FromFileAsync(schemaFile).GetAwaiter().GetResult();
+        _schema = JsonSchema.FromFile(schemaFile);
+
+        _validationOptions = new ValidationOptions { ValidateAs = Draft.Draft7, OutputFormat = OutputFormat.Detailed };
     }
 
     public async Task<OperationValidationResult> Validate(string? operation)
@@ -53,15 +56,14 @@ public class OperationProcessService : IOperationProcessService
             };
         }
 
-        var schemaValidationResult = _schema.Validate(operation);
-        if (schemaValidationResult.Any())
+        var schemaValidationResult = _schema.Validate(JsonDocument.Parse(operation).RootElement, _validationOptions);
+        if (schemaValidationResult.IsValid is false)
         {
-            var message = string.Join(";", schemaValidationResult);
             return new OperationValidationResult
             {
                 IsValid = false,
                 Operation = null,
-                ErrorMessages = message,
+                ErrorMessages = schemaValidationResult.Message ?? string.Empty,
                 ArkLevel = null
             };
         }
