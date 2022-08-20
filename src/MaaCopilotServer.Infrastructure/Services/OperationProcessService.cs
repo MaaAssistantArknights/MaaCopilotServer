@@ -4,6 +4,7 @@
 
 using System.Text.Json;
 using Json.Schema;
+using System.Text.Json.Serialization;
 using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Application.Common.Models;
 using MaaCopilotServer.Application.Common.Operation.Model;
@@ -12,6 +13,7 @@ using MaaCopilotServer.Domain.Options;
 using MaaCopilotServer.Resources;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Action = MaaCopilotServer.Application.Common.Operation.Model.Action;
 
 namespace MaaCopilotServer.Infrastructure.Services;
 
@@ -22,6 +24,11 @@ public class OperationProcessService : IOperationProcessService
     private readonly JsonSchema _schema;
     private readonly ValidationOptions _validationOptions;
 
+    private static readonly JsonSerializerOptions s_failedSerializerOptions = new()
+    {
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+    };
+    
     public OperationProcessService(
         IMaaCopilotDbContext dbContext,
         ValidationErrorMessage validationErrorMessage,
@@ -88,8 +95,6 @@ public class OperationProcessService : IOperationProcessService
             };
         }
 
-        var failed = false;
-
         if (operationObj.Actions is null)
         {
             return new OperationValidationResult
@@ -101,46 +106,30 @@ public class OperationProcessService : IOperationProcessService
             };
         }
 
-        foreach (var action in operationObj.Actions)
+        var failedArea = operationObj.Actions
+            .Select(FailedCheck)
+            .ToList();
+
+        failedArea.RemoveAll(x => x is null);
+
+        if (failedArea.Count == 0)
         {
-            var type = GetTypeUnifiedString(action.Type);
-
-            failed = type switch
+            return new OperationValidationResult
             {
-                // When type is "Deploy", operator name, deploy location and deploy direction could not be null.
-                "deploy" => action.Name is null || action.Location is null || DirectionIsValid(action.Direction) is false,
-                // When type is "Skill", operator name could not be null.
-                "skill" => action.Name is null,
-                // When type is "Retreat", operator name and deploy location could not be null at the same time.
-                "retreat" => action.Name is null && action.Location is null,
-                // When type is "Skill Usage", skill_usage could not be null.
-                "speedup" => failed,
-                "bullettime" => failed,
-                "skillusage" => action.SkillUsage is null,
-                "output" => action.Doc is null,
-                "skilldaemon" => failed,
-                _ => true
+                IsValid = true, Operation = operationObj, ErrorMessages = string.Empty, ArkLevel = level
             };
-
-            if (failed)
-            {
-                return new OperationValidationResult
-                {
-                    IsValid = false,
-                    Operation = null,
-                    ErrorMessages = _validationErrorMessage.CopilotOperationJsonIsInvalid!,
-                    ArkLevel = null
-                };
-            }
         }
 
+        var failedAreaMessage = $"{_validationErrorMessage.CopilotOperationJsonIsInvalid}\n{string.Join("\n", failedArea)}";
+            
         return new OperationValidationResult
         {
-            IsValid = true,
-            Operation = operationObj,
-            ErrorMessages = string.Empty,
-            ArkLevel = level
+            IsValid = false,
+            Operation = null,
+            ErrorMessages = failedAreaMessage,
+            ArkLevel = null
         };
+
     }
 
     private static string GetTypeUnifiedString(string? type) => type?.ToLower() switch
@@ -162,4 +151,31 @@ public class OperationProcessService : IOperationProcessService
         "左" or "右" or "上" or "下" or "无" => true,
         _ => false
     };
+
+    private static string? FailedCheck(Action action)
+    {
+        var type = GetTypeUnifiedString(action.Type);
+        
+        // false => It's OK; true => Error;
+        var validationResult = type switch
+        {
+            // When type is "Deploy", operator name, deploy location and deploy direction could not be null.
+            "deploy" => action.Name is null || action.Location is null || DirectionIsValid(action.Direction) is false,
+            // When type is "Skill", operator name could not be null.
+            "skill" => action.Name is null,
+            // When type is "Retreat", operator name and deploy location could not be null at the same time.
+            "retreat" => action.Name is null && action.Location is null,
+            // When type is "Skill Usage", skill_usage could not be null.
+            "speedup" => false,
+            "bullettime" => false,
+            "skillusage" => action.SkillUsage is null,
+            "output" => action.Doc is null,
+            "skilldaemon" => false,
+            _ => true
+        };
+        
+        return validationResult is false
+            ? null
+            : JsonSerializer.Serialize(action, s_failedSerializerOptions);
+    }
 }

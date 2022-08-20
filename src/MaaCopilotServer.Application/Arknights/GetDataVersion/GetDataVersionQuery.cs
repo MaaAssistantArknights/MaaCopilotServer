@@ -21,15 +21,24 @@ public class GetDataVersionQueryHandler : IRequestHandler<GetDataVersionQuery, M
     private static readonly ServerStatusDto s_syncNoError = new(string.Empty);
     private static readonly ServerStatusDto s_syncDisaster = new(SystemConstants.ARK_ASSET_CACHE_ERROR_DISASTER);
 
-    private static readonly Func<string, ServerStatusDto> s_buildSyncErrorDto = (str) =>
+    private static readonly Func<string, ServerStatusDto> s_buildSyncErrorDto = str =>
     {
-        var languages = str.Split(";");
-
         var dto = new ServerStatusDto(string.Empty);
+        if (string.IsNullOrEmpty(str))
+        {
+            return dto;
+        }
+
+        var languages = str.Split(";");
 
         foreach (var language in languages)
         {
-            var lang = Enum.Parse<ArkServerLanguage>(language);
+            var canParse = Enum.TryParse<ArkServerLanguage>(language, out var lang);
+            if (canParse is false)
+            {
+                continue;
+            }
+            
             switch (lang)
             {
                 case ArkServerLanguage.ChineseSimplified:
