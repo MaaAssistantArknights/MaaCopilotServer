@@ -61,4 +61,34 @@ public readonly struct LoggingType
     {
         return _value;
     }
+
+    /// <inheritdoc/>
+    public override bool Equals(object? obj)
+    {
+        if (obj is LoggingType other)
+        {
+            return _value == other._value;
+        }
+        
+        return false;
+    }
+
+    /// <summary>
+    ///     Check if two <see cref="LoggingType" /> are equal.
+    /// </summary>
+    /// <param name="other"></param>
+    /// <returns></returns>
+    public bool Equals(LoggingType other)
+    {
+        return _value == other._value;
+    }
+
+    /// <inheritdoc/>
+    public override int GetHashCode()
+    {
+        return _value.GetHashCode();
+    }
+
+    public static bool operator ==(LoggingType? a, LoggingType? b) => a.Equals(b);
+    public static bool operator !=(LoggingType? a, LoggingType? b) => !a.Equals(b);
 }

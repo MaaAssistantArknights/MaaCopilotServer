@@ -80,9 +80,11 @@ public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequ
             _ => LoggingType.FailedRequest
         };
 
+        var doResponseLog = loggingType != LoggingType.Request;
+        
         _logger.Log(level,
-            "MaaCopilotServer: Type -> {LoggingType}; Name -> {Name}; Time -> {ElapsedTime}; Status -> {StatusCode}, User -> {UserId}; Request -> {@Request}",
-            loggingType, requestName, elapsedMilliseconds, statusCode, userId, request);
+            "MaaCopilotServer: Type -> {LoggingType}; Name -> {Name}; Time -> {ElapsedTime}; Status -> {StatusCode}, User -> {UserId}; Request -> {@Request}; Response -> {@Response}",
+            loggingType, requestName, elapsedMilliseconds, statusCode, userId, request, doResponseLog ? response : "Skipped");
         return response;
     }
 }
