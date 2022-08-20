@@ -210,11 +210,11 @@
         },
         "name": {
           "type": "string",
-          "description": "Operator/group name, required when `type` is one of \"Deploy (部署)\" | \"Skill (技能)\" | \"Retreat (撤退)\"."
+          "description": "Operator/group name, required when `type` is one of \"Deploy (部署)\", Optional when `type` is \"Skill (技能)\" or \"Retreat (撤退)\"."
         },
         "location": {
           "type": "array",
-          "description": "Position for deployment. Required when `type` is \"Deploy (部署)\".  Optional when `type` is \"Retreat (撤退)\". Recommended only when multiple summons exist, retreating with location instead of name. Please simply use name to retreat for normal operators.",
+          "description": "Position for deployment. Required when `type` is \"Deploy (部署)\".  Optional when `type` is \"Retreat (撤退)\" or \"Skill (技能)\". Recommended only when multiple summons exist, retreating with location instead of name. Please simply use name to retreat for normal operators.",
           "minLength": 2,
           "maxLength": 2,
           "items": {
