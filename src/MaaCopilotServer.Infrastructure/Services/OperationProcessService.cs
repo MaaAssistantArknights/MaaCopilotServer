@@ -162,7 +162,7 @@ public class OperationProcessService : IOperationProcessService
             // When type is "Deploy", operator name, deploy location and deploy direction could not be null.
             "deploy" => action.Name is null || action.Location is null || DirectionIsValid(action.Direction) is false,
             // When type is "Skill", operator name could not be null.
-            "skill" => action.Name is null,
+            "skill" => action.Name is null && action.Location is null,
             // When type is "Retreat", operator name and deploy location could not be null at the same time.
             "retreat" => action.Name is null && action.Location is null,
             // When type is "Skill Usage", skill_usage could not be null.
