@@ -17,6 +17,7 @@ using MaaCopilotServer.Domain.Options;
 using MaaCopilotServer.Infrastructure;
 using MaaCopilotServer.Resources;
 using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.FileProviders;
 using Serilog;
@@ -67,8 +68,15 @@ public static class Program
         builder.Services.AddApiServices(configuration);
         builder.Services.AddMaaSwagger();
 
+        builder.Services.Configure<ForwardedHeadersOptions>(options =>
+        {
+            options.ForwardedHeaders = ForwardedHeaders.All;
+        });
+
         var app = builder.Build();
 
+        app.UseForwardedHeaders();
+        
         app.UseMaaSwagger();
 
         // CORS settings.
