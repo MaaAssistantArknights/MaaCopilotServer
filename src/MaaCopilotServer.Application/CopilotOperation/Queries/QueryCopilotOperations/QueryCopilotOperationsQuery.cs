@@ -33,19 +33,29 @@ public record QueryCopilotOperationsQuery : IRequest<MaaApiResponse>
     /// on all Categories and LevelNames.
     /// </summary>
     [FromQuery(Name = "level_keyword")]
-    public string? Keyword { get; set; } = null;
+    public string? Keyword { get; set; }
+
+    /// <summary>
+    ///     The operator query string. Use `,` to split multiple expressions. All expressions will be combined with AND.
+    /// The expression defaults to `Include`, add `~` at the beginning to perform an `Exclude` operation. Eg: `A,~B,C`
+    /// will be translate to `Must include A and C, and must exclude B`. The operator query will not be only applied to
+    /// the `Operators` field of copilot operation. It will not be applied to the `Groups` field, because this field is
+    /// too complex to perform a query on. Be aware that `Exclude` operation is performed before `Include` operation.
+    /// </summary>
+    [FromQuery(Name = "operator")]
+    public string? Operator { get; set; } = null;
 
     /// <summary>
     ///     The content to query.
     /// </summary>
     [FromQuery(Name = "content")]
-    public string? Content { get; set; }
+    public string? Content { get; set; } = null;
 
     /// <summary>
     ///     The name of the uploader.
     /// </summary>
     [FromQuery(Name = "uploader")]
-    public string? Uploader { get; set; }
+    public string? Uploader { get; set; } = null;
 
     /// <summary>
     ///     The ID of the uploader
@@ -165,9 +175,6 @@ public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOp
             queryable = queryable.Where(x => x.Author.EntityId == uploaderId);
         }
 
-        // Count total amount of items
-        var totalCount = await queryable.CountAsync(cancellationToken);
-
         // Pagination value, skip some items to get the page we want
         var skip = (page - 1) * limit;
 
@@ -187,15 +194,62 @@ public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOp
                 : queryable.OrderByDescending(x => x.Id)
         };
 
-        // Build full query
-        queryable = queryable.Skip(skip).Take(limit);
+        int totalCount;
+        List<Domain.Entities.CopilotOperation> result;
+        bool hasNext;
 
-        // Get all items
-        var result = queryable.ToList();
-        // Check if there are any more pages
-        // current selected items = limit * page
-        // if it is less then total count, there are more pages
-        var hasNext = limit * page < totalCount;
+        if (string.IsNullOrEmpty(request.Operator))
+        {
+            // Count total amount of items
+            totalCount = await queryable.CountAsync(cancellationToken);
+        
+            // Build full query
+            queryable = queryable.Skip(skip).Take(limit);
+
+            // Get all items
+            result = queryable.ToList();
+            
+            // Check if there are any more pages
+            // current selected items = limit * page
+            // if it is less then total count, there are more pages
+            hasNext = limit * page < totalCount;
+        }
+        else
+        {
+            // TODO: Need a better way to do this
+            
+            var conditions = request.Operator.Split(",");
+            var exclude = conditions
+                .Where(x => x.Length > 2)
+                .Where(x => x.StartsWith("~"))
+                .Select(x => x[1..]);
+            var include = conditions
+                .Where(x => x.Length > 1)
+                .Where(x => x.StartsWith("~") is false);
+
+            // The following aggregated complex query can not be translated to SQL.
+            // Execute SQL query to convert the query from server-evaluation to
+            // client-evaluation, so that the following query could be executed.
+            // Be aware that these kind of client-evaluation queries may have
+            // performance impact with an extremely large data set.
+            
+            var e = queryable.AsEnumerable();
+
+            e = exclude.Aggregate(e,
+                (current, condition) => 
+                    current
+                        .SkipWhile(x =>
+                            x.Operators.Any(y => y.Contains(condition))));
+            e = include.Aggregate(e,
+                (current, condition) =>
+                    current.Where(x =>
+                        x.Operators.Any(y => y.Contains(condition))));
+            var eResult = e.ToArray();
+
+            totalCount = eResult.Length;
+            result = eResult.Skip(skip).Take(limit).ToList();
+            hasNext = limit * page < totalCount;
+        }
 
         // TODO: Find more elegant way to do this.
         // If user is logged in, get the rating for each operation
