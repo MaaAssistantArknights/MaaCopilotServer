@@ -20,37 +20,30 @@ public record QueryCopilotOperationsQuery : IRequest<MaaApiResponse>
     ///     The page number to query. Default is 1.
     /// </summary>
     [FromQuery(Name = "page")]
-    public int? Page { get; set; } = null;
+    public int? Page { get; set; }
 
     /// <summary>
     ///     The max amount of items in a page. Default is 10.
     /// </summary>
     [FromQuery(Name = "limit")]
-    public int? Limit { get; set; } = null;
+    public int? Limit { get; set; }
 
     /// <summary>
-    ///     Level category one.
+    ///     The key word to search for. Set this field, the query will run
+    /// on all Categories and LevelNames.
     /// </summary>
-    [FromQuery(Name = "level_cat_one")]
-    public string? LevelCatOne { get; set; } = null;
+    [FromQuery(Name = "level_keyword")]
+    public string? Keyword { get; set; }
 
     /// <summary>
-    ///     Level category two.
+    ///     The operator query string. Use `,` to split multiple expressions. All expressions will be combined with AND.
+    /// The expression defaults to `Include`, add `~` at the beginning to perform an `Exclude` operation. Eg: `A,~B,C`
+    /// will be translate to `Must include A and C, and must exclude B`. The operator query will not be only applied to
+    /// the `Operators` field of copilot operation. It will not be applied to the `Groups` field, because this field is
+    /// too complex to perform a query on. Be aware that `Exclude` operation is performed before `Include` operation.
     /// </summary>
-    [FromQuery(Name = "level_cat_two")]
-    public string? LevelCatTwo { get; set; } = null;
-
-    /// <summary>
-    ///     Level category three.
-    /// </summary>
-    [FromQuery(Name = "level_cat_three")]
-    public string? LevelCatThree { get; set; } = null;
-
-    /// <summary>
-    ///     Level name.
-    /// </summary>
-    [FromQuery(Name = "level_name")]
-    public string? LevelName { get; set; } = null;
+    [FromQuery(Name = "operator")]
+    public string? Operator { get; set; } = null;
 
     /// <summary>
     ///     The content to query.
@@ -68,19 +61,19 @@ public record QueryCopilotOperationsQuery : IRequest<MaaApiResponse>
     ///     The ID of the uploader
     /// </summary>
     [FromQuery(Name = "uploader_id")]
-    public string? UploaderId { get; set; } = null;
+    public string? UploaderId { get; set; }
 
     /// <summary>
     ///     Desc or Asc. Default is Asc. Set this value to "true" to sort in descending order.
     /// </summary>
     [FromQuery(Name = "desc")]
-    public string? Desc { get; set; } = null;
+    public string? Desc { get; set; }
 
     /// <summary>
     ///     Orders result by a field. Only supports ordering by "views", "hot" and "id" (default).
     /// </summary>
     [FromQuery(Name = "order_by")]
-    public string? OrderBy { get; set; } = null;
+    public string? OrderBy { get; set; }
 
     /// <summary>
     ///     The server language.
@@ -99,18 +92,15 @@ public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOp
     MaaApiResponse>
 {
     private readonly ApiErrorMessage _apiErrorMessage;
-    private readonly ICopilotOperationService _copilotOperationService;
     private readonly ICurrentUserService _currentUserService;
     private readonly IMaaCopilotDbContext _dbContext;
 
     public QueryCopilotOperationsQueryHandler(
         IMaaCopilotDbContext dbContext,
-        ICopilotOperationService copilotOperationService,
         ICurrentUserService currentUserService,
         ApiErrorMessage apiErrorMessage)
     {
         _dbContext = dbContext;
-        _copilotOperationService = copilotOperationService;
         _currentUserService = currentUserService;
         _apiErrorMessage = apiErrorMessage;
     }
@@ -155,45 +145,28 @@ public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOp
 
         // Build queryable
         var queryable = _dbContext.CopilotOperations
-            .Include(x => x.ArkLevel).ThenInclude(x => x.Name)
+            .Include(x => x.ArkLevel).ThenInclude(x => x.Keyword)
             .Include(x => x.ArkLevel).ThenInclude(x => x.CatOne)
             .Include(x => x.ArkLevel).ThenInclude(x => x.CatTwo)
             .Include(x => x.ArkLevel).ThenInclude(x => x.CatThree)
+            .Include(x => x.ArkLevel).ThenInclude(x => x.Name)
             .Include(x => x.Author)
             .AsQueryable();
         if (string.IsNullOrEmpty(request.Content) is false)
         {
             // if content is set, filter by it
-            queryable = queryable.Where(x => x.Content.Contains(request.Content));
+            queryable = queryable.Where(x => EF.Functions.ILike(x.Content, $"%{request.Content}%"));
         }
         if (string.IsNullOrEmpty(request.Uploader) is false)
         {
             // if uploader is set, filter by it
-            queryable = queryable.Where(x => x.Author.UserName.Contains(request.Uploader));
+            queryable = queryable.Where(x => EF.Functions.ILike(x.Author.UserName, $"%{request.Uploader}%"));
         }
 
-        if (string.IsNullOrEmpty(request.LevelName) is false)
+        if (string.IsNullOrEmpty(request.Keyword) is false)
         {
-            // if level name is set, filter by it
-            queryable = request.Language.GetQueryLevelNameFunc().Invoke(queryable, request.LevelName);
-        }
-
-        if (string.IsNullOrEmpty(request.LevelCatOne) is false)
-        {
-            // if level cat one is set, filter by it
-            queryable = request.Language.GetQueryLevelCatOneFunc().Invoke(queryable, request.LevelCatOne);
-        }
-
-        if (string.IsNullOrEmpty(request.LevelCatTwo) is false)
-        {
-            // if level cat two is set, filter by it
-            queryable = request.Language.GetQueryLevelCatTwoFunc().Invoke(queryable, request.LevelCatTwo);
-        }
-
-        if (string.IsNullOrEmpty(request.LevelCatThree) is false)
-        {
-            // if level cat three is set, filter by it
-            queryable = request.Language.GetQueryLevelCatThreeFunc().Invoke(queryable, request.LevelCatThree);
+            // if keyword is set, filter by it
+            queryable = request.Language.GetQueryKeywordFunc().Invoke(queryable, request.Keyword);
         }
 
         if (uploaderId is not null)
@@ -201,9 +174,6 @@ public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOp
             // if uploader id is set, filter by it
             queryable = queryable.Where(x => x.Author.EntityId == uploaderId);
         }
-
-        // Count total amount of items
-        var totalCount = await queryable.CountAsync(cancellationToken);
 
         // Pagination value, skip some items to get the page we want
         var skip = (page - 1) * limit;
@@ -224,15 +194,62 @@ public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOp
                 : queryable.OrderByDescending(x => x.Id)
         };
 
-        // Build full query
-        queryable = queryable.Skip(skip).Take(limit);
+        int totalCount;
+        List<Domain.Entities.CopilotOperation> result;
+        bool hasNext;
 
-        // Get all items
-        var result = queryable.ToList();
-        // Check if there are any more pages
-        // current selected items = limit * page
-        // if it is less then total count, there are more pages
-        var hasNext = limit * page < totalCount;
+        if (string.IsNullOrEmpty(request.Operator))
+        {
+            // Count total amount of items
+            totalCount = await queryable.CountAsync(cancellationToken);
+        
+            // Build full query
+            queryable = queryable.Skip(skip).Take(limit);
+
+            // Get all items
+            result = queryable.ToList();
+            
+            // Check if there are any more pages
+            // current selected items = limit * page
+            // if it is less then total count, there are more pages
+            hasNext = limit * page < totalCount;
+        }
+        else
+        {
+            // TODO: Need a better way to do this
+            
+            var conditions = request.Operator.Split(",");
+            var exclude = conditions
+                .Where(x => x.Length > 2)
+                .Where(x => x.StartsWith("~"))
+                .Select(x => x[1..]);
+            var include = conditions
+                .Where(x => x.Length > 1)
+                .Where(x => x.StartsWith("~") is false);
+
+            // The following aggregated complex query can not be translated to SQL.
+            // Execute SQL query to convert the query from server-evaluation to
+            // client-evaluation, so that the following query could be executed.
+            // Be aware that these kind of client-evaluation queries may have
+            // performance impact with an extremely large data set.
+            
+            var e = queryable.AsEnumerable();
+
+            e = exclude.Aggregate(e,
+                (current, condition) => 
+                    current
+                        .SkipWhile(x =>
+                            x.Operators.Any(y => y.Contains(condition))));
+            e = include.Aggregate(e,
+                (current, condition) =>
+                    current.Where(x =>
+                        x.Operators.Any(y => y.Contains(condition))));
+            var eResult = e.ToArray();
+
+            totalCount = eResult.Length;
+            result = eResult.Skip(skip).Take(limit).ToList();
+            hasNext = limit * page < totalCount;
+        }
 
         // TODO: Find more elegant way to do this.
         // If user is logged in, get the rating for each operation
