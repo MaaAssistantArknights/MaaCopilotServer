@@ -31,6 +31,7 @@ public class ArkLevelData : BaseEntity
     public ArkI18N CatOne { get; private set; } = new();
     public ArkI18N CatTwo { get; private set; } = new();
     public ArkI18N CatThree { get; private set; } = new();
+    public ArkI18N? Keyword { get; private set; }
 
     public string LevelId { get; private set; }
     public int Width { get; private set; }
@@ -43,6 +44,9 @@ public class ArkLevelData : BaseEntity
         CatTwo.Update(level.CatTwo);
         CatThree.Update(level.CatThree);
 
+        Keyword ??= new ArkI18N();
+        Keyword.Update(level.Keyword);
+
         LevelId = level.LevelId;
         Width = level.Width;
         Height = level.Height;
@@ -53,6 +57,8 @@ public class ArkLevelData : BaseEntity
         return Name.IsEqual(level.Name) &&
                LevelId == level.LevelId &&
                Width == level.Width &&
-               Height == level.Height;
+               Height == level.Height &&
+               Keyword is not null &&
+               Keyword.IsEqual(level.Keyword);
     }
 }

@@ -20,67 +20,50 @@ public record QueryCopilotOperationsQuery : IRequest<MaaApiResponse>
     ///     The page number to query. Default is 1.
     /// </summary>
     [FromQuery(Name = "page")]
-    public int? Page { get; set; } = null;
+    public int? Page { get; set; }
 
     /// <summary>
     ///     The max amount of items in a page. Default is 10.
     /// </summary>
     [FromQuery(Name = "limit")]
-    public int? Limit { get; set; } = null;
+    public int? Limit { get; set; }
 
     /// <summary>
-    ///     Level category one.
+    ///     The key word to search for. Set this field, the query will run
+    /// on all Categories and LevelNames.
     /// </summary>
-    [FromQuery(Name = "level_cat_one")]
-    public string? LevelCatOne { get; set; } = null;
-
-    /// <summary>
-    ///     Level category two.
-    /// </summary>
-    [FromQuery(Name = "level_cat_two")]
-    public string? LevelCatTwo { get; set; } = null;
-
-    /// <summary>
-    ///     Level category three.
-    /// </summary>
-    [FromQuery(Name = "level_cat_three")]
-    public string? LevelCatThree { get; set; } = null;
-
-    /// <summary>
-    ///     Level name.
-    /// </summary>
-    [FromQuery(Name = "level_name")]
-    public string? LevelName { get; set; } = null;
+    [FromQuery(Name = "level_keyword")]
+    public string? Keyword { get; set; } = null;
 
     /// <summary>
     ///     The content to query.
     /// </summary>
     [FromQuery(Name = "content")]
-    public string? Content { get; set; } = null;
+    public string? Content { get; set; }
 
     /// <summary>
     ///     The name of the uploader.
     /// </summary>
     [FromQuery(Name = "uploader")]
-    public string? Uploader { get; set; } = null;
+    public string? Uploader { get; set; }
 
     /// <summary>
     ///     The ID of the uploader
     /// </summary>
     [FromQuery(Name = "uploader_id")]
-    public string? UploaderId { get; set; } = null;
+    public string? UploaderId { get; set; }
 
     /// <summary>
     ///     Desc or Asc. Default is Asc. Set this value to "true" to sort in descending order.
     /// </summary>
     [FromQuery(Name = "desc")]
-    public string? Desc { get; set; } = null;
+    public string? Desc { get; set; }
 
     /// <summary>
     ///     Orders result by a field. Only supports ordering by "views", "hot" and "id" (default).
     /// </summary>
     [FromQuery(Name = "order_by")]
-    public string? OrderBy { get; set; } = null;
+    public string? OrderBy { get; set; }
 
     /// <summary>
     ///     The server language.
@@ -99,18 +82,15 @@ public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOp
     MaaApiResponse>
 {
     private readonly ApiErrorMessage _apiErrorMessage;
-    private readonly ICopilotOperationService _copilotOperationService;
     private readonly ICurrentUserService _currentUserService;
     private readonly IMaaCopilotDbContext _dbContext;
 
     public QueryCopilotOperationsQueryHandler(
         IMaaCopilotDbContext dbContext,
-        ICopilotOperationService copilotOperationService,
         ICurrentUserService currentUserService,
         ApiErrorMessage apiErrorMessage)
     {
         _dbContext = dbContext;
-        _copilotOperationService = copilotOperationService;
         _currentUserService = currentUserService;
         _apiErrorMessage = apiErrorMessage;
     }
@@ -155,45 +135,28 @@ public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOp
 
         // Build queryable
         var queryable = _dbContext.CopilotOperations
-            .Include(x => x.ArkLevel).ThenInclude(x => x.Name)
+            .Include(x => x.ArkLevel).ThenInclude(x => x.Keyword)
             .Include(x => x.ArkLevel).ThenInclude(x => x.CatOne)
             .Include(x => x.ArkLevel).ThenInclude(x => x.CatTwo)
             .Include(x => x.ArkLevel).ThenInclude(x => x.CatThree)
+            .Include(x => x.ArkLevel).ThenInclude(x => x.Name)
             .Include(x => x.Author)
             .AsQueryable();
         if (string.IsNullOrEmpty(request.Content) is false)
         {
             // if content is set, filter by it
-            queryable = queryable.Where(x => x.Content.Contains(request.Content));
+            queryable = queryable.Where(x => EF.Functions.ILike(x.Content, $"%{request.Content}%"));
         }
         if (string.IsNullOrEmpty(request.Uploader) is false)
         {
             // if uploader is set, filter by it
-            queryable = queryable.Where(x => x.Author.UserName.Contains(request.Uploader));
+            queryable = queryable.Where(x => EF.Functions.ILike(x.Author.UserName, $"%{request.Uploader}%"));
         }
 
-        if (string.IsNullOrEmpty(request.LevelName) is false)
+        if (string.IsNullOrEmpty(request.Keyword) is false)
         {
-            // if level name is set, filter by it
-            queryable = request.Language.GetQueryLevelNameFunc().Invoke(queryable, request.LevelName);
-        }
-
-        if (string.IsNullOrEmpty(request.LevelCatOne) is false)
-        {
-            // if level cat one is set, filter by it
-            queryable = request.Language.GetQueryLevelCatOneFunc().Invoke(queryable, request.LevelCatOne);
-        }
-
-        if (string.IsNullOrEmpty(request.LevelCatTwo) is false)
-        {
-            // if level cat two is set, filter by it
-            queryable = request.Language.GetQueryLevelCatTwoFunc().Invoke(queryable, request.LevelCatTwo);
-        }
-
-        if (string.IsNullOrEmpty(request.LevelCatThree) is false)
-        {
-            // if level cat three is set, filter by it
-            queryable = request.Language.GetQueryLevelCatThreeFunc().Invoke(queryable, request.LevelCatThree);
+            // if keyword is set, filter by it
+            queryable = request.Language.GetQueryKeywordFunc().Invoke(queryable, request.Keyword);
         }
 
         if (uploaderId is not null)

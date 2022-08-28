@@ -5,6 +5,7 @@
 using MaaCopilotServer.Application.Arknights.GetLevelList;
 using MaaCopilotServer.Application.Arknights.GetOperatorList;
 using MaaCopilotServer.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace MaaCopilotServer.Application.Common.Helpers;
 
@@ -195,49 +196,26 @@ public static class ArkDataHelper
 
     #region Level Query in Operation
 
-    public static Func<IQueryable<Domain.Entities.CopilotOperation>, string, IQueryable<Domain.Entities.CopilotOperation>>
-        GetQueryLevelNameFunc(this string? server) => ArkServerLanguage.Parse(server)
-        .GetArkServerLanguageSpecificAction
-        <Func<IQueryable<Domain.Entities.CopilotOperation>, string, IQueryable<Domain.Entities.CopilotOperation>>>(
-            (q, s) => q.Where(x => x.ArkLevel.Name.ChineseSimplified.Contains(s)),
-            (q, s) => q.Where(x => x.ArkLevel.Name.ChineseTraditional.Contains(s)),
-            (q, s) => q.Where(x => x.ArkLevel.Name.English.Contains(s)),
-            (q, s) => q.Where(x => x.ArkLevel.Name.Japanese.Contains(s)),
-            (q, s) => q.Where(x => x.ArkLevel.Name.Korean.Contains(s))
-        );
-
-    public static Func<IQueryable<Domain.Entities.CopilotOperation>, string, IQueryable<Domain.Entities.CopilotOperation>>
-        GetQueryLevelCatOneFunc(this string? server) => ArkServerLanguage.Parse(server)
+    public static Func<IQueryable<Domain.Entities.CopilotOperation>, string,
+            IQueryable<Domain.Entities.CopilotOperation>>
+        GetQueryKeywordFunc(this string? server) => ArkServerLanguage.Parse(server)
         .GetArkServerLanguageSpecificAction
             <Func<IQueryable<Domain.Entities.CopilotOperation>, string, IQueryable<Domain.Entities.CopilotOperation>>>(
-            (q, s) => q.Where(x => x.ArkLevel.CatOne.ChineseSimplified.Contains(s)),
-            (q, s) => q.Where(x => x.ArkLevel.CatOne.ChineseTraditional.Contains(s)),
-            (q, s) => q.Where(x => x.ArkLevel.CatOne.English.Contains(s)),
-            (q, s) => q.Where(x => x.ArkLevel.CatOne.Japanese.Contains(s)),
-            (q, s) => q.Where(x => x.ArkLevel.CatOne.Korean.Contains(s))
-            );
-
-    public static Func<IQueryable<Domain.Entities.CopilotOperation>, string, IQueryable<Domain.Entities.CopilotOperation>>
-        GetQueryLevelCatTwoFunc(this string? server) => ArkServerLanguage.Parse(server)
-        .GetArkServerLanguageSpecificAction
-            <Func<IQueryable<Domain.Entities.CopilotOperation>, string, IQueryable<Domain.Entities.CopilotOperation>>>(
-            (q, s) => q.Where(x => x.ArkLevel.CatTwo.ChineseSimplified.Contains(s)),
-            (q, s) => q.Where(x => x.ArkLevel.CatTwo.ChineseTraditional.Contains(s)),
-            (q, s) => q.Where(x => x.ArkLevel.CatTwo.English.Contains(s)),
-            (q, s) => q.Where(x => x.ArkLevel.CatTwo.Japanese.Contains(s)),
-            (q, s) => q.Where(x => x.ArkLevel.CatTwo.Korean.Contains(s))
-            );
-
-    public static Func<IQueryable<Domain.Entities.CopilotOperation>, string, IQueryable<Domain.Entities.CopilotOperation>>
-        GetQueryLevelCatThreeFunc(this string? server) => ArkServerLanguage.Parse(server)
-        .GetArkServerLanguageSpecificAction
-            <Func<IQueryable<Domain.Entities.CopilotOperation>, string, IQueryable<Domain.Entities.CopilotOperation>>>(
-                (q, s) => q.Where(x => x.ArkLevel.CatThree.ChineseSimplified.Contains(s)),
-                (q, s) => q.Where(x => x.ArkLevel.CatThree.ChineseTraditional.Contains(s)),
-                (q, s) => q.Where(x => x.ArkLevel.CatThree.English.Contains(s)),
-                (q, s) => q.Where(x => x.ArkLevel.CatThree.Japanese.Contains(s)),
-                (q, s) => q.Where(x => x.ArkLevel.CatThree.Korean.Contains(s))
-            );
+            (q, s) => q
+                    .Where(x => x.ArkLevel.Keyword != null)
+                    .Where(x => EF.Functions.ILike(x.ArkLevel.Keyword!.ChineseSimplified, $"%{s}%")),
+            (q, s) => q
+                    .Where(x => EF.Functions.ILike(x.ArkLevel.Keyword!.ChineseTraditional, $"%{s}%")),
+            (q, s) => q
+                    .Where(x => x.ArkLevel.Keyword != null)
+                    .Where(x => EF.Functions.ILike(x.ArkLevel.Keyword!.English, $"%{s}%")),
+            (q, s) => q
+                    .Where(x => x.ArkLevel.Keyword != null)
+                    .Where(x => EF.Functions.ILike(x.ArkLevel.Keyword!.Japanese, $"%{s}%")),
+            (q, s) => q
+                    .Where(x => x.ArkLevel.Keyword != null)
+                    .Where(x => EF.Functions.ILike(x.ArkLevel.Keyword!.Korean, $"%{s}%"))
+    );
 
     #endregion
 }

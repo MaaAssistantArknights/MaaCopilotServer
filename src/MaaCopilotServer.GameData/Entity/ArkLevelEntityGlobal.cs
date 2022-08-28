@@ -15,6 +15,7 @@ public class ArkLevelEntityGlobal
         LevelId = cn.LevelId;
         Width = cn.Width;
         Height = cn.Height;
+        Keyword = Helpers.BuildKeyword(Name, CatOne, CatTwo, CatThree);
     }
 
     /// <summary>
@@ -30,12 +31,14 @@ public class ArkLevelEntityGlobal
         CatThree = new ArkI18N($"{id}CatThreeCN", $"{id}CatThreeTW", $"{id}CatThreeEN", $"{id}CatThreeJP", $"{id}CatThreeKO");
         Width = 100;
         Height = 100;
+        Keyword = Helpers.BuildKeyword(Name, CatOne, CatTwo, CatThree);
     }
 
     public ArkI18N Name { get; }
     public ArkI18N CatOne { get; }
     public ArkI18N CatTwo { get; }
     public ArkI18N CatThree { get; }
+    public ArkI18N Keyword { get; }
 
     public string LevelId { get; }
     public int Width { get; } = 0;
