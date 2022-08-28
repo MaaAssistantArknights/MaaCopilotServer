@@ -912,33 +912,17 @@
             }
           },
           {
-            "name": "level_cat_one",
+            "name": "level_keyword",
             "in": "query",
-            "description": "Level category one.",
+            "description": "    The key word to search for. Set this field, the query will run\r\non all Categories and LevelNames.",
             "schema": {
               "type": "string"
             }
           },
           {
-            "name": "level_cat_two",
+            "name": "operator",
             "in": "query",
-            "description": "Level category two.",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "level_cat_three",
-            "in": "query",
-            "description": "Level category three.",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "level_name",
-            "in": "query",
-            "description": "Level name.",
+            "description": "    The operator query string. Use `,` to split multiple expressions. All expressions will be combined with AND.\r\nThe expression defaults to `Include`, add `~` at the beginning to perform an `Exclude` operation. Eg: `A,~B,C`\r\nwill be translate to `Must include A and C, and must exclude B`. The operator query will not be only applied to\r\nthe `Operators` field of copilot operation. It will not be applied to the `Groups` field, because this field is\r\ntoo complex to perform a query on. Be aware that `Exclude` operation is performed before `Include` operation.",
             "schema": {
               "type": "string"
             }
@@ -3722,6 +3706,7 @@
         "type": "object",
         "properties": {
           "token": {
+            "minLength": 1,
             "type": "string",
             "description": "Account activation token."
           }
@@ -3736,6 +3721,7 @@
         "type": "object",
         "properties": {
           "user_id": {
+            "minLength": 1,
             "type": "string",
             "description": "The user id."
           },
@@ -3782,6 +3768,7 @@
         "type": "object",
         "properties": {
           "id": {
+            "minLength": 1,
             "type": "string",
             "description": "The operation ID."
           }
@@ -3804,10 +3791,12 @@
             "format": "int32"
           },
           "message": {
+            "minLength": 1,
             "type": "string",
             "description": "The message."
           },
           "trace_id": {
+            "minLength": 1,
             "type": "string",
             "description": "The tracking ID."
           },
@@ -3828,18 +3817,22 @@
         "type": "object",
         "properties": {
           "email": {
+            "minLength": 1,
             "type": "string",
             "description": "The user email."
           },
           "password": {
+            "minLength": 1,
             "type": "string",
             "description": "The user password."
           },
           "user_name": {
+            "minLength": 1,
             "type": "string",
             "description": "The username."
           },
           "role": {
+            "minLength": 1,
             "type": "string",
             "description": "The role of the user. Valid values are: Admin, Uploader, User."
           }
@@ -3854,6 +3847,7 @@
         "type": "object",
         "properties": {
           "id": {
+            "minLength": 1,
             "type": "string",
             "description": "The operation ID."
           }
@@ -3868,6 +3862,7 @@
         "type": "object",
         "properties": {
           "user_id": {
+            "minLength": 1,
             "type": "string",
             "description": "The id of the user that pending to delete."
           }
@@ -3904,10 +3899,12 @@
             "format": "int32"
           },
           "message": {
+            "minLength": 1,
             "type": "string",
             "description": "The message."
           },
           "trace_id": {
+            "minLength": 1,
             "type": "string",
             "description": "The tracking ID."
           },
@@ -3940,26 +3937,32 @@
         "type": "object",
         "properties": {
           "id": {
+            "minLength": 1,
             "type": "string",
             "description": "The operation id."
           },
           "minimum_required": {
+            "minLength": 1,
             "type": "string",
             "description": "The minimum required version of MAA."
           },
           "upload_time": {
+            "minLength": 1,
             "type": "string",
             "description": "The time when the operation was uploaded."
           },
           "title": {
+            "minLength": 1,
             "type": "string",
             "description": "The name of the uploader."
           },
           "detail": {
+            "minLength": 1,
             "type": "string",
             "description": "The title of the operation."
           },
           "uploader": {
+            "minLength": 1,
             "type": "string",
             "description": "The detail of the operation."
           },
@@ -4014,6 +4017,7 @@
             "$ref": "#/components/schemas/DifficultyType"
           },
           "content": {
+            "minLength": 1,
             "type": "string",
             "description": "The operation JSON content."
           }
@@ -4036,10 +4040,12 @@
             "format": "int32"
           },
           "message": {
+            "minLength": 1,
             "type": "string",
             "description": "The message."
           },
           "trace_id": {
+            "minLength": 1,
             "type": "string",
             "description": "The tracking ID."
           },
@@ -4066,6 +4072,7 @@
             "format": "uuid"
           },
           "user_name": {
+            "minLength": 1,
             "type": "string",
             "description": "The username."
           },
@@ -4100,10 +4107,12 @@
             "format": "int32"
           },
           "message": {
+            "minLength": 1,
             "type": "string",
             "description": "The message."
           },
           "trace_id": {
+            "minLength": 1,
             "type": "string",
             "description": "The tracking ID."
           },
@@ -4122,10 +4131,12 @@
         "type": "object",
         "properties": {
           "version": {
+            "minLength": 1,
             "type": "string",
             "description": "The version of the server."
           },
           "time": {
+            "minLength": 1,
             "type": "string",
             "description": "The current time of the server."
           }
@@ -4148,10 +4159,12 @@
             "format": "int32"
           },
           "message": {
+            "minLength": 1,
             "type": "string",
             "description": "The message."
           },
           "trace_id": {
+            "minLength": 1,
             "type": "string",
             "description": "The tracking ID."
           },
@@ -4171,6 +4184,7 @@
         "type": "object",
         "properties": {
           "level": {
+            "minLength": 1,
             "type": "string",
             "description": "Level version."
           },
@@ -4199,10 +4213,12 @@
             "format": "int32"
           },
           "message": {
+            "minLength": 1,
             "type": "string",
             "description": "The message."
           },
           "trace_id": {
+            "minLength": 1,
             "type": "string",
             "description": "The tracking ID."
           },
@@ -4226,22 +4242,27 @@
         "type": "object",
         "properties": {
           "cat_one": {
+            "minLength": 1,
             "type": "string",
             "description": "Category one of the level."
           },
           "cat_two": {
+            "minLength": 1,
             "type": "string",
             "description": "Category two of the level."
           },
           "cat_three": {
+            "minLength": 1,
             "type": "string",
             "description": "Category three of the level."
           },
           "name": {
+            "minLength": 1,
             "type": "string",
             "description": "The name of the level."
           },
           "level_id": {
+            "minLength": 1,
             "type": "string",
             "description": "The level id."
           },
@@ -4274,10 +4295,12 @@
             "format": "int32"
           },
           "message": {
+            "minLength": 1,
             "type": "string",
             "description": "The message."
           },
           "trace_id": {
+            "minLength": 1,
             "type": "string",
             "description": "The tracking ID."
           },
@@ -4303,14 +4326,17 @@
         "type": "object",
         "properties": {
           "name": {
+            "minLength": 1,
             "type": "string",
             "description": "The name of the operator."
           },
           "id": {
+            "minLength": 1,
             "type": "string",
             "description": "The ID of the operator."
           },
           "profession": {
+            "minLength": 1,
             "type": "string",
             "description": "The profession of the operator."
           },
@@ -4338,10 +4364,12 @@
             "format": "int32"
           },
           "message": {
+            "minLength": 1,
             "type": "string",
             "description": "The message."
           },
           "trace_id": {
+            "minLength": 1,
             "type": "string",
             "description": "The tracking ID."
           },
@@ -4365,10 +4393,12 @@
         "type": "object",
         "properties": {
           "email": {
+            "minLength": 1,
             "type": "string",
             "description": "The user email."
           },
           "password": {
+            "minLength": 1,
             "type": "string",
             "description": "The password."
           }
@@ -4387,18 +4417,22 @@
         "type": "object",
         "properties": {
           "token": {
+            "minLength": 1,
             "type": "string",
             "description": "The JWT token."
           },
           "valid_before": {
+            "minLength": 1,
             "type": "string",
             "description": "The token expiration time."
           },
           "refresh_token": {
+            "minLength": 1,
             "type": "string",
             "description": "The refresh token."
           },
           "refresh_token_valid_before": {
+            "minLength": 1,
             "type": "string",
             "description": "The refresh token expiration time."
           },
@@ -4424,10 +4458,12 @@
             "format": "int32"
           },
           "message": {
+            "minLength": 1,
             "type": "string",
             "description": "The message."
           },
           "trace_id": {
+            "minLength": 1,
             "type": "string",
             "description": "The tracking ID."
           },
@@ -4475,10 +4511,12 @@
         "type": "object",
         "properties": {
           "token": {
+            "minLength": 1,
             "type": "string",
             "description": "The token to validate this request."
           },
           "password": {
+            "minLength": 1,
             "type": "string",
             "description": "The new password."
           }
@@ -4507,26 +4545,32 @@
         "type": "object",
         "properties": {
           "id": {
+            "minLength": 1,
             "type": "string",
             "description": "The operation id."
           },
           "minimum_required": {
+            "minLength": 1,
             "type": "string",
             "description": "The minimum required version of MAA."
           },
           "upload_time": {
+            "minLength": 1,
             "type": "string",
             "description": "The time when the operation was uploaded."
           },
           "title": {
+            "minLength": 1,
             "type": "string",
             "description": "The name of the uploader."
           },
           "detail": {
+            "minLength": 1,
             "type": "string",
             "description": "The title of the operation."
           },
           "uploader": {
+            "minLength": 1,
             "type": "string",
             "description": "The detail of the operation."
           },
@@ -4628,10 +4672,12 @@
             "format": "int32"
           },
           "message": {
+            "minLength": 1,
             "type": "string",
             "description": "The message."
           },
           "trace_id": {
+            "minLength": 1,
             "type": "string",
             "description": "The tracking ID."
           },
@@ -4656,6 +4702,7 @@
             "format": "uuid"
           },
           "user_name": {
+            "minLength": 1,
             "type": "string",
             "description": "The username."
           },
@@ -4710,10 +4757,12 @@
             "format": "int32"
           },
           "message": {
+            "minLength": 1,
             "type": "string",
             "description": "The message."
           },
           "trace_id": {
+            "minLength": 1,
             "type": "string",
             "description": "The tracking ID."
           },
@@ -4732,10 +4781,12 @@
         "type": "object",
         "properties": {
           "id": {
+            "minLength": 1,
             "type": "string",
             "description": "The id of the operation."
           },
           "rating": {
+            "minLength": 1,
             "type": "string",
             "description": "The rating type of the operation. Could be Like, Dislike or None."
           }
@@ -4797,10 +4848,12 @@
             "format": "int32"
           },
           "message": {
+            "minLength": 1,
             "type": "string",
             "description": "The message."
           },
           "trace_id": {
+            "minLength": 1,
             "type": "string",
             "description": "The tracking ID."
           },
@@ -4834,10 +4887,12 @@
         "type": "object",
         "properties": {
           "access_token": {
+            "minLength": 1,
             "type": "string",
             "description": "Expired access token."
           },
           "refresh_token": {
+            "minLength": 1,
             "type": "string",
             "description": "Refresh token."
           }
@@ -4854,14 +4909,17 @@
         "type": "object",
         "properties": {
           "email": {
+            "minLength": 1,
             "type": "string",
             "description": "The user email."
           },
           "user_name": {
+            "minLength": 1,
             "type": "string",
             "description": "The username."
           },
           "password": {
+            "minLength": 1,
             "type": "string",
             "description": "The password."
           }
@@ -4881,6 +4939,7 @@
         "type": "object",
         "properties": {
           "email": {
+            "minLength": 1,
             "type": "string",
             "description": "The email address of the user."
           }
@@ -4899,22 +4958,27 @@
         "type": "object",
         "properties": {
           "chinese_simplified": {
+            "minLength": 1,
             "type": "string",
             "description": "Chinese (China Mainland) server info."
           },
           "chinese_traditional": {
+            "minLength": 1,
             "type": "string",
             "description": "Chinese (Taiwan, China) server info."
           },
           "english": {
+            "minLength": 1,
             "type": "string",
             "description": "English (Global) server info."
           },
           "japanese": {
+            "minLength": 1,
             "type": "string",
             "description": "Japanese (Japan) server info."
           },
           "korean": {
+            "minLength": 1,
             "type": "string",
             "description": "Korean (Korea) server info."
           }
@@ -4930,10 +4994,12 @@
         "type": "object",
         "properties": {
           "content": {
+            "minLength": 1,
             "type": "string",
             "description": "The operation JSON content."
           },
           "id": {
+            "minLength": 1,
             "type": "string",
             "description": "The operation id which is pending to change."
           }
@@ -4966,10 +5032,12 @@
         "type": "object",
         "properties": {
           "original_password": {
+            "minLength": 1,
             "type": "string",
             "description": "The original password."
           },
           "new_password": {
+            "minLength": 1,
             "type": "string",
             "description": "The new password."
           }
