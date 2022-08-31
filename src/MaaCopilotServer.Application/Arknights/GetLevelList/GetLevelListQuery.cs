@@ -24,6 +24,12 @@ public record GetLevelListQuery : IRequest<MaaApiResponse>
     /// </summary>
     [FromQuery(Name = "language")]
     public string Language { get; set; } = string.Empty;
+
+    /// <summary>
+    ///     Query managed level or custom level.
+    /// </summary>
+    [FromQuery(Name = "custom")]
+    public string Custom { get; set; } = string.Empty;
 }
 
 public class GetLevelListQueryHandler : IRequestHandler<GetLevelListQuery, MaaApiResponse>
@@ -43,6 +49,16 @@ public class GetLevelListQueryHandler : IRequestHandler<GetLevelListQuery, MaaAp
             .Include(x => x.CatTwo)
             .Include(x => x.CatThree)
             .AsQueryable();
+
+        switch (request.Custom)
+        {
+            case "true":
+                query = query.Where(x => x.Custom == true);
+                break;
+            case "false":
+                query = query.Where(x => x.Custom == false);
+                break;
+        }
 
         var qFunc = request.Language.GetLevelQueryFunc();
         var mFunc = request.Language.GetLevelMapperFunc();

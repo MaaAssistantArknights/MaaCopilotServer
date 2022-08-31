@@ -22,7 +22,8 @@ public class GetLevelListDto
     /// <param name="levelId">The level id.</param>
     /// <param name="width">The width of the level.</param>
     /// <param name="height">The height of the level.</param>
-    public GetLevelListDto(string catOne, string catTwo, string catThree, string name, string levelId, int width, int height)
+    /// <param name="custom">Whether the level is added manually or not.</param>
+    public GetLevelListDto(string catOne, string catTwo, string catThree, string name, string levelId, int width, int height, bool custom = false)
     {
         CatOne = catOne;
         CatTwo = catTwo;
@@ -31,6 +32,7 @@ public class GetLevelListDto
         LevelId = levelId;
         Width = width;
         Height = height;
+        Custom = custom;
     }
 
 #pragma warning disable CS8618
@@ -85,4 +87,11 @@ public class GetLevelListDto
     [Required]
     [JsonPropertyName("height")]
     public int Height { get; set; }
+    
+    /// <summary>
+    ///     Whether the level is added manually or not.
+    /// </summary>
+    [Required]
+    [JsonPropertyName("custom")]
+    public bool Custom { get; set; }
 }

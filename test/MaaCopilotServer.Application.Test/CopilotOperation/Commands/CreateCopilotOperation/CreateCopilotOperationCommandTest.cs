@@ -8,8 +8,10 @@ using System.Text.Json.Serialization;
 using MaaCopilotServer.Application.Common.Helpers;
 using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Application.CopilotOperation.Commands.CreateCopilotOperation;
+using MaaCopilotServer.Domain.Entities;
 using MaaCopilotServer.Domain.Enums;
 using MaaCopilotServer.Domain.Options;
+using MaaCopilotServer.GameData.Entity;
 using MaaCopilotServer.Infrastructure.Services;
 using MaaCopilotServer.Resources;
 using Microsoft.AspNetCore.Http;
@@ -109,7 +111,7 @@ public class CreateCopilotOperationCommandTest
         {
             IsValid = true,
             Operation = OperationFull,
-            ArkLevel = new(new("test_stage_name")),
+            ArkLevel = new ArkLevelData(new ArkLevelEntityGlobal("test_stage_name")),
         });
         test.CurrentUserService.SetupGetUser(new(string.Empty, string.Empty, string.Empty, UserRole.User, Guid.Empty));
         var result = test.TestCreateCopilotOperation(new()

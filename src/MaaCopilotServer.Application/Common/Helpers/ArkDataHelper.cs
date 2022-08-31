@@ -34,7 +34,8 @@ public static class ArkDataHelper
                 Name = data.Name.ChineseSimplified,
                 LevelId = data.LevelId,
                 Height = data.Height,
-                Width = data.Width
+                Width = data.Width,
+                Custom = data.Custom
             };
 
     private static readonly Func<ArkLevelData, GetLevelListDto> s_levelMapTw = data =>
@@ -46,7 +47,8 @@ public static class ArkDataHelper
             Name = data.Name.ChineseTraditional,
             LevelId = data.LevelId,
             Height = data.Height,
-            Width = data.Width
+            Width = data.Width,
+            Custom = data.Custom
         };
 
     private static readonly Func<ArkLevelData, GetLevelListDto> s_levelMapEn = data =>
@@ -58,7 +60,8 @@ public static class ArkDataHelper
                 Name = data.Name.English,
                 LevelId = data.LevelId,
                 Height = data.Height,
-                Width = data.Width
+                Width = data.Width,
+                Custom = data.Custom
             };
 
     private static readonly Func<ArkLevelData, GetLevelListDto> s_levelMapJp = data =>
@@ -70,7 +73,8 @@ public static class ArkDataHelper
                 Name = data.Name.Japanese,
                 LevelId = data.LevelId,
                 Height = data.Height,
-                Width = data.Width
+                Width = data.Width,
+                Custom = data.Custom
             };
 
     private static readonly Func<ArkLevelData, GetLevelListDto> s_levelMapKo = data =>
@@ -82,7 +86,8 @@ public static class ArkDataHelper
                 Name = data.Name.Korean,
                 LevelId = data.LevelId,
                 Height = data.Height,
-                Width = data.Width
+                Width = data.Width,
+                Custom = data.Custom
             };
 
     #endregion

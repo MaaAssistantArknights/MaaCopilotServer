@@ -4,6 +4,8 @@
 
 using FluentEmail.Core;
 using MaaCopilotServer.Application.Arknights.GetLevelList;
+using MaaCopilotServer.Domain.Entities;
+using MaaCopilotServer.GameData.Entity;
 using Microsoft.AspNetCore.Http;
 
 namespace MaaCopilotServer.Application.Test.Arknights.GetLevelList;
@@ -35,7 +37,7 @@ public class GetLevelListQueryTest
     public void TestHandle(string requestServer, string server)
     {
         var test = new HandlerTest();
-        test.DbContext.Setup(db => db.ArkLevelData.Add(new(new())));
+        test.DbContext.Setup(db => db.ArkLevelData.Add(new ArkLevelData(new ArkLevelEntityGlobal())));
 
         var result = test.TestGetLevelList(new()
         {
