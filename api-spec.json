@@ -158,6 +158,14 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "custom",
+            "in": "query",
+            "description": "Query managed level or custom level.",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -423,6 +431,318 @@
             }
           }
         }
+      }
+    },
+    "/arknights/custom/add": {
+      "post": {
+        "tags": [
+          "Arknights"
+        ],
+        "summary": "Add or update custom level data.",
+        "description": "<list type=\"bullet\">\r\n  <item>\r\n    <term>200</term>\r\n    <description>\r\n                        Total database changes count, added and updated level ids.\r\n                    </description>\r\n  </item>\r\n</list>",
+        "requestBody": {
+          "description": "The level list.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddOrUpdateCustomLevelsCommandBatch"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddOrUpdateCustomLevelsCommandBatch"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddOrUpdateCustomLevelsCommandBatch"
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddOrUpdateCustomLevelsDtoMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddOrUpdateCustomLevelsDtoMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddOrUpdateCustomLevelsDtoMaaApiResponseModel"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
+      }
+    },
+    "/arknights/custom/remove": {
+      "post": {
+        "tags": [
+          "Arknights"
+        ],
+        "summary": "Remove custom level data.",
+        "description": "<list type=\"bullet\">\r\n  <item>\r\n    <term>200</term>\r\n    <description>\r\n                        Total database changes count and removed level ids.\r\n                    </description>\r\n  </item>\r\n</list>",
+        "requestBody": {
+          "description": "The remove level ids.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RemoveCustomLevelsCommand"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RemoveCustomLevelsCommand"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/RemoveCustomLevelsCommand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyObjectModelMaaApiResponseModel"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RemoveCustomLevelsDtoMaaApiResponseModel"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/RemoveCustomLevelsDtoMaaApiResponseModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RemoveCustomLevelsDtoMaaApiResponseModel"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
       }
     },
     "/copilot/upload": {
@@ -3714,6 +4034,137 @@
         "additionalProperties": false,
         "description": "The DTO for the ActivateCopilotAccount command."
       },
+      "AddOrUpdateCustomLevelsCommand": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "$ref": "#/components/schemas/ArkI18NDto"
+          },
+          "cat_one": {
+            "$ref": "#/components/schemas/ArkI18NDto"
+          },
+          "cat_two": {
+            "$ref": "#/components/schemas/ArkI18NDto"
+          },
+          "cat_three": {
+            "$ref": "#/components/schemas/ArkI18NDto"
+          },
+          "level_id": {
+            "type": "string",
+            "description": "Arknights level id. Custom levels will have `copilot-custom/` prefix added to their id automatically.",
+            "nullable": true
+          },
+          "width": {
+            "type": "integer",
+            "description": "Map width, defaults to 0.",
+            "format": "int32"
+          },
+          "height": {
+            "type": "integer",
+            "description": "Map height, defaults to 0.",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "AddOrUpdateCustomLevelsCommandBatch": {
+        "type": "object",
+        "properties": {
+          "custom_levels": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AddOrUpdateCustomLevelsCommand"
+            },
+            "description": "Custom levels to add or update.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "AddOrUpdateCustomLevelsDto": {
+        "type": "object",
+        "properties": {
+          "db_context_changes": {
+            "type": "integer",
+            "description": "Total number of database changes.",
+            "format": "int32"
+          },
+          "added": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Added levels.",
+            "nullable": true
+          },
+          "updated": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Updated levels.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "AddOrUpdateCustomLevelsDtoMaaApiResponseModel": {
+        "required": [
+          "data",
+          "message",
+          "status_code",
+          "trace_id"
+        ],
+        "type": "object",
+        "properties": {
+          "status_code": {
+            "type": "integer",
+            "description": "The status code.",
+            "format": "int32"
+          },
+          "message": {
+            "minLength": 1,
+            "type": "string",
+            "description": "The message."
+          },
+          "trace_id": {
+            "minLength": 1,
+            "type": "string",
+            "description": "The tracking ID."
+          },
+          "data": {
+            "$ref": "#/components/schemas/AddOrUpdateCustomLevelsDto"
+          }
+        },
+        "additionalProperties": false,
+        "description": "The maa server api response model."
+      },
+      "ArkI18NDto": {
+        "type": "object",
+        "properties": {
+          "cn": {
+            "type": "string",
+            "nullable": true
+          },
+          "cn_tw": {
+            "type": "string",
+            "nullable": true
+          },
+          "en": {
+            "type": "string",
+            "nullable": true
+          },
+          "jp": {
+            "type": "string",
+            "nullable": true
+          },
+          "ko": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "ChangeCopilotUserInfoCommand": {
         "required": [
           "user_id"
@@ -4234,6 +4685,7 @@
           "cat_one",
           "cat_three",
           "cat_two",
+          "custom",
           "height",
           "level_id",
           "name",
@@ -4275,6 +4727,10 @@
             "type": "integer",
             "description": "The height of the level.",
             "format": "int32"
+          },
+          "custom": {
+            "type": "boolean",
+            "description": "Whether the level is added manually or not."
           }
         },
         "additionalProperties": false,
@@ -4926,6 +5382,70 @@
         },
         "additionalProperties": false,
         "description": "The DTO for the RegisterCopilotAccount command."
+      },
+      "RemoveCustomLevelsCommand": {
+        "type": "object",
+        "properties": {
+          "level_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "A list of level ids that is pending to be removed.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "RemoveCustomLevelsDto": {
+        "type": "object",
+        "properties": {
+          "db_context_changes": {
+            "type": "integer",
+            "description": "Total number of database changes.",
+            "format": "int32"
+          },
+          "removed": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Removed levels.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "RemoveCustomLevelsDtoMaaApiResponseModel": {
+        "required": [
+          "data",
+          "message",
+          "status_code",
+          "trace_id"
+        ],
+        "type": "object",
+        "properties": {
+          "status_code": {
+            "type": "integer",
+            "description": "The status code.",
+            "format": "int32"
+          },
+          "message": {
+            "minLength": 1,
+            "type": "string",
+            "description": "The message."
+          },
+          "trace_id": {
+            "minLength": 1,
+            "type": "string",
+            "description": "The tracking ID."
+          },
+          "data": {
+            "$ref": "#/components/schemas/RemoveCustomLevelsDto"
+          }
+        },
+        "additionalProperties": false,
+        "description": "The maa server api response model."
       },
       "RequestActivationTokenCommand": {
         "type": "object",
