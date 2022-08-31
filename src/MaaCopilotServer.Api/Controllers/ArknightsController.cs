@@ -3,9 +3,11 @@
 // Licensed under the AGPL-3.0 license.
 
 using MaaCopilotServer.Api.Swagger;
+using MaaCopilotServer.Application.Arknights.AddOrUpdateCustomLevels;
 using MaaCopilotServer.Application.Arknights.GetDataVersion;
 using MaaCopilotServer.Application.Arknights.GetLevelList;
 using MaaCopilotServer.Application.Arknights.GetOperatorList;
+using MaaCopilotServer.Application.Arknights.RemoveCustomLevels;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -117,5 +119,49 @@ public class ArknightsController : MaaControllerBase
     public async Task<ActionResult> GetArkOperatorList([FromQuery] GetOperatorListQuery query)
     {
         return await GetResponse(query);
+    }
+
+    /// <summary>
+    ///     Add or update custom level data.
+    /// </summary>
+    /// <param name="command">The level list.</param>
+    /// <returns>An asynchronous operation representing the response.</returns>
+    /// <remarks>
+    /// <list type="bullet">
+    ///     <item>
+    ///         <term>200</term>
+    ///         <description>
+    ///             Total database changes count, added and updated level ids.
+    ///         </description>
+    ///     </item>
+    /// </list>
+    /// </remarks>
+    [HttpPost("custom/add")]
+    [ProducesResponseType(typeof(MaaApiResponseModel<AddOrUpdateCustomLevelsDto>), StatusCodes.Status200OK)]
+    public async Task<ActionResult> AddOrUpdateCustomLevels([FromBody] AddOrUpdateCustomLevelsCommandBatch command)
+    {
+        return await GetResponse(command);
+    }
+
+    /// <summary>
+    ///     Remove custom level data.
+    /// </summary>
+    /// <param name="command">The remove level ids.</param>
+    /// <returns>An asynchronous operation representing the response.</returns>
+    /// <remarks>
+    /// <list type="bullet">
+    ///     <item>
+    ///         <term>200</term>
+    ///         <description>
+    ///             Total database changes count and removed level ids.
+    ///         </description>
+    ///     </item>
+    /// </list>
+    /// </remarks>
+    [HttpPost("custom/remove")]
+    [ProducesResponseType(typeof(MaaApiResponseModel<RemoveCustomLevelsDto>), StatusCodes.Status200OK)]
+    public async Task<ActionResult> RemoveCustomLevels([FromBody] RemoveCustomLevelsCommand command)
+    {
+        return await GetResponse(command);
     }
 }

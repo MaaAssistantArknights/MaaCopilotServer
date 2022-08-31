@@ -18,26 +18,28 @@ public class ArkLevelData : BaseEntity
         Update(level);
         CreateBy = Guid.Empty;
     }
-#pragma warning restore CS8618
-
-#pragma warning disable CS8618
+    public ArkLevelData(Guid creator)
+    {
+        CreateBy = creator;
+    }
+    
     // ReSharper disable once UnusedMember.Local
-    private ArkLevelData() { }
+    public ArkLevelData() { }
 #pragma warning restore CS8618
 
     // ReSharper disable AutoPropertyCanBeMadeGetOnly.Local
 
-    public ArkI18N Name { get; private set; } = new();
-    public ArkI18N CatOne { get; private set; } = new();
-    public ArkI18N CatTwo { get; private set; } = new();
-    public ArkI18N CatThree { get; private set; } = new();
-    public ArkI18N? Keyword { get; private set; }
+    public ArkI18N Name { get; set; } = new();
+    public ArkI18N CatOne { get; set; } = new();
+    public ArkI18N CatTwo { get; set; } = new();
+    public ArkI18N CatThree { get; set; } = new();
+    public ArkI18N? Keyword { get; set; }
 
-    public string LevelId { get; private set; }
-    public int Width { get; private set; }
-    public int Height { get; private set; }
+    public string LevelId { get; set; }
+    public int Width { get; set; }
+    public int Height { get; set; }
 
-    public bool Custom { get; private set; } = false;
+    public bool Custom { get; set; }
 
     public void Update(ArkLevelEntityGlobal level)
     {

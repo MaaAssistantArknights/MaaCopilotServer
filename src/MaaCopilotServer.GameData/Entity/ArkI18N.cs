@@ -6,7 +6,7 @@ namespace MaaCopilotServer.GameData.Entity;
 
 public class ArkI18N
 {
-    internal ArkI18N(string chineseSimplified, string? chineseTraditional, string? english, string? japanese, string? korean)
+    public ArkI18N(string chineseSimplified, string? chineseTraditional, string? english, string? japanese, string? korean)
     {
         ChineseSimplified = chineseSimplified;
         ChineseTraditional = chineseTraditional ?? string.Empty;
