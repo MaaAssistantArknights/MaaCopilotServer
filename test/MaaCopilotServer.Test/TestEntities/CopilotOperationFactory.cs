@@ -4,6 +4,7 @@
 
 using MaaCopilotServer.Domain.Entities;
 using MaaCopilotServer.Domain.Enums;
+using MaaCopilotServer.GameData.Entity;
 
 namespace MaaCopilotServer.Test.TestEntities;
 
@@ -51,7 +52,7 @@ public class CopilotOperationFactory : ITestEntityFactory<CopilotOperation>
     /// <summary>
     ///     The level this operation is made for.
     /// </summary>
-    public ArkLevelData ArkLevel { get; set; } = new(new());
+    public ArkLevelData ArkLevel { get; set; } = new(new ArkLevelEntityGlobal());
 
     /// <summary>
     ///     The operators in the operation.

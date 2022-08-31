@@ -7,6 +7,7 @@ using MaaCopilotServer.Application.Common.Helpers;
 using MaaCopilotServer.Application.Common.Models;
 using MaaCopilotServer.Application.CopilotOperation.Queries.QueryCopilotOperations;
 using MaaCopilotServer.Domain.Entities;
+using MaaCopilotServer.GameData.Entity;
 using Microsoft.AspNetCore.Http;
 
 namespace MaaCopilotServer.Application.Test.CopilotOperation.Queries.QueryCopilotOperations;
@@ -49,11 +50,11 @@ public class QueryCopilotOperationsQueryTest
         List<Domain.Entities.CopilotOperation> data = new();
         for (var i = 0; i < 5; i++)
         {
-            data.Add(new CopilotOperationFactory { Id = i, Content = $"content{i}", Author = users[0], ArkLevel = new(new($"level{i}")) }.Build());
+            data.Add(new CopilotOperationFactory { Id = i, Content = $"content{i}", Author = users[0], ArkLevel = new ArkLevelData(new ArkLevelEntityGlobal($"level{i}")) }.Build());
         }
         for (var i = 5; i < 10; i++)
         {
-            data.Add(new CopilotOperationFactory { Id = i, Content = $"content{i}", Author = users[1], ArkLevel = new(new($"level{i}")) }.Build());
+            data.Add(new CopilotOperationFactory { Id = i, Content = $"content{i}", Author = users[1], ArkLevel = new ArkLevelData(new ArkLevelEntityGlobal($"level{i}")) }.Build());
         }
 
         List<CopilotOperationRating> rating = new();
