@@ -216,7 +216,9 @@ public class ArknightsDataUpdate : IHostedService
                     return;
                 }
 
-                var dbLevelData = await db.ArkLevelData.ToListAsync(cancellationToken);
+                var dbLevelData = await db.ArkLevelData
+                    .Where(x => x.Custom == false)
+                    .ToListAsync(cancellationToken);
                 var dbCharData = await db.ArkCharacterInfos.ToListAsync(cancellationToken);
                 var currentData = await GetParsedData();
 

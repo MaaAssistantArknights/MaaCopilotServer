@@ -37,6 +37,8 @@ public class ArkLevelData : BaseEntity
     public int Width { get; private set; }
     public int Height { get; private set; }
 
+    public bool Custom { get; private set; } = false;
+
     public void Update(ArkLevelEntityGlobal level)
     {
         Name.Update(level.Name);
