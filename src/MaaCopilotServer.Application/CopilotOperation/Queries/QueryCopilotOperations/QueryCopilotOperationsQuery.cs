@@ -36,6 +36,12 @@ public record QueryCopilotOperationsQuery : IRequest<MaaApiResponse>
     public string? Keyword { get; set; }
 
     /// <summary>
+    ///     The Title and Details to search for.
+    /// </summary>
+    [FromQuery(Name = "document")]
+    public string? Document { get; set; } = null;
+
+    /// <summary>
     ///     The operator query string. Use `,` to split multiple expressions. All expressions will be combined with AND.
     /// The expression defaults to `Include`, add `~` at the beginning to perform an `Exclude` operation. Eg: `A,~B,C`
     /// will be translate to `Must include A and C, and must exclude B`. The operator query will not be only applied to
@@ -167,6 +173,15 @@ public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOp
         {
             // if keyword is set, filter by it
             queryable = request.Language.GetQueryKeywordFunc().Invoke(queryable, request.Keyword);
+        }
+
+        if (string.IsNullOrEmpty(request.Document) is false)
+        {
+            // if document is set, filter by it
+            // match both Title and Details fields
+            queryable = queryable.Where(x =>
+                EF.Functions.ILike(x.Title, $"%{request.Document}%") ||
+                EF.Functions.ILike(x.Details, $"%{request.Document}%"));
         }
 
         if (uploaderId is not null)
