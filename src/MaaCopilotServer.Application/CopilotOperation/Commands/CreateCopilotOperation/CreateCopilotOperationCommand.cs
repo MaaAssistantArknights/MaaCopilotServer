@@ -56,9 +56,16 @@ public class CreateCopilotOperationCommandHandler : IRequestHandler<CreateCopilo
         // Get user
         var user = (await _currentUserService.GetUser()).IsNotNull();
 
+        // Check if the stage is custom stage or not
+        var realContent = validationResult.ArkLevel!.Custom
+            ? request.Content!.Replace(
+                validationResult.ArkLevel.LevelId,
+                validationResult.ArkLevel.LevelId.Replace("copilot-custom/", string.Empty))
+            : request.Content!;
+
         // Build entity
         var entity = new Domain.Entities.CopilotOperation(
-            request.Content!,
+            realContent,
             obj.MinimumRequired!,
             obj.Doc!.Title!,
             obj.Doc!.Details!,

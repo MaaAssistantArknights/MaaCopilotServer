@@ -39,6 +39,8 @@ public class GetLevelListDto
     public GetLevelListDto() { }
 #pragma warning restore CS8618
 
+    private string _levelId = string.Empty;
+    
     /// <summary>
     ///     Category one of the level.
     /// </summary>
@@ -72,7 +74,10 @@ public class GetLevelListDto
     /// </summary>
     [Required]
     [JsonPropertyName("level_id")]
-    public string LevelId { get; set; }
+    public string LevelId {
+        get => Custom ? _levelId.Replace("copilot-custom/", string.Empty) : _levelId;
+        set => _levelId = value;
+    }
 
     /// <summary>
     ///     The width of the level.
