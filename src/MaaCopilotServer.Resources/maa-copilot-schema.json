@@ -208,6 +208,19 @@
           "description": "Waiting until the cost changes for the amount specified, optional, 0 by default.",
           "minimum": 0
         },
+        "cooling": {
+          "type": "integer",
+          "description": "The count of operators in re-deployment cooling. -1 by default.",
+          "minimum": -1,
+          "default": -1
+        },
+        "condition_type": {
+          "type": "integer",
+          "description": "The condition (kills, cost_changes, cooling) calculation type. 0 means AND, 1 means OR. 0 by default.",
+          "minimum": 0,
+          "maximum": 1,
+          "default": 0
+        },
         "name": {
           "type": "string",
           "description": "Operator/group name, required when `type` is one of \"Deploy (部署)\", Optional when `type` is \"Skill (技能)\" or \"Retreat (撤退)\"."

@@ -14,6 +14,10 @@ public class Action
     public int? Kills { get; set; }
     [JsonPropertyName("cost_changes")]
     public int? CostChanges { get; set; }
+    [JsonPropertyName("cooling")]
+    public int? Cooling { get; set; }
+    [JsonPropertyName("condition_type")]
+    public int? ConditionType { get; set; }
     [JsonPropertyName("name")]
     public string? Name { get; set; }
     [JsonPropertyName("location")]
