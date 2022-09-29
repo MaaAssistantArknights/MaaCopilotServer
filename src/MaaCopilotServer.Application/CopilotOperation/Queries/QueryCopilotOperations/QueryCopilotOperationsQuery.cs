@@ -252,9 +252,8 @@ public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOp
 
             e = exclude.Aggregate(e,
                 (current, condition) => 
-                    current
-                        .SkipWhile(x =>
-                            x.Operators.Any(y => y.Contains(condition))));
+                    current.Where(x =>
+                        x.Operators.Any(y => y.Contains(condition) is false)));
             e = include.Aggregate(e,
                 (current, condition) =>
                     current.Where(x =>
