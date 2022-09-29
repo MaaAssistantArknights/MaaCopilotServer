@@ -235,11 +235,11 @@ public class QueryCopilotOperationsQueryHandler : IRequestHandler<QueryCopilotOp
             
             var conditions = request.Operator.Split(",");
             var exclude = conditions
-                .Where(x => x.Length > 2)
+                .Where(x => x.Length > 1)
                 .Where(x => x.StartsWith("~"))
                 .Select(x => x[1..]);
             var include = conditions
-                .Where(x => x.Length > 1)
+                .Where(x => x.Length > 0)
                 .Where(x => x.StartsWith("~") is false);
 
             // The following aggregated complex query can not be translated to SQL.
