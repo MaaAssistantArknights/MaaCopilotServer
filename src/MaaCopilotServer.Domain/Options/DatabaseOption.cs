@@ -16,8 +16,32 @@ namespace MaaCopilotServer.Domain.Options;
 public class DatabaseOption
 {
     /// <summary>
-    ///     The connection string.
+    ///     The database host.
     /// </summary>
-    [JsonPropertyName("ConnectionString")]
-    public string ConnectionString { get; set; } = null!;
+    [JsonPropertyName("Host")]
+    public string Host { get; set; } = null!;
+    
+    /// <summary>
+    ///     The database port.
+    /// </summary>
+    [JsonPropertyName("Port")]
+    public int Port { get; set; }
+    
+    /// <summary>
+    ///     The database name.
+    /// </summary>
+    [JsonPropertyName("Database")]
+    public string Database { get; set; } = null!;
+    
+    /// <summary>
+    ///     The database user.
+    /// </summary>
+    [JsonPropertyName("Username")]
+    public string Username { get; set; } = null!;
+    
+    /// <summary>
+    ///     The database password.
+    /// </summary>
+    [JsonPropertyName("Password")]
+    public string Password { get; set; } = null!;
 }

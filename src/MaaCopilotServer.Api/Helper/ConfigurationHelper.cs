@@ -85,8 +85,7 @@ public static class ConfigurationHelper
         {
             new("Application:AssemblyPath", GlobalConstants.AssemblyDirectory),
             new("Application:DataDirectory", GlobalConstants.DataDirectory),
-            new("Application:Version", appVersion),
-            new("ElasticApm:ServiceVersion", appVersion)
+            new("Application:Version", appVersion)
         });
 
         var configuration = configurationBuilder.Build();

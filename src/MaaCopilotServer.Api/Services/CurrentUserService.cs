@@ -72,23 +72,6 @@ public class CurrentUserService : ICurrentUserService
     /// <inheritdoc />
     public string GetTrackingId()
     {
-        if (_configuration.GetValue<bool>("Switches:Apm") is false)
-        {
-            return _httpContextAccessor.HttpContext?.TraceIdentifier ?? string.Empty;
-        }
-
-        var traceIdExist = _httpContextAccessor.HttpContext?.Items.ContainsKey("ApmTraceId");
-        if (traceIdExist is not true)
-        {
-            return _httpContextAccessor.HttpContext?.TraceIdentifier ?? string.Empty;
-        }
-
-        var traceId = _httpContextAccessor.HttpContext?.Items["ApmTraceId"];
-        if (traceId is not null)
-        {
-            return traceId.ToString()!;
-        }
-
         return _httpContextAccessor.HttpContext?.TraceIdentifier ?? string.Empty;
     }
 

@@ -8,13 +8,11 @@ using System.Text;
 using MaaCopilotServer.Api.Constants;
 using MaaCopilotServer.Api.Jobs;
 using MaaCopilotServer.Api.Services;
-using MaaCopilotServer.Api.Wrappers;
 using MaaCopilotServer.Application.Common.Extensions;
 using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Domain.Attributes;
 using MaaCopilotServer.Domain.Extensions;
 using MaaCopilotServer.Domain.Options;
-using MaaCopilotServer.Infrastructure.Database;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
@@ -41,14 +39,11 @@ public static class ConfigureServices
             .AddOption<JwtOption>()
             .AddOption<DatabaseOption>()
             .AddOption<ElasticLogSinkOption>()
-            .AddOption<SwitchesOption>()
             .AddOption<EmailOption>()
             .AddOption<ApplicationOption>()
             .AddOption<TokenOption>()
             .AddOption<CopilotServerOption>()
             .AddOption<CopilotOperationOption>();
-
-        services.AddSingleton<IElasticApmAgentWrapper, ElasticApmAgentWrapper>();
 
         var copilotServerOption = configuration.GetOption<CopilotServerOption>();
 

@@ -3,9 +3,6 @@
 // Licensed under the AGPL-3.0 license.
 
 using System.Diagnostics.CodeAnalysis;
-using Elastic.Apm.Elasticsearch;
-using Elastic.Apm.EntityFrameworkCore;
-using Elastic.Apm.Extensions.Hosting;
 using MaaCopilotServer.Api.Constants;
 using MaaCopilotServer.Api.Formatter;
 using MaaCopilotServer.Api.Helper;
@@ -51,14 +48,6 @@ public static class Program
 
         builder.Host.UseSerilog();
 
-        var switchesOption = configuration.GetOption<SwitchesOption>();
-        if (switchesOption.Apm)
-        {
-            builder.Host.UseElasticApm(
-                new EfCoreDiagnosticsSubscriber(),
-                new ElasticsearchDiagnosticsSubscriber());
-        }
-
         builder.Services.AddCors();
         builder.Services.AddControllers(options =>
             options.OutputFormatters.Insert(0, new MaaResponseFormatter()));
@@ -88,7 +77,6 @@ public static class Program
                 .AllowCredentials();
         });
 
-        app.UseApmTransaction();
         app.UseRequestCulture();
         app.UseSystemStatus();
         app.UseAuthentication();

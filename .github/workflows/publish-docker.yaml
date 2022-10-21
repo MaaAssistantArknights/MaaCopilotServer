@@ -34,12 +34,6 @@ jobs:
       - name: "Build .NET application"
         run: dotnet build -c Release --no-restore
         
-      - name: "Run test"
-        run: dotnet test -c Release --no-build --verbosity normal
-        
-      - name: "Clean environment"
-        run: dotnet clean -c Release
-
       - name: "Publish .NET application"
         run: dotnet publish -c Release -o ./publish ./src/MaaCopilotServer.Api
         
