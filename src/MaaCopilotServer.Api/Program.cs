@@ -9,8 +9,6 @@ using MaaCopilotServer.Api.Helper;
 using MaaCopilotServer.Api.Middleware;
 using MaaCopilotServer.Api.Swagger;
 using MaaCopilotServer.Application;
-using MaaCopilotServer.Application.Common.Extensions;
-using MaaCopilotServer.Domain.Options;
 using MaaCopilotServer.Infrastructure;
 using MaaCopilotServer.Resources;
 using Microsoft.AspNetCore.Http.Features;
@@ -39,8 +37,6 @@ public static class Program
         // Create logger.
         Log.Logger = configuration.GetLoggerConfiguration().CreateLogger();
         SelfLog.Enable(Console.Error); // Direct log output to standard error stream.
-
-        InitializeHelper.InitializeEmailTemplates();
 
         var builder = WebApplication.CreateBuilder();
 

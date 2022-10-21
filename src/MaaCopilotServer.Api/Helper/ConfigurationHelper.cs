@@ -84,7 +84,7 @@ public static class ConfigurationHelper
         configurationBuilder.AddInMemoryCollection(new List<KeyValuePair<string, string>>
         {
             new("Application:AssemblyPath", GlobalConstants.AssemblyDirectory),
-            new("Application:DataDirectory", GlobalConstants.DataDirectory),
+            new("Application:EmailTemplateDirectory", GlobalConstants.OriginalTemplatesDirectory),
             new("Application:Version", appVersion)
         });
 
