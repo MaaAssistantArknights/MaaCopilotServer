@@ -11,6 +11,7 @@ using MaaCopilotServer.Domain.Options;
 using MaaCopilotServer.Infrastructure.Database.Maps;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Npgsql;
 
 namespace MaaCopilotServer.Infrastructure.Database;
 
@@ -22,7 +23,7 @@ public class MaaCopilotDbContext : DbContext, IMaaCopilotDbContext
     /// <summary>
     ///     The connection string.
     /// </summary>
-    private readonly string? _connectionString;
+    private readonly DatabaseOption _option;
 
     /// <summary>
     ///     The constructor with <see cref="IOptions{TOptions}"/>.
@@ -30,7 +31,7 @@ public class MaaCopilotDbContext : DbContext, IMaaCopilotDbContext
     /// <param name="dbOptions">The database options.</param>
     public MaaCopilotDbContext(IOptions<DatabaseOption> dbOptions)
     {
-        _connectionString = dbOptions.Value.ConnectionString;
+        _option = dbOptions.Value;
     }
 
     /// <inheritdoc />
@@ -63,8 +64,16 @@ public class MaaCopilotDbContext : DbContext, IMaaCopilotDbContext
     /// <inheritdoc/>
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        // Create Postgres database for development and production.
-        optionsBuilder.UseNpgsql(_connectionString.IsNotNull());
+        var npgsqlConnectionStringBuilder = new NpgsqlConnectionStringBuilder
+        {
+            Host = _option.Host,
+            Port = _option.Port,
+            Database = _option.Database,
+            Username = _option.Username,
+            Password = _option.Password
+        };
+        
+        optionsBuilder.UseNpgsql(npgsqlConnectionStringBuilder.ConnectionString);
         base.OnConfiguring(optionsBuilder);
     }
 
