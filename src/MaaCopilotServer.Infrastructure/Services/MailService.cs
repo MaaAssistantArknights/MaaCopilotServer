@@ -43,7 +43,7 @@ public class MailService : IMailService
         var templateName = attr!.TemplateName;
 
         var templateFile = GetTemplateFilePath(_currentUserService.GetCulture(),
-            Path.Combine(_applicationOption.Value.DataDirectory, "templates", $"{templateName}"));
+            Path.Combine(_applicationOption.Value.EmailTemplateDirectory, $"{templateName}"));
 
         var email = _fluentEmail
             .To(targetAddress)

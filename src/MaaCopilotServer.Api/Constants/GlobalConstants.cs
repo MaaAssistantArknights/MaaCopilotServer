@@ -85,14 +85,9 @@ public static class GlobalConstants
     public static string AppVersion => Environment.GetEnvironmentVariable("MAA_COPILOT_APP_VERSION") ?? "0.0.0";
 
     /// <summary>
-    /// The original templates directory.
+    /// The templates directory.
     /// </summary>
     public static string OriginalTemplatesDirectory => AssemblyDirectory.CombinePath("templates");
-
-    /// <summary>
-    /// The target templates directory.
-    /// </summary>
-    public static string TargetTemplatesDirectory => DataDirectory.CombinePath("templates");
 
     /// <summary>
     /// The default user email.

@@ -19,9 +19,9 @@ public class ApplicationOption
     /// </summary>
     public string AssemblyPath { get; set; } = null!;
     /// <summary>
-    ///     The directory where the data files are located.
+    ///     The email template directory.
     /// </summary>
-    public string DataDirectory { get; set; } = null!;
+    public string EmailTemplateDirectory { get; set; } = null!;
     /// <summary>
     ///     The version of the server.
     /// </summary>
