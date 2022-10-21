@@ -2,12 +2,9 @@
 // MaaCopilotServer belongs to the MAA organization.
 // Licensed under the AGPL-3.0 license.
 
-using MaaCopilotServer.Application.Common.Helpers;
 using MaaCopilotServer.Application.Common.Interfaces;
 using MaaCopilotServer.Domain.Entities;
-using MaaCopilotServer.Domain.Enums;
 using MaaCopilotServer.Domain.Options;
-using MaaCopilotServer.Resources;
 using Microsoft.Extensions.Options;
 
 namespace MaaCopilotServer.Infrastructure.Services;
@@ -17,14 +14,11 @@ namespace MaaCopilotServer.Infrastructure.Services;
 /// </summary>
 public class CopilotOperationService : ICopilotOperationService
 {
-    private readonly DomainString _domainString;
     private readonly Func<int, int, int, long> _hotScoreCalculator;
 
     public CopilotOperationService(
-        IOptions<CopilotOperationOption> copilotOperationOption,
-        DomainString domainString)
+        IOptions<CopilotOperationOption> copilotOperationOption)
     {
-        _domainString = domainString;
         var initialScore = copilotOperationOption.Value.InitialHotScore;
         var likeMultiplier = copilotOperationOption.Value.LikeMultiplier;
         var dislikeMultiplier = copilotOperationOption.Value.DislikeMultiplier;

@@ -12,7 +12,6 @@ using MaaCopilotServer.Domain.Enums;
 using MaaCopilotServer.Domain.Options;
 using MaaCopilotServer.Infrastructure.Database;
 using MaaCopilotServer.Infrastructure.Services;
-using MaaCopilotServer.Resources;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
@@ -40,7 +39,7 @@ public class DatabaseInitializer : IHostedService
         _hostApplicationLifetime = hostApplicationLifetime;
         _logger = logger;
 
-        _copilotOperationService = new CopilotOperationService(copilotOperationOptions, new DomainString());
+        _copilotOperationService = new CopilotOperationService(copilotOperationOptions);
     }
 
     private CancellationToken _cancellationToken;
