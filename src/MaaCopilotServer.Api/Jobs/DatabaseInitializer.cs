@@ -60,9 +60,17 @@ public class DatabaseInitializer : IHostedService
 
     private void Initialize()
     {
-        InitializeMigration(_cancellationToken).GetAwaiter().GetResult();
-        InitializeDefaultUser(_cancellationToken).GetAwaiter().GetResult();
-        InitializeCheckOperation(_cancellationToken).GetAwaiter().GetResult();
+        try
+        {
+            InitializeMigration(_cancellationToken).GetAwaiter().GetResult();
+            InitializeDefaultUser(_cancellationToken).GetAwaiter().GetResult();
+            InitializeCheckOperation(_cancellationToken).GetAwaiter().GetResult();
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("Initialization failed: {DbInitErrorMessage}", e.Message);
+            Environment.Exit(-1);
+        }
 
         _logger.LogInformation("Database initialization finished");
         SystemStatus.DatabaseInitialized = true;
