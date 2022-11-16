@@ -33,13 +33,13 @@ public static class SystemConstants
 
     public const string MaaCopilotSchemaPath = "static/maa-copilot-schema.json";
 
-    public const string LevelUrl = "https://raw.githubusercontent.com/yuanyan3060/Arknights-Bot-Resource/main/levels.json";
+    public const string LevelUrl = "https://raw.githubusercontent.com/MaaAssistantArknights/MaaAssistantArknights/dev/3rdparty/resource/Arknights-Tile-Pos/levels.json";
     public const string ActUrl = "https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/{REGION}/gamedata/excel/activity_table.json";
     public const string CharUrl = "https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/{REGION}/gamedata/excel/character_table.json";
     public const string StageUrl = "https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/{REGION}/gamedata/excel/stage_table.json";
     public const string ZoneUrl = "https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/{REGION}/gamedata/excel/zone_table.json";
 
-    public const string ArkLevelCommit = "https://api.github.com/repos/yuanyan3060/Arknights-Bot-Resource/commits?path=levels.json&per_page=1";
+    public const string ArkLevelCommit = "https://api.github.com/repos/MaaAssistantArknights/MaaAssistantArknights/commits?sha=dev&path=3rdparty/resource/Arknights-Tile-Pos/levels.json&per_page=1";
     public const string ArkDataCommit = "https://api.github.com/repos/Kengxxiao/ArknightsGameData/commits?path={REGION}&per_page=1";
 
     public static readonly Dictionary<string, ArkServerLanguage> ArkServerRegions = new()
