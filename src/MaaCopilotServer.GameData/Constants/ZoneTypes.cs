@@ -11,4 +11,5 @@ internal enum ZoneTypes
     Activity,
     Campaign,
     Memory,
+    Rune,
 }

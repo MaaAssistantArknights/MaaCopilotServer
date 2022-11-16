@@ -17,53 +17,53 @@ About level categories:
 1. MAINLINE
 
     Main story level will be tagged like this:
-        
+
         MAINLINE -> CHAPTER_NAME -> StageCode == obt/main/LEVEL_ID
-        
+
     eg:
-        
+
         主题曲 -> 序章：黑暗时代·上 -> 0-1 == obt/main/level_main_00-01
         主题曲 -> 第四章：急性衰竭 -> S4-7 == obt/main/level_sub_04-3-1
 
 2. WEEKLY
 
     Weekly level will be tagged like this:
-        
+
         WEEKLY -> WEEKLY_ZONE_NAME -> StageCode == obt/weekly/LEVEL_ID
 
     eg:
-    
+
         资源收集 -> 空中威胁 -> CA-5 == obt/weekly/level_weekly_fly_5
         资源收集 -> 身先士卒 -> PR-D-2 == obt/promote/level_promote_d_2
 
 3. ACTIVITY
 
     Activity level will be tagged like this:
-    
+
         Activity -> ACT_NAME -> StageCode == activities/ACT_ID/LEVEL_ID
 
     eg:
-        
+
         活动关卡 -> 战地秘闻 -> SW-EV-1 == activities/act4d0/level_act4d0_01
 
 4. CAMPAIGN
 
     Campaign level will be tagged like this:
-        
+
         CAMPAIGN -> CAMPAIGN_CODE -> CAMPAIGN_NAME == obt/campaign/LEVEL_ID
 
     eg:
-    
+
         剿灭作战	-> 炎国 -> 龙门外环 == obt/campaign/level_camp_02
 
 5. MEMORY
 
     Memory level will be tagged like this:
-        
+
         MEMORY -> POSITION -> OPERATOR_NAME == obt/memory/LEVEL_ID
-    
+
     eg:
-    
+
         悖论模拟 -> 狙击 -> 克洛丝 == obt/memory/level_memory_kroos_1
 
 */
@@ -125,11 +125,12 @@ public static class GameDataParser
 
         var levels = gd.ArkLevels.DistinctBy(x => x.LevelId).ToList();
 
-        var levelMainLine = levels.Where(x => x.LevelId.ToLower().StartsWith("obt/main")).ToList();
+        var levelMainLine = levels.Where(x => x.LevelId.ToLower().StartsWith("obt/main") || x.LevelId.ToLower().StartsWith("obt/hard")).ToList();
         var levelWeekly = levels.Where(x => x.LevelId.ToLower().StartsWith("obt/weekly") || x.LevelId.ToLower().StartsWith("obt/promote")).ToList();
         var levelActivity = levels.Where(x => x.LevelId.ToLower().StartsWith("activities")).ToList();
         var levelCampaign = levels.Where(x => x.LevelId.ToLower().StartsWith("obt/campaign")).ToList();
         var levelMemory = levels.Where(x => x.LevelId.ToLower().StartsWith("obt/memory")).ToList();
+        var levelRune = levels.Where(x => x.LevelId.ToLower().StartsWith("obt/rune")).ToList();
 
         // MainLine
         foreach (var level in levelMainLine)
@@ -148,7 +149,6 @@ public static class GameDataParser
                 {
                     catThreeEx = $" ({diff.GetMainLineLevelDifficultyI18NString(language)})";
                 }
-
 
                 var stage = gd.ArkStages
                     .Where(x => string.Equals(x.LevelId, level.LevelId, StringComparison.CurrentCultureIgnoreCase))
@@ -195,14 +195,14 @@ public static class GameDataParser
 
                 if (stage is null)
                 {
-                    throw new GameDataParseException("MainLine", language.ToString(), "stage", level.ToString());
+                    throw new GameDataParseException("Weekly", language.ToString(), "stage", level.ToString());
                 }
 
                 var zone = gd.ArkZones.FirstOrDefault(x => x.ZoneId == stage.ZoneId);
 
                 if (zone is null)
                 {
-                    throw new GameDataParseException("MainLine", language.ToString(), "zone", level.ToString());
+                    throw new GameDataParseException("Weekly", language.ToString(), "zone", level.ToString());
                 }
 
                 es.Add(new ArkLevelEntity(
@@ -233,14 +233,14 @@ public static class GameDataParser
 
                 if (stage is null)
                 {
-                    throw new GameDataParseException("MainLine", language.ToString(), "stage", level.ToString());
+                    throw new GameDataParseException("Activity", language.ToString(), "stage", level.ToString());
                 }
 
                 var hasId = gd.ArkZoneActMap.ContainsKey(stage.ZoneId);
 
                 if (hasId is false)
                 {
-                    throw new GameDataParseException("MainLine", language.ToString(), "zone_act_map", level.ToString());
+                    throw new GameDataParseException("Activity", language.ToString(), "zone_act_map", level.ToString());
                 }
 
                 var actId = gd.ArkZoneActMap[stage.ZoneId];
@@ -249,7 +249,7 @@ public static class GameDataParser
 
                 if (act is null)
                 {
-                    throw new GameDataParseException("MainLine", language.ToString(), "activity", level.ToString());
+                    throw new GameDataParseException("Activity", language.ToString(), "activity", level.ToString());
                 }
 
                 es.Add(new ArkLevelEntity(
@@ -312,6 +312,14 @@ public static class GameDataParser
                 loggerCallback?.Invoke(e, language);
             }
         }
+
+        // Rune
+        es.AddRange(from level in levelRune
+                    select new ArkLevelEntity(
+                        ZoneTypes.Rune.GetZoneTypeI18NString(language),
+                        level.Code,
+                        level.Name,
+                        level));
 
         return es;
     }

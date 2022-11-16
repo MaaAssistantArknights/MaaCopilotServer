@@ -89,7 +89,7 @@ internal static class I18NConstants
         _ => throw new ArgumentOutOfRangeException(nameof(professions), professions, null)
     };
 
-    #endregion
+    #endregion Character Profression
 
     #region Zone Type
 
@@ -111,6 +111,7 @@ internal static class I18NConstants
         ZoneTypes.Activity => "活动关卡",
         ZoneTypes.Campaign => "剿灭作战",
         ZoneTypes.Memory => "悖论模拟",
+        ZoneTypes.Rune => "危机合约",
         _ => throw new ArgumentOutOfRangeException(nameof(zoneTypes), zoneTypes, null)
     };
 
@@ -121,6 +122,7 @@ internal static class I18NConstants
         ZoneTypes.Activity => "活動關卡",
         ZoneTypes.Campaign => "剿滅作戰",
         ZoneTypes.Memory => "悖論模擬",
+        ZoneTypes.Rune => "危機合約",
         _ => throw new ArgumentOutOfRangeException(nameof(zoneTypes), zoneTypes, null)
     };
 
@@ -131,6 +133,7 @@ internal static class I18NConstants
         ZoneTypes.Activity => "Event operations",
         ZoneTypes.Campaign => "Annihilation",
         ZoneTypes.Memory => "Paradox Simulation",
+        ZoneTypes.Rune => "Crisis Contract",
         _ => throw new ArgumentOutOfRangeException(nameof(zoneTypes), zoneTypes, null)
     };
 
@@ -141,6 +144,7 @@ internal static class I18NConstants
         ZoneTypes.Activity => "活動レベル",
         ZoneTypes.Campaign => "殲滅作戦",
         ZoneTypes.Memory => "逆理演算",
+        ZoneTypes.Rune => "危機契約",
         _ => throw new ArgumentOutOfRangeException(nameof(zoneTypes), zoneTypes, null)
     };
 
@@ -151,10 +155,11 @@ internal static class I18NConstants
         ZoneTypes.Activity => "이벤트",
         ZoneTypes.Campaign => "섬멸 작전",
         ZoneTypes.Memory => "패러독스 시뮬레이션",
+        ZoneTypes.Rune => "위기 계약",
         _ => throw new ArgumentOutOfRangeException(nameof(zoneTypes), zoneTypes, null)
     };
 
-    #endregion
+    #endregion Zone Type
 
     #region Mainline Level Difficulty
 
@@ -214,5 +219,5 @@ internal static class I18NConstants
         _ => throw new ArgumentOutOfRangeException(nameof(difficulty), difficulty, null)
     };
 
-    #endregion
+    #endregion Mainline Level Difficulty
 }
